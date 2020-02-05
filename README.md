@@ -68,6 +68,6 @@ If you got any problems creating a first working build feel free to create an [i
 
 ## Credits
 
-* CarnVanBeck (Code and Assets)
+* [CarnVanBeck](https://github.com/CarnVanBeck) (Code and Assets)
 
-* Xanatos (Code)
+* [XanatosX](https://github.com/XanatosX) (Code)
