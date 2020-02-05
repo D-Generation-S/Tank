@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+using Tank.Interfaces.Components;
+using Tank.Interfaces.Implementations;
 
 namespace Tank.Interfaces.System
 {
-    interface IRenderEngine
+    interface IRenderEngine : IDrawable
     {
+        void AddRenderer(IVisible visibleEntity);
+
+        void AddRenderer(IRenderer renderer);
     }
 }
