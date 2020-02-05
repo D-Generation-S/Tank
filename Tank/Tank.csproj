@@ -119,6 +119,7 @@
     <Compile Include="Interfaces\Entity\IEntity.cs" />
     <Compile Include="Interfaces\Components\IVIsible.cs" />
     <Compile Include="Interfaces\Entity\IPhysicEntity.cs" />
+    <Compile Include="Interfaces\Entity\IVisibleEntity.cs" />
     <Compile Include="Interfaces\System\IPhysicEngine.cs" />
     <Compile Include="Interfaces\System\IRenderEngine.cs" />
     <Compile Include="Interfaces\Implementations\IRenderer.cs" />
