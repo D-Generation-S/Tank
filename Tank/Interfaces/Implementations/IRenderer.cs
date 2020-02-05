@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Tank.Interfaces.Implementations
 {
     interface IRenderer
     {
+        Rectangle DrawingContainer { get; }
+
         Texture2D Texture { get; }
 
         void DrawStep();
