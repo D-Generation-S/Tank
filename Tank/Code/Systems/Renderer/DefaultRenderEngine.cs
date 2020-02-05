@@ -44,6 +44,11 @@ namespace Tank.Code.Systems.Renderer
         public void Draw(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.BackToFront);
+            for (int renderIndex = 0; renderIndex < renderObjects.Count; renderIndex++)
+            {
+                spriteBatch.Draw(renderObjects[renderIndex].Texture, new Vector2(0,0), Color.White);
+                renderObjects[renderIndex].DrawStep();
+            }
             spriteBatch.End();
         }
     }
