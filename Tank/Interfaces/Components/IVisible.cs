@@ -1,9 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Tank.Interfaces.Implementations;
 
 namespace Tank.Interfaces.Components
 {
-    interface IVisible : IDrawable
+    interface IVisible
     {
-        IRenderObj Renderer { get; }
+        IRenderer Renderer { get; }
     }
 }
