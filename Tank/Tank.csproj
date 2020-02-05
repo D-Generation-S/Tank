@@ -101,6 +101,8 @@
     <Compile Include="Code\SubClasses\DebugCommand.cs" />
     <Compile Include="Code\SubClasses\DebugLogEntry.cs" />
     <Compile Include="Code\SubClasses\Position.cs" />
+    <Compile Include="Code\Systems\Physic\DefaultPhysicEngine.cs" />
+    <Compile Include="Code\Systems\Renderer\DefaultRenderEngine.cs" />
     <Compile Include="Code\TerrainClasses\Cloud.cs" />
     <Compile Include="Code\TerrainClasses\ImageGenerator.cs" />
     <Compile Include="Code\Physic\Physics.cs" />
@@ -113,6 +115,13 @@
     <Compile Include="Code\TerrainClasses\Terrain.cs" />
     <Compile Include="Code\TerrainClasses\Weather.cs" />
     <Compile Include="Code\Enums\DebugLog.cs" />
+    <Compile Include="Interfaces\Components\IMoveable.cs" />
+    <Compile Include="Interfaces\Entity\IEntity.cs" />
+    <Compile Include="Interfaces\Components\IVIsible.cs" />
+    <Compile Include="Interfaces\Entity\IPhysicEntity.cs" />
+    <Compile Include="Interfaces\System\IPhysicEngine.cs" />
+    <Compile Include="Interfaces\System\IRenderEngine.cs" />
+    <Compile Include="Interfaces\Implementations\IRenderer.cs" />
     <Compile Include="TankGame.cs" />
     <Compile Include="Interfaces\ActiveObj.cs" />
     <Compile Include="Interfaces\PhysicsObj.cs" />
