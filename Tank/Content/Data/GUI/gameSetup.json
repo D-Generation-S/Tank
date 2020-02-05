@@ -1,0 +1,49 @@
+﻿{
+  "Name": "gameSetup",
+  "BackgroundTextureName": "Images/Backgrounds/Tank_Background_Distort_Shadow",
+  "BackgroundColor": "#000",
+  "Buttons": [
+    {
+      "Name": "Button_Back",
+      "Width": 150,
+      "Height": 50,
+      "ClickEvent": "BackButton_Click",
+	  "VerticalAlignment": "Bottom",
+      "HorizontalAlignment": "Center",
+      "Margin": [ 0, 0, 70, 0 ],
+      "Text": "Back",
+      "TextureName": "Images/GUI/ProgressFront",
+      "HoverTextureName": "Images/GUI/ProgressBackground"
+    }
+  ],
+  "Sliders": [
+    {
+      "Name": "Slider_MasterVolume",
+      "ChangeEvent": "MasterVolume_Change",
+      "Width": 256,
+      "Height": 64,
+      "VerticalAlignment": "Top",
+      "HorizontalAlignment": "Center",
+      "Margin": [ 100, 0, 0, 0 ],
+      "BackgroundTextureName": "Images/GUI/Slider_Bar",
+      "SliderTextureName": "Images/GUI/Slider",
+      "SliderWidth": 16,
+      "SliderHeight": 32,
+      "SliderOffset": [ 18, 20 ]
+    }
+  ],
+  "Toggles": [
+    {
+      "Name": "Toggle_SplashScreen",
+      "Width": 32,
+      "Height": 32,
+      "ClickEvent": "SplashScreenToggle_Click",
+      "VerticalAlignment": "Top",
+      "HorizontalAlignment": "Center",
+      "Margin": [ 200, 70, 0, 0 ],
+      "TextureName": "Images/GUI/Toggle",
+      "CheckedTextureName": "Images/GUI/Toggle_Pressed",
+      "Text":  "Show Splash Screen"
+    }
+  ]
+}

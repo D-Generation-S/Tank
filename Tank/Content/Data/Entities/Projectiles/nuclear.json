@@ -1,0 +1,12 @@
+﻿{
+  "ID": 1,
+  "Name": "Nuclear Projectile",
+  "Description": "This projectile does extremly damage in an giant area.",
+  "Damage": 1000,
+  "AreaOfEffect": 300,
+  "Speed": 20,
+  "Sprite": "BasicMunitionSprite",
+  "ShootSound": "Basic_Shoot",
+  "HitSound": "Basic_Explosion",
+  "Cost": 1000
+}
