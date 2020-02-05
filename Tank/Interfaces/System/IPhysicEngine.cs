@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Tank.Interfaces.Entity;
+using Tank.Interfaces.Components;
 
 namespace Tank.Interfaces.System
 {
     interface IPhysicEngine : IUpdateable
     {
-        void AddPhysicObject(IPhysicEntity physicEntity);
+        void AddPhysicObject(IMoveable moveable);
     }
 }
