@@ -78,7 +78,6 @@ namespace Tank
             Settings.MaxWindowSize = new Rectangle(0, 0, 1920, 1080);
             InitResolution(1440, 900);
 
-            //Texturierung wird noch hier erledigt o.O :D
             TextureTerrain();
 
             Settings.ScreenshotFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\TankGame";
