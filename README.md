@@ -64,7 +64,7 @@ If you fullfill all the prerequirements you can start to create your first worki
 
 4. Start to build the project in your IDE
 
-If you got any problems creating a first working build feel free to create an [issue]([https://github.com/D-Generation-S/Tank/issues](https://github.com/D-Generation-S/Tank/issues) so we can help you out.
+If you got any problems creating a first working build feel free to create an [issue](https://github.com/D-Generation-S/Tank/issues) so we can help you out.
 
 ## Credits
 
