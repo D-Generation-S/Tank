@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.Interfaces.Components;
+using Tank.Interfaces.Entity;
 using Tank.Interfaces.Implementations;
 using Tank.Interfaces.System;
 
@@ -31,6 +32,20 @@ namespace Tank.Code.Systems.Renderer
             renderObjects = new List<IRenderer>();
         }
 
+        public void AddRenderer(IEntity entity)
+        {
+            if (entity is IVisible)
+            {
+                AddRenderer((IVisible)entity);
+                return;
+            }
+            if (entity is IRenderer)
+            {
+                AddRenderer((IRenderer)entity);
+                return;
+            }
+        }
+
         public void AddRenderer(IVisible visibleEntity)
         {
             AddRenderer(visibleEntity.Renderer);
@@ -44,6 +59,7 @@ namespace Tank.Code.Systems.Renderer
         public void Draw(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.BackToFront);
+
             for (int renderIndex = 0; renderIndex < renderObjects.Count; renderIndex++)
             {
                 IRenderer obj = renderObjects[renderIndex];
