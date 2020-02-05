@@ -6,6 +6,12 @@ Please read this document first before contributing
 
 ## How to Contibute
 
+This project is using a `master` branch for a stable release and a `develop` branch for daily changes. If you want to create a pull request, always submit it to the `develop` branch.
+
+
+
+You should learn or be familiar [how to use git](https://help.github.com/en/github/getting-started-with-github/set-up-git), how you can create a [fork for a project](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) and how you can [submit a Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)
+
 ## Guidelines
 
 * **NEVER** commit code you did not write on your own
@@ -14,6 +20,12 @@ Please read this document first before contributing
 
 * **Please** write always a commit message which is simple and descripitive.
 
-* **Do not** create a new big feature without discussing this in an [feature request](https://github.com/D-Generation-S/Tank/issues) first
+* **Do not** create a new big feature without discussing this in an [Feature Request](https://github.com/D-Generation-S/Tank/issues) first
+
+* **Please** be friendly to any contributor you write to in an issue or by reviewing his code.
+
+## License
+
+Please read the [License](LICENSE) for more information about this project. Please check the [Monogame license](https://github.com/MonoGame/MonoGame/blob/develop/LICENSE.txt) as well since this is the framework the project is depending on.
 
 
