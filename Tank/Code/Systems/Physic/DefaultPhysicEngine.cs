@@ -35,6 +35,15 @@ namespace Tank.Code.Systems.Physic
             fixedDeltaTimeSeconds = fixedDeltaTime / 1000f;
         }
 
+        public void AddPhysicObject(IEntity entity)
+        {
+            if (entity is IMoveable)
+            {
+                objects.Add((IMoveable)entity);
+            }
+            
+        }
+
         public void AddPhysicObject(IMoveable moveable)
         {
             objects.Add(moveable);
@@ -58,7 +67,8 @@ namespace Tank.Code.Systems.Physic
                     IMoveable obj = objects[objectIndex];
                     Vector2 objVelocity = obj.Velocity;
 
-                    objVelocity.X += 980 * fixedDeltaTimeSeconds;
+                    objVelocity.Y += 980 * fixedDeltaTimeSeconds;
+                    objVelocity.X += objVelocity.X * fixedDeltaTimeSeconds;
 
                     obj.Velocity = objVelocity;
                 }
