@@ -15,7 +15,7 @@ namespace Tank.Code.Systems.Renderer
 {
     class DefaultRenderEngine : BaseEntity, IRenderEngine
     {
-        private readonly List<IRenderer> renderObjects;
+        private readonly List<IVisibleEntity> renderObjects;
         private readonly SpriteBatch spriteBatch;
 
         public event EventHandler<EventArgs> DrawOrderChanged;
@@ -24,12 +24,13 @@ namespace Tank.Code.Systems.Renderer
         public DefaultRenderEngine(SpriteBatch spriteBatch)
         {
             this.spriteBatch = spriteBatch;
-            renderObjects = new List<IRenderer>();
+            renderObjects = new List<IVisibleEntity>();
         }
 
         public override void Initzialize(string uniqueName)
         {
             active = true;
+            alive = true;
             base.Initzialize(uniqueName);
         }
 
@@ -37,27 +38,23 @@ namespace Tank.Code.Systems.Renderer
         {
             if (entity.UniqueName == String.Empty)
             {
-                return "";
+                return String.Empty;
             }
 
-            if (entity is IVisible)
+            if (entity is IVisibleEntity)
             {
-                renderObjects.Add(((IVisible)entity).Renderer);
+                renderObjects.Add(((IVisibleEntity)entity));
                 return entity.UniqueName;
             }
 
-            if (entity is IRenderer)
-            {
-                renderObjects.Add(((IRenderer)entity));
-                return entity.UniqueName;
-            }
-
-            return "";
+            return String.Empty;
         }
 
         public bool RemoveEntity(string entityName)
         {
-            throw new NotImplementedException();
+            int counter = renderObjects.RemoveAll(entity => entity.UniqueName == entityName);
+
+            return counter > 0;
         }
 
         public void Draw(GameTime gameTime)
@@ -66,9 +63,13 @@ namespace Tank.Code.Systems.Renderer
 
             for (int renderIndex = 0; renderIndex < renderObjects.Count; renderIndex++)
             {
-                IRenderer obj = renderObjects[renderIndex];
-                spriteBatch.Draw(obj.Texture, obj.DrawingContainer, Color.White);
-                renderObjects[renderIndex].DrawStep();
+                IRenderer obj = renderObjects[renderIndex].Renderer;
+                if (obj.IsReady)
+                {
+                    spriteBatch.Draw(obj.Texture, obj.Destination, obj.Source, Color.White, 0, new Vector2(0,0), SpriteEffects.None, 1f);
+                    obj.DrawStep();
+                }
+                
             }
             spriteBatch.End();
         }

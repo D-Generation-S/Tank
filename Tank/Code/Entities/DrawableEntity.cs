@@ -36,11 +36,6 @@ namespace Tank.Code.Entities
             throw new NotImplementedException();
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Initzialize()
         {
             throw new NotImplementedException();

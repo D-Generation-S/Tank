@@ -13,20 +13,12 @@ namespace Tank.Code.Systems.GameManager
 { 
     class DefaultEntitySystem : BaseEntity, IEntitySystem
     {
-        private readonly List<IEntity> updateableEntities;
-        public IList<IEntity> UpdateableEntities => updateableEntities;
-
-        private readonly List<IDrawableEntity> drawableEntities;
-        public IList<IDrawableEntity> DrawableEntities => drawableEntities;
-
-        private readonly List<ISystem> systems;
-        public IList<ISystem> Systems => systems;
+        private readonly List<IEntity> entities;
+        public IList<IEntity> Entities => entities;
 
         public DefaultEntitySystem()
         {
-            updateableEntities = new List<IEntity>();
-            drawableEntities = new List<IDrawableEntity>();
-            systems = new List<ISystem>();
+            entities = new List<IEntity>();
             Initzialize(Guid.NewGuid().ToString());
         }
 
@@ -42,38 +34,41 @@ namespace Tank.Code.Systems.GameManager
             string name = Guid.NewGuid().ToString();
             entity.Initzialize(name);
 
-            foreach (ISystem system in systems)
+            foreach (IEntity systemEntity in entities)
             {
-                system.AddEntity(entity);
+                if (systemEntity is ISystem)
+                {
+                    ((ISystem)systemEntity).AddEntity(entity);
+                }
             }
-
-            updateableEntities.Add(entity);
-
-            if (entity is IDrawableEntity)
-            {
-                drawableEntities.Add((IDrawableEntity)entity);
-            }
-
-            if (entity is ISystem)
-            {
-                systems.Add((ISystem)entity);
-            }
+            entities.Add(entity);
 
             return name;
         }
 
         public bool RemoveEntity(string entityName)
         {
-            throw new NotImplementedException();
+            int counter = entities.RemoveAll(entity => entity.UniqueName == entityName);
+
+            bool removingOkay = true;
+            foreach (IEntity systemEntity in entities)
+            {
+                if (systemEntity is ISystem)
+                {
+                    removingOkay &= ((ISystem)systemEntity).RemoveEntity(entityName);
+                }
+            }
+
+            return counter > 0 && removingOkay;
         }
 
         public void Draw(GameTime gameTime)
         {
-            for (int i = 0; i < drawableEntities.Count; i++)
+            for (int i = 0; i < entities.Count; i++)
             {
-                if (drawableEntities[i].Active)
+                if (entities[i] is IDrawableEntity && entities[i].Active)
                 {
-                    drawableEntities[i].Draw(gameTime);
+                    ((IDrawableEntity)entities[i]).Draw(gameTime);
                 }
             }
         }
@@ -81,38 +76,22 @@ namespace Tank.Code.Systems.GameManager
         public override void Update(GameTime gameTime)
         {
             CleanEntities();
-            for (int i = 0; i < updateableEntities.Count; i++)
+            for (int i = 0; i < entities.Count; i++)
             {
-                if (updateableEntities[i].Active)
+                if (entities[i].Active)
                 {
-                    updateableEntities[i].Update(gameTime);
+                    entities[i].Update(gameTime);
                 }
             }
         }
 
         private void CleanEntities()
         {
-            for (int i = updateableEntities.Count - 1; i > 0; i--)
+            for (int i = entities.Count - 1; i > 0; i--)
             {
-                if (!updateableEntities[i].Alive)
+                if (!entities[i].Alive)
                 {
-                    updateableEntities.RemoveAt(i);
-                }
-            }
-
-            for (int i = drawableEntities.Count - 1; i > 0; i--)
-            {
-                if (!drawableEntities[i].Alive)
-                {
-                    drawableEntities.RemoveAt(i);
-                }
-            }
-
-            for (int i = systems.Count - 1; i > 0; i--)
-            {
-                if (!systems[i].Alive)
-                {
-                    systems.RemoveAt(i);
+                    RemoveEntity(entities[i].UniqueName);
                 }
             }
         }
