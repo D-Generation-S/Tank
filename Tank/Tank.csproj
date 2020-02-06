@@ -49,12 +49,14 @@
     <Compile Include="Code\ActiveHandler.cs" />
     <Compile Include="Code\Animation.cs" />
     <Compile Include="Code\BaseClasses\BaseEntity.cs" />
+    <Compile Include="Code\Builder\StaticProjectileBuilder.cs" />
     <Compile Include="Code\Controls.cs" />
     <Compile Include="Code\Entities\DebugEntity.cs" />
     <Compile Include="Code\Entities\DrawableEntity.cs" />
     <Compile Include="Code\Entities\Player\BasePlayer.cs" />
     <Compile Include="Code\Entities\Player\HumanPlayer.cs" />
     <Compile Include="Code\Entities\Vehicle.cs" />
+    <Compile Include="Code\Entities\Weapon\Projectile.cs" />
     <Compile Include="Code\Enums\FadeModes.cs" />
     <Compile Include="Code\Enums\PanelAlignments.cs" />
     <Compile Include="Code\Enums\PossibleTextPosition.cs" />
@@ -75,6 +77,8 @@
     <Compile Include="Code\GUIClasses\GUIToggle.cs" />
     <Compile Include="Code\GUIClasses\PlayerOverlay.cs" />
     <Compile Include="Code\Helper.cs" />
+    <Compile Include="Code\Implementations\SpriteSheetRenderer.cs" />
+    <Compile Include="Code\Implementations\SpriteRenderer.cs" />
     <Compile Include="Code\JSonClasses\jsonScreenDefinition.cs" />
     <Compile Include="Code\JSonClasses\jsonTank.cs" />
     <Compile Include="Code\JSonClasses\jsonTankList.cs" />
@@ -102,7 +106,7 @@
     <Compile Include="Code\Sound\Track.cs" />
     <Compile Include="Code\SubClasses\DebugCommand.cs" />
     <Compile Include="Code\SubClasses\DebugLogEntry.cs" />
-    <Compile Include="Code\SubClasses\Position.cs" />
+    <Compile Include="Code\DataContainer\Position.cs" />
     <Compile Include="Code\Systems\GameManager\DefaultEntitySystem.cs" />
     <Compile Include="Code\Systems\Physic\DefaultPhysicEngine.cs" />
     <Compile Include="Code\Systems\Renderer\DefaultRenderEngine.cs" />
@@ -118,6 +122,7 @@
     <Compile Include="Code\TerrainClasses\Terrain.cs" />
     <Compile Include="Code\TerrainClasses\Weather.cs" />
     <Compile Include="Code\Enums\DebugLog.cs" />
+    <Compile Include="Interfaces\Builder\IBuilder.cs" />
     <Compile Include="Interfaces\Components\IMoveable.cs" />
     <Compile Include="Interfaces\Components\IPlaceable.cs" />
     <Compile Include="Interfaces\Implementations\IDrawableEntity.cs" />
