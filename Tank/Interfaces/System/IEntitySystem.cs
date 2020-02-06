@@ -11,10 +11,10 @@ namespace Tank.Interfaces.System
 {
     interface IEntitySystem : IDrawableEntity, ISystem
     {
-        IList<ISystem> Systems { get; }
+        //IList<ISystem> Systems { get; }
 
-        IList<IEntity> UpdateableEntities { get; }
+        IList<IEntity> Entities { get; }
 
-        IList<IDrawableEntity> DrawableEntities { get; }
+        //IList<IDrawableEntity> DrawableEntities { get; }
     }
 }

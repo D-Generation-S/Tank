@@ -9,6 +9,6 @@ namespace Tank.Interfaces.Components
 {
     interface IPlaceable
     {
-        Vector2 Position { get; }
+        Vector2 Position { get; set; }
     }
 }
