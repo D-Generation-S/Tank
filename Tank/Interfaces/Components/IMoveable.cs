@@ -2,7 +2,7 @@
 
 namespace Tank.Interfaces.Components
 {
-    interface IMoveable
+    interface IMoveable : IPlaceable
     {
         Vector2 Velocity { get; set; }
     }

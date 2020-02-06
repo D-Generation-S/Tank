@@ -2,7 +2,7 @@
 
 namespace Tank.Interfaces.Entity
 {
-    interface IPhysicEntity : IEntity, IPlaceable, IMoveable
+    interface IPhysicEntity : IEntity, IMoveable
     {
     }
 }
