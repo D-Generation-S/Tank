@@ -77,6 +77,8 @@
     <Compile Include="Code\GUIClasses\GUIToggle.cs" />
     <Compile Include="Code\GUIClasses\PlayerOverlay.cs" />
     <Compile Include="Code\Helper.cs" />
+    <Compile Include="Code\Implementations\AnimatedSpriteSheetRenderer.cs" />
+    <Compile Include="Code\Implementations\AnimateSpriteSheetLoopRenderer.cs" />
     <Compile Include="Code\Implementations\SpriteSheetRenderer.cs" />
     <Compile Include="Code\Implementations\SpriteRenderer.cs" />
     <Compile Include="Code\JSonClasses\jsonScreenDefinition.cs" />
