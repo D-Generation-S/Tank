@@ -2,16 +2,14 @@
 using System;
 using System.Collections.Generic;
 using Tank.Code.BaseClasses;
-using Tank.Interfaces.Components;
 using Tank.Interfaces.Entity;
 using Tank.Interfaces.Implementations;
-using Tank.Interfaces.System;
 
 namespace Tank.Code.Systems.Physic
 {
     class DefaultPhysicEngine : BaseEntity, ISystem
     {
-        private readonly List<IMoveable> objects;
+        private readonly List<IPhysicEntity> objects;
 
         private readonly float fixedDeltaTime;
         private readonly float fixedDeltaTimeSeconds;
@@ -31,7 +29,7 @@ namespace Tank.Code.Systems.Physic
 
         public DefaultPhysicEngine()
         {
-            objects = new List<IMoveable>();
+            objects = new List<IPhysicEntity>();
 
             fixedDeltaTime = 16;
             fixedDeltaTimeSeconds = fixedDeltaTime / 1000f;
@@ -47,12 +45,12 @@ namespace Tank.Code.Systems.Physic
         {
             if (entity.UniqueName == String.Empty)
             {
-                return "";
+                return String.Empty;
             }
 
-            if (entity is IMoveable)
+            if (entity is IPhysicEntity)
             {
-                objects.Add((IMoveable)entity);
+                objects.Add((IPhysicEntity)entity);
             }
 
             return entity.UniqueName;
@@ -60,18 +58,9 @@ namespace Tank.Code.Systems.Physic
 
         public bool RemoveEntity(string entityName)
         {
-            return true;
-        }
+            int counter = objects.RemoveAll(entity => entity.UniqueName == entityName);
 
-        public void AddPhysicObject(IEntity entity)
-        {
-
-            
-        }
-
-        public void AddPhysicObject(IMoveable moveable)
-        {
-            objects.Add(moveable);
+            return counter > 0;
         }
 
         public override void Update(GameTime gameTime)
@@ -89,13 +78,13 @@ namespace Tank.Code.Systems.Physic
             {
                 for (int objectIndex = 0; objectIndex < objects.Count; objectIndex++)
                 {
-                    IMoveable obj = objects[objectIndex];
+                    IPhysicEntity obj = objects[objectIndex];
                     Vector2 objVelocity = obj.Velocity;
 
                     objVelocity.Y += 980 * fixedDeltaTimeSeconds;
                     objVelocity.X += objVelocity.X * fixedDeltaTimeSeconds;
 
-                    obj.Velocity = objVelocity;
+                    obj.Position += objVelocity;
                 }
             }
 
