@@ -43,7 +43,7 @@ namespace Tank.Code.Implementations
             }
         }
 
-        private Vector2 position;
+        protected Vector2 position;
         public Vector2 Position
         {
             get => position;
@@ -64,7 +64,7 @@ namespace Tank.Code.Implementations
         public Rectangle Source => source;
             
 
-        public virtual void DrawStep()
+        public virtual void DrawStep(GameTime gameTime)
         {
             
         }
