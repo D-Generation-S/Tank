@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Newtonsoft.Json;
 using Tank.Code;
+using Tank.Code.Entities;
 using Tank.Code.General;
 using Tank.Code.GUIClasses;
 using Tank.Code.JSonClasses;
@@ -17,6 +18,7 @@ using Tank.Code.Screenmanager;
 using Tank.Code.Screenmanager.ViewPortAdapters;
 using Tank.Code.Sound;
 using Tank.Code.SubClasses;
+using Tank.Code.Systems.Physic;
 using Tank.Code.TerrainClasses;
 using Tank.Enums;
 

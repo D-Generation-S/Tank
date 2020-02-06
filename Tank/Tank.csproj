@@ -48,8 +48,10 @@
   <ItemGroup>
     <Compile Include="Code\ActiveHandler.cs" />
     <Compile Include="Code\Animation.cs" />
+    <Compile Include="Code\BaseClasses\BaseEntity.cs" />
     <Compile Include="Code\Controls.cs" />
     <Compile Include="Code\Entities\DebugEntity.cs" />
+    <Compile Include="Code\Entities\DrawableEntity.cs" />
     <Compile Include="Code\Entities\Player\BasePlayer.cs" />
     <Compile Include="Code\Entities\Player\HumanPlayer.cs" />
     <Compile Include="Code\Entities\Vehicle.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="Code\SubClasses\DebugCommand.cs" />
     <Compile Include="Code\SubClasses\DebugLogEntry.cs" />
     <Compile Include="Code\SubClasses\Position.cs" />
+    <Compile Include="Code\Systems\GameManager\DefaultEntityManager.cs" />
     <Compile Include="Code\Systems\Physic\DefaultPhysicEngine.cs" />
     <Compile Include="Code\Systems\Renderer\DefaultRenderEngine.cs" />
     <Compile Include="Code\TerrainClasses\Cloud.cs" />
@@ -116,13 +119,18 @@
     <Compile Include="Code\TerrainClasses\Weather.cs" />
     <Compile Include="Code\Enums\DebugLog.cs" />
     <Compile Include="Interfaces\Components\IMoveable.cs" />
+    <Compile Include="Interfaces\Components\IPlaceable.cs" />
+    <Compile Include="Interfaces\Implementations\IDrawableEntity.cs" />
+    <Compile Include="Interfaces\Implementations\IInitializableEntity.cs" />
     <Compile Include="Interfaces\Entity\IEntity.cs" />
     <Compile Include="Interfaces\Components\IVIsible.cs" />
     <Compile Include="Interfaces\Entity\IPhysicEntity.cs" />
     <Compile Include="Interfaces\Entity\IVisibleEntity.cs" />
+    <Compile Include="Interfaces\Implementations\ISystem.cs" />
+    <Compile Include="Interfaces\System\IEntityManager.cs" />
     <Compile Include="Interfaces\System\IPhysicEngine.cs" />
     <Compile Include="Interfaces\System\IRenderEngine.cs" />
-    <Compile Include="Interfaces\Implementations\IRenderer.cs" />
+    <Compile Include="Interfaces\Container\IRenderer.cs" />
     <Compile Include="TankGame.cs" />
     <Compile Include="Interfaces\ActiveObj.cs" />
     <Compile Include="Interfaces\PhysicsObj.cs" />
