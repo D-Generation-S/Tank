@@ -10,21 +10,21 @@ namespace Tank.Code.Implementations
 {
     class SpriteSheetRenderer : SpriteRenderer
     {
-        private readonly Position singleImageSize;
-        private readonly int additionalDistance;
-        protected readonly Position position;
+        protected readonly Position singleImageSize;
+        protected readonly int additionalDistance;
+        protected Position sheetPosition;
 
-        public SpriteSheetRenderer(Position singleImageSize, int additionalDistance, Position position)
+        public SpriteSheetRenderer(Position singleImageSize, int additionalDistance, Position sheetStartPosition)
         {
             this.singleImageSize = singleImageSize;
             this.additionalDistance = additionalDistance;
-            this.position = position;
+            sheetPosition = sheetStartPosition;
         }
 
         protected override void BuildSourceRectangle()
         {
-            int positionX = singleImageSize.X * position.X + additionalDistance * position.X;
-            int positionY = singleImageSize.Y * position.Y + additionalDistance * position.Y;
+            int positionX = singleImageSize.X * sheetPosition.X + additionalDistance * sheetPosition.X;
+            int positionY = singleImageSize.Y * sheetPosition.Y + additionalDistance * sheetPosition.Y;
 
             source = new Rectangle(positionX, positionY, singleImageSize.X, singleImageSize.Y);
         }
