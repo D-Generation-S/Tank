@@ -1,16 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Tank.Interfaces.Components;
-using Tank.Interfaces.Entity;
 using Tank.Interfaces.Implementations;
+using Tank.Interfaces.Entity;
 
 namespace Tank.Interfaces.System
 {
-    interface IRenderEngine : IDrawable
+    interface IRenderEngine : IDrawableEntity, ISystem
     {
-        void AddRenderer(IEntity entity);
-
-        void AddRenderer(IVisible visibleEntity);
-
-        void AddRenderer(IRenderer renderer);
     }
 }

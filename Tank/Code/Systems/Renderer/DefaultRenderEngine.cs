@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tank.Code.BaseClasses;
 using Tank.Interfaces.Components;
 using Tank.Interfaces.Entity;
 using Tank.Interfaces.Implementations;
@@ -12,16 +13,10 @@ using Tank.Interfaces.System;
 
 namespace Tank.Code.Systems.Renderer
 {
-    class DefaultRenderEngine : IRenderEngine
+    class DefaultRenderEngine : BaseEntity, IRenderEngine
     {
         private readonly List<IRenderer> renderObjects;
         private readonly SpriteBatch spriteBatch;
-
-        private int drawOrder;
-        public int DrawOrder => drawOrder;
-
-        private bool visible;
-        public bool Visible => visible;
 
         public event EventHandler<EventArgs> DrawOrderChanged;
         public event EventHandler<EventArgs> VisibleChanged;
@@ -32,28 +27,31 @@ namespace Tank.Code.Systems.Renderer
             renderObjects = new List<IRenderer>();
         }
 
-        public void AddRenderer(IEntity entity)
+        public string AddEntity(IEntity entity)
         {
+            if (entity.UniqueName == String.Empty)
+            {
+                return "";
+            }
+
             if (entity is IVisible)
             {
-                AddRenderer((IVisible)entity);
-                return;
+                renderObjects.Add(((IVisible)entity).Renderer);
+                return entity.UniqueName;
             }
+
             if (entity is IRenderer)
             {
-                AddRenderer((IRenderer)entity);
-                return;
+                renderObjects.Add(((IRenderer)entity));
+                return entity.UniqueName;
             }
+
+            return "";
         }
 
-        public void AddRenderer(IVisible visibleEntity)
+        public bool RemoveEntity(string entityName)
         {
-            AddRenderer(visibleEntity.Renderer);
-        }
-
-        public void AddRenderer(IRenderer renderer)
-        {
-            renderObjects.Add(renderer);
+            throw new NotImplementedException();
         }
 
         public void Draw(GameTime gameTime)

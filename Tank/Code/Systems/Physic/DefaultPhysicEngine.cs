@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Tank.Code.BaseClasses;
 using Tank.Interfaces.Components;
 using Tank.Interfaces.Entity;
 using Tank.Interfaces.System;
 
 namespace Tank.Code.Systems.Physic
 {
-    class DefaultPhysicEngine : IPhysicEngine
+    class DefaultPhysicEngine : BaseEntity, IPhysicEngine
     {
         private readonly List<IMoveable> objects;
 
@@ -35,12 +36,29 @@ namespace Tank.Code.Systems.Physic
             fixedDeltaTimeSeconds = fixedDeltaTime / 1000f;
         }
 
-        public void AddPhysicObject(IEntity entity)
+        public string AddEntity(IEntity entity)
         {
+            if (entity.UniqueName == String.Empty)
+            {
+                return "";
+            }
+
             if (entity is IMoveable)
             {
                 objects.Add((IMoveable)entity);
             }
+
+            return entity.UniqueName;
+        }
+
+        public bool RemoveEntity(string entityName)
+        {
+            return true;
+        }
+
+        public void AddPhysicObject(IEntity entity)
+        {
+
             
         }
 
@@ -49,7 +67,7 @@ namespace Tank.Code.Systems.Physic
             objects.Add(moveable);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             currentTime = gameTime.TotalGameTime.Milliseconds;
 

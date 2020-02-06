@@ -1,11 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
+using Tank.Interfaces.Implementations;
 
 namespace Tank.Interfaces.Entity
 {
-    interface IEntity : IUpdateable
+    interface IEntity : IInitializableEntity
     {
-        Vector2 Position { get; }
+        string UniqueName { get; }
 
-        void Reset();
+        bool Active { get; }
+
+        bool Alive { get; }
+
+        void Initzialize(string uniqueName);
+
+        void Update(GameTime gameTime);
+
+        //void Reset();
     }
 }
