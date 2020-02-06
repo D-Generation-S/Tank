@@ -5,7 +5,7 @@ using Tank.Interfaces.Entity;
 
 namespace Tank.Interfaces.System
 {
-    interface IPhysicEngine : IEntity, ISystem
+    interface IPhysicEngine : ISystem
     {
     }
 }

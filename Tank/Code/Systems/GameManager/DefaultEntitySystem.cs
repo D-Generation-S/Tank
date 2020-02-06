@@ -11,7 +11,7 @@ using Tank.Interfaces.System;
 
 namespace Tank.Code.Systems.GameManager
 { 
-    class DefaultEntityManager : BaseEntity, IEntityManager
+    class DefaultEntitySystem : BaseEntity, IEntitySystem
     {
         private readonly List<IEntity> updateableEntities;
         public IList<IEntity> UpdateableEntities => updateableEntities;
@@ -19,10 +19,14 @@ namespace Tank.Code.Systems.GameManager
         private readonly List<IDrawableEntity> drawableEntities;
         public IList<IDrawableEntity> DrawableEntities => drawableEntities;
 
-        public DefaultEntityManager()
+        private readonly List<ISystem> systems;
+        public IList<ISystem> Systems => systems;
+
+        public DefaultEntitySystem()
         {
             updateableEntities = new List<IEntity>();
             drawableEntities = new List<IDrawableEntity>();
+            systems = new List<ISystem>();
             Initzialize(Guid.NewGuid().ToString());
         }
 
@@ -38,12 +42,21 @@ namespace Tank.Code.Systems.GameManager
             string name = Guid.NewGuid().ToString();
             entity.Initzialize(name);
 
+            foreach (ISystem system in systems)
+            {
+                system.AddEntity(entity);
+            }
 
             updateableEntities.Add(entity);
 
             if (entity is IDrawableEntity)
             {
                 drawableEntities.Add((IDrawableEntity)entity);
+            }
+
+            if (entity is ISystem)
+            {
+                systems.Add((ISystem)entity);
             }
 
             return name;
@@ -79,7 +92,7 @@ namespace Tank.Code.Systems.GameManager
 
         private void CleanEntities()
         {
-            for (int i = updateableEntities.Count; i > 0; i--)
+            for (int i = updateableEntities.Count - 1; i > 0; i--)
             {
                 if (!updateableEntities[i].Alive)
                 {
@@ -87,11 +100,19 @@ namespace Tank.Code.Systems.GameManager
                 }
             }
 
-            for (int i = drawableEntities.Count; i > 0; i--)
+            for (int i = drawableEntities.Count - 1; i > 0; i--)
             {
                 if (!drawableEntities[i].Alive)
                 {
                     drawableEntities.RemoveAt(i);
+                }
+            }
+
+            for (int i = systems.Count - 1; i > 0; i--)
+            {
+                if (!systems[i].Alive)
+                {
+                    systems.RemoveAt(i);
                 }
             }
         }

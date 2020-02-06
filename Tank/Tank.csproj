@@ -103,7 +103,7 @@
     <Compile Include="Code\SubClasses\DebugCommand.cs" />
     <Compile Include="Code\SubClasses\DebugLogEntry.cs" />
     <Compile Include="Code\SubClasses\Position.cs" />
-    <Compile Include="Code\Systems\GameManager\DefaultEntityManager.cs" />
+    <Compile Include="Code\Systems\GameManager\DefaultEntitySystem.cs" />
     <Compile Include="Code\Systems\Physic\DefaultPhysicEngine.cs" />
     <Compile Include="Code\Systems\Renderer\DefaultRenderEngine.cs" />
     <Compile Include="Code\TerrainClasses\Cloud.cs" />
@@ -127,7 +127,7 @@
     <Compile Include="Interfaces\Entity\IPhysicEntity.cs" />
     <Compile Include="Interfaces\Entity\IVisibleEntity.cs" />
     <Compile Include="Interfaces\Implementations\ISystem.cs" />
-    <Compile Include="Interfaces\System\IEntityManager.cs" />
+    <Compile Include="Interfaces\System\IEntitySystem.cs" />
     <Compile Include="Interfaces\System\IPhysicEngine.cs" />
     <Compile Include="Interfaces\System\IRenderEngine.cs" />
     <Compile Include="Interfaces\Container\IRenderer.cs" />

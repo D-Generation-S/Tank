@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using Tank.Code.BaseClasses;
 using Tank.Interfaces.Components;
 using Tank.Interfaces.Entity;
+using Tank.Interfaces.Implementations;
 using Tank.Interfaces.System;
 
 namespace Tank.Code.Systems.Physic
 {
-    class DefaultPhysicEngine : BaseEntity, IPhysicEngine
+    class DefaultPhysicEngine : BaseEntity, ISystem
     {
         private readonly List<IMoveable> objects;
 
@@ -34,6 +35,12 @@ namespace Tank.Code.Systems.Physic
 
             fixedDeltaTime = 16;
             fixedDeltaTimeSeconds = fixedDeltaTime / 1000f;
+        }
+
+        public override void Initzialize(string uniqueName)
+        {
+            active = true;
+            base.Initzialize(uniqueName);
         }
 
         public string AddEntity(IEntity entity)

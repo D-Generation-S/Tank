@@ -27,6 +27,12 @@ namespace Tank.Code.Systems.Renderer
             renderObjects = new List<IRenderer>();
         }
 
+        public override void Initzialize(string uniqueName)
+        {
+            active = true;
+            base.Initzialize(uniqueName);
+        }
+
         public string AddEntity(IEntity entity)
         {
             if (entity.UniqueName == String.Empty)

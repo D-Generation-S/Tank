@@ -7,7 +7,7 @@ using Tank.Interfaces.Entity;
 
 namespace Tank.Interfaces.Implementations
 {
-    interface ISystem
+    interface ISystem : IEntity
     {
         string AddEntity(IEntity entity);
 
