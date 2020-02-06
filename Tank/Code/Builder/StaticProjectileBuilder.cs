@@ -25,7 +25,7 @@ namespace Tank.Code.Builder
         {
             Position imageSize = new Position(32, 32);
             Position framePosition = new Position(0, 0);
-            IRenderer renderer = new SpriteSheetRenderer(imageSize, 0, framePosition)
+            IRenderer renderer = new AnimateSpriteSheetLoopRenderer(imageSize, 0, framePosition, 0.1f)
             {
                 Texture = texture,
                 Position = new Vector2(10, 10),
