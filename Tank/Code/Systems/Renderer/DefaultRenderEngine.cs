@@ -17,13 +17,15 @@ namespace Tank.Code.Systems.Renderer
     {
         private readonly List<IVisibleEntity> renderObjects;
         private readonly SpriteBatch spriteBatch;
+        private readonly GraphicsDevice graphicsDevice;
 
         public event EventHandler<EventArgs> DrawOrderChanged;
         public event EventHandler<EventArgs> VisibleChanged;
 
-        public DefaultRenderEngine(SpriteBatch spriteBatch)
+        public DefaultRenderEngine(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             this.spriteBatch = spriteBatch;
+            this.graphicsDevice = graphicsDevice;
             renderObjects = new List<IVisibleEntity>();
         }
 
@@ -60,14 +62,14 @@ namespace Tank.Code.Systems.Renderer
         public void Draw(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.BackToFront);
-
+            graphicsDevice.Clear(Color.CornflowerBlue);
             for (int renderIndex = 0; renderIndex < renderObjects.Count; renderIndex++)
             {
                 IRenderer obj = renderObjects[renderIndex].Renderer;
                 if (obj.IsReady)
                 {
                     spriteBatch.Draw(obj.Texture, obj.Destination, obj.Source, Color.White, 0, new Vector2(0,0), SpriteEffects.None, 1f);
-                    obj.DrawStep();
+                    obj.DrawStep(gameTime);
                 }
                 
             }

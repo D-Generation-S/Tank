@@ -25,6 +25,6 @@ namespace Tank.Interfaces.Implementations
 
         void Reset();
 
-        void DrawStep();
+        void DrawStep(GameTime gameTime);
     }
 }
