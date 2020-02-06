@@ -9,8 +9,10 @@ using Tank.Interfaces.Entity;
 
 namespace Tank.Interfaces.System
 {
-    interface IEntityManager : IDrawableEntity, ISystem
+    interface IEntitySystem : IDrawableEntity, ISystem
     {
+        IList<ISystem> Systems { get; }
+
         IList<IEntity> UpdateableEntities { get; }
 
         IList<IDrawableEntity> DrawableEntities { get; }
