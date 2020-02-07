@@ -19,6 +19,7 @@ namespace Tank.Code.Implementations
             this.singleImageSize = singleImageSize;
             this.additionalDistance = additionalDistance;
             sheetPosition = sheetStartPosition;
+            Size = new Vector2(singleImageSize.X, singleImageSize.Y);
         }
 
         protected override void BuildSourceRectangle()
