@@ -51,6 +51,7 @@
     <Compile Include="Code\BaseClasses\BaseEntity.cs" />
     <Compile Include="Code\Builder\StaticProjectileBuilder.cs" />
     <Compile Include="Code\Controls.cs" />
+    <Compile Include="Code\DataContainer\FlattenArray.cs" />
     <Compile Include="Code\Entities\DebugEntity.cs" />
     <Compile Include="Code\Entities\DrawableEntity.cs" />
     <Compile Include="Code\Entities\Player\BasePlayer.cs" />
