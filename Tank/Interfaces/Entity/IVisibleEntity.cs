@@ -7,7 +7,7 @@ using Tank.Interfaces.Components;
 
 namespace Tank.Interfaces.Entity
 {
-    interface IVisibleEntity : IEntity, IVisible
+    interface IVisibleEntity : IEntity, IVisible, IPlaceable
     {
     }
 }

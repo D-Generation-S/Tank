@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tank.Code.DataContainer;
 using Tank.Interfaces.Implementations;
 
 namespace Tank.Code.Implementations
@@ -51,7 +52,9 @@ namespace Tank.Code.Implementations
 
         protected Rectangle source;
         public Rectangle Source => source;
-            
+
+        protected Position textureSize;
+        public Position TextureSize => textureSize;
 
         public virtual void DrawStep(GameTime gameTime)
         {
@@ -64,7 +67,9 @@ namespace Tank.Code.Implementations
             {
                 this.texture = texture;
                 BuildSourceRectangle();
+                textureSize = new Position(texture.Width, texture.Height);
                 textureLocked = true;
+
             }
         }
 

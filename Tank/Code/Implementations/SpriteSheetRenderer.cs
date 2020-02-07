@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,12 @@ namespace Tank.Code.Implementations
             this.additionalDistance = additionalDistance;
             sheetPosition = sheetStartPosition;
             Size = new Vector2(singleImageSize.X, singleImageSize.Y);
+        }
+
+        public override void SetTexture(Texture2D texture)
+        {
+            base.SetTexture(texture);
+            textureSize = new Position(singleImageSize.X, singleImageSize.Y);
         }
 
         protected override void BuildSourceRectangle()

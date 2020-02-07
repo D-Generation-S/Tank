@@ -27,13 +27,14 @@ namespace Tank.Code.Builder
             Position framePosition = new Position(0, 0);
             IRenderer renderer = new AnimateSpriteSheetLoopRenderer(imageSize, 0, framePosition, .05f)
             {
-                Position = new Vector2(10, 10)
+                Position = new Vector2(10, 10),
             };
             renderer.SetTexture(texture);
 
             return new Entities.Weapon.Projectile(renderer)
             {
-                Velocity = new Vector2(0.5f, 0)
+                Velocity = new Vector2(0.5f, 0),
+                Rotation = 1f,
             };
 
         }
