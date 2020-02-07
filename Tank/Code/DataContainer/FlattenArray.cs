@@ -51,11 +51,22 @@ namespace Tank.Code.DataContainer
             }
         }
 
+        /// <summary>
+        /// Get the value for a given position
+        /// </summary>
+        /// <param name="position">The position to get the value for</param>
+        /// <returns></returns>
         public T GetValue(Position position)
         {
             return GetValue(position.X, position.Y);
         }
 
+        /// <summary>
+        /// Get the value for a given position
+        /// </summary>
+        /// <param name="x">Position x to get the value from</param>
+        /// <param name="y">Position y to get the value from</param>
+        /// <returns></returns>
         public T GetValue(int x, int y)
         {
             int targetPosition = y * width + x;
@@ -67,14 +78,27 @@ namespace Tank.Code.DataContainer
             return array[targetPosition];
         }
 
+        /// <summary>
+        /// Set the value for a given position
+        /// </summary>
+        /// <param name="position">The position to set the value for</param>
+        /// <param name="value">The value to set</param>
+        /// <returns></returns>
         public bool SetValue(Position position, T value)
         {
             return SetValue(position.X, position.Y, value);
         }
 
-        public bool SetValue(int X, int Y, T value)
+        /// <summary>
+        /// Set the value for a given position
+        /// </summary>
+        /// <param name="x">The x position to set the value to</param>
+        /// <param name="y">The y position to set the value to</param>
+        /// <param name="value">The value to set</param>
+        /// <returns></returns>
+        public bool SetValue(int x, int y, T value)
         {
-            int targetPosition = Y * width + X;
+            int targetPosition = y * width + x;
             if (targetPosition > array.Length)
             {
                 return false;
