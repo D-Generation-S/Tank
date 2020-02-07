@@ -65,11 +65,12 @@ namespace Tank.Code.Systems.Renderer
             graphicsDevice.Clear(Color.CornflowerBlue);
             for (int renderIndex = 0; renderIndex < renderObjects.Count; renderIndex++)
             {
-                IRenderer obj = renderObjects[renderIndex].Renderer;
-                if (obj.IsReady)
+                IVisibleEntity entity = renderObjects[renderIndex];
+                IRenderer renderer = entity.Renderer;
+                if (renderer.IsReady)
                 {
-                    spriteBatch.Draw(obj.Texture, obj.Destination, obj.Source, Color.White, 0, new Vector2(0,0), SpriteEffects.None, 1f);
-                    obj.DrawStep(gameTime);
+                    spriteBatch.Draw(renderer.Texture, renderer.Destination, renderer.Source, Color.White, entity.Rotation, entity.RotationAxis, SpriteEffects.None, 1f);
+                    renderer.DrawStep(gameTime);
                 }
                 
             }
