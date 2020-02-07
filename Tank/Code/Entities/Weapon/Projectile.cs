@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.Code.BaseClasses;
+using Tank.Code.DataContainer;
 using Tank.Interfaces.Components;
 using Tank.Interfaces.Entity;
 using Tank.Interfaces.Implementations;
@@ -20,9 +21,10 @@ namespace Tank.Code.Entities.Weapon
             set => velocity = value;
         }
 
+        private Position lastPosition;
+
         public Projectile(IRenderer renderer) : base(renderer)
         {
-
         }
 
         public override void Initzialize(string uniqueName)
@@ -30,7 +32,15 @@ namespace Tank.Code.Entities.Weapon
             base.Initzialize(uniqueName);
             active = true;
             alive = true;
-            
+            lastPosition = new Position((int)Position.X, (int)Position.Y);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            rotation = (float)Math.Atan2(Position.Y - lastPosition.Y, Position.X - lastPosition.X);
+            lastPosition = new Position((int)Position.X, (int)Position.Y);
         }
     }
 }

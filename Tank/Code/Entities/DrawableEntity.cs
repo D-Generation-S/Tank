@@ -23,14 +23,14 @@ namespace Tank.Code.Entities
             set => position = value;
         }
 
-        private float rotation;
+        protected float rotation;
         public float Rotation
         {
             get => rotation;
             set => rotation = value;
         }
 
-        private Vector2 rotationAxis;
+        protected Vector2 rotationAxis;
         public Vector2 RotationAxis
         {
             get => rotationAxis;
@@ -47,6 +47,7 @@ namespace Tank.Code.Entities
         {
             base.Initzialize(uniqueName);
             Vector2 tempRotation = rotationAxis;
+            Renderer.Position = Position;
             if (renderer.IsReady)
             {
                 rotationAxis = new Vector2(renderer.TextureSize.X / 2, renderer.TextureSize.Y / 2);
@@ -55,6 +56,7 @@ namespace Tank.Code.Entities
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             renderer.Position = position;
         }
     }
