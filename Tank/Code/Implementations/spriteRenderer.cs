@@ -73,8 +73,6 @@ namespace Tank.Code.Implementations
             }
         }
 
-
-
         protected virtual void BuildSourceRectangle()
         {
             source = new Rectangle(0, 0, texture.Width, texture.Height);

@@ -24,8 +24,6 @@ namespace Tank.Code.Implementations
         protected Position sheetStartPoint;
         protected Position sheetEndPoint;
 
-
-
         public AnimatedSpriteSheetRenderer(Position singleImageSize, int additionalDistance, Position position)
             : this(singleImageSize, additionalDistance, position, 0.5f)
         {
