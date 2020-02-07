@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +17,31 @@ namespace Tank.Code.Implementations
         private float timeThreshold;
 
         protected Position sheetDimensions;
+        protected FlattenArray<bool> imageAvailable;
+
+        protected Rectangle allowedArea;
+
+        protected Position sheetStartPoint;
+        protected Position sheetEndPoint;
+
+
 
         public AnimatedSpriteSheetRenderer(Position singleImageSize, int additionalDistance, Position position)
-    : this(singleImageSize, additionalDistance, position, 0.5f)
+            : this(singleImageSize, additionalDistance, position, 0.5f)
         {
-
         }
 
         public AnimatedSpriteSheetRenderer(Position singleImageSize, int additionalDistance, Position position, float frameTime)
             : base(singleImageSize, additionalDistance, position)
         {
             animationSeconds = frameTime;
+        }
+
+        public AnimatedSpriteSheetRenderer(Position singleImageSize, int additionalDistance, Position position, float frameTime, Rectangle allowedArea)
+            : base(singleImageSize, additionalDistance, position)
+        {
+            animationSeconds = frameTime;
+            this.allowedArea = allowedArea;
         }
 
         public override void DrawStep(GameTime gameTime)
@@ -37,7 +52,16 @@ namespace Tank.Code.Implementations
             if (timeThreshold > animationSeconds)
             {
                 timeThreshold = timeThreshold - animationSeconds;
-                ChangeSprite();
+                int attemps = (sheetDimensions.X) * (sheetDimensions.Y);
+                for (int i = 0; i < attemps; i++)
+                {
+                    ChangeSprite();
+                    if (imageAvailable.GetValue(sheetPosition))
+                    {
+                        break;
+                    }
+                }
+                
                 BuildSourceRectangle();
             }
         }
@@ -45,27 +69,96 @@ namespace Tank.Code.Implementations
         protected virtual void ChangeSprite()
         {
             sheetPosition.X++;
-            if (sheetPosition.X > sheetDimensions.X)
+            if (sheetPosition.X > sheetEndPoint.X) 
             {
-                sheetPosition.X = 0;
+                sheetPosition.X = sheetStartPoint.X;
                 sheetPosition.Y++;
-                if (sheetPosition.Y > sheetDimensions.Y)
+                if (sheetPosition.Y > sheetEndPoint.Y)
                 {
-                    sheetPosition.Y = 0;
+                    sheetPosition.Y = sheetStartPoint.Y;
                 }
             }
         }
 
         protected override void BuildSourceRectangle()
         {
-            base.BuildSourceRectangle();
+            int positionX = singleImageSize.X * sheetPosition.X + additionalDistance * sheetPosition.X;
+            int positionY = singleImageSize.Y * sheetPosition.Y + additionalDistance * sheetPosition.Y;
+
+            source = new Rectangle(positionX, positionY, singleImageSize.X, singleImageSize.Y);
+
+
+        }
+
+        public override void SetTexture(Texture2D texture)
+        {
+            base.SetTexture(texture);
+
+            if (allowedArea.Width == 0 || allowedArea.Height == 0)
+            {
+                allowedArea = new Rectangle(0, 0, texture.Width, texture.Height);
+            }
 
             double xSize = singleImageSize.X + additionalDistance;
             double ySize = singleImageSize.Y + additionalDistance;
-            int dimensionX = (int)Math.Floor(texture.Width / xSize) - 1;
-            int dimensionY = (int)Math.Floor(texture.Height / ySize) - 1;
+            int dimensionX = (int)Math.Floor((allowedArea.Width - allowedArea.X) / xSize);
+            int dimensionY = (int)Math.Floor((allowedArea.Height - allowedArea.Y) / ySize);
 
             sheetDimensions = new Position(dimensionX, dimensionY);
+            sheetStartPoint = new Position(
+                allowedArea.X / (singleImageSize.X + additionalDistance),
+                allowedArea.Y / (singleImageSize.Y + additionalDistance)
+            );
+            sheetEndPoint = new Position(
+                ((allowedArea.Width - allowedArea.X) / (singleImageSize.X + additionalDistance)) - 1,
+                ((allowedArea.Height - allowedArea.Y) / (singleImageSize.Y + additionalDistance)) - 1
+            );
+
+            BuildImageData();
+
+        }
+
+        private void BuildImageData()
+        {
+            int startPointX = sheetStartPoint.X;
+            int startPointY = sheetStartPoint.Y;
+            int dimensionX = sheetDimensions.X;
+            dimensionX += startPointX;
+            int dimensionY = sheetDimensions.Y;
+            dimensionX += startPointY;
+            imageAvailable = new FlattenArray<bool>(dimensionX, dimensionY);
+            for (int y = startPointY; y < dimensionY; y++)
+            {
+                for (int x = startPointX; x < dimensionX; x++)
+                {
+                    bool dataPreset = ImageContainsData(
+                        x * singleImageSize.X + additionalDistance,
+                        y * singleImageSize.Y + additionalDistance
+                    );
+                    imageAvailable.SetValue(x, y, dataPreset);
+                }
+            }
+        }
+
+        private bool ImageContainsData(int xStart, int yStart)
+        {
+            Color[] data = new Color[texture.Width * texture.Height];
+            texture.GetData<Color>(data);
+
+            for (int y = yStart; y < yStart + singleImageSize.Y; y++)
+            {
+                for (int x = xStart; x < xStart + singleImageSize.X; x++)
+                {
+                    int target = y * texture.Width + x;
+                    Color color = data[target];
+                    if (color.R > 0 || color.G > 0 || color.B > 0)
+                    {
+                        return true;
+                    }
+
+                }
+            }
+            return false;
         }
     }
 }
