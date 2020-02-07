@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,30 +23,47 @@ namespace Tank.Code.Implementations
             forward = true;
         }
 
+        public AnimateSpriteSheetLoopRenderer(Position singleImageSize, int additionalDistance, Position position, float frameTime, Rectangle allowedArea)
+            : base(singleImageSize, additionalDistance, position)
+        {
+            forward = true;
+            this.allowedArea = allowedArea;
+        }
+
         protected override void ChangeSprite()
         {
             if (forward)
             {
                 base.ChangeSprite();
-                if (sheetPosition.X == 0 && sheetPosition.Y == 0)
+                if (sheetPosition.X == sheetStartPoint.X && sheetPosition.Y == sheetStartPoint.Y)
                 {
                     forward = false;
-                    sheetPosition.X = sheetDimensions.X;
-                    sheetDimensions.Y = sheetDimensions.Y;
+                    for (int x = sheetEndPoint.X; x >= 0; x--)
+                    {
+                        if (imageAvailable.GetValue(x, sheetEndPoint.Y))
+                        {
+                            sheetPosition.X = x;
+                        }
+                        
+                    }
+                    
+                    sheetPosition.Y = sheetEndPoint.Y;
                 }
-                return;
             }
 
-            sheetPosition.X--;
-            if (sheetPosition.X <= 0)
+            if (!forward)
             {
-                sheetPosition.X = sheetDimensions.X;
-                sheetPosition.Y--;
-                if (sheetPosition.Y <= 0)
+                sheetPosition.X--;
+                if (sheetPosition.X < sheetStartPoint.X)
                 {
-                    sheetPosition.Y = 0;
-                    sheetPosition.X = 0;
-                    forward = true;
+                    sheetPosition.X = sheetEndPoint.X;
+                    sheetPosition.Y--;
+                    if (sheetPosition.Y < sheetStartPoint.Y)
+                    {
+                        sheetPosition.Y = sheetEndPoint.X != 0 ? sheetStartPoint.Y : sheetStartPoint.Y + 1;
+                        sheetPosition.X = sheetEndPoint.Y == 0 ? sheetStartPoint.X : sheetStartPoint.X + 1;
+                        forward = true;
+                    }
                 }
             }
         }

@@ -12,18 +12,7 @@ namespace Tank.Code.Implementations
     class SpriteRenderer : IRenderer
     {
         protected Texture2D texture;
-        public Texture2D Texture {
-            get => texture;
-            set
-            {
-                if (!textureLocked)
-                {
-                    texture = value;
-                    BuildSourceRectangle();
-                    textureLocked = true;
-                }
-            }
-        }
+        public Texture2D Texture=> texture;
 
         public bool IsReady => texture != null;
 
@@ -68,6 +57,18 @@ namespace Tank.Code.Implementations
         {
             
         }
+
+        public virtual void SetTexture(Texture2D texture)
+        {
+            if (!textureLocked)
+            {
+                this.texture = texture;
+                BuildSourceRectangle();
+                textureLocked = true;
+            }
+        }
+
+
 
         protected virtual void BuildSourceRectangle()
         {
