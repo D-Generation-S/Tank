@@ -25,12 +25,11 @@ namespace Tank.Code.Builder
         {
             Position imageSize = new Position(32, 32);
             Position framePosition = new Position(0, 0);
-            IRenderer renderer = new AnimateSpriteSheetLoopRenderer(imageSize, 0, framePosition, 0.1f)
+            IRenderer renderer = new AnimateSpriteSheetLoopRenderer(imageSize, 0, framePosition, .05f)
             {
-                Texture = texture,
-                Position = new Vector2(10, 10),
-                Size = new Vector2(32, 32)
+                Position = new Vector2(10, 10)
             };
+            renderer.SetTexture(texture);
 
             return new Entities.Weapon.Projectile(renderer)
             {
