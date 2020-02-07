@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tank.Code.DataContainer;
 using Tank.Interfaces.Components;
 
 namespace Tank.Interfaces.Implementations
@@ -22,6 +23,8 @@ namespace Tank.Interfaces.Implementations
         bool IsReady { get; }
 
         Texture2D Texture { get;}
+
+        Position TextureSize { get; }
 
         void SetTexture(Texture2D texture);
 

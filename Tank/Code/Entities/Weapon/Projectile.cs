@@ -11,39 +11,26 @@ using Tank.Interfaces.Implementations;
 
 namespace Tank.Code.Entities.Weapon
 {
-    class Projectile : BaseEntity, IVisibleEntity, IPhysicEntity
+    class Projectile :DrawableEntity, IPhysicEntity
     {
-        private IRenderer renderer;
-        public IRenderer Renderer => renderer;
-
-        private Vector2 position;
-        public Vector2 Position {
-            get => position;
-            set => position = value; 
-        }
-
         private Vector2 velocity;
         public Vector2 Velocity
         {
             get => velocity;
             set => velocity = value;
         }
-        
-        public Projectile(IRenderer renderer)
+
+        public Projectile(IRenderer renderer) : base(renderer)
         {
-            this.renderer = renderer;
+
         }
 
         public override void Initzialize(string uniqueName)
         {
+            base.Initzialize(uniqueName);
             active = true;
             alive = true;
-            base.Initzialize(uniqueName);
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            renderer.Position = position;
+            
         }
     }
 }

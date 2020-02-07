@@ -17,28 +17,45 @@ namespace Tank.Code.Entities
         public IRenderer Renderer => renderer;
 
         private Vector2 position;
-        public Vector2 Position => position;
-
-        
-        public event EventHandler<EventArgs> EnabledChanged;
-        public event EventHandler<EventArgs> UpdateOrderChanged;
-
-        public DrawableEntity()
+        public Vector2 Position
         {
+            get => position;
+            set => position = value;
         }
 
-        public void Initialize()
+        private float rotation;
+        public float Rotation
         {
+            get => rotation;
+            set => rotation = value;
         }
 
-        public void Reset()
+        private Vector2 rotationAxis;
+        public Vector2 RotationAxis
         {
-            throw new NotImplementedException();
+            get => rotationAxis;
+            set => rotationAxis = value;
         }
 
-        public void Initzialize()
+        public DrawableEntity(IRenderer renderer)
         {
-            throw new NotImplementedException();
+            this.renderer = renderer;
+            rotationAxis = new Vector2(100, 100);
+        }
+
+        public override void Initzialize(string uniqueName)
+        {
+            base.Initzialize(uniqueName);
+            Vector2 tempRotation = rotationAxis;
+            if (renderer.IsReady)
+            {
+                rotationAxis = new Vector2(renderer.TextureSize.X / 2, renderer.TextureSize.Y / 2);
+            }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            renderer.Position = position;
         }
     }
 }

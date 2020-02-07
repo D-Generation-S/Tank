@@ -80,16 +80,6 @@ namespace Tank.Code.Implementations
             }
         }
 
-        protected override void BuildSourceRectangle()
-        {
-            int positionX = singleImageSize.X * sheetPosition.X + additionalDistance * sheetPosition.X;
-            int positionY = singleImageSize.Y * sheetPosition.Y + additionalDistance * sheetPosition.Y;
-
-            source = new Rectangle(positionX, positionY, singleImageSize.X, singleImageSize.Y);
-
-
-        }
-
         public override void SetTexture(Texture2D texture)
         {
             base.SetTexture(texture);
