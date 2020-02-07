@@ -21,7 +21,9 @@ namespace Tank.Interfaces.Implementations
 
         bool IsReady { get; }
 
-        Texture2D Texture { get; set;  }
+        Texture2D Texture { get;}
+
+        void SetTexture(Texture2D texture);
 
         void Reset();
 
