@@ -138,6 +138,8 @@
     <Compile Include="Interfaces\Implementations\ISystem.cs" />
     <Compile Include="Interfaces\MapGenerators\IMap.cs" />
     <Compile Include="Interfaces\MapGenerators\IMapGenerator.cs" />
+    <Compile Include="Interfaces\MapGenerators\IMapTexturizer.cs" />
+    <Compile Include="Interfaces\Random\IRandom.cs" />
     <Compile Include="Interfaces\System\IEntitySystem.cs" />
     <Compile Include="Interfaces\System\IPhysicEngine.cs" />
     <Compile Include="Interfaces\System\IRenderEngine.cs" />
