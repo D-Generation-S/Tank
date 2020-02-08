@@ -88,7 +88,10 @@ namespace Tank.Code.Systems.Renderer
                 IRenderer renderer = entity.Renderer;
                 if (renderer.IsReady)
                 {
-                    spriteBatch.Draw(renderer.Texture, renderer.Destination, renderer.Source, Color.White, entity.Rotation, entity.RotationAxis, SpriteEffects.None, 1f);
+                    Rectangle realDestination = renderer.Destination;
+                    realDestination.X += (int)entity.RotationAxis.X;
+                    realDestination.Y += (int)entity.RotationAxis.Y;
+                    spriteBatch.Draw(renderer.Texture, realDestination, renderer.Source, Color.White, entity.Rotation, entity.RotationAxis, SpriteEffects.None, 1f);
                     renderer.DrawStep(gameTime);
                 }
                 
