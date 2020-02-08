@@ -9,7 +9,7 @@ using Tank.Code.DataContainer;
 using Tank.Interfaces.MapGenerators;
 using Tank.Interfaces.Random;
 
-namespace Tank.Code.MapGenerators
+namespace Tank.Code.MapGenerators.Generatos
 {
     class MidpointDisplacementGenerator : IMapGenerator
     {
@@ -81,6 +81,12 @@ namespace Tank.Code.MapGenerators
             returnMap.ApplyChanges();
 
             FillMap(returnMap);
+
+            if (mapTexturizer != null)
+            {
+                //mapTexturizer.
+            }
+
             return returnMap;
         }
 
