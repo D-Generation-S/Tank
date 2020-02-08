@@ -87,7 +87,8 @@
     <Compile Include="Code\JSonClasses\jsonTankList.cs" />
     <Compile Include="Code\JSonClasses\ScreenDefinition.cs" />
     <Compile Include="Code\Entities\Projectile.cs" />
-    <Compile Include="Code\MapGenerators\DefaultMap.cs" />
+    <Compile Include="Code\Map\DefaultMap.cs" />
+    <Compile Include="Code\Map\Generators\MidpointDisplacementGenerator.cs" />
     <Compile Include="Code\MouseHandler.cs" />
     <Compile Include="Code\Physic\Fluids.cs" />
     <Compile Include="Code\Screenmanager\BasicBackgroundScreen.cs" />
