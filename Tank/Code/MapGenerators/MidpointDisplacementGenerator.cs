@@ -18,6 +18,9 @@ namespace Tank.Code.MapGenerators
         private readonly float roughness;
         private readonly IRandom randomizer;
 
+        private Color mapColor;
+        public Color MapColor => mapColor;
+
         public MidpointDisplacementGenerator(GraphicsDevice graphicsDevice)
             : this(graphicsDevice, 4)
         {
@@ -31,10 +34,8 @@ namespace Tank.Code.MapGenerators
         }
 
         public MidpointDisplacementGenerator(GraphicsDevice graphicsDevice, float displace, float roughness)
+            : this(graphicsDevice, displace, 0.4f, null)
         {
-            this.graphicsDevice = graphicsDevice;
-            this.displace = displace;
-            this.roughness = roughness;
         }
 
         public MidpointDisplacementGenerator(GraphicsDevice graphicsDevice, float displace, float roughness, IRandom randomizer)
@@ -43,6 +44,13 @@ namespace Tank.Code.MapGenerators
             this.displace = displace;
             this.roughness = roughness;
             this.randomizer = randomizer;
+
+            mapColor = Color.Black;
+        }
+
+        public void SetMapColor(Color newMapColor)
+        {
+            mapColor = newMapColor;
         }
 
         public IMap GenerateNewMap(Position size)
@@ -52,10 +60,10 @@ namespace Tank.Code.MapGenerators
 
         public IMap GenerateNewMap(Position size, IMapTexturizer mapTexturizer)
         {
-            return GenerateNewMap(size, int.MinValue, mapTexturizer);
+            return GenerateNewMap(size, mapTexturizer, int.MinValue);
         }
 
-        public IMap GenerateNewMap(Position size, int seed, IMapTexturizer mapTexturizer)
+        public IMap GenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed)
         {
             seed = seed == int.MinValue ? DateTime.Now.Millisecond : seed;
 
@@ -68,22 +76,49 @@ namespace Tank.Code.MapGenerators
 
             for (int x = 0; x < points.Length - 1; x++)
             {
-                returnMap.AddPixel(x, (int)Math.Round(points[x], 0), Color.Black, true);
+                returnMap.ChangePixel(x, (int)Math.Round(points[x], 0), mapColor, true);
             }
+            returnMap.ApplyChanges();
 
+            FillMap(returnMap);
             return returnMap;
+        }
+
+        public void FillMap(IMap map)
+        {
+            for (int x = 0; x < map.Width; x++)
+            {
+                bool writeMode = false;
+                for (int y = 0; y < map.Height; y++)
+                {
+                    Color pixel = map.GetPixel(x, y);
+                    if (pixel == mapColor)
+                    {
+                        writeMode = true;
+                    }
+
+                    if (writeMode)
+                    {
+                        map.ChangePixel(x, y, mapColor);
+                    }
+                }
+            }
+            map.ApplyChanges();
         }
 
         private float[] GeneratePoints(Position size, Random internalRandomizer)
         {
             float tempDisplace = displace;
-            float power = size.X;
+            float power = size.X - 1;
 
-            float[] points = new float[(int)power + 1];
+            float[] points = new float[size.X];
             points[0] = size.Y / 2 + (GetRandomNumber(internalRandomizer, 0, 1) * displace * 2) - displace;
             points[(int)power] = (float)(size.Y / 2 + (GetRandomNumber(internalRandomizer, 0, 1) * displace * 2) - displace);
 
-            for (int i = 1; i < power - 2; i *= 2)
+            points[0] = MathHelper.Clamp(points[0], size.Y / 3, size.Y * 2);
+            points[(int)power] = MathHelper.Clamp(points[(int)power], size.Y / 3, size.Y * 2);
+
+            for (int i = 1; i < power - 1; i *= 2)
             {
                 tempDisplace *= roughness;
                 float innerPower = power / i;
@@ -109,9 +144,25 @@ namespace Tank.Code.MapGenerators
             return (float)internalRandomizer.NextDouble() * (maximum - minimum) + minimum;
         }
 
-        public async Task<IMap> AsyncGenerateNewMap(Position size, int seed, IMapTexturizer mapTexturizer)
+        public async Task<IMap> AsyncGenerateNewMap(Position size)
         {
-            throw new NotImplementedException();
+            IMap returnMap = await Task.Run(() => GenerateNewMap(size, null, int.MinValue));
+
+            return returnMap;
+        }
+
+        public async Task<IMap> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer)
+        {
+            IMap returnMap = await Task.Run(() => GenerateNewMap(size, mapTexturizer, int.MinValue));
+
+            return returnMap;
+        }
+
+        public async Task<IMap> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed)
+        {
+            IMap returnMap = await Task.Run(() => GenerateNewMap(size, mapTexturizer, seed));
+
+            return returnMap;
         }
     }
 }
