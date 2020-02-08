@@ -84,7 +84,7 @@ namespace Tank.Code.MapGenerators.Generatos
 
             if (mapTexturizer != null)
             {
-                //mapTexturizer.
+                mapTexturizer.TexturizeMap(returnMap, mapColor);
             }
 
             return returnMap;
