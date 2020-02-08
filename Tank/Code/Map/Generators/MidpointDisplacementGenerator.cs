@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.Code.DataContainer;
+using Tank.Code.Entities.Map;
 using Tank.Interfaces.MapGenerators;
 using Tank.Interfaces.Random;
 

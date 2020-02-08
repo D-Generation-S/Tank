@@ -48,10 +48,14 @@
   <ItemGroup>
     <Compile Include="Code\ActiveHandler.cs" />
     <Compile Include="Code\Animation.cs" />
-    <Compile Include="Code\BaseClasses\BaseEntity.cs" />
+    <Compile Include="Code\BaseClasses\Entites\BaseEntity.cs" />
+    <Compile Include="Code\BaseClasses\Systems\BaseSystem.cs" />
     <Compile Include="Code\Builder\StaticProjectileBuilder.cs" />
     <Compile Include="Code\Controls.cs" />
+    <Compile Include="Code\DataContainer\Messages\GetEntity.cs" />
+    <Compile Include="Code\DataContainer\Messages\DefaultSystemMessage.cs" />
     <Compile Include="Code\DataContainer\FlattenArray.cs" />
+    <Compile Include="Code\DataContainer\Messages\RemoveEntity.cs" />
     <Compile Include="Code\DataContainer\SpriteSheet.cs" />
     <Compile Include="Code\Entities\DebugEntity.cs" />
     <Compile Include="Code\Entities\DrawableEntity.cs" />
@@ -88,7 +92,7 @@
     <Compile Include="Code\JSonClasses\jsonTankList.cs" />
     <Compile Include="Code\JSonClasses\ScreenDefinition.cs" />
     <Compile Include="Code\Entities\Projectile.cs" />
-    <Compile Include="Code\Map\DefaultMap.cs" />
+    <Compile Include="Code\Entities\Map\DefaultMap.cs" />
     <Compile Include="Code\Map\Generators\MidpointDisplacementGenerator.cs" />
     <Compile Include="Code\MouseHandler.cs" />
     <Compile Include="Code\Physic\Fluids.cs" />
@@ -114,6 +118,7 @@
     <Compile Include="Code\SubClasses\DebugLogEntry.cs" />
     <Compile Include="Code\DataContainer\Position.cs" />
     <Compile Include="Code\Systems\GameManager\DefaultEntitySystem.cs" />
+    <Compile Include="Code\Systems\Map\DefaultMapSystem.cs" />
     <Compile Include="Code\Systems\Physic\DefaultPhysicEngine.cs" />
     <Compile Include="Code\Systems\Renderer\DefaultRenderEngine.cs" />
     <Compile Include="Code\TerrainClasses\Cloud.cs" />
@@ -128,10 +133,13 @@
     <Compile Include="Code\TerrainClasses\Terrain.cs" />
     <Compile Include="Code\TerrainClasses\Weather.cs" />
     <Compile Include="Code\Enums\DebugLog.cs" />
-    <Compile Include="Code\Map\Textureizer\DefaultTextureizer.cs" />
+    <Compile Include="Code\Map\Textureizer\SimpleTexturizer.cs" />
     <Compile Include="Interfaces\Builder\IBuilder.cs" />
+    <Compile Include="Interfaces\Components\ICollideable.cs" />
     <Compile Include="Interfaces\Components\IMoveable.cs" />
     <Compile Include="Interfaces\Components\IPlaceable.cs" />
+    <Compile Include="Interfaces\Container\ISystemMessage.cs" />
+    <Compile Include="Interfaces\Entity\ICollideableEntity.cs" />
     <Compile Include="Interfaces\Implementations\IDrawableEntity.cs" />
     <Compile Include="Interfaces\Implementations\IInitializableEntity.cs" />
     <Compile Include="Interfaces\Entity\IEntity.cs" />
@@ -144,7 +152,7 @@
     <Compile Include="Interfaces\MapGenerators\IMapTexturizer.cs" />
     <Compile Include="Interfaces\Random\IRandom.cs" />
     <Compile Include="Interfaces\System\IEntitySystem.cs" />
-    <Compile Include="Interfaces\System\IPhysicEngine.cs" />
+    <Compile Include="Interfaces\System\IMapSystem.cs" />
     <Compile Include="Interfaces\System\IRenderEngine.cs" />
     <Compile Include="Interfaces\Container\IRenderer.cs" />
     <Compile Include="TankGame.cs" />

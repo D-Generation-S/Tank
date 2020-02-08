@@ -12,7 +12,7 @@ using Tank.Interfaces.Implementations;
 
 namespace Tank.Code.Entities.Weapon
 {
-    class Projectile :DrawableEntity, IPhysicEntity
+    class Projectile : DrawableEntity, IPhysicEntity
     {
         private Vector2 velocity;
         public Vector2 Velocity
@@ -21,17 +21,23 @@ namespace Tank.Code.Entities.Weapon
             set => velocity = value;
         }
 
+        private bool onGround;
+        public bool OnGround
+        {
+            get => onGround;
+            set => onGround = value;
+        }
+
         private Position lastPosition;
 
         public Projectile(IRenderer renderer) : base(renderer)
         {
+            onGround = true;
         }
 
         public override void Initzialize(string uniqueName)
         {
             base.Initzialize(uniqueName);
-            active = true;
-            alive = true;
             lastPosition = new Position((int)Position.X, (int)Position.Y);
         }
 
