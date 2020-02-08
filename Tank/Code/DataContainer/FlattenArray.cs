@@ -36,6 +36,20 @@ namespace Tank.Code.DataContainer
         }
 
         /// <summary>
+        /// Converts an array to a flatten one
+        /// </summary>
+        /// <param name="array"></param>
+        public FlattenArray(T[] array, int singleRowWidth)
+        {
+            this.array = new T[array.Length];
+            width = singleRowWidth;
+            for (int x = 0; x < array.Length; x++)
+            {
+                this.array[x] = array[x];
+            }
+        }
+
+        /// <summary>
         /// Converts a 2D array to a flatten one
         /// </summary>
         /// <param name="array"></param>
