@@ -58,10 +58,11 @@ namespace Tank.Code.Textureizer
                     if (map.GetPixel(x, y) == generatorFillColor)
                     {
                         map.ChangePixel(x, y, colors.GetValue(spriteXPosition, spriteYPosition));
+                        spriteYPosition++;
                     }
-                    spriteYPosition++;
                 }
                 spriteXPosition++;
+                spriteYPosition = 0;
             }
 
             map.ApplyChanges();
