@@ -21,7 +21,16 @@ namespace Tank.Code.MapGenerators
         private FlattenArray<bool> collissionMap;
         public FlattenArray<bool> CollissionMap => collissionMap;
 
+        private readonly int seed;
+        public int Seed => seed;
+
         public DefaultMap(Texture2D image, FlattenArray<bool> collissionMap)
+            : this(image, collissionMap, 0)
+        {
+
+        }
+
+        public DefaultMap(Texture2D image, FlattenArray<bool> collissionMap, int seed)
         {
             this.image = image;
             Color[] tempData = new Color[image.Width * image.Height];
@@ -30,6 +39,7 @@ namespace Tank.Code.MapGenerators
             imageData = new FlattenArray<Color>(tempData, image.Width);
 
             this.collissionMap = collissionMap;
+            this.seed = seed;
         }
 
         public void AddPixel(Position position, Color color)
