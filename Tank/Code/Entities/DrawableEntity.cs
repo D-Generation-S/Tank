@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.Code.BaseClasses;
+using Tank.Code.BaseClasses.Entites;
 using Tank.Interfaces.Components;
 using Tank.Interfaces.Entity;
 using Tank.Interfaces.Implementations;
@@ -45,6 +45,8 @@ namespace Tank.Code.Entities
 
         public override void Initzialize(string uniqueName)
         {
+            alive = true;
+            active = true;
             base.Initzialize(uniqueName);
             Vector2 tempRotation = rotationAxis;
             Renderer.Position = Position;

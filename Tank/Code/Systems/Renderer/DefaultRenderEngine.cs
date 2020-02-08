@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.Code.BaseClasses;
+using Tank.Code.BaseClasses.Entites;
+using Tank.Code.BaseClasses.Systems;
+using Tank.Code.Screenmanager.ViewPortAdapters;
 using Tank.Interfaces.Components;
 using Tank.Interfaces.Entity;
 using Tank.Interfaces.Implementations;
@@ -13,11 +15,12 @@ using Tank.Interfaces.System;
 
 namespace Tank.Code.Systems.Renderer
 {
-    class DefaultRenderEngine : BaseEntity, IRenderEngine
+    class DefaultRenderEngine : BaseSystem, IRenderEngine
     {
         private readonly List<IVisibleEntity> renderObjects;
         private readonly SpriteBatch spriteBatch;
         private readonly GraphicsDevice graphicsDevice;
+        private readonly BoxingViewportAdapter adapter;
 
         public event EventHandler<EventArgs> DrawOrderChanged;
         public event EventHandler<EventArgs> VisibleChanged;
@@ -26,6 +29,15 @@ namespace Tank.Code.Systems.Renderer
         {
             this.spriteBatch = spriteBatch;
             this.graphicsDevice = graphicsDevice;
+            renderObjects = new List<IVisibleEntity>();
+            adapter = null;
+        }
+
+        public DefaultRenderEngine(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, BoxingViewportAdapter adapter)
+        {
+            this.spriteBatch = spriteBatch;
+            this.graphicsDevice = graphicsDevice;
+            this.adapter = adapter;
             renderObjects = new List<IVisibleEntity>();
         }
 
@@ -36,7 +48,7 @@ namespace Tank.Code.Systems.Renderer
             base.Initzialize(uniqueName);
         }
 
-        public string AddEntity(IEntity entity)
+        public override string AddEntity(IEntity entity)
         {
             if (entity.UniqueName == String.Empty)
             {
@@ -52,7 +64,7 @@ namespace Tank.Code.Systems.Renderer
             return String.Empty;
         }
 
-        public bool RemoveEntity(string entityName)
+        public override bool RemoveEntity(string entityName)
         {
             int counter = renderObjects.RemoveAll(entity => entity.UniqueName == entityName);
 
@@ -61,7 +73,14 @@ namespace Tank.Code.Systems.Renderer
 
         public void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin(SpriteSortMode.BackToFront);
+            if (adapter == null)
+            {
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, null);
+            } else
+            {
+                spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, adapter.GetScaleMatrix());
+            }
+            
             graphicsDevice.Clear(Color.CornflowerBlue);
             for (int renderIndex = 0; renderIndex < renderObjects.Count; renderIndex++)
             {

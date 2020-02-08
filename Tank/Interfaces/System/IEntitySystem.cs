@@ -11,10 +11,9 @@ namespace Tank.Interfaces.System
 {
     interface IEntitySystem : IDrawableEntity, ISystem
     {
-        //IList<ISystem> Systems { get; }
-
+        /// <summary>
+        /// All the entites on the screen
+        /// </summary>
         IList<IEntity> Entities { get; }
-
-        //IList<IDrawableEntity> DrawableEntities { get; }
     }
 }

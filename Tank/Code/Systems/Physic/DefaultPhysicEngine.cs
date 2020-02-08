@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Tank.Code.BaseClasses;
+using Tank.Code.BaseClasses.Systems;
 using Tank.Interfaces.Entity;
 using Tank.Interfaces.Implementations;
+using Tank.Interfaces.System;
 
 namespace Tank.Code.Systems.Physic
 {
-    class DefaultPhysicEngine : BaseEntity, ISystem
+    class DefaultPhysicEngine : BaseSystem
     {
         private readonly List<IPhysicEntity> objects;
 
@@ -38,10 +39,11 @@ namespace Tank.Code.Systems.Physic
         public override void Initzialize(string uniqueName)
         {
             active = true;
+            alive = true;
             base.Initzialize(uniqueName);
         }
 
-        public string AddEntity(IEntity entity)
+        public override string AddEntity(IEntity entity)
         {
             if (entity.UniqueName == String.Empty)
             {
@@ -56,7 +58,7 @@ namespace Tank.Code.Systems.Physic
             return entity.UniqueName;
         }
 
-        public bool RemoveEntity(string entityName)
+        public override bool RemoveEntity(string entityName)
         {
             int counter = objects.RemoveAll(entity => entity.UniqueName == entityName);
 
@@ -79,6 +81,10 @@ namespace Tank.Code.Systems.Physic
                 for (int objectIndex = 0; objectIndex < objects.Count; objectIndex++)
                 {
                     IPhysicEntity obj = objects[objectIndex];
+                    if (obj.OnGround)
+                    {
+                        continue;
+                    }
                     Vector2 objVelocity = obj.Velocity;
 
                     objVelocity.Y += 980 * fixedDeltaTimeSeconds;

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tank.Interfaces.Entity;
 
-namespace Tank.Code.BaseClasses
+namespace Tank.Code.BaseClasses.Entites
 {
     class BaseEntity : IEntity
     {
