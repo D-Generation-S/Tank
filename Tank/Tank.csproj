@@ -52,6 +52,7 @@
     <Compile Include="Code\Builder\StaticProjectileBuilder.cs" />
     <Compile Include="Code\Controls.cs" />
     <Compile Include="Code\DataContainer\FlattenArray.cs" />
+    <Compile Include="Code\DataContainer\SpriteSheet.cs" />
     <Compile Include="Code\Entities\DebugEntity.cs" />
     <Compile Include="Code\Entities\DrawableEntity.cs" />
     <Compile Include="Code\Entities\Player\BasePlayer.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Code\TerrainClasses\Terrain.cs" />
     <Compile Include="Code\TerrainClasses\Weather.cs" />
     <Compile Include="Code\Enums\DebugLog.cs" />
+    <Compile Include="Code\Map\Textureizer\DefaultTextureizer.cs" />
     <Compile Include="Interfaces\Builder\IBuilder.cs" />
     <Compile Include="Interfaces\Components\IMoveable.cs" />
     <Compile Include="Interfaces\Components\IPlaceable.cs" />
