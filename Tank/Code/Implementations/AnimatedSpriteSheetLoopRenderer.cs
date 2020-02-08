@@ -8,22 +8,22 @@ using Tank.Code.DataContainer;
 
 namespace Tank.Code.Implementations
 {
-    class AnimateSpriteSheetLoopRenderer : AnimatedSpriteSheetRenderer
+    class AnimatedSpriteSheetLoopRenderer : AnimatedSpriteSheetRenderer
     {
         private bool forward;
 
-        public AnimateSpriteSheetLoopRenderer(Position singleImageSize, int additionalDistance, Position position)
+        public AnimatedSpriteSheetLoopRenderer(Position singleImageSize, int additionalDistance, Position position)
             : this(singleImageSize, additionalDistance, position, 0.5f)
         {
         }
 
-        public AnimateSpriteSheetLoopRenderer(Position singleImageSize, int additionalDistance, Position position, float frameTime)
+        public AnimatedSpriteSheetLoopRenderer(Position singleImageSize, int additionalDistance, Position position, float frameTime)
             : base(singleImageSize, additionalDistance, position, frameTime)
         {
             forward = true;
         }
 
-        public AnimateSpriteSheetLoopRenderer(Position singleImageSize, int additionalDistance, Position position, float frameTime, Rectangle allowedArea)
+        public AnimatedSpriteSheetLoopRenderer(Position singleImageSize, int additionalDistance, Position position, float frameTime, Rectangle allowedArea)
             : base(singleImageSize, additionalDistance, position)
         {
             forward = true;
