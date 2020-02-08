@@ -13,6 +13,11 @@ namespace Tank.Interfaces.MapGenerators
     interface IMap : IEntity
     {
         /// <summary>
+        /// The seed used to generate the map
+        /// </summary>
+        int Seed { get; }
+
+        /// <summary>
         /// The image to draw the map on the screen
         /// </summary>
         Texture2D Image { get; }
