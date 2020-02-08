@@ -92,6 +92,39 @@ namespace Tank.Code.Systems.Map
            {
                 return;
            }
+
+            int entityCount = entites.Count;
+            for (int i = 0; i < entityCount; i++)
+            {
+                if (!entites[i].MapCollision)
+                {
+                    continue;
+                }
+                Rectangle collider = entites[i].Collider;
+
+                Position positionToCheck = new Position(collider.X + collider.Width, collider.Y + collider.Height);
+                if (currentMap.CollissionMap.GetValue(positionToCheck.X, positionToCheck.Y))
+                {
+                    if (entites[i] is IPhysicEntity)
+                    {
+                        ((IPhysicEntity)entites[i]).OnGround = true;
+                        for (int y = 0; y < collider.Height; y++)
+                        {
+                            if (!currentMap.CollissionMap.GetValue(positionToCheck.X, positionToCheck.Y - y))
+                            {
+                                int newYPosition = positionToCheck.Y - y;
+                                newYPosition -= entites[i].Collider.Height;
+                                entites[i].Position = new Vector2(entites[i].Position.X, newYPosition);
+                                break;
+                            }
+                        }
+                    }
+
+
+                    
+                }
+
+            }
         }
 
         public override void RecieveMessage(ISystemMessage message)
