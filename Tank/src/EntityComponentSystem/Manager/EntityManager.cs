@@ -75,14 +75,23 @@ namespace Tank.src.EntityComponentSystem.Manager
 
         public bool AddComponent(uint entityId, IComponent component)
         {
+            return AddComponent(entityId, component, true);
+        }
+
+        public bool AddComponent(uint entityId, IComponent component, bool informSystems)
+        {
             if (!component.AllowMultiple && HasComponent(entityId, component))
             {
-                 return false;
+                return false;
             }
 
             component.SetEntityId(entityId);
             components.Add(component);
-            eventManager.FireEvent<NewComponentEvent>(this, new NewComponentEvent(entityId));
+            if (informSystems)
+            {
+                eventManager.FireEvent<NewComponentEvent>(this, new NewComponentEvent(entityId));
+            }
+            
             return true;
         }
 
@@ -174,8 +183,6 @@ namespace Tank.src.EntityComponentSystem.Manager
             removedEntities.Enqueue(entityId);
         }
 
-
-
         public void EventNotification(object sender, EventArgs eventArgs)
         {
             if (eventArgs is AddEntityEvent)
@@ -184,9 +191,11 @@ namespace Tank.src.EntityComponentSystem.Manager
                 AddEntityEvent addEntityEvent = (AddEntityEvent)eventArgs;
                 foreach (IComponent gameComponent in addEntityEvent.Components)
                 {
-                    AddComponent(entityId, gameComponent);
+                    AddComponent(entityId, gameComponent, false);
                 }
-                
+
+                eventManager.FireEvent<NewComponentEvent>(this, new NewComponentEvent(entityId));
+
                 return;
             }
 
