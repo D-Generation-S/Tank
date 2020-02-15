@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tank.src.Events.EntityBased
 {
-    class AddEntityEvent
+    class AddEntityEvent : EventArgs
     {
         private readonly List<IGameComponent> components;
         public List<IGameComponent> Components => components;
