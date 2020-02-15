@@ -112,6 +112,10 @@ namespace Tank.src.Systems
         {
             if (EntityIsRelevant(entityId))
             {
+                if (entitiesToRemove.Contains(entityId))
+                {
+                    entitiesToRemove.Remove(entityId);
+                }
                 if (watchedEntities.Contains(entityId))
                 {
                     return;
