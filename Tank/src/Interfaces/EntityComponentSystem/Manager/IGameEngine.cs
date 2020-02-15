@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tank.src.Wrapper;
 
 namespace Tank.src.Interfaces.EntityComponentSystem.Manager
 {
@@ -12,6 +13,8 @@ namespace Tank.src.Interfaces.EntityComponentSystem.Manager
         IEventManager EventManager { get; }
 
         IEntityManager EntityManager { get; }
+
+        ContentWrapper ContentManager { get;  }
 
         /// <summary>
         /// This method allows you to add a new system

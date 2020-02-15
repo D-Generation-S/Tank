@@ -20,7 +20,7 @@ namespace Tank.src.EntityComponentSystem.Manager
         /// <summary>
         /// All the components which are currently available
         /// </summary>
-        private readonly List<IGameComponent> components;
+        private readonly List<IComponent> components;
 
         /// <summary>
         /// All the ids which already got used
@@ -34,7 +34,7 @@ namespace Tank.src.EntityComponentSystem.Manager
         public EntityManager()
         {
             entities = new List<uint>();
-            components = new List<IGameComponent>();
+            components = new List<IComponent>();
             removedEntities = new Queue<uint>();
             
             nextId = uint.MinValue;
@@ -46,6 +46,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             this.eventManager = eventManager;
             eventManager.SubscribeEvent(this, typeof(RemoveEntityEvent));
             eventManager.SubscribeEvent(this, typeof(RemoveComponentEvent));
+            eventManager.SubscribeEvent(this, typeof(AddEntityEvent));
         }
 
         public uint CreateEntity()
@@ -72,7 +73,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             return entities.Contains(entityId);
         }
 
-        public bool AddComponent(uint entityId, IGameComponent component)
+        public bool AddComponent(uint entityId, IComponent component)
         {
             if (!component.AllowMultiple && HasComponent(entityId, component))
             {
@@ -85,9 +86,9 @@ namespace Tank.src.EntityComponentSystem.Manager
             return true;
         }
 
-        public T GetComponent<T>(uint entityId) where T : IGameComponent
+        public T GetComponent<T>(uint entityId) where T : IComponent
         {
-            IGameComponent returnComponent = GetComponents(entityId, typeof(T)).FirstOrDefault();
+            IComponent returnComponent = GetComponents(entityId, typeof(T)).FirstOrDefault();
             if (returnComponent == null)
             {
                 return default(T);
@@ -95,17 +96,17 @@ namespace Tank.src.EntityComponentSystem.Manager
             return (T)returnComponent;
         }
 
-        public IGameComponent GetComponent(uint entityId, Type componentType)
+        public IComponent GetComponent(uint entityId, Type componentType)
         {
             return GetComponents(entityId, componentType).FirstOrDefault();
         }
 
-        public IGameComponent GetComponent(uint entityId, IGameComponent component)
+        public IComponent GetComponent(uint entityId, IComponent component)
         {
             return GetComponent(entityId, component.GetType());
         }
 
-        public List<IGameComponent> GetComponents(uint entityId)
+        public List<IComponent> GetComponents(uint entityId)
         {
             return components.FindAll((component) =>
             {
@@ -113,7 +114,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             });
         }
 
-        public List<IGameComponent> GetComponents(uint entityId, Type componentType)
+        public List<IComponent> GetComponents(uint entityId, Type componentType)
         {
             return components.FindAll((componentToCheck) =>
             {
@@ -123,7 +124,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             });
         }
 
-        public List<IGameComponent> GetComponents(uint entityId, IGameComponent component)
+        public List<IComponent> GetComponents(uint entityId, IComponent component)
         {
             return GetComponents(entityId, component.GetType());
         }
@@ -133,28 +134,28 @@ namespace Tank.src.EntityComponentSystem.Manager
             return GetComponent(entityId, component) != null;
         }
 
-        public bool HasComponent(uint entityId, IGameComponent component)
+        public bool HasComponent(uint entityId, IComponent component)
         {
             return HasComponent(entityId, component.GetType());
         }
 
         public void RemoveComponents(uint entityId, Type componentType)
         {
-            foreach (IGameComponent removeComponent in GetComponents(entityId, componentType))
+            foreach (IComponent removeComponent in GetComponents(entityId, componentType))
             {
                 components.Remove(removeComponent);
             }
             eventManager.FireEvent<ComponentRemovedEvent>(this, new ComponentRemovedEvent(entityId));
         }
 
-        public void RemoveComponents(uint entityId, IGameComponent component)
+        public void RemoveComponents(uint entityId, IComponent component)
         {
             RemoveComponents(entityId, component.GetType());
         }
 
         public void RemoveComponents(uint entityId)
         {
-            foreach (IGameComponent removeComponent in GetComponents(entityId))
+            foreach (IComponent removeComponent in GetComponents(entityId))
             {
                 components.Remove(removeComponent);
             }
@@ -177,9 +178,9 @@ namespace Tank.src.EntityComponentSystem.Manager
             {
                 uint entityId = CreateEntity();
                 AddEntityEvent addEntityEvent = (AddEntityEvent)eventArgs;
-                foreach (IGameComponent gameComponent in addEntityEvent.Components)
+                foreach (IComponent gameComponent in addEntityEvent.Components)
                 {
-                    RemoveComponents(entityId, gameComponent);
+                    AddComponent(entityId, gameComponent);
                 }
                 
                 return;
