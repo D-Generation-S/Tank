@@ -5,13 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.Code.BaseClasses.Entites;
 using Tank.Code.DataContainer;
 using Tank.Interfaces.MapGenerators;
 
 namespace Tank.Code.Entities.Map
 {
-    class DefaultMap : BaseEntity, IMap
+    class DefaultMap : IMap
     {
         private Texture2D image;
         public Texture2D Image { get => image; }
@@ -47,13 +46,6 @@ namespace Tank.Code.Entities.Map
 
             this.collissionMap = collissionMap;
             this.seed = seed;
-        }
-
-        public override void Initzialize(string uniqueName)
-        {
-            alive = true;
-            active = true;
-            base.Initzialize(uniqueName);
         }
 
         public void SetPixel(Position position, Color color)

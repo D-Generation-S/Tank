@@ -6,11 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.Code.DataContainer;
-using Tank.Interfaces.Entity;
 
 namespace Tank.Interfaces.MapGenerators
 {
-    interface IMap : IEntity
+    interface IMap
     {
         /// <summary>
         /// The seed used to generate the map
