@@ -7,17 +7,12 @@ using System.Threading.Tasks;
 
 namespace Tank.src.Events.EntityBased
 {
-    class AddEntityEvent : EntityBasedEvent
+    class AddEntityEvent
     {
         private readonly List<IGameComponent> components;
         public List<IGameComponent> Components => components;
 
-        public AddEntityEvent(uint entityId) : base(entityId)
-        {
-        }
-
-
-        public AddEntityEvent(uint entityId, List<IGameComponent> components) : base(entityId)
+        public AddEntityEvent(List<IGameComponent> components)
         {
             this.components = components;
         }

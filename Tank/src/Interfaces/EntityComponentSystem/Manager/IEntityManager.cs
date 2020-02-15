@@ -16,6 +16,8 @@ namespace Tank.src.Interfaces.EntityComponentSystem.Manager
         /// <returns></returns>
         uint CreateEntity();
 
+        bool EntityExists(uint entityId);
+
         void RemoveEntity(uint entityId);
 
         List<IGameComponent> GetComponents(uint entityId);
