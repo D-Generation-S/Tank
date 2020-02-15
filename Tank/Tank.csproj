@@ -147,6 +147,7 @@
     <Compile Include="src\Events\ComponentBased\RemoveComponentEvent.cs" />
     <Compile Include="src\Events\EntityBased\RemoveEntityEvent.cs" />
     <Compile Include="src\Events\PhysicBased\MapCollisionEvent.cs" />
+    <Compile Include="src\Events\TerrainEvents\DamageTerrainEvent.cs" />
     <Compile Include="src\Factories\RandomExplosionFactory.cs" />
     <Compile Include="src\Interfaces\Builders\IGameObjectBuilder.cs" />
     <Compile Include="src\Interfaces\EntityComponentSystem\IComponent.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="src\Components\ColliderComponent.cs" />
     <Compile Include="src\Systems\DamageSystem.cs" />
     <Compile Include="src\Systems\MapColliderSystem.cs" />
+    <Compile Include="src\Systems\MapDestructionSystem.cs" />
     <Compile Include="src\Systems\PhysicSystem.cs" />
     <Compile Include="src\Systems\RenderSystem.cs" />
     <Compile Include="src\Validator\AnimationEntityRelevant.cs" />
@@ -287,7 +289,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enums\" />
-    <Folder Include="src\Events\TerrainEvents\" />
+    <Folder Include="src\Components\Tags\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -15,6 +15,20 @@ namespace Tank.src.Components
         private readonly Circle damageArea;
         public Circle DamageArea => damageArea;
 
+        private bool explosive;
+        public bool Explosive
+        {
+            get => explosive;
+            set => explosive = value;
+        }
+
+        private bool damagingDone;
+        public bool DamagingDone
+        {
+            get => damagingDone;
+            set => damagingDone = value;
+        }
+
         private readonly int centerDamageValue;
         private int CenterDamageValue => centerDamageValue;
 

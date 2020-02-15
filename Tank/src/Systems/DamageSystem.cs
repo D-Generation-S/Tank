@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.src.Components;
+using Tank.src.DataStructure;
 using Tank.src.Events.EntityBased;
 using Tank.src.Events.PhysicBased;
+using Tank.src.Events.TerrainEvents;
 using Tank.src.Interfaces.EntityComponentSystem;
 using Tank.src.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.Interfaces.Factories;
@@ -37,18 +39,47 @@ namespace Tank.src.Systems
             if (eventArgs is MapCollisionEvent)
             {
                 MapCollisionEvent collisionEvent = (MapCollisionEvent)eventArgs;
-                List<IComponent> components = exlosionFactory.GetGameObjects();
-                foreach (IComponent component in components)
+                DamageComponent damageComponent = entityManager.GetComponent<DamageComponent>(collisionEvent.EntityId);
+                
+                if (damageComponent == null)
                 {
-                    if (component is PlaceableComponent)
-                    {
-                        Vector2 explosionPosition = new Vector2(collisionEvent.CollisionPosition.X, collisionEvent.CollisionPosition.Y);
-                        ((PlaceableComponent)component).Position = explosionPosition - ((PlaceableComponent)component).Position;
-                    }
+                    return;
                 }
-                FireEvent<AddEntityEvent>(new AddEntityEvent(components));
                 FireEvent<RemoveEntityEvent>(new RemoveEntityEvent(collisionEvent.EntityId));
+                Explosion(collisionEvent, damageComponent);
+                DamageTerrain(damageComponent, collisionEvent);
             }
+        }
+
+        private void DamageTerrain(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
+        {
+            if (!damageComponent.DamangeTerrain)
+            {
+                return;
+            }
+            Circle damageArea = damageComponent.DamageArea;
+            damageArea.Center.X += collisionEvent.CollisionPosition.X;
+            damageArea.Center.Y += collisionEvent.CollisionPosition.Y;
+
+            FireEvent<DamageTerrainEvent>(new DamageTerrainEvent(damageArea));
+        }
+
+        private void Explosion(MapCollisionEvent collisionEvent, DamageComponent damageComponent)
+        {
+            if (!damageComponent.Explosive)
+            {
+                return;
+            }
+            List<IComponent> components = exlosionFactory.GetGameObjects();
+            foreach (IComponent component in components)
+            {
+                if (component is PlaceableComponent)
+                {
+                    Vector2 explosionPosition = new Vector2(collisionEvent.CollisionPosition.X, collisionEvent.CollisionPosition.Y);
+                    ((PlaceableComponent)component).Position = explosionPosition;
+                }
+            }
+            FireEvent<AddEntityEvent>(new AddEntityEvent(components));
         }
     }
 }
