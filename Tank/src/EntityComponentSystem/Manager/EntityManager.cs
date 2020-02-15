@@ -65,6 +65,13 @@ namespace Tank.src.EntityComponentSystem.Manager
             return idToReturn;
         }
 
+
+
+        public bool EntityExists(uint entityId)
+        {
+            return entities.Contains(entityId);
+        }
+
         public bool AddComponent(uint entityId, IGameComponent component)
         {
             if (!component.AllowMultiple && HasComponent(entityId, component))
@@ -166,6 +173,18 @@ namespace Tank.src.EntityComponentSystem.Manager
 
         public void EventNotification(object sender, EventArgs eventArgs)
         {
+            if (eventArgs is AddEntityEvent)
+            {
+                uint entityId = CreateEntity();
+                AddEntityEvent addEntityEvent = (AddEntityEvent)eventArgs;
+                foreach (IGameComponent gameComponent in addEntityEvent.Components)
+                {
+                    RemoveComponents(entityId, gameComponent);
+                }
+                
+                return;
+            }
+
             if (eventArgs is RemoveComponentEvent)
             {
                 RemoveComponentEvent componentRemoveEvent = (RemoveComponentEvent) eventArgs;
