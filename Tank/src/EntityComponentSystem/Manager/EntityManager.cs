@@ -118,6 +118,10 @@ namespace Tank.src.EntityComponentSystem.Manager
         {
             return components.FindAll((componentToCheck) =>
             {
+                if (componentToCheck == null)
+                {
+                    return false;
+                }
                 bool matchingComponent = componentToCheck.GetType() == componentType;
                 matchingComponent &= componentToCheck.EntityId == entityId;
                 return matchingComponent;
