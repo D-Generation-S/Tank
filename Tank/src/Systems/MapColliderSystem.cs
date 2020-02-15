@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Tank.Code.DataContainer;
 using Tank.Interfaces.MapGenerators;
 using Tank.src.Components;
+using Tank.src.Events.PhysicBased;
 using Tank.src.Validator;
 
 namespace Tank.src.Systems
@@ -80,6 +81,7 @@ namespace Tank.src.Systems
                             int newYPosition = positionToCheck.Y - y;
                             newYPosition -= colliderComponent.Collider.Height;
                             placeableComponent.Position = new Vector2(placeableComponent.Position.X, newYPosition);
+                            FireEvent<MapCollisionEvent>(new MapCollisionEvent(entityId, placeableComponent.Position));
                             break;
                         }
                     }
