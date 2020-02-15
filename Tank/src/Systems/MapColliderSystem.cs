@@ -46,7 +46,6 @@ namespace Tank.src.Systems
                 return;
             }
 
-
             foreach (uint entityId in watchedEntities)
             {
                 if (entityManager.HasComponent(entityId, typeof(MapComponent)))
@@ -74,13 +73,20 @@ namespace Tank.src.Systems
                 {
                     moveableComponent.OnGround = true;
                     
-                    for (int y = 0; y < colliderComponent.Collider.Height; y++)
+                    for (int y = 0; y < colliderComponent.Collider.Height * 2; y++)
                     {
                         if (!mapEntity.Map.CollissionMap.GetValue(positionToCheck.X, positionToCheck.Y - y))
                         {
                             int newYPosition = positionToCheck.Y - y;
                             newYPosition -= colliderComponent.Collider.Height;
-                            placeableComponent.Position = new Vector2(placeableComponent.Position.X, newYPosition);
+                            Vector2 Position = new Vector2(placeableComponent.Position.X, newYPosition);
+                            
+                            VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
+                            if (visibleComponent != null)
+                            {
+                                Position.Y += visibleComponent.Source.Height / 2;
+                            }
+                            placeableComponent.Position = Position;
                             FireEvent<MapCollisionEvent>(new MapCollisionEvent(entityId, placeableComponent.Position));
                             break;
                         }
