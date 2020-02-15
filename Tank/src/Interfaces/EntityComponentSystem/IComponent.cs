@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tank.src.Interfaces.EntityComponentSystem
 {
-    interface IGameComponent
+    interface IComponent
     {
         uint EntityId { get; }
 

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tank.src.Interfaces.EntityComponentSystem;
 using Tank.src.Interfaces.EntityComponentSystem.Manager;
+using Tank.src.Wrapper;
 
 namespace Tank.src.EntityComponentSystem.Manager
 {
@@ -17,14 +18,18 @@ namespace Tank.src.EntityComponentSystem.Manager
         private readonly IEntityManager entityManager;
         public IEntityManager EntityManager => entityManager;
 
+        private readonly ContentWrapper contentManager;
+        public ContentWrapper ContentManager => contentManager;
+
         private readonly List<ISystem> systems;
 
-        public GameEngine(IEventManager eventManager, IEntityManager entityManager)
+        public GameEngine(IEventManager eventManager, IEntityManager entityManager, ContentWrapper contentWrapper)
         {
+            systems = new List<ISystem>();
             this.eventManager = eventManager;
             entityManager.Initialize(eventManager);
             this.entityManager = entityManager;
-            systems = new List<ISystem>();
+            contentManager = contentWrapper;
         }
 
         public void AddSystem(ISystem systemToAdd)

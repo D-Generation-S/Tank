@@ -20,27 +20,27 @@ namespace Tank.src.Interfaces.EntityComponentSystem.Manager
 
         void RemoveEntity(uint entityId);
 
-        List<IGameComponent> GetComponents(uint entityId);
+        List<IComponent> GetComponents(uint entityId);
 
-        List<IGameComponent> GetComponents(uint entityId, IGameComponent component);
+        List<IComponent> GetComponents(uint entityId, IComponent component);
 
-        List<IGameComponent> GetComponents(uint entityId, Type componentType);
+        List<IComponent> GetComponents(uint entityId, Type componentType);
 
-        IGameComponent GetComponent(uint entityId, IGameComponent component);
+        IComponent GetComponent(uint entityId, IComponent component);
 
-        IGameComponent GetComponent(uint entityId, Type componentType);
+        IComponent GetComponent(uint entityId, Type componentType);
 
-        T GetComponent<T>(uint entityId) where T : IGameComponent;
+        T GetComponent<T>(uint entityId) where T : IComponent;
 
-        bool HasComponent(uint entityId, IGameComponent component);
+        bool HasComponent(uint entityId, IComponent component);
 
         bool HasComponent(uint entityId, Type componentType);
 
-        bool AddComponent(uint entityId, IGameComponent component);
+        bool AddComponent(uint entityId, IComponent component);
 
         void RemoveComponents(uint entityId, Type componentType);
 
-        void RemoveComponents(uint entityId, IGameComponent component);
+        void RemoveComponents(uint entityId, IComponent component);
 
         void RemoveComponents(uint entityId);
     }

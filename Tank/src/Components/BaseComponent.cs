@@ -7,7 +7,7 @@ using Tank.src.Interfaces.EntityComponentSystem;
 
 namespace Tank.src.Components
 {
-    class BaseComponent : IGameComponent
+    class BaseComponent : IComponent
     {
         private uint entityId;
         public uint EntityId => entityId;
