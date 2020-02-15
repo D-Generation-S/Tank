@@ -24,6 +24,10 @@ namespace Tank.src.EntityComponentSystem.Manager
             {
                 return container.NotificationType == type;
             });
+            if (matchingContainer == null)
+            {
+                return;
+            }
             foreach (IEventReceiver receiver in matchingContainer.EventReceivers)
             {
                 if (receiver == sender)
