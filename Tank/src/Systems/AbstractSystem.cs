@@ -235,7 +235,5 @@ namespace Tank.src.Systems
                 entitiesToRemove.RemoveAt(i);
             }
         }
-
-        
     }
 }
