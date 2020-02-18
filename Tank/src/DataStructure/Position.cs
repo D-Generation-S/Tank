@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.Code.DataContainer
+namespace Tank.src.DataStructure
 {
     public class Position
     {

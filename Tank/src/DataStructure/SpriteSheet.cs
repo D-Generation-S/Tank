@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.Code.DataContainer
+namespace Tank.src.DataStructure
 {
     /// <summary>
     /// This class is representing a spritesheet it will provide you with some helper functions
