@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Tank.src.Interfaces.EntityComponentSystem.Manager
 {
+    /// <summary>
+    /// This interface is part of the event system and allows a class to recieve events after subscribing
+    /// </summary>
     interface IEventReceiver
     {
         /// <summary>
