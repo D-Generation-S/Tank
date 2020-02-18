@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.Interfaces.MapGenerators;
-using Tank.Interfaces.Random;
 using Tank.src.DataStructure;
+using Tank.src.Interfaces.Randomizer;
 
 namespace Tank.Code.Textureizer
 {
@@ -16,7 +16,7 @@ namespace Tank.Code.Textureizer
         private readonly SpriteSheet spriteSheet;
         private Random internalRandomizer;
 
-        private IRandom randomizer;
+        private IRandomizer randomizer;
 
         private int spriteYPosition;
         private int spriteXPosition;
@@ -31,7 +31,7 @@ namespace Tank.Code.Textureizer
             TexturizeMap(map, generatorFillColor, null);
         }
 
-        public void TexturizeMap(IMap map, Color generatorFillColor, IRandom randomizer)
+        public void TexturizeMap(IMap map, Color generatorFillColor, IRandomizer randomizer)
         {
             spriteYPosition = 0;
             spriteXPosition = 0;

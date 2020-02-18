@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.Interfaces.Random
+namespace Tank.src.Interfaces.Randomizer
 {
-    interface IRandom
+    /// <summary>
+    /// This interface will represent a randomizer
+    /// </summary>
+    interface IRandomizer
     {
         /// <summary>
         /// Initzialize the randomizer

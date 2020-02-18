@@ -121,7 +121,7 @@
     <Compile Include="src\Interfaces\MapGenerators\IMap.cs" />
     <Compile Include="src\Interfaces\MapGenerators\IMapGenerator.cs" />
     <Compile Include="src\Interfaces\MapGenerators\IMapTexturizer.cs" />
-    <Compile Include="src\Interfaces\Random\IRandom.cs" />
+    <Compile Include="src\Interfaces\Randomizer\IRandomizer.cs" />
     <Compile Include="src\Builders\BaseExplosionBuilder.cs" />
     <Compile Include="src\Components\AnimationComponent.cs" />
     <Compile Include="src\Components\BaseComponent.cs" />
@@ -156,6 +156,7 @@
     <Compile Include="src\Interfaces\EntityComponentSystem\Manager\IEventReceiver.cs" />
     <Compile Include="src\Interfaces\EntityComponentSystem\Manager\IGameEngine.cs" />
     <Compile Include="src\Interfaces\Factories\IGameObjectFactory.cs" />
+    <Compile Include="src\Randomizer\SystemRandomizer.cs" />
     <Compile Include="src\Systems\AbstractSystem.cs" />
     <Compile Include="src\Systems\AnimationSystem.cs" />
     <Compile Include="src\Components\ColliderComponent.cs" />
