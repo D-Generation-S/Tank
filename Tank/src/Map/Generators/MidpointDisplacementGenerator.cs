@@ -1,16 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tank.Code.Entities.Map;
 using Tank.src.Interfaces.Randomizer;
 using Tank.src.DataStructure;
 using Tank.src.Interfaces.MapGenerators;
 
-namespace Tank.Code.MapGenerators.Generatos
+namespace Tank.src.Code.MapGenerators.Generatos
 {
     class MidpointDisplacementGenerator : IMapGenerator
     {
