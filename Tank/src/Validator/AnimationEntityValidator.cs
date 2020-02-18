@@ -12,7 +12,7 @@ namespace Tank.src.Validator
     /// <summary>
     /// This class will validate entites which can be used by the animation system 
     /// </summary>
-    class AnimationEntityRelevant : IValidatable
+    class AnimationEntityValidator : IValidatable
     {
         /// <inheritdoc/>
         public bool IsValidEntity(uint entityId, IEntityManager entityManager)

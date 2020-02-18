@@ -16,7 +16,7 @@ namespace Tank.src.Systems
         /// </summary>
         public AnimationSystem() : base()
         {
-            validators.Add(new AnimationEntityRelevant());
+            validators.Add(new AnimationEntityValidator());
         }
 
         /// <inheritdoc/>
