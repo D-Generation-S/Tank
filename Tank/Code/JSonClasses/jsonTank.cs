@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Tank.Code.Entities;
 using Microsoft.Xna.Framework;
 using Tank.Code.SubClasses;
-using Tank.Code.DataContainer;
+using Tank.src.DataStructure;
 
 namespace Tank.Code.JSonClasses
 {

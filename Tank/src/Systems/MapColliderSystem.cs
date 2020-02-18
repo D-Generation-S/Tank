@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Tank.Code.DataContainer;
 using Tank.Interfaces.MapGenerators;
 using Tank.src.Components;
+using Tank.src.DataStructure;
 using Tank.src.Events.PhysicBased;
 using Tank.src.Validator;
 
