@@ -1,24 +1,25 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.src.Components;
 using Tank.src.Events.EntityBased;
 using Tank.src.Validator;
 
 namespace Tank.src.Systems
 {
+    /// <summary>
+    /// This system will play amimations assigned to the entity
+    /// </summary>
     class AnimationSystem : AbstractSystem
     {
-        private float previousTime;
-
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public AnimationSystem() : base()
         {
             validators.Add(new AnimationEntityRelevant());
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
