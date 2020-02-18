@@ -11,17 +11,40 @@ using Tank.src.Validator;
 
 namespace Tank.src.Systems
 {
+    /// <summary>
+    /// This system will performe physic actions on the entites
+    /// </summary>
     class PhysicSystem : AbstractSystem
     {
+        /// <summary>
+        /// A fixed number used as to find out how many physic updates are needed
+        /// </summary>
         private readonly float fixedDeltaTime;
+
+        /// <summary>
+        /// The milliseconds which are spend for an update
+        /// </summary>
         private readonly float fixedDeltaTimeSeconds;
+
+        /// <summary>
+        /// The time left over from the last physic calculation
+        /// </summary>
         private float leftOverDeltaTime;
 
-        private float currentTime;
+        /// <summary>
+        /// The time from the last call
+        /// </summary>
         private float previousTime;
 
+        /// <summary>
+        /// The screen rectangle, entites leaving the area will be removed
+        /// </summary>
         private Rectangle screenBound;
 
+        /// <summary>
+        /// Create a new instance of the physic system with a given screen bound
+        /// </summary>
+        /// <param name="screenBound"></param>
         public PhysicSystem(Rectangle screenBound) : base()
         {
             fixedDeltaTime = 16;
@@ -30,13 +53,13 @@ namespace Tank.src.Systems
             this.screenBound = screenBound;
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            currentTime = gameTime.TotalGameTime.Milliseconds;
 
-            float deltaTime = currentTime - previousTime;
-            previousTime = currentTime;
+            float deltaTime = gameTime.TotalGameTime.Milliseconds - previousTime;
+            previousTime = gameTime.TotalGameTime.Milliseconds;
 
             int timeSteps = (int)((deltaTime + leftOverDeltaTime) / fixedDeltaTime);
 
