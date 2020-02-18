@@ -22,7 +22,7 @@ namespace Tank.src.Systems
             validators.Add(new MapValidator());
         }
 
-        public override void EntityAdded(uint entityId)
+        protected override void EntityAdded(uint entityId)
         {
             base.EntityAdded(entityId);
             if (validators[1].IsValidEntity(entityId, entityManager))
