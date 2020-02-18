@@ -49,8 +49,8 @@
     <Compile Include="Code\ActiveHandler.cs" />
     <Compile Include="Code\Animation.cs" />
     <Compile Include="Code\Controls.cs" />
-    <Compile Include="Code\DataContainer\FlattenArray.cs" />
-    <Compile Include="Code\DataContainer\SpriteSheet.cs" />
+    <Compile Include="src\DataStructure\FlattenArray.cs" />
+    <Compile Include="src\DataStructure\SpriteSheet.cs" />
     <Compile Include="Code\Entities\DebugEntity.cs" />
     <Compile Include="Code\Entities\Map\DefaultMap.cs" />
     <Compile Include="Code\Entities\Player\BasePlayer.cs" />
@@ -104,7 +104,7 @@
     <Compile Include="Code\Sound\Track.cs" />
     <Compile Include="Code\SubClasses\DebugCommand.cs" />
     <Compile Include="Code\SubClasses\DebugLogEntry.cs" />
-    <Compile Include="Code\DataContainer\Position.cs" />
+    <Compile Include="src\DataStructure\Position.cs" />
     <Compile Include="Code\TerrainClasses\Cloud.cs" />
     <Compile Include="Code\TerrainClasses\ImageGenerator.cs" />
     <Compile Include="Code\Physic\Physics.cs" />
