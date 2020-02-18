@@ -213,7 +213,7 @@ namespace Tank.src.EntityComponentSystem.Manager
         {
             if (eventArgs is AddEntityEvent)
             {
-                uint entityId = CreateEntity();
+                uint entityId = CreateEntity(false);
                 AddEntityEvent addEntityEvent = (AddEntityEvent)eventArgs;
                 foreach (IComponent gameComponent in addEntityEvent.Components)
                 {
