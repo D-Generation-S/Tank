@@ -9,6 +9,9 @@ using Tank.src.DataStructure;
 
 namespace Tank.Interfaces.MapGenerators
 {
+    /// <summary>
+    /// This interface represents a map object
+    /// </summary>
     interface IMap
     {
         /// <summary>

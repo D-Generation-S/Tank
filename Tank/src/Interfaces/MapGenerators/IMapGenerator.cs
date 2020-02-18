@@ -8,6 +8,9 @@ using Tank.src.DataStructure;
 
 namespace Tank.Interfaces.MapGenerators
 {
+    /// <summary>
+    /// This interface represents a map generator
+    /// </summary>
     interface IMapGenerator
     {
         Color MapColor { get; }

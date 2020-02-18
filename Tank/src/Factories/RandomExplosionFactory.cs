@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Tank.src.Interfaces.Builders;
 using Tank.src.Interfaces.EntityComponentSystem;
 using Tank.src.Interfaces.Factories;
+using Tank.src.Interfaces.Randomizer;
 
 namespace Tank.src.Factories
 {
@@ -22,16 +23,16 @@ namespace Tank.src.Factories
         /// <summary>
         /// An instance of the randomizer
         /// </summary>
-        private Random rnd;
+        private IRandomizer randomizer;
 
         /// <summary>
         /// Create a new instance of this class
         /// </summary>
         /// <param name="gameObjecBuilders">A list with builders to be used by the factory</param>
-        public RandomExplosionFactory(List<IGameObjectBuilder> gameObjecBuilders)
+        public RandomExplosionFactory(List<IGameObjectBuilder> gameObjecBuilders, IRandomizer randomizer)
         {
             this.gameObjecBuilders = gameObjecBuilders;
-            rnd = new Random();
+            this.randomizer = randomizer;
         }
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace Tank.src.Factories
         /// <returns>A list of components making up a explosion</returns>
         public List<IComponent> GetGameObjects()
         {
-            int position = rnd.Next(0, gameObjecBuilders.Count - 1);
+            int position = (int)randomizer.GetNewNumber(0, gameObjecBuilders.Count - 1);
             return gameObjecBuilders[position].BuildGameComponents();
         }
     }

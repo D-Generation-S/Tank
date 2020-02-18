@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tank.Code.Entities.Map;
 using Tank.Interfaces.MapGenerators;
-using Tank.Interfaces.Random;
+using Tank.src.Interfaces.Randomizer;
 using Tank.src.DataStructure;
 
 namespace Tank.Code.MapGenerators.Generatos
@@ -17,7 +17,7 @@ namespace Tank.Code.MapGenerators.Generatos
         private readonly GraphicsDevice graphicsDevice;
         private readonly float displace;
         private readonly float roughness;
-        private readonly IRandom randomizer;
+        private readonly IRandomizer randomizer;
 
         private Color mapColor;
         public Color MapColor => mapColor;
@@ -39,7 +39,7 @@ namespace Tank.Code.MapGenerators.Generatos
         {
         }
 
-        public MidpointDisplacementGenerator(GraphicsDevice graphicsDevice, float displace, float roughness, IRandom randomizer)
+        public MidpointDisplacementGenerator(GraphicsDevice graphicsDevice, float displace, float roughness, IRandomizer randomizer)
         {
             this.graphicsDevice = graphicsDevice;
             this.displace = displace;
