@@ -165,7 +165,7 @@
     <Compile Include="src\Systems\MapDestructionSystem.cs" />
     <Compile Include="src\Systems\PhysicSystem.cs" />
     <Compile Include="src\Systems\RenderSystem.cs" />
-    <Compile Include="src\Validator\AnimationEntityRelevant.cs" />
+    <Compile Include="src\Validator\AnimationEntityValidator.cs" />
     <Compile Include="src\Validator\DamageEntityValidator.cs" />
     <Compile Include="src\Validator\MapColliderValidator.cs" />
     <Compile Include="src\Validator\ColliderObjectValidator.cs" />
