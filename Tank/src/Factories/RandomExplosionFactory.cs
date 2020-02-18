@@ -9,17 +9,35 @@ using Tank.src.Interfaces.Factories;
 
 namespace Tank.src.Factories
 {
+    /// <summary>
+    /// This class will randomly pick explosions from the builder list provided to the class
+    /// </summary>
     class RandomExplosionFactory : IGameObjectFactory
     {
+        /// <summary>
+        /// All the builders the factory can pick one from
+        /// </summary>
         private readonly List<IGameObjectBuilder> gameObjecBuilders;
+
+        /// <summary>
+        /// An instance of the randomizer
+        /// </summary>
         private Random rnd;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="gameObjecBuilders">A list with builders to be used by the factory</param>
         public RandomExplosionFactory(List<IGameObjectBuilder> gameObjecBuilders)
         {
             this.gameObjecBuilders = gameObjecBuilders;
             rnd = new Random();
         }
 
+        /// <summary>
+        /// Get all the components from a new explosion
+        /// </summary>
+        /// <returns>A list of components making up a explosion</returns>
         public List<IComponent> GetGameObjects()
         {
             int position = rnd.Next(0, gameObjecBuilders.Count - 1);
