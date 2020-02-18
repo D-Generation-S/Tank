@@ -12,19 +12,31 @@ using Tank.src.Validator;
 
 namespace Tank.src.Systems
 {
+    /// <summary>
+    /// This system will damage the terrain if an event is catched
+    /// </summary>
     class MapDestructionSystem : AbstractSystem
     {
+        /// <summary>
+        /// Create an new intance of this class
+        /// </summary>
         public MapDestructionSystem() : base()
         {
             validators.Add(new MapValidator());
         }
 
+        /// <inheritdoc/>
         public override void Initialize(IGameEngine gameEngine)
         {
             base.Initialize(gameEngine);
             eventManager.SubscribeEvent(this, typeof(DamageTerrainEvent));
         }
 
+        /// <summary>
+        /// Remove some pixels from the map component if required
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="eventArgs">The arguments from the event</param>
         public override void EventNotification(object sender, EventArgs eventArgs)
         {
             base.EventNotification(sender, eventArgs);
