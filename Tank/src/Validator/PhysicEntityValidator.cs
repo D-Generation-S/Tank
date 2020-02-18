@@ -9,14 +9,12 @@ using Tank.src.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.src.Validator
 {
+    /// <summary>
+    /// This class will validate all the entites which are changed by physic
+    /// </summary>
     class PhysicEntityValidator : IValidatable
     {
-        /// <summary>
-        /// This method will check if the class is a valid physic entity
-        /// </summary>
-        /// <param name="entityId"></param>
-        /// <param name="entityManager"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public bool IsValidEntity(uint entityId, IEntityManager entityManager)
         {
             bool valid = entityManager.HasComponent(entityId, typeof(PlaceableComponent));
