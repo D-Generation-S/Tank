@@ -8,6 +8,9 @@ using Tank.src.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.src.Interfaces.EntityComponentSystem
 {
+    /// <summary>
+    /// This interface describes a systems which can be added to the entity manager
+    /// </summary>
     interface ISystem : IEventReceiver
     {
         /// <summary>
