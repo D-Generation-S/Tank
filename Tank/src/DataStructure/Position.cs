@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Tank.src.DataStructure
 {
+    /// <summary>
+    /// This class represents a position on the screen
+    /// </summary>
     public class Position
     {
         /// <summary>
