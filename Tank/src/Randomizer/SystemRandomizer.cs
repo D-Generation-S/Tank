@@ -25,7 +25,7 @@ namespace Tank.src.Randomizer
         /// <inheritdoc/>
         public void Initzialize(int seed)
         {
-            random = new Random();
+            random = new Random(seed);
         }
 
         /// <inheritdoc/>
