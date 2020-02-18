@@ -31,8 +31,8 @@ namespace Tank.Code.Screenmanager
             if (masterVolume != null)
                 masterVolume.Value = TrackManager.Instance.CurrentVolume;
             GUIToggle fullscreen = _toggles.Where(toggle => toggle.Name == "Toggle_Fullscreen").FirstOrDefault();
-            if (fullscreen != null)
-                fullscreen.Checked = TankGame.GetIsFullscreen();
+            //if (fullscreen != null)
+                //fullscreen.Checked = TankGame.GetIsFullscreen();
 
         }
 
@@ -59,7 +59,7 @@ namespace Tank.Code.Screenmanager
         private void FullscreenToggle_Click(object sender, EventArgs e)
         {
             bool isChecked = ((GUIEventArgs)e).Value.ToBool();
-            TankGame.toggleFullscreen(isChecked);
+            //TankGame.toggleFullscreen(isChecked);
         }
 
         private void SplashScreenToggle_Click(object sender, EventArgs e)
