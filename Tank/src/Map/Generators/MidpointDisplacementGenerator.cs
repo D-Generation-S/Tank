@@ -133,7 +133,7 @@ namespace Tank.src.Code.MapGenerators.Generatos
         public IMap GenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed)
         {
             seed = seed == int.MinValue ? DateTime.Now.Millisecond : seed;
-            if (randomizer !== null)
+            if (randomizer != null)
             {
                 randomizer.Initzialize(seed);
             }
