@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tank.src.Interfaces.Randomizer;
 
-namespace Tank.Interfaces.MapGenerators
+namespace Tank.src.Interfaces.MapGenerators
 {
     /// <summary>
     /// This interface represents a map texturizer used to texturize a map

@@ -49,7 +49,7 @@
     <Compile Include="Code\ActiveHandler.cs" />
     <Compile Include="Code\Animation.cs" />
     <Compile Include="Code\Controls.cs" />
-    <Compile Include="Code\Entities\Map\DefaultMap.cs" />
+    <Compile Include="src\DataStructure\DefaultMap.cs" />
     <Compile Include="src\DataStructure\FlattenArray.cs" />
     <Compile Include="src\DataStructure\SpriteSheet.cs" />
     <Compile Include="Code\Entities\DebugEntity.cs" />
@@ -288,6 +288,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Code\Entities\Map\" />
     <Folder Include="Enums\" />
     <Folder Include="src\Components\Tags\" />
   </ItemGroup>

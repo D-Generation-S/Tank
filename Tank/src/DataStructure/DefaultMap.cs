@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.Interfaces.MapGenerators;
 using Tank.src.DataStructure;
+using Tank.src.Interfaces.MapGenerators;
 
 namespace Tank.Code.Entities.Map
 {

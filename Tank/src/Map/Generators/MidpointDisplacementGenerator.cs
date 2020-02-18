@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.Code.Entities.Map;
-using Tank.Interfaces.MapGenerators;
 using Tank.src.Interfaces.Randomizer;
 using Tank.src.DataStructure;
+using Tank.src.Interfaces.MapGenerators;
 
 namespace Tank.Code.MapGenerators.Generatos
 {
