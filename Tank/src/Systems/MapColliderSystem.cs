@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.Code.DataContainer;
 using Tank.Interfaces.MapGenerators;
 using Tank.src.Components;
@@ -12,16 +7,24 @@ using Tank.src.Validator;
 
 namespace Tank.src.Systems
 {
+    /// <summary>
+    /// This system will create collisions events if some entites hit the ground
+    /// </summary>
     class MapColliderSystem : AbstractSystem
     {
-
-
+        /// <summary>
+        /// Create an new instance of this class
+        /// </summary>
         public MapColliderSystem() : base()
         {
             validators.Add(new MapColliderValidator());
             validators.Add(new MapValidator());
         }
 
+        /// <summary>
+        /// Add a visible component if a map is getting added to this system
+        /// </summary>
+        /// <param name="entityId">The id of the entity which was added</param>
         protected override void EntityAdded(uint entityId)
         {
             base.EntityAdded(entityId);
@@ -37,6 +40,7 @@ namespace Tank.src.Systems
             }
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -95,6 +99,10 @@ namespace Tank.src.Systems
             }
         }
 
+        /// <summary>
+        /// This method will return you the map component from the watched entity
+        /// </summary>
+        /// <returns>The instance of the map component if present or null</returns>
         private MapComponent GetMapComponent()
         {
             foreach (uint entityId in watchedEntities)
