@@ -1,9 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.src.Components;
 using Tank.src.DataStructure;
 using Tank.src.Events.EntityBased;
@@ -16,16 +13,27 @@ using Tank.src.Validator;
 
 namespace Tank.src.Systems
 {
+    /// <summary>
+    /// This system will handle any damage between entites
+    /// </summary>
     class DamageSystem : AbstractSystem
     {
+        /// <summary>
+        /// The factory to use to generate explosion effects
+        /// </summary>
         private readonly IGameObjectFactory exlosionFactory;
 
+        /// <summary>
+        /// Create a new instance of the damnage system
+        /// </summary>
+        /// <param name="exlosionFactory">The factory to use for creating explosions</param>
         public DamageSystem(IGameObjectFactory exlosionFactory) : base()
         {
             validators.Add(new DamageEntityValidator());
             this.exlosionFactory = exlosionFactory;
         }
 
+        /// <inheritdoc/>
         public override void Initialize(IGameEngine gameEngine)
         {
             base.Initialize(gameEngine);
@@ -33,6 +41,7 @@ namespace Tank.src.Systems
             eventManager.SubscribeEvent(this, typeof(MapCollisionEvent));
         }
 
+        /// <inheritdoc/>
         public override void EventNotification(object sender, EventArgs eventArgs)
         {
             base.EventNotification(sender, eventArgs);
@@ -51,6 +60,11 @@ namespace Tank.src.Systems
             }
         }
 
+        /// <summary>
+        /// This method will fire an event if terrain should be damaged
+        /// </summary>
+        /// <param name="damageComponent">The component used for damage</param>
+        /// <param name="collisionEvent">The event where the collision occured</param>
         private void DamageTerrain(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
         {
             if (!damageComponent.DamangeTerrain)
@@ -64,6 +78,11 @@ namespace Tank.src.Systems
             FireEvent<DamageTerrainEvent>(new DamageTerrainEvent(damageArea));
         }
 
+        /// <summary>
+        /// This method will create an explosion effect if needed
+        /// </summary>
+        /// <param name="collisionEvent">The event of the collision</param>
+        /// <param name="damageComponent">The component containing the damage data</param>
         private void Explosion(MapCollisionEvent collisionEvent, DamageComponent damageComponent)
         {
             if (!damageComponent.Explosive)
