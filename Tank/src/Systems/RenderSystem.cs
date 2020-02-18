@@ -1,42 +1,31 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.src.Components;
-using Tank.src.Events;
-using Tank.src.Events.ComponentBased;
-using Tank.src.Events.EntityBased;
-using Tank.src.Interfaces.EntityComponentSystem;
-using Tank.src.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.Validator;
 
 namespace Tank.src.Systems
 {
+    /// <summary>
+    /// This system will render any entity which is visible
+    /// </summary>
     class RenderSystem : AbstractSystem
     {
+        /// <summary>
+        /// The spritebatch instance to use
+        /// </summary>
         private readonly SpriteBatch spriteBatch;
 
+        /// <summary>
+        /// Create a new instance for the renderer
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public RenderSystem(SpriteBatch spriteBatch) : base()
         {
             this.spriteBatch = spriteBatch;
             validators.Add(new RenderableEntityValidator());
         }
 
-        public override void Initialize(IGameEngine gameEngine)
-        {
-            base.Initialize(gameEngine);
-        }
-
-        public override void EventNotification(object sender, EventArgs eventArgs)
-        {
-            base.EventNotification(sender, eventArgs);
-            EntityRemoved(eventArgs);
-        }
-
-
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -51,6 +40,7 @@ namespace Tank.src.Systems
             }
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
             foreach (uint entityId in watchedEntities)
