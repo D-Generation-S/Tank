@@ -49,35 +49,49 @@ namespace Tank.src.EntityComponentSystem.Manager
             eventManager.SubscribeEvent(this, typeof(AddEntityEvent));
         }
 
+        /// <inheritdoc/>
         public uint CreateEntity()
+        {
+            return CreateEntity(true);
+        }
+
+        /// <inheritdoc/>
+        public uint CreateEntity(bool notifySystems)
         {
             uint idToReturn = nextId;
             if (removedEntities.Count > 0)
             {
                 idToReturn = removedEntities.Dequeue();
                 entities.Add(idToReturn);
-                eventManager.FireEvent<NewEntityEvent>(this, new NewEntityEvent(idToReturn));
+                if (notifySystems)
+                {
+                    eventManager.FireEvent<NewEntityEvent>(this, new NewEntityEvent(idToReturn));
+                }
+                
                 return idToReturn;
             }
 
             nextId++;
-            entities.Add(idToReturn);
-            eventManager.FireEvent<NewEntityEvent>(this, new NewEntityEvent(idToReturn));
+            entities.Add(idToReturn); if (notifySystems)
+            {
+                eventManager.FireEvent<NewEntityEvent>(this, new NewEntityEvent(idToReturn));
+            }
             return idToReturn;
         }
 
-
-
+        /// <inheritdoc/>
         public bool EntityExists(uint entityId)
         {
             return entities.Contains(entityId);
         }
 
+        /// <inheritdoc/>
         public bool AddComponent(uint entityId, IComponent component)
         {
             return AddComponent(entityId, component, true);
         }
 
+        /// <inheritdoc/>
         public bool AddComponent(uint entityId, IComponent component, bool informSystems)
         {
             if (!component.AllowMultiple && HasComponent(entityId, component))
@@ -95,6 +109,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             return true;
         }
 
+        /// <inheritdoc/>
         public T GetComponent<T>(uint entityId) where T : IComponent
         {
             IComponent returnComponent = GetComponents(entityId, typeof(T)).FirstOrDefault();
@@ -105,16 +120,19 @@ namespace Tank.src.EntityComponentSystem.Manager
             return (T)returnComponent;
         }
 
+        /// <inheritdoc/>
         public IComponent GetComponent(uint entityId, Type componentType)
         {
             return GetComponents(entityId, componentType).FirstOrDefault();
         }
 
+        /// <inheritdoc/>
         public IComponent GetComponent(uint entityId, IComponent component)
         {
             return GetComponent(entityId, component.GetType());
         }
 
+        /// <inheritdoc/>
         public List<IComponent> GetComponents(uint entityId)
         {
             return components.FindAll((component) =>
@@ -123,6 +141,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             });
         }
 
+        /// <inheritdoc/>
         public List<IComponent> GetComponents(uint entityId, Type componentType)
         {
             return components.FindAll((componentToCheck) =>
@@ -137,11 +156,13 @@ namespace Tank.src.EntityComponentSystem.Manager
             });
         }
 
+        /// <inheritdoc/>
         public List<IComponent> GetComponents(uint entityId, IComponent component)
         {
             return GetComponents(entityId, component.GetType());
         }
 
+        /// <inheritdoc/>
         public bool HasComponent(uint entityId, Type component)
         {
             return GetComponent(entityId, component) != null;
@@ -152,6 +173,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             return HasComponent(entityId, component.GetType());
         }
 
+        /// <inheritdoc/>
         public void RemoveComponents(uint entityId, Type componentType)
         {
             foreach (IComponent removeComponent in GetComponents(entityId, componentType))
@@ -161,11 +183,13 @@ namespace Tank.src.EntityComponentSystem.Manager
             eventManager.FireEvent<ComponentRemovedEvent>(this, new ComponentRemovedEvent(entityId));
         }
 
+        /// <inheritdoc/>
         public void RemoveComponents(uint entityId, IComponent component)
         {
             RemoveComponents(entityId, component.GetType());
         }
 
+        /// <inheritdoc/>
         public void RemoveComponents(uint entityId)
         {
             foreach (IComponent removeComponent in GetComponents(entityId))
@@ -175,6 +199,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             eventManager.FireEvent<ComponentRemovedEvent>(this, new ComponentRemovedEvent(entityId));
         }
 
+        /// <inheritdoc/>
         public void RemoveEntity(uint entityId)
         {
             RemoveComponents(entityId);
@@ -183,6 +208,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             removedEntities.Enqueue(entityId);
         }
 
+        /// <inheritdoc/>
         public void EventNotification(object sender, EventArgs eventArgs)
         {
             if (eventArgs is AddEntityEvent)
