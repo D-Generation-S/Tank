@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Tank.Interfaces.MapGenerators;
 using Tank.src.Components;
 using Tank.src.DataStructure;
 using Tank.src.Events.PhysicBased;
+using Tank.src.Interfaces.MapGenerators;
 using Tank.src.Validator;
 
 namespace Tank.src.Systems
