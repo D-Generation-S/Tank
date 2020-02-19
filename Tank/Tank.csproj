@@ -132,7 +132,6 @@
     <Compile Include="src\Components\PlaceableComponent.cs" />
     <Compile Include="src\Components\VisibleComponent.cs" />
     <Compile Include="src\DataStructure\Circle.cs" />
-    <Compile Include="src\EntityComponentSystem\DataContainer\GameComponent.cs" />
     <Compile Include="src\EntityComponentSystem\DataContainer\RecieverContainer.cs" />
     <Compile Include="src\EntityComponentSystem\Manager\EntityManager.cs" />
     <Compile Include="src\EntityComponentSystem\Manager\EventManager.cs" />
