@@ -154,6 +154,7 @@ namespace Tank.src.Components
             this.frameSeconds = frameSeconds;
             this.spriteSources = spriteSources;
             this.ForwardDirection = true;
+            allowMultiple = true;
         }
     }
 }
