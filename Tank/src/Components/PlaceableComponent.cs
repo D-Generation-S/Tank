@@ -39,14 +39,5 @@ namespace Tank.src.Components
             get => rotation;
             set => rotation = value;
         }
-
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        public PlaceableComponent()
-        {
-            allowMultiple = false;
-        }
-
     }
 }

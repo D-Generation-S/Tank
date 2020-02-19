@@ -42,7 +42,6 @@ namespace Tank.src.Components
             set => destination = value;
         }
 
-
         /// <summary>
         /// The source position of the part in the sprite which should be drawn
         /// </summary>

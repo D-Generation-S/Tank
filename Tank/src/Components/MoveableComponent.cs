@@ -39,13 +39,5 @@ namespace Tank.src.Components
             get => onGround;
             set => onGround = value;
         }
-
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        public MoveableComponent()
-        {
-            allowMultiple = false;
-        }
     }
 }
