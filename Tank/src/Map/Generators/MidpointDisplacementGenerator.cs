@@ -83,8 +83,12 @@ namespace Tank.src.Code.MapGenerators.Generatos
         /// <param name="displace">The displace value to use</param>
         /// <param name="roughness">The roughness to use</param>
         /// <param name="randomizer">The randomizer to use</param>
-        public MidpointDisplacementGenerator(GraphicsDevice graphicsDevice, float displace, float roughness, IRandomizer randomizer)
-        {
+        public MidpointDisplacementGenerator(
+            GraphicsDevice graphicsDevice,
+            float displace,
+            float roughness,
+            IRandomizer randomizer
+        ) {
             this.graphicsDevice = graphicsDevice;
             this.displace = displace;
             this.roughness = roughness;
