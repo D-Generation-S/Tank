@@ -55,7 +55,16 @@ namespace Tank.src.Systems
                 {
                     continue;
                 }
-                spriteBatch.Draw(visibleComponent.Texture, visibleComponent.Destination, visibleComponent.Source, visibleComponent.Color, placeableComponent.Rotation, Vector2.Zero, SpriteEffects.None, 1f);
+                spriteBatch.Draw(
+                    visibleComponent.Texture,
+                    visibleComponent.Destination,
+                    visibleComponent.Source,
+                    visibleComponent.Color,
+                    placeableComponent.Rotation,
+                    Vector2.Zero,
+                    SpriteEffects.None,
+                    1f
+                );
             }
         }
     }
