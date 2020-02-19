@@ -10,6 +10,9 @@ using Tank.src.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.src.EntityComponentSystem.Manager
 {
+    /// <summary>
+    /// This class is the default entity manager used inside of the game engine
+    /// </summary>
     class EntityManager : IEntityManager, IEventReceiver
     {
         /// <summary>
@@ -27,10 +30,19 @@ namespace Tank.src.EntityComponentSystem.Manager
         /// </summary>
         private readonly Queue<uint> removedEntities;
 
+        /// <summary>
+        /// The next entity id to create
+        /// </summary>
         private uint nextId;
 
+        /// <summary>
+        /// An instance of the event manager to register to events
+        /// </summary>
         private IEventManager eventManager;
 
+        /// <summary>
+        /// Create a new instance of the entity manager
+        /// </summary>
         public EntityManager()
         {
             entities = new List<uint>();
@@ -40,7 +52,10 @@ namespace Tank.src.EntityComponentSystem.Manager
             nextId = uint.MinValue;
         }
 
-
+        /// <summary>
+        /// Initialize the entity manager
+        /// </summary>
+        /// <param name="eventManager">The event manager to use</param>
         public void Initialize(IEventManager eventManager)
         {
             this.eventManager = eventManager;
