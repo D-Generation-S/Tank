@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Tank.src.DataStructure
 {
+    /// <summary>
+    /// A helper class for creating flatten arrays and providing easier access methods
+    /// </summary>
+    /// <typeparam name="T">The array content to store in this helper class</typeparam>
     class FlattenArray<T>
     {
         /// <summary>
@@ -32,7 +36,6 @@ namespace Tank.src.DataStructure
         {
             array = new T[width * height];
             this.width = width;
-            //this.height = height;
         }
 
         /// <summary>
