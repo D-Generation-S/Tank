@@ -94,7 +94,10 @@ namespace Tank.src.Systems
             {
                 if (component is PlaceableComponent)
                 {
-                    Vector2 explosionPosition = new Vector2(collisionEvent.CollisionPosition.X, collisionEvent.CollisionPosition.Y);
+                    Vector2 explosionPosition = new Vector2(
+                        collisionEvent.CollisionPosition.X,
+                        collisionEvent.CollisionPosition.Y
+                    );
                     ((PlaceableComponent)component).Position = explosionPosition;
                 }
             }

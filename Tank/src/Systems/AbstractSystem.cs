@@ -152,7 +152,8 @@ namespace Tank.src.Systems
         }
 
         /// <summary>
-        /// This method will check if an entity id is relevant for this system. It will check against the validateable list
+        /// This method will check if an entity id is relevant for this system.
+        /// It will check against the validateable list
         /// </summary>
         /// <param name="entityId">The id to check if it is valid</param>
         /// <returns>True if the entity is valid for the system</returns>

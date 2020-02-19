@@ -199,8 +199,11 @@ namespace Tank.src.Code.MapGenerators.Generatos
             float power = size.X - 1;
 
             float[] points = new float[size.X];
-            points[0] = size.Y / 2 + (GetRandomNumber(internalRandomizer, 0, 1) * displace * 2) - displace;
-            points[(int)power] = (float)(size.Y / 2 + (GetRandomNumber(internalRandomizer, 0, 1) * displace * 2) - displace);
+            float randomNumber = GetRandomNumber(internalRandomizer, 0, 1);
+            points[0] = size.Y / 2 + (randomNumber * displace * 2) - displace;
+
+            randomNumber = GetRandomNumber(internalRandomizer, 0, 1);
+            points[(int)power] = (float)(size.Y / 2 + (randomNumber * displace * 2) - displace);
 
             points[0] = MathHelper.Clamp(points[0], size.Y / 3, size.Y * 2);
             points[(int)power] = MathHelper.Clamp(points[(int)power], size.Y / 3, size.Y * 2);
@@ -214,7 +217,8 @@ namespace Tank.src.Code.MapGenerators.Generatos
                     int firstValue = (int)(j - innerPower / 2);
                     int secondValue = (int)(j + innerPower / 2);
                     points[(int)j] = (points[firstValue] + points[secondValue]) / 2;
-                    points[(int)j] += (float)(GetRandomNumber(internalRandomizer, 0, 1) * tempDisplace * 2) - tempDisplace;
+                    randomNumber = GetRandomNumber(internalRandomizer, 0, 1);
+                    points[(int)j] += (float)(randomNumber * tempDisplace * 2) - tempDisplace;
                 }
             }
 

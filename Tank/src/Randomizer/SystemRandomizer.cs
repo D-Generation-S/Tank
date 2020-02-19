@@ -12,6 +12,9 @@ namespace Tank.src.Randomizer
     /// </summary>
     class SystemRandomizer : IRandomizer
     {
+        /// <summary>
+        /// The internal random class to use
+        /// </summary>
         private Random random;
 
         /// <summary>

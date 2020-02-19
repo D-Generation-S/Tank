@@ -82,7 +82,11 @@ namespace Tank.src.Systems
 
                     Vector2 oldPosition = placeComponent.Position;
                     placeComponent.Position += objVelocity;
-                    placeComponent.Rotation = (float)Math.Atan2(placeComponent.Position.Y - oldPosition.Y, placeComponent.Position.X - oldPosition.X);
+
+                    placeComponent.Rotation = (float)Math.Atan2(
+                        placeComponent.Position.Y - oldPosition.Y,
+                        placeComponent.Position.X - oldPosition.X
+                    );
 
                     if (!screenBound.Contains(placeComponent.Position))
                     {
