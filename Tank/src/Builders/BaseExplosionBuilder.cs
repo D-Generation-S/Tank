@@ -11,17 +11,36 @@ using Tank.src.Interfaces.EntityComponentSystem;
 
 namespace Tank.src.Builders
 {
+    /// <summary>
+    /// This class will build you an explosion based on a sprite sheet and some animation frames
+    /// </summary>
     class BaseExplosionBuilder : IGameObjectBuilder
     {
+        /// <summary>
+        /// The spritesheet containing the frames
+        /// </summary>
         private readonly Texture2D spriteSheet;
+
+        /// <summary>
+        /// The list with all the animations frames to use
+        /// </summary>
         private readonly List<Rectangle> animationFrames;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="spriteSheet">The sprite sheet to use</param>
+        /// <param name="animationFrames">All the animation frames available in the sprite sheet</param>
         public BaseExplosionBuilder(Texture2D spriteSheet, List<Rectangle> animationFrames)
         {
             this.spriteSheet = spriteSheet;
             this.animationFrames = animationFrames;
         }
 
+        /// <summary>
+        /// Create the game components for the new entity
+        /// </summary>
+        /// <returns>A component list making up the new explosion entity</returns>
         public List<IComponent> BuildGameComponents()
         {
             List<IComponent> components = new List<IComponent>();
