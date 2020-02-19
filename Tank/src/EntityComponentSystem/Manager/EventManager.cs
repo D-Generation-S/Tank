@@ -8,15 +8,25 @@ using Tank.src.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.src.EntityComponentSystem.Manager
 {
+    /// <summary>
+    /// This class is the default event manager to use
+    /// </summary>
     class EventManager : IEventManager
     {
+        /// <summary>
+        /// A list of the types and there recievers
+        /// </summary>
         private readonly List<RecieverContainer> eventReceivers;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public EventManager()
         {
             eventReceivers = new List<RecieverContainer>();
         }
 
+        /// <inheritdoc/>
         public void FireEvent<T>(object sender, T args) where T : EventArgs
         {
             Type type = typeof(T);
@@ -38,11 +48,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             }
         }
 
-        public void RemoveListner(IEventReceiver eventReciver)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <inheritdoc/>
         public void SubscribeEvent(IEventReceiver eventReciver, Type eventType)
         {
             RecieverContainer containerForSubscription = eventReceivers.Find((container) =>
@@ -59,6 +65,7 @@ namespace Tank.src.EntityComponentSystem.Manager
             containerForSubscription.EventReceivers.Add(eventReciver);
         }
 
+        /// <inheritdoc/>
         public void UnsubscibeEvent(IEventReceiver eventReciver, Type eventType)
         {
             RecieverContainer containerToRemove = eventReceivers.Find((container) =>
@@ -70,6 +77,12 @@ namespace Tank.src.EntityComponentSystem.Manager
             {
                 containerToRemove.EventReceivers.Remove(eventReciver);
             }
+        }
+
+        /// <inheritdoc/>
+        public void RemoveListner(IEventReceiver eventReciver)
+        {
+            throw new NotImplementedException();
         }
     }
 }
