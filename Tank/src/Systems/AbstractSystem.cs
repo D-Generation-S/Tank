@@ -20,9 +20,24 @@ namespace Tank.src.Systems
     abstract class AbstractSystem : ISystem
     {
         /// <summary>
+        /// Update system is currently locked
+        /// </summary>
+        protected bool updateLocked;
+
+        /// <summary>
+        /// Draw system is currently locked
+        /// </summary>
+        protected bool drawLocked;
+
+        /// <summary>
         /// A list with all the watched entites for this system
         /// </summary>
         protected List<uint> watchedEntities;
+
+        /// <summary>
+        /// A list with all the entities which must be added
+        /// </summary>
+        protected List<uint> newEntities;
 
         /// <summary>
         /// A list with all the entites which should be removed on the next cycle
@@ -60,7 +75,6 @@ namespace Tank.src.Systems
         public AbstractSystem()
         {
             validators = new List<IValidatable>();
-            entitiesToRemove = new List<uint>();
         }
 
         /// <summary>
@@ -71,18 +85,13 @@ namespace Tank.src.Systems
         {
             this.gameEngine = gameEngine;
             watchedEntities = new List<uint>();
+            entitiesToRemove = new List<uint>();
+            newEntities = new List<uint>();
+
             eventManager.SubscribeEvent(this, typeof(NewEntityEvent));
             eventManager.SubscribeEvent(this, typeof(EntityRemovedEvent));
             eventManager.SubscribeEvent(this, typeof(NewComponentEvent));
             eventManager.SubscribeEvent(this, typeof(ComponentRemovedEvent));
-        }
-
-        /// <summary>
-        /// An basic implementation of the draw method
-        /// </summary>
-        /// <param name="gameTime">The gametime given from monogame</param>
-        public virtual void Draw(GameTime gameTime)
-        {
         }
 
         /// <summary>
@@ -181,11 +190,11 @@ namespace Tank.src.Systems
                 {
                     entitiesToRemove.Remove(entityId);
                 }
-                if (watchedEntities.Contains(entityId))
+                if (watchedEntities.Contains(entityId) || newEntities.Contains(entityId))
                 {
                     return;
                 }
-                watchedEntities.Add(entityId);
+                newEntities.Add(entityId);
             }
         }
 
@@ -223,6 +232,18 @@ namespace Tank.src.Systems
             }
         }
 
+        protected virtual void DoRemoveEntities()
+        {
+            if (updateLocked || drawLocked)
+            {
+                return;
+            }
+            foreach (uint entityId in entitiesToRemove)
+            {
+                FireEvent<RemoveEntityEvent>(new RemoveEntityEvent(entityId));
+            }
+        }
+
         /// <summary>
         /// This method is the update method of the game.
         /// It will remove all the entites from the watched entites if present in the remove list
@@ -230,11 +251,31 @@ namespace Tank.src.Systems
         /// <param name="gameTime">The gametime from monogame</param>
         public virtual void Update(GameTime gameTime)
         {
+            if (updateLocked || drawLocked)
+            {
+                return;
+            }
+
             for (int i = entitiesToRemove.Count - 1; i >= 0; i--)
             {
                 watchedEntities.Remove(entitiesToRemove[i]);
                 entitiesToRemove.RemoveAt(i);
             }
+
+            for (int i = newEntities.Count - 1; i >= 0; i--)
+            {
+                watchedEntities.Add(newEntities[i]);
+                newEntities.RemoveAt(i);
+            }
+        }
+
+
+        /// <summary>
+        /// An basic implementation of the draw method
+        /// </summary>
+        /// <param name="gameTime">The gametime given from monogame</param>
+        public virtual void Draw(GameTime gameTime)
+        {
         }
     }
 }

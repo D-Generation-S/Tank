@@ -23,8 +23,9 @@ namespace Tank.src.Systems
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            
             float currentTime = (float)gameTime.ElapsedGameTime.Milliseconds;
-            List<uint> entitiesToRemove = new List<uint>();
+            updateLocked = true;
             foreach (uint entityId in watchedEntities)
             {
                 AnimationComponent animation = entityManager.GetComponent<AnimationComponent>(entityId);
@@ -58,14 +59,11 @@ namespace Tank.src.Systems
                         animation.ForwardDirection = true;
                     }
                     visibleComponent.Source = animation.SpriteSources[animation.CurrentIndex];
-
                 }
             }
+            updateLocked = false;
 
-            foreach (uint entityId in entitiesToRemove)
-            {
-                FireEvent<RemoveEntityEvent>(new RemoveEntityEvent(entityId));
-            }
+            DoRemoveEntities();
         }
     }
 }

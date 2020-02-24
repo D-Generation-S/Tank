@@ -65,6 +65,7 @@ namespace Tank.src.Systems
             leftOverDeltaTime = deltaTime - (timeSteps * fixedDeltaTime);
             List<uint> entitesToRemove = new List<uint>();
 
+            updateLocked = true;
             for (int iteration = 0; iteration < timeSteps; iteration++)
             {
                 foreach (uint entityId in watchedEntities)
@@ -83,10 +84,14 @@ namespace Tank.src.Systems
                     Vector2 oldPosition = placeComponent.Position;
                     placeComponent.Position += objVelocity;
 
-                    placeComponent.Rotation = (float)Math.Atan2(
-                        placeComponent.Position.Y - oldPosition.Y,
-                        placeComponent.Position.X - oldPosition.X
-                    );
+                    if (moveComponent.PhysicRotate)
+                    {
+                        placeComponent.Rotation = (float)Math.Atan2(
+                            placeComponent.Position.Y - oldPosition.Y,
+                            placeComponent.Position.X - oldPosition.X
+                        );
+                    }
+
 
                     if (!screenBound.Contains(placeComponent.Position))
                     {
@@ -94,12 +99,9 @@ namespace Tank.src.Systems
                     }
                 }
             }
+            updateLocked = false;
 
-            foreach (uint entityId in entitesToRemove)
-            {
-                FireEvent<RemoveEntityEvent>(new RemoveEntityEvent(entityId));
-                EntityRemoved(entityId);
-            }
+            DoRemoveEntities();
         }
     }
 }

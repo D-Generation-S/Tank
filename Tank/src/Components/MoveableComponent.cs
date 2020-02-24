@@ -27,6 +27,11 @@ namespace Tank.src.Components
         }
 
         /// <summary>
+        /// Should be rotated by physic
+        /// </summary>
+        public bool PhysicRotate;
+
+        /// <summary>
         /// Is the entity on the ground
         /// </summary>
         private bool onGround;

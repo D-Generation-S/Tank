@@ -50,6 +50,7 @@ namespace Tank.src.Systems
                 return;
             }
 
+            updateLocked = true;
             foreach (uint entityId in watchedEntities)
             {
                 if (entityManager.HasComponent(entityId, typeof(MapComponent)))
@@ -97,6 +98,7 @@ namespace Tank.src.Systems
                     }
                 }
             }
+            updateLocked = false;
         }
 
         /// <summary>

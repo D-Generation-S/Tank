@@ -29,6 +29,7 @@ namespace Tank.src.Systems
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            updateLocked = true;
             foreach (uint entityId in watchedEntities)
             {
                 PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
@@ -38,11 +39,13 @@ namespace Tank.src.Systems
                 destination.Y = (int)placeableComponent.Position.Y;
                 visibleComponent.Destination = destination;
             }
+            updateLocked = false;
         }
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
+            drawLocked = true;
             foreach (uint entityId in watchedEntities)
             {
                 if (entitiesToRemove.Contains(entityId))
@@ -66,6 +69,7 @@ namespace Tank.src.Systems
                     1f
                 );
             }
+            drawLocked = false;
         }
     }
 }

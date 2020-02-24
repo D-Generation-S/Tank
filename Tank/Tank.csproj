@@ -50,6 +50,7 @@
     <Compile Include="OldCode\Animation.cs" />
     <Compile Include="OldCode\Controls.cs" />
     <Compile Include="OldCode\TankGame.cs" />
+    <Compile Include="src\Builders\TankObjectBuilder.cs" />
     <Compile Include="src\Components\SoundEffectComponent.cs" />
     <Compile Include="src\DataStructure\DefaultMap.cs" />
     <Compile Include="src\DataStructure\FlattenArray.cs" />
@@ -199,6 +200,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Images\Entities\BasicTank.png" />
     <Content Include="Assets\Images\Pixel.png" />
     <Content Include="Assets\Images\Entities\BasicMunitionSprite.png" />
     <Content Include="Assets\Images\Effects\Explosion132x32-Sheet.png" />

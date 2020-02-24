@@ -50,5 +50,14 @@ namespace Tank.src.DataStructure
             X = (int)vector2.X;
             Y = (int)vector2.X;
         }
+
+        /// <summary>
+        /// Return the position as vector 2
+        /// </summary>
+        /// <returns>A valid Vector2</returns>
+        public Vector2 GetVector2()
+        {
+            return new Vector2(X, Y);
+        }
     }
 }

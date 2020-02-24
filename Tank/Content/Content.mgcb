@@ -44,6 +44,18 @@
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/Entities/BasicMunitionSprite.png;Images/Entities/BasicMunitionSprite.png
 
+#begin ../Assets/Images/Entities/BasicTank.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../Assets/Images/Entities/BasicTank.png;Images/Entities/BasicTank.png
+
 #begin ../Assets/Images/Pixel.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -87,7 +87,7 @@ namespace Tank.src.DataStructure
         public T GetValue(int x, int y)
         {
             int targetPosition = y * width + x;
-            if (targetPosition > array.Length)
+            if (targetPosition > array.Length || targetPosition < 0)
             {
                 return default(T);
             }

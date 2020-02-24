@@ -13,6 +13,7 @@ using Tank.src.Code.Textureizer;
 using Tank.src.Components;
 using Tank.src.DataStructure;
 using Tank.src.EntityComponentSystem.Manager;
+using Tank.src.Events.EntityBased;
 using Tank.src.Factories;
 using Tank.src.Interfaces.Builders;
 using Tank.src.Interfaces.EntityComponentSystem.Manager;
@@ -80,6 +81,15 @@ namespace Tank
             );
             mapCreatingTask.ContinueWith((antecedent) => {
                 engine.EntityManager.AddComponent(mapId, new MapComponent(antecedent.Result));
+                List<Rectangle> animationFrames = new List<Rectangle>();
+                animationFrames.Add(new Rectangle(0, 0, 32, 32));
+                TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
+                    new Position(100, 0),
+                    Content.Load<Texture2D>("Images/Entities/BasicTank"),
+                    animationFrames
+                 );
+                AddEntityEvent tankEntity = new AddEntityEvent(tankObjectBuilder.BuildGameComponents());
+                engine.EventManager.FireEvent<AddEntityEvent>(this, tankEntity);
             });
         }
 
@@ -167,7 +177,8 @@ namespace Tank
                     });
                     engine.EntityManager.AddComponent(projectileId, new MoveableComponent()
                     {
-                        Velocity = new Vector2((new Random()).Next(1, 30), 0)
+                        Velocity = new Vector2((new Random()).Next(1, 30), 0),
+                        PhysicRotate = true
                     });
                 }
                 base.Update(gameTime);
