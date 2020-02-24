@@ -84,6 +84,7 @@ namespace Tank.src.Components
         /// <param name="damageTerrain">Can the entity damange the terrain</param>
         /// <param name="centerDamage">´Damage for the center of the damage area</param>
         /// <param name="damageArea">The area to apply the damage to</param>
+        /// <param name="effectBuilder">The builder to use for the effects</param>
         public DamageComponent(bool damageTerrain, int centerDamage, Circle damageArea, IGameObjectFactory effectBuilder)
         {
             this.damageTerrain = damageTerrain;
