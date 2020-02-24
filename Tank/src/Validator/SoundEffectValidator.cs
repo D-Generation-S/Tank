@@ -14,6 +14,7 @@ namespace Tank.src.Validator
     /// </summary>
     class SoundEffectValidator : IValidatable
     {
+        /// <inheritdoc/>
         public bool IsValidEntity(uint entityId, IEntityManager entityManager)
         {
             return entityManager.HasComponent(entityId, typeof(SoundEffectComponent));

@@ -14,6 +14,9 @@ namespace Tank.src.Systems
     /// </summary>
     class SoundEffectSystem : AbstractSystem
     {
+        /// <summary>
+        /// Random class to use to change the pitch if needed
+        /// </summary>
         private readonly Random random;
 
         /// <summary>
