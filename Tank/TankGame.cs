@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -33,6 +34,7 @@ namespace Tank
 
         IGameEngine engine;
         IMapGenerator mapGenerator;
+        IRandomizer randomizer;
 
         public TankGame()
         {
@@ -47,30 +49,17 @@ namespace Tank
             InitResolution(1440, 900);
 
             base.Initialize();
-            IRandomizer randomizer = new SystemRandomizer();
+            randomizer = new SystemRandomizer();
             randomizer.Initzialize(100);
-
-            List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
-            List<Rectangle> animationFrames = new List<Rectangle>() {
-                    new Rectangle(0, 0, 32, 32),
-                    new Rectangle(32, 0, 32, 32),
-                    new Rectangle(64, 0, 32, 32),
-                    new Rectangle(0, 32, 32, 32),
-                    new Rectangle(32, 32, 32, 32),
-                    new Rectangle(64, 32, 32, 32),
-                    new Rectangle(0, 64, 32, 32),
-                    new Rectangle(32, 64, 32, 32),
-            };
-            explosionBuilders.Add(new BaseExplosionBuilder(Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet"), animationFrames));
-            RandomExplosionFactory randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);            
 
             engine = new GameEngine(new EventManager(), new EntityManager(), new src.Wrapper.ContentWrapper(Content));
             engine.AddSystem(new RenderSystem(spriteBatch));
             engine.AddSystem(new PhysicSystem(new Rectangle(0,0, 1920, 1080)));
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new MapColliderSystem());
-            engine.AddSystem(new DamageSystem(randomExplosionFactory));
+            engine.AddSystem(new DamageSystem());
             engine.AddSystem(new MapDestructionSystem());
+            engine.AddSystem(new SoundEffectSystem());
 
             uint mapId = engine.EntityManager.CreateEntity();
             engine.EntityManager.AddComponent(mapId, new PlaceableComponent());
@@ -124,6 +113,26 @@ namespace Tank
                 {
                     uint projectileId = engine.EntityManager.CreateEntity();
 
+                    List<Rectangle> animationFrames = new List<Rectangle>() {
+                        new Rectangle(0, 0, 32, 32),
+                        new Rectangle(32, 0, 32, 32),
+                        new Rectangle(64, 0, 32, 32),
+                        new Rectangle(0, 32, 32, 32),
+                        new Rectangle(32, 32, 32, 32),
+                        new Rectangle(64, 32, 32, 32),
+                        new Rectangle(0, 64, 32, 32),
+                        new Rectangle(32, 64, 32, 32),
+                    };
+                    List<SoundEffect> soundEffects = new List<SoundEffect>();
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion1"));
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion2"));
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion3"));
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion4"));
+                    RandomSoundFactory soundFactory = new RandomSoundFactory(soundEffects, randomizer);
+                    List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
+                    explosionBuilders.Add(new BaseExplosionBuilder(Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet"), animationFrames, soundFactory));
+                    RandomExplosionFactory randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);
+
                     engine.EntityManager.AddComponent(projectileId, new PlaceableComponent() { Position = new Vector2(200, 200) });
                     VisibleComponent visible = new VisibleComponent();
                     visible.Texture = Content.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
@@ -152,9 +161,9 @@ namespace Tank
                     {
                         Collider = new Rectangle(0, 0, 32, 32)
                     });
-                    engine.EntityManager.AddComponent(projectileId, new DamageComponent(true, 1, new src.DataStructure.Circle(0, 0, 26))
+                    engine.EntityManager.AddComponent(projectileId, new DamageComponent(true, 1, new src.DataStructure.Circle(0, 0, 26), randomExplosionFactory)
                     {
-                        Explosive = true
+                         
                     });
                     engine.EntityManager.AddComponent(projectileId, new MoveableComponent()
                     {
