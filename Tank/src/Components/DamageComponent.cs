@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.src.DataStructure;
+using Tank.src.Interfaces.Builders;
+using Tank.src.Interfaces.Factories;
 
 namespace Tank.src.Components
 {
@@ -33,18 +35,24 @@ namespace Tank.src.Components
         public Circle DamageArea => damageArea;
 
         /// <summary>
+        /// The builder to use to get the hit effect
+        /// </summary>
+        private readonly IGameObjectFactory effectFactory;
+
+        /// <summary>
+        /// Public access to the effect factory
+        /// </summary>
+        public IGameObjectFactory EffectFactory => effectFactory;
+
+        /// <summary>
         /// Is this an explosive damange
         /// </summary>
-        private bool explosive;
+        private readonly bool effect;
 
         /// <summary>
         /// Public access to the bool if this is a explosive
         /// </summary>
-        public bool Explosive
-        {
-            get => explosive;
-            set => explosive = value;
-        }
+        public bool Effect => effect;
 
         /// <summary>
         /// Was the damage already applied
@@ -76,11 +84,13 @@ namespace Tank.src.Components
         /// <param name="damageTerrain">Can the entity damange the terrain</param>
         /// <param name="centerDamage">´Damage for the center of the damage area</param>
         /// <param name="damageArea">The area to apply the damage to</param>
-        public DamageComponent(bool damageTerrain, int centerDamage, Circle damageArea)
+        public DamageComponent(bool damageTerrain, int centerDamage, Circle damageArea, IGameObjectFactory effectBuilder)
         {
             this.damageTerrain = damageTerrain;
             centerDamageValue = centerDamage;
             this.damageArea = damageArea;
+            this.effectFactory = effectBuilder;
+            effect = effectBuilder != null;
         }
     }
 }

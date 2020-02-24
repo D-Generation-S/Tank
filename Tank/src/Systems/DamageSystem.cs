@@ -19,18 +19,12 @@ namespace Tank.src.Systems
     class DamageSystem : AbstractSystem
     {
         /// <summary>
-        /// The factory to use to generate explosion effects
-        /// </summary>
-        private readonly IGameObjectFactory exlosionFactory;
-
-        /// <summary>
         /// Create a new instance of the damnage system
         /// </summary>
         /// <param name="exlosionFactory">The factory to use for creating explosions</param>
-        public DamageSystem(IGameObjectFactory exlosionFactory) : base()
+        public DamageSystem() : base()
         {
             validators.Add(new DamageEntityValidator());
-            this.exlosionFactory = exlosionFactory;
         }
 
         /// <inheritdoc/>
@@ -55,7 +49,7 @@ namespace Tank.src.Systems
                     return;
                 }
                 FireEvent<RemoveEntityEvent>(new RemoveEntityEvent(collisionEvent.EntityId));
-                Explosion(collisionEvent, damageComponent);
+                Effect(collisionEvent, damageComponent);
                 DamageTerrain(damageComponent, collisionEvent);
             }
         }
@@ -83,13 +77,13 @@ namespace Tank.src.Systems
         /// </summary>
         /// <param name="collisionEvent">The event of the collision</param>
         /// <param name="damageComponent">The component containing the damage data</param>
-        private void Explosion(MapCollisionEvent collisionEvent, DamageComponent damageComponent)
+        private void Effect(MapCollisionEvent collisionEvent, DamageComponent damageComponent)
         {
-            if (!damageComponent.Explosive)
+            if (!damageComponent.Effect)
             {
                 return;
             }
-            List<IComponent> components = exlosionFactory.GetGameObjects();
+            List<IComponent> components = damageComponent.EffectFactory.GetGameObjects();
             foreach (IComponent component in components)
             {
                 if (component is PlaceableComponent)
