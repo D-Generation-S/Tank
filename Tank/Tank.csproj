@@ -50,6 +50,7 @@
     <Compile Include="OldCode\Animation.cs" />
     <Compile Include="OldCode\Controls.cs" />
     <Compile Include="OldCode\TankGame.cs" />
+    <Compile Include="src\Components\SoundEffectComponent.cs" />
     <Compile Include="src\DataStructure\DefaultMap.cs" />
     <Compile Include="src\DataStructure\FlattenArray.cs" />
     <Compile Include="src\DataStructure\SpriteSheet.cs" />
@@ -82,6 +83,8 @@
     <Compile Include="OldCode\JSonClasses\jsonTankList.cs" />
     <Compile Include="OldCode\JSonClasses\ScreenDefinition.cs" />
     <Compile Include="OldCode\Entities\Projectile.cs" />
+    <Compile Include="src\Factories\RandomSoundFactory.cs" />
+    <Compile Include="src\Interfaces\Factories\ISoundFactory.cs" />
     <Compile Include="src\Map\Generators\MidpointDisplacementGenerator.cs" />
     <Compile Include="OldCode\MouseHandler.cs" />
     <Compile Include="OldCode\Physic\Fluids.cs" />
@@ -165,6 +168,7 @@
     <Compile Include="src\Systems\MapDestructionSystem.cs" />
     <Compile Include="src\Systems\PhysicSystem.cs" />
     <Compile Include="src\Systems\RenderSystem.cs" />
+    <Compile Include="src\Systems\SoundEffectSystem.cs" />
     <Compile Include="src\Validator\AnimationEntityValidator.cs" />
     <Compile Include="src\Validator\DamageEntityValidator.cs" />
     <Compile Include="src\Validator\MapColliderValidator.cs" />
@@ -172,6 +176,7 @@
     <Compile Include="src\Validator\MapValidator.cs" />
     <Compile Include="src\Validator\PhysicEntityValidator.cs" />
     <Compile Include="src\Validator\RenderableEntityValidator.cs" />
+    <Compile Include="src\Validator\SoundEffectValidator.cs" />
     <Compile Include="src\Wrapper\ContentWrapper.cs" />
     <Compile Include="TankGame.cs" />
     <Compile Include="Interfaces\ActiveObj.cs" />
@@ -199,6 +204,7 @@
     <Content Include="Assets\Images\Effects\Explosion132x32-Sheet.png" />
     <Content Include="Assets\Images\SplashScreens\DGeneratonS.png" />
     <Content Include="Assets\Images\SplashScreens\MonoGame_Logo.png" />
+    <Content Include="Assets\Sound\Effects\Explosion1.wav" />
     <Content Include="Icon.ico" />
     <Content Include="README.txt" />
   </ItemGroup>
@@ -208,7 +214,6 @@
   <ItemGroup>
     <Folder Include="Assets\Images\Textures\" />
     <Folder Include="Enums\" />
-    <Folder Include="src\Components\Tags\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

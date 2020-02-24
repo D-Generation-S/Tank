@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Tank.src.Components;
 using Tank.src.Interfaces.Builders;
 using Tank.src.Interfaces.EntityComponentSystem;
+using Tank.src.Interfaces.Factories;
 
 namespace Tank.src.Builders
 {
@@ -22,6 +23,11 @@ namespace Tank.src.Builders
         private readonly Texture2D spriteSheet;
 
         /// <summary>
+        /// A factory to create sounds for this effect
+        /// </summary>
+        private readonly ISoundFactory soundFactory;
+
+        /// <summary>
         /// The list with all the animations frames to use
         /// </summary>
         private readonly List<Rectangle> animationFrames;
@@ -32,9 +38,20 @@ namespace Tank.src.Builders
         /// <param name="spriteSheet">The sprite sheet to use</param>
         /// <param name="animationFrames">All the animation frames available in the sprite sheet</param>
         public BaseExplosionBuilder(Texture2D spriteSheet, List<Rectangle> animationFrames)
+            : this (spriteSheet, animationFrames, null)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="spriteSheet">The sprite sheet to use</param>
+        /// <param name="animationFrames">All the animation frames available in the sprite sheet</param>
+        public BaseExplosionBuilder(Texture2D spriteSheet, List<Rectangle> animationFrames, ISoundFactory soundFactory)
         {
             this.spriteSheet = spriteSheet;
             this.animationFrames = animationFrames;
+            this.soundFactory = soundFactory;
         }
 
         /// <summary>
@@ -50,8 +67,14 @@ namespace Tank.src.Builders
             visibleComponent.Source = animationFrames[0];
             visibleComponent.Destination = animationFrames[0];
             placeableComponent.Position = new Vector2(animationFrames[0].Width / 2, animationFrames[0].Height / 2);
-            AnimationComponent animation = new AnimationComponent(0.1f, animationFrames);
+            AnimationComponent animation = new AnimationComponent(0.03f, animationFrames);
             animation.Name = "Idle";
+
+            if (soundFactory != null)
+            {
+                SoundEffectComponent soundEffect = new SoundEffectComponent(soundFactory.GetRandomSoundEffect());
+                components.Add(soundEffect);
+            }
 
             components.Add(placeableComponent);
             components.Add(visibleComponent);
