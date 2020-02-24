@@ -125,6 +125,9 @@ namespace Tank
                     };
                     List<SoundEffect> soundEffects = new List<SoundEffect>();
                     soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion1"));
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion2"));
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion3"));
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion4"));
                     RandomSoundFactory soundFactory = new RandomSoundFactory(soundEffects, randomizer);
                     List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
                     explosionBuilders.Add(new BaseExplosionBuilder(Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet"), animationFrames, soundFactory));
