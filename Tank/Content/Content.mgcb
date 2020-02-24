@@ -108,17 +108,23 @@
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:../Assets/Sound/Effects/Explosion1.wav;Effects/Explosion1.wav
-
-#begin ../Assets/Sound/Effects/Explosion1.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:../Assets/Sound/Effects/Explosion1.wav;Effects/Explosion1.wav
-
-#begin ../Assets/Sound/Effects/Explosion1.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
 /build:../Assets/Sound/Effects/Explosion1.wav;Sound/Effects/Explosion1.wav
+
+#begin ../Assets/Sound/Effects/Explosion2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Effects/Explosion2.wav;Sound/Effects/Explosion2.wav
+
+#begin ../Assets/Sound/Effects/Explosion3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Effects/Explosion3.wav;Sound/Effects/Explosion3.wav
+
+#begin ../Assets/Sound/Effects/Explosion4.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Effects/Explosion4.wav;Sound/Effects/Explosion4.wav
 
