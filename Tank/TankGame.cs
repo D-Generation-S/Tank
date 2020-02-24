@@ -61,7 +61,7 @@ namespace Tank
                     new Rectangle(0, 64, 32, 32),
                     new Rectangle(32, 64, 32, 32),
             };
-            explosionBuilders.Add(new BaseExplosionBuilder(Content.Load<Texture2D>("Images/Assets/Explosion132x32-Sheet"), animationFrames));
+            explosionBuilders.Add(new BaseExplosionBuilder(Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet"), animationFrames));
             RandomExplosionFactory randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);            
 
             engine = new GameEngine(new EventManager(), new EntityManager(), new src.Wrapper.ContentWrapper(Content));
@@ -107,7 +107,7 @@ namespace Tank
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Content.Load<Texture2D>("Images/Assets/BasicMunitionSprite");
+            Content.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
         }
 
 
@@ -126,7 +126,7 @@ namespace Tank
 
                     engine.EntityManager.AddComponent(projectileId, new PlaceableComponent() { Position = new Vector2(200, 200) });
                     VisibleComponent visible = new VisibleComponent();
-                    visible.Texture = Content.Load<Texture2D>("Images/Assets/BasicMunitionSprite");
+                    visible.Texture = Content.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
                     visible.Source = new Rectangle(0, 0, 32, 32);
                     visible.Destination = new Rectangle(0, 0, 32, 32);
                     engine.EntityManager.AddComponent(projectileId, visible);
