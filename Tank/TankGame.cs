@@ -81,15 +81,7 @@ namespace Tank
             );
             mapCreatingTask.ContinueWith((antecedent) => {
                 engine.EntityManager.AddComponent(mapId, new MapComponent(antecedent.Result));
-                List<Rectangle> animationFrames = new List<Rectangle>();
-                animationFrames.Add(new Rectangle(0, 0, 32, 32));
-                TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
-                    new Position(100, 0),
-                    Content.Load<Texture2D>("Images/Entities/BasicTank"),
-                    animationFrames
-                 );
-                AddEntityEvent tankEntity = new AddEntityEvent(tankObjectBuilder.BuildGameComponents());
-                engine.EventManager.FireEvent<AddEntityEvent>(this, tankEntity);
+                engine.AddSystem(new GameLogicSystem(4));
             });
         }
 

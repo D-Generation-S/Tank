@@ -189,6 +189,21 @@ namespace Tank.src.EntityComponentSystem.Manager
         }
 
         /// <inheritdoc/>
+        public bool MoveComponent(uint targetEntityId, IComponent componentToMove)
+        {
+            if (!entities.Contains(targetEntityId))
+            {
+                return false;
+            }
+
+            eventManager.FireEvent<ComponentRemovedEvent>(this, new ComponentRemovedEvent(componentToMove.EntityId));
+            componentToMove.SetEntityId(targetEntityId);
+            eventManager.FireEvent<NewComponentEvent>(this, new NewComponentEvent(targetEntityId));
+
+            return true;
+        }
+
+        /// <inheritdoc/>
         public void RemoveComponents(uint entityId, Type componentType)
         {
             foreach (IComponent removeComponent in GetComponents(entityId, componentType))

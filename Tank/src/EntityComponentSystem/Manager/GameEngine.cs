@@ -16,6 +16,11 @@ namespace Tank.src.EntityComponentSystem.Manager
     class GameEngine : IGameEngine
     {
         /// <summary>
+        /// Is the engine currently locked
+        /// </summary>
+        private bool locked;
+
+        /// <summary>
         /// A instance of the event manager to use in the current game engine
         /// </summary>
         private readonly IEventManager eventManager;
@@ -51,6 +56,16 @@ namespace Tank.src.EntityComponentSystem.Manager
         private readonly List<ISystem> systems;
 
         /// <summary>
+        /// A private list with all the new systems to add
+        /// </summary>
+        private readonly List<ISystem> systemsToAdd;
+
+        /// <summary>
+        /// A private list with all the systems to remove
+        /// </summary>
+        private readonly List<ISystem> systemsToRemove;
+
+        /// <summary>
         /// Create a new instance of the game engine
         /// </summary>
         /// <param name="eventManager">The event manager to use</param>
@@ -59,6 +74,8 @@ namespace Tank.src.EntityComponentSystem.Manager
         public GameEngine(IEventManager eventManager, IEntityManager entityManager, ContentWrapper contentWrapper)
         {
             systems = new List<ISystem>();
+            systemsToAdd = new List<ISystem>();
+            systemsToRemove = new List<ISystem>();
             this.eventManager = eventManager;
             entityManager.Initialize(eventManager);
             this.entityManager = entityManager;
@@ -69,12 +86,27 @@ namespace Tank.src.EntityComponentSystem.Manager
         public void AddSystem(ISystem systemToAdd)
         {
             systemToAdd.Initialize(this);
-            systems.Add(systemToAdd);
+            systemsToAdd.Add(systemToAdd);
         }
 
         /// <inheritdoc/>
         public void Update(GameTime gameTime)
         {
+            if (!locked)
+            {
+                for (int i = systemsToAdd.Count - 1; i >= 0; i--)
+                {
+                    systems.Add(systemsToAdd[i]);
+                    systemsToAdd.RemoveAt(i);
+                }
+
+                for (int i = systemsToRemove.Count - 1; i >= 0; i--)
+                {
+                    systems.Remove(systemsToRemove[i]);
+                    systemsToRemove.RemoveAt(i);
+                }
+            }
+
             foreach (ISystem system in systems)
             {
                 system.Update(gameTime);
@@ -84,10 +116,12 @@ namespace Tank.src.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public void Draw(GameTime gameTime)
         {
+            locked = true;
             foreach (ISystem system in systems)
             {
                 system.Draw(gameTime);
             }
+            locked = false;
         }
     }
 }

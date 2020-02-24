@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tank.src.Components;
+using Tank.src.Components.Tags;
 using Tank.src.DataStructure;
 using Tank.src.Interfaces.Builders;
 using Tank.src.Interfaces.EntityComponentSystem;
@@ -48,10 +49,15 @@ namespace Tank.src.Builders
                 Collider = new Rectangle(0, 0, 32, 32)
             };
 
+            PlayerControllableComponent controllableComponent = new PlayerControllableComponent(new StaticKeyboardControls());
+            GameObjectTag gameObjectTag = new GameObjectTag();
+
             returnComponents.Add(placeableComponent);
             returnComponents.Add(visibleComponent);
             returnComponents.Add(moveable);
             returnComponents.Add(collider);
+            returnComponents.Add(controllableComponent);
+            returnComponents.Add(gameObjectTag);
 
             return returnComponents;
         }

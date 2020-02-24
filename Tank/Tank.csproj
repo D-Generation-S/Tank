@@ -51,9 +51,14 @@
     <Compile Include="OldCode\Controls.cs" />
     <Compile Include="OldCode\TankGame.cs" />
     <Compile Include="src\Builders\TankObjectBuilder.cs" />
+    <Compile Include="src\Components\ControllableGameObject.cs" />
+    <Compile Include="src\Components\PlayerControllableComponent.cs" />
     <Compile Include="src\Components\SoundEffectComponent.cs" />
+    <Compile Include="src\Components\Tags\ActiveGameObjectTag.cs" />
+    <Compile Include="src\Components\Tags\GameObjectTag.cs" />
     <Compile Include="src\DataStructure\DefaultMap.cs" />
     <Compile Include="src\DataStructure\FlattenArray.cs" />
+    <Compile Include="src\DataStructure\StaticKeyboardControls.cs" />
     <Compile Include="src\DataStructure\SpriteSheet.cs" />
     <Compile Include="OldCode\Entities\DebugEntity.cs" />
     <Compile Include="OldCode\Entities\Player\BasePlayer.cs" />
@@ -86,6 +91,7 @@
     <Compile Include="OldCode\Entities\Projectile.cs" />
     <Compile Include="src\Factories\RandomSoundFactory.cs" />
     <Compile Include="src\Interfaces\Factories\ISoundFactory.cs" />
+    <Compile Include="src\Interfaces\GameObjectControlling\IGameObjectController.cs" />
     <Compile Include="src\Map\Generators\MidpointDisplacementGenerator.cs" />
     <Compile Include="OldCode\MouseHandler.cs" />
     <Compile Include="OldCode\Physic\Fluids.cs" />
@@ -165,6 +171,7 @@
     <Compile Include="src\Systems\AnimationSystem.cs" />
     <Compile Include="src\Components\ColliderComponent.cs" />
     <Compile Include="src\Systems\DamageSystem.cs" />
+    <Compile Include="src\Systems\GameLogicSystem.cs" />
     <Compile Include="src\Systems\MapColliderSystem.cs" />
     <Compile Include="src\Systems\MapDestructionSystem.cs" />
     <Compile Include="src\Systems\PhysicSystem.cs" />
@@ -172,6 +179,8 @@
     <Compile Include="src\Systems\SoundEffectSystem.cs" />
     <Compile Include="src\Validator\AnimationEntityValidator.cs" />
     <Compile Include="src\Validator\DamageEntityValidator.cs" />
+    <Compile Include="src\Validator\GameObjectValidator.cs" />
+    <Compile Include="src\Validator\PlayerObjectValidator.cs" />
     <Compile Include="src\Validator\MapColliderValidator.cs" />
     <Compile Include="src\Validator\ColliderObjectValidator.cs" />
     <Compile Include="src\Validator\MapValidator.cs" />
