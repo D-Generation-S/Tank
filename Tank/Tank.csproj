@@ -194,93 +194,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Audio\Sounds\Basic_Death.wav" />
-    <Content Include="Content\Audio\Sounds\Basic_Explosion.wav" />
-    <Content Include="Content\Audio\Sounds\Basic_Hit.wav" />
-    <Content Include="Content\Audio\Sounds\Basic_Shoot.wav" />
-    <Content Include="Content\Audio\Sounds\ButtonClick.wav" />
-    <Content Include="Content\Audio\Tracks\TankBattleMusic.mp3" />
-    <Content Include="Content\Images\Assets\BasicMunitionSprite.png" />
-    <Content Include="Content\Images\Assets\Explosion132x32-Sheet.png" />
-    <Content Include="Content\Images\Assets\LifeBar_Background.png" />
-    <Content Include="Content\Images\Assets\LifeBar_Foreground.png" />
-    <Content Include="Content\Images\Assets\Selection_Arrow.png" />
-    <Content Include="Content\Images\Assets\tank_Base.png" />
-    <Content Include="Content\Images\Assets\tank_Canon.png" />
-    <Content Include="Content\Images\Assets\tank_Heavy.png" />
-    <Content Include="Content\Images\Assets\tank_Heavy_Canon.png" />
-    <Content Include="Content\Images\Backgrounds\blog_teaser.jpg" />
-    <Content Include="Content\Images\Backgrounds\MonoGame_Logo.png" />
-    <Content Include="Content\Images\Backgrounds\Tank_Background_Distort_Shadow.png" />
-    <Content Include="Content\Images\GUI\AngleContainer.png" />
-    <Content Include="Content\Images\GUI\AngleDisplay.png" />
-    <Content Include="Content\Images\GUI\Arrow_Left.png" />
-    <Content Include="Content\Images\GUI\Arrow_Right.png" />
-    <Content Include="Content\Images\GUI\BlackPanelBorder.png" />
-    <Content Include="Content\Images\GUI\Cursor-icon.png" />
-    <Content Include="Content\Images\GUI\facebook.png" />
-    <Content Include="Content\Images\GUI\googleplus.png" />
-    <Content Include="Content\Images\GUI\LeftButton.png" />
-    <Content Include="Content\Images\GUI\LeftButton_Hover.png" />
-    <Content Include="Content\Images\GUI\meter.png" />
-    <Content Include="Content\Images\GUI\meter_bar.png" />
-    <Content Include="Content\Images\GUI\meter_big.png" />
-    <Content Include="Content\Images\GUI\Minus.png" />
-    <Content Include="Content\Images\GUI\Plus.png" />
-    <Content Include="Content\Images\GUI\ProgressBackground.png" />
-    <Content Include="Content\Images\GUI\ProgressFront.png" />
-    <Content Include="Content\Images\GUI\Refresh.png" />
-    <Content Include="Content\Images\GUI\RightButton.png" />
-    <Content Include="Content\Images\GUI\RightButton_Hover.png" />
-    <Content Include="Content\Images\GUI\Slider.png" />
-    <Content Include="Content\Images\GUI\Slider_Bar.png" />
-    <Content Include="Content\Images\GUI\Toggle.png" />
-    <Content Include="Content\Images\GUI\Toggle_Pressed.png" />
-    <Content Include="Content\Images\GUI\tumblr.png" />
-    <Content Include="Content\Images\GUI\twitter.png" />
-    <Content Include="Content\Images\GUI\youtube.png" />
-    <Content Include="Content\Images\Textures\groundTile.png" />
-    <Content Include="Content\Images\Textures\rockTile.png" />
-    <Content Include="Content\Pixel.png" />
-    <Content Include="Content\Pixel_Red.png" />
-    <Content Include="Content\Source\Audio\Sounds\Basic_Death.wav" />
-    <Content Include="Content\Source\Audio\Sounds\Basic_Explosion.wav" />
-    <Content Include="Content\Source\Audio\Sounds\Basic_Hit.wav" />
-    <Content Include="Content\Source\Audio\Sounds\Basic_Shoot.wav" />
-    <Content Include="Content\Source\Audio\Sounds\ButtonClick.wav" />
-    <Content Include="Content\Source\Audio\Tracks\Doc.mp3" />
-    <Content Include="Content\Source\Audio\Tracks\GoT.mp3" />
-    <Content Include="Content\Source\Audio\Tracks\Sky.mp3" />
-    <Content Include="Content\Source\Audio\Tracks\TankBattleMusic.mp3" />
-    <Content Include="Content\Source\Images\Assets\BasicMunitionSprite.png" />
-    <Content Include="Content\Source\Images\Assets\LifeBar_Background.png" />
-    <Content Include="Content\Source\Images\Assets\LifeBar_Foreground.png" />
-    <Content Include="Content\Source\Images\Assets\Selection_Arrow.png" />
-    <Content Include="Content\Source\Images\Assets\tank_Base.png" />
-    <Content Include="Content\Source\Images\Assets\tank_Canon.png" />
-    <Content Include="Content\Source\Images\Assets\tank_Heavy.png" />
-    <Content Include="Content\Source\Images\Assets\tank_Heavy_Canon.png" />
-    <Content Include="Content\Source\Images\Backgrounds\blog_teaser.jpg" />
-    <Content Include="Content\Source\Images\Backgrounds\MonoGame_Logo.png" />
-    <Content Include="Content\Source\Images\Backgrounds\Tank_Background_Distort_Shadow.png" />
-    <Content Include="Content\Source\Images\GUI\AngleContainer.png" />
-    <Content Include="Content\Source\Images\GUI\AngleDisplay.png" />
-    <Content Include="Content\Source\Images\GUI\Arrow_Left.png" />
-    <Content Include="Content\Source\Images\GUI\Arrow_Right.png" />
-    <Content Include="Content\Source\Images\GUI\BlackPanelBorder.png" />
-    <Content Include="Content\Source\Images\GUI\Cursor-icon.png" />
-    <Content Include="Content\Source\Images\GUI\meter.png" />
-    <Content Include="Content\Source\Images\GUI\meter_bar.png" />
-    <Content Include="Content\Source\Images\GUI\meter_big.png" />
-    <Content Include="Content\Source\Images\GUI\Minus.png" />
-    <Content Include="Content\Source\Images\GUI\Plus.png" />
-    <Content Include="Content\Source\Images\GUI\ProgressBackground.png" />
-    <Content Include="Content\Source\Images\GUI\ProgressFront.png" />
-    <Content Include="Content\Source\Images\GUI\Refresh.png" />
-    <Content Include="Content\Source\Images\Textures\groundTile.png" />
-    <Content Include="Content\Source\Images\Textures\rockTile.png" />
-    <Content Include="Content\Source\Pixel.png" />
-    <Content Include="Content\Source\Pixel_Red.png" />
+    <Content Include="Assets\Images\Pixel.png" />
+    <Content Include="Assets\Images\Entities\BasicMunitionSprite.png" />
+    <Content Include="Assets\Images\Effects\Explosion132x32-Sheet.png" />
+    <Content Include="Assets\Images\SplashScreens\DGeneratonS.png" />
+    <Content Include="Assets\Images\SplashScreens\MonoGame_Logo.png" />
     <Content Include="Icon.ico" />
     <Content Include="README.txt" />
   </ItemGroup>
@@ -288,44 +206,13 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\Images\Textures\" />
     <Folder Include="Enums\" />
     <Folder Include="src\Components\Tags\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Content\Data\Entities\Projectiles\dirt.json" />
-    <None Include="Content\Data\Entities\Projectiles\buff.json" />
-    <None Include="Content\Data\Entities\Projectiles\acid.json" />
-    <None Include="Content\Data\Entities\Projectiles\splitting.json" />
-    <None Include="Content\Data\Entities\Projectiles\bouncy.json" />
-    <None Include="Content\Data\Entities\Projectiles\buckshot.json" />
-    <None Include="Content\Data\Entities\tanks.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\Data\Entities\projectiles.json" />
-    <None Include="Content\Data\Entities\Projectiles\nuclear.json" />
-    <None Include="Content\Data\Entities\Projectiles\base.json" />
-    <None Include="Content\Data\Entities\Tanks\light.json" />
-    <None Include="Content\Data\Entities\Tanks\heavy.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\Data\Entities\Tanks\base.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\Data\GUI\gameSetup.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\Data\GUI\lobby.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\Data\GUI\splash.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\Data\GUI\mainMenu.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\gameFont.spritefont" />
-    <None Include="Content\Source\gameFont.spritefont" />
+    <None Include="Assets\gameFont.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
