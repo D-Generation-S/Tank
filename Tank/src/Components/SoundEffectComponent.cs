@@ -15,6 +15,16 @@ namespace Tank.src.Components
         public string Name;   
 
         /// <summary>
+        /// Readonly access if there should be a random pitch
+        /// </summary>
+        private readonly bool randomPitch;
+
+        /// <summary>
+        /// Public access if there should be a random pitch
+        /// </summary>
+        public bool RandomPitch => randomPitch;
+
+        /// <summary>
         /// Readonly access to the sound effect to use
         /// </summary>
         private readonly SoundEffect soundEffect;
@@ -29,8 +39,18 @@ namespace Tank.src.Components
         /// </summary>
         /// <param name="soundEffect">The sound effect to use</param>
         public SoundEffectComponent(SoundEffect soundEffect)
+            : this(soundEffect, false)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of this container
+        /// </summary>
+        /// <param name="soundEffect">The sound effect to use</param>
+        public SoundEffectComponent(SoundEffect soundEffect, bool randomPitch)
         {
             this.soundEffect = soundEffect;
+            this.randomPitch = randomPitch;
         }
 
     }
