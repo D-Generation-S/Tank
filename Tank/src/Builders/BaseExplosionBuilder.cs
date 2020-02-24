@@ -72,7 +72,7 @@ namespace Tank.src.Builders
 
             if (soundFactory != null)
             {
-                SoundEffectComponent soundEffect = new SoundEffectComponent(soundFactory.GetRandomSoundEffect());
+                SoundEffectComponent soundEffect = new SoundEffectComponent(soundFactory.GetRandomSoundEffect(), true);
                 components.Add(soundEffect);
             }
 
