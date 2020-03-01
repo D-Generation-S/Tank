@@ -66,8 +66,8 @@ namespace Tank.src.Systems
                 return;
             }
             Circle damageArea = damageComponent.DamageArea;
-            damageArea.Center.X += collisionEvent.CollisionPosition.X;
-            damageArea.Center.Y += collisionEvent.CollisionPosition.Y;
+            damageArea.Center.X = collisionEvent.CollisionPosition.X;
+            damageArea.Center.Y = collisionEvent.CollisionPosition.Y;
 
             FireEvent<DamageTerrainEvent>(new DamageTerrainEvent(damageArea));
         }
@@ -92,7 +92,7 @@ namespace Tank.src.Systems
                         collisionEvent.CollisionPosition.X,
                         collisionEvent.CollisionPosition.Y
                     );
-                    ((PlaceableComponent)component).Position = explosionPosition;
+                    ((PlaceableComponent)component).Position += explosionPosition;
                 }
             }
             FireEvent<AddEntityEvent>(new AddEntityEvent(components));

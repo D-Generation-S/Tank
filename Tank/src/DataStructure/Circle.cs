@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,6 +54,17 @@ namespace Tank.src.DataStructure
         /// <param name="radius">The radius for the circle</param>
         public Circle(int x, int y, int radius)
             : this (new Position(x, y), radius)
+        {
+        }
+
+
+        /// <summary>
+        /// Create a new circle instance
+        /// </summary>
+        /// <param name="position">The position of the circle</param>
+        /// <param name="radius">The radius for the circle</param>
+        public Circle(Vector2 position, int radius)
+            : this(new Position(position), radius)
         {
         }
 

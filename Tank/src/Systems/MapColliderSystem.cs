@@ -68,8 +68,8 @@ namespace Tank.src.Systems
                 }
 
                 Position positionToCheck = new Position(
-                    colliderComponent.Collider.X + colliderComponent.Collider.Width,
-                    colliderComponent.Collider.Y + colliderComponent.Collider.Height
+                    colliderComponent.Collider.Right,
+                    colliderComponent.Collider.Bottom
                 );
                 positionToCheck.X += (int)placeableComponent.Position.X;
                 positionToCheck.Y += (int)placeableComponent.Position.Y;
@@ -92,7 +92,8 @@ namespace Tank.src.Systems
                                 Position.Y += visibleComponent.Source.Height / 2;
                             }
                             placeableComponent.Position = Position;
-                            FireEvent<MapCollisionEvent>(new MapCollisionEvent(entityId, placeableComponent.Position));
+                            Position collisionPosition = new Position(positionToCheck.X, positionToCheck.Y - y);
+                            FireEvent<MapCollisionEvent>(new MapCollisionEvent(entityId, collisionPosition));
                             break;
                         }
                     }

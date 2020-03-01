@@ -74,6 +74,7 @@ namespace Tank.src.Systems
                     MoveableComponent moveComponent = entityManager.GetComponent<MoveableComponent>(entityId);
                     if (moveComponent.OnGround)
                     {
+                        moveComponent.Velocity = Vector2.Zero;
                         continue;
                     }
                     Vector2 objVelocity = moveComponent.Velocity;

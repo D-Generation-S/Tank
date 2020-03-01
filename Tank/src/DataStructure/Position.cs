@@ -48,7 +48,7 @@ namespace Tank.src.DataStructure
         public Position(Vector2 vector2)
         {
             X = (int)vector2.X;
-            Y = (int)vector2.X;
+            Y = (int)vector2.Y;
         }
 
         /// <summary>

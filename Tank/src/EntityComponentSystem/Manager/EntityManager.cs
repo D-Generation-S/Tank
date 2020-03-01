@@ -101,6 +101,16 @@ namespace Tank.src.EntityComponentSystem.Manager
         }
 
         /// <inheritdoc/>
+        public List<uint> GetEntitiesWithComponent<T>() where T : IComponent
+        {
+            Type type = typeof(T);
+            return entities.FindAll((entity) =>
+            {
+                return HasComponent(entity, type);
+            });
+        }
+
+        /// <inheritdoc/>
         public bool AddComponent(uint entityId, IComponent component)
         {
             return AddComponent(entityId, component, true);

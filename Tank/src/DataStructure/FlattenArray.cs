@@ -116,7 +116,7 @@ namespace Tank.src.DataStructure
         public bool SetValue(int x, int y, T value)
         {
             int targetPosition = y * width + x;
-            if (targetPosition > array.Length)
+            if (targetPosition >= array.Length)
             {
                 return false;
             }

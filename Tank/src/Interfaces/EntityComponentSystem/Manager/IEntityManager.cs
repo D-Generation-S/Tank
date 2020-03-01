@@ -38,6 +38,13 @@ namespace Tank.src.Interfaces.EntityComponentSystem.Manager
         bool EntityExists(uint entityId);
 
         /// <summary>
+        /// Get all the entities with a specific component
+        /// </summary>
+        /// <typeparam name="T">The component type to search for</typeparam>
+        /// <returns></returns>
+        List<uint> GetEntitiesWithComponent<T>() where T : IComponent;
+
+        /// <summary>
         /// This mehthod will remove a entity from the list and inform the systems
         /// </summary>
         /// <param name="entityId">The id of the entity which should be removed</param>

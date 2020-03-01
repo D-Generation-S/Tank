@@ -66,7 +66,7 @@ namespace Tank.src.Builders
             visibleComponent.Texture = spriteSheet;
             visibleComponent.Source = animationFrames[0];
             visibleComponent.Destination = animationFrames[0];
-            placeableComponent.Position = new Vector2(animationFrames[0].Width / 2, animationFrames[0].Height / 2);
+            placeableComponent.Position = new Vector2(-(animationFrames[0].Width / 2), -(animationFrames[0].Height / 2));
             AnimationComponent animation = new AnimationComponent(0.03f, animationFrames);
             animation.Name = "Idle";
 

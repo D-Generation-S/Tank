@@ -14,6 +14,7 @@ using Tank.src.Components;
 using Tank.src.DataStructure;
 using Tank.src.EntityComponentSystem.Manager;
 using Tank.src.Events.EntityBased;
+using Tank.src.Events.TerrainEvents;
 using Tank.src.Factories;
 using Tank.src.Interfaces.Builders;
 using Tank.src.Interfaces.EntityComponentSystem.Manager;
@@ -30,6 +31,7 @@ namespace Tank
         private SpriteBatch spriteBatch;
 
         KeyboardState previousState;
+        MouseState previousMouseState;
         public static GraphicsDevice PublicGraphicsDevice;
         public static ContentManager PublicContentManager;
 
@@ -83,6 +85,8 @@ namespace Tank
                 engine.EntityManager.AddComponent(mapId, new MapComponent(antecedent.Result));
                 engine.AddSystem(new GameLogicSystem(4));
             });
+
+            IsMouseVisible = true;
         }
 
         private void InitResolution(int windowWidth, int windowHeight)
@@ -163,7 +167,7 @@ namespace Tank
                     {
                         Collider = new Rectangle(0, 0, 32, 32)
                     });
-                    engine.EntityManager.AddComponent(projectileId, new DamageComponent(true, 1, new src.DataStructure.Circle(0, 0, 26), randomExplosionFactory)
+                    engine.EntityManager.AddComponent(projectileId, new DamageComponent(true, 1, new src.DataStructure.Circle(0, 0, 16), randomExplosionFactory)
                     {
                          
                     });
@@ -173,9 +177,52 @@ namespace Tank
                         PhysicRotate = true
                     });
                 }
+
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+                {
+                    uint exposion = engine.EntityManager.CreateEntity();
+                    List<Rectangle> animationFrames = new List<Rectangle>() {
+                        new Rectangle(0, 0, 32, 32),
+                        new Rectangle(32, 0, 32, 32),
+                        new Rectangle(64, 0, 32, 32),
+                        new Rectangle(0, 32, 32, 32),
+                        new Rectangle(32, 32, 32, 32),
+                        new Rectangle(64, 32, 32, 32),
+                        new Rectangle(0, 64, 32, 32),
+                        new Rectangle(32, 64, 32, 32),
+                    };
+                    List<SoundEffect> soundEffects = new List<SoundEffect>();
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion1"));
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion2"));
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion3"));
+                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion4"));
+                    RandomSoundFactory soundFactory = new RandomSoundFactory(soundEffects, randomizer);
+                    List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
+                    Texture2D explosion = Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
+                    explosionBuilders.Add(new BaseExplosionBuilder(explosion, animationFrames, soundFactory));
+                    RandomExplosionFactory randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);
+
+                    foreach(src.Interfaces.EntityComponentSystem.IComponent component in randomExplosionFactory.GetGameObjects())
+                    {
+                        Circle circle = null;
+                        if (component is PlaceableComponent)
+                        {
+                            PlaceableComponent placeableComponent = (PlaceableComponent)component;
+                            placeableComponent.Position = Mouse.GetState().Position.ToVector2();
+                            placeableComponent.Position -= new Vector2(32 / 2, 32 / 2);
+                            circle = new Circle(Mouse.GetState().Position.ToVector2(), 16);
+                        }
+                        engine.EntityManager.AddComponent(exposion, component);
+                        if (circle != null)
+                        {
+                            engine.EventManager.FireEvent<DamageTerrainEvent>(this, new DamageTerrainEvent(circle));
+                        }
+                    }
+                }
                 base.Update(gameTime);
 
                 previousState = Keyboard.GetState();
+                previousMouseState = Mouse.GetState();
             }
         }
 

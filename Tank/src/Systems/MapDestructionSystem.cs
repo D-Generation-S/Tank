@@ -44,12 +44,12 @@ namespace Tank.src.Systems
             if (eventArgs is DamageTerrainEvent)
             {
                 DamageTerrainEvent damageTerrainEvent = (DamageTerrainEvent)eventArgs;
+                List<uint> physicEntities = entityManager.GetEntitiesWithComponent<MoveableComponent>();
                 foreach (uint entityId in watchedEntities)
                 {
                     MapComponent map = entityManager.GetComponent<MapComponent>(entityId);
 
                     Circle damageCircle = damageTerrainEvent.DamageArea;
-
                     int xStart = damageCircle.Center.X - damageCircle.Radius;
                     int yStart = damageCircle.Center.Y - damageCircle.Radius;
                     int xEnd = xStart + damageCircle.Diameter;
@@ -65,10 +65,54 @@ namespace Tank.src.Systems
                             
                         }
                     }
+                    foreach (uint physicEntity in physicEntities)
+                    {
+                        PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(physicEntity);
+                        ColliderComponent collider  = entityManager.GetComponent<ColliderComponent>(physicEntity);
+                        if (placeable == null)
+                        {
+                            continue;
+                        }
+
+                        MoveableComponent moveable = entityManager.GetComponent<MoveableComponent>(physicEntity);
+                        Position entityPosition = new Position(placeable.Position);
+                        List<Position> positions = GetColliderPositions(entityPosition, collider);
+                        foreach (Position position in positions)
+                        {
+                            if (damageCircle.IsInInCircle(position))
+                            {
+                                moveable.OnGround = false;
+                                break;
+                            }
+                        }
+
+                    }
                     map.Map.ApplyChanges();
                 }
             }
+        }
 
+        private List<Position> GetColliderPositions(Position entityPosition, ColliderComponent collider)
+        {
+            List<Position> positions = new List<Position>();
+            positions.Add(entityPosition);
+            if (collider != null)
+            {
+                positions.Add(new Position(
+                    entityPosition.X + collider.Collider.X + collider.Collider.Right,
+                    entityPosition.Y + collider.Collider.Y
+                ));
+                positions.Add(new Position(
+                    entityPosition.X + collider.Collider.X,
+                    entityPosition.Y + collider.Collider.Y + collider.Collider.Bottom
+                ));
+                positions.Add(new Position(
+                    entityPosition.X + collider.Collider.X + collider.Collider.Right,
+                    entityPosition.Y + collider.Collider.Y + collider.Collider.Bottom
+                ));
+            }
+
+            return positions;
         }
     }
 }
