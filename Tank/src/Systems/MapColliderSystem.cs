@@ -87,10 +87,6 @@ namespace Tank.src.Systems
                             Vector2 Position = new Vector2(placeableComponent.Position.X, newYPosition);
                             
                             VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
-                            if (visibleComponent != null)
-                            {
-                                Position.Y += visibleComponent.Source.Height / 2;
-                            }
                             placeableComponent.Position = Position;
                             Position collisionPosition = new Position(positionToCheck.X, positionToCheck.Y - y);
                             FireEvent<MapCollisionEvent>(new MapCollisionEvent(entityId, collisionPosition));
