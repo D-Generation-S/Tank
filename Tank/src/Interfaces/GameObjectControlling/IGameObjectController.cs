@@ -7,31 +7,44 @@ using System.Threading.Tasks;
 
 namespace Tank.src.Interfaces.GameObjectControlling
 {
+    /// <summary>
+    /// This interface will hide the used input device and generalize the input
+    /// </summary>
     interface IGameObjectController
     {
         /// <summary>
-        /// The key used to fire the canon
+        /// Update the state of this controller
         /// </summary>
-        Keys Fire { get; }
+        void UpdateStates();
 
         /// <summary>
-        /// The key used to increase the strenght
+        /// Is the fire key pressed
         /// </summary>
-        Keys StrenghtUp { get; }
+        /// <returns>True if the key was pressed once</returns>
+        bool IsFirePressed();
 
         /// <summary>
-        /// The key to lower the strenght
+        /// Should we increase the strength
         /// </summary>
-        Keys StrenghtDown { get; }
+        /// <returns>True if the strength should be increased</returns>
+        bool IncreaseStrength();
 
         /// <summary>
-        /// Rotate the barrel up
+        /// Should we decrease the strength
         /// </summary>
-        Keys RotationUp { get; }
+        /// <returns>True if we want to decrease the strength</returns>
+        bool DecreseStrength();
 
         /// <summary>
-        /// Rotate the battel down
+        /// Should we rotate the barrel up
         /// </summary>
-        Keys RotationDown { get; }
+        /// <returns>true if we should rotate the barrel up</returns>
+        bool RotateUp();
+
+        /// <summary>
+        /// Should we rotate the barrel down
+        /// </summary>
+        /// <returns>true if we should rotate the barrel down</returns>
+        bool RotateDown();
     }
 }
