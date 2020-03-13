@@ -90,6 +90,8 @@
     <Compile Include="OldCode\JSonClasses\jsonTankList.cs" />
     <Compile Include="OldCode\JSonClasses\ScreenDefinition.cs" />
     <Compile Include="OldCode\Entities\Projectile.cs" />
+    <Compile Include="src\DataStructure\StaticXboxController.cs" />
+    <Compile Include="src\DataStructure\InputWrapper\XboxControllerWrapper.cs" />
     <Compile Include="src\Factories\RandomSoundFactory.cs" />
     <Compile Include="src\Interfaces\Factories\ISoundFactory.cs" />
     <Compile Include="src\Interfaces\GameObjectControlling\IGameObjectController.cs" />
