@@ -58,6 +58,7 @@
     <Compile Include="src\Components\Tags\GameObjectTag.cs" />
     <Compile Include="src\DataStructure\DefaultMap.cs" />
     <Compile Include="src\DataStructure\FlattenArray.cs" />
+    <Compile Include="src\DataStructure\InputWrapper\KeyboardWrapper.cs" />
     <Compile Include="src\DataStructure\StaticKeyboardControls.cs" />
     <Compile Include="src\DataStructure\SpriteSheet.cs" />
     <Compile Include="OldCode\Entities\DebugEntity.cs" />
