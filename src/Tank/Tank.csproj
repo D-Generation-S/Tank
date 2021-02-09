@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <TieredCompilation>false</TieredCompilation>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Assets\Images\Effects\Explosion132x32-Sheet.png" />
+    <None Remove="Assets\Images\Entities\BasicMunitionSprite.png" />
+    <None Remove="Assets\Images\Entities\BasicTank.png" />
+    <None Remove="Assets\Images\Pixel.png" />
+    <None Remove="Assets\Images\SplashScreens\DGeneratonS.png" />
+    <None Remove="Assets\Images\SplashScreens\MonoGame_Logo.png" />
+    <None Remove="Assets\Sound\Effects\Explosion1.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Images\Effects\Explosion132x32-Sheet.png" />
+    <Content Include="Assets\Images\Entities\BasicMunitionSprite.png" />
+    <Content Include="Assets\Images\Entities\BasicTank.png" />
+    <Content Include="Assets\Images\Pixel.png" />
+    <Content Include="Assets\Images\SplashScreens\DGeneratonS.png" />
+    <Content Include="Assets\Images\SplashScreens\MonoGame_Logo.png" />
+    <Content Include="Assets\Sound\Effects\Explosion1.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+</Project>
