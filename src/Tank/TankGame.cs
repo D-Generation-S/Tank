@@ -90,7 +90,7 @@ namespace Tank
             {
                 MapComponent mapComponent = new MapComponent(antecedent.Result);
                 engine.EntityManager.AddComponent(mapId, mapComponent);
-                engine.AddSystem(new GameLogicSystem(4, 1440));
+                engine.AddSystem(new GameLogicSystem(4, antecedent.Result));
 
                 VisibleComponent visibleComponent = engine.EntityManager.GetComponent<VisibleComponent>(mapId);
                 IMap map = mapComponent.Map;
