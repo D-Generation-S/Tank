@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Tank.EntityComponentSystem.DataContainer;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.EntityComponentSystem.DataContainer;
 
-namespace Tank.src.EntityComponentSystem.Manager
+namespace Tank.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This class is the default event manager to use

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tank.src.Events.EntityBased
+﻿namespace Tank.Events.EntityBased
 {
     /// <summary>
     /// This class will tell systems that an entity was removed from the manager

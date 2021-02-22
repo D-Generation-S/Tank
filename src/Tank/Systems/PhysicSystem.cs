@@ -8,7 +8,7 @@ using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Utils;
 using Tank.Validator;
 
-namespace Tank.src.Systems
+namespace Tank.Systems
 {
     /// <summary>
     /// This system will performe physic actions on the entites
@@ -105,7 +105,7 @@ namespace Tank.src.Systems
 
             int timeSteps = (int)((deltaTime + leftOverDeltaTime) / fixedDeltaTime);
 
-            leftOverDeltaTime = deltaTime - (timeSteps * fixedDeltaTime);
+            leftOverDeltaTime = deltaTime - timeSteps * fixedDeltaTime;
             List<uint> entitesToRemove = new List<uint>();
 
             updateLocked = true;

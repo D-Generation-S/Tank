@@ -3,15 +3,14 @@ using System;
 using System.Collections.Generic;
 using Tank.Components;
 using Tank.DataStructure;
+using Tank.Events.EntityBased;
 using Tank.Events.PhysicBased;
+using Tank.Events.TerrainEvents;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.Events.EntityBased;
-using Tank.src.Events.PhysicBased;
-using Tank.src.Events.TerrainEvents;
 using Tank.Validator;
 
-namespace Tank.src.Systems
+namespace Tank.Systems
 {
     /// <summary>
     /// This system will handle any damage between entites
@@ -42,12 +41,12 @@ namespace Tank.src.Systems
             {
                 MapCollisionEvent collisionEvent = (MapCollisionEvent)eventArgs;
                 DamageComponent damageComponent = entityManager.GetComponent<DamageComponent>(collisionEvent.EntityId);
-                
+
                 if (damageComponent == null)
                 {
                     return;
                 }
-                FireEvent<RemoveEntityEvent>(new RemoveEntityEvent(collisionEvent.EntityId));
+                FireEvent(new RemoveEntityEvent(collisionEvent.EntityId));
                 Effect(collisionEvent, damageComponent);
                 DamageTerrain(damageComponent, collisionEvent);
                 PushbackEntities(damageComponent, collisionEvent);
@@ -69,7 +68,7 @@ namespace Tank.src.Systems
             damageArea.Center.X = collisionEvent.CollisionPosition.X;
             damageArea.Center.Y = collisionEvent.CollisionPosition.Y;
 
-            FireEvent<DamageTerrainEvent>(new DamageTerrainEvent(damageArea));
+            FireEvent(new DamageTerrainEvent(damageArea));
         }
 
         /// <summary>
@@ -95,13 +94,13 @@ namespace Tank.src.Systems
                     ((PlaceableComponent)component).Position += explosionPosition;
                 }
             }
-            FireEvent<AddEntityEvent>(new AddEntityEvent(components));
+            FireEvent(new AddEntityEvent(components));
         }
 
         private void PushbackEntities(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
         {
-            List<uint>  entitiesWithComponents = entityManager.GetEntitiesWithComponent<ColliderComponent>();
-            foreach(uint entityId in entitiesWithComponents)
+            List<uint> entitiesWithComponents = entityManager.GetEntitiesWithComponent<ColliderComponent>();
+            foreach (uint entityId in entitiesWithComponents)
             {
                 if (!entityManager.HasComponent(entityId, typeof(MoveableComponent)) || !entityManager.HasComponent(entityId, typeof(PlaceableComponent)))
                 {
@@ -122,7 +121,7 @@ namespace Tank.src.Systems
                     force.Normalize();
                     force *= magnitude;
 
-                    FireEvent<ApplyForceEvent>(new ApplyForceEvent(entityId, force));
+                    FireEvent(new ApplyForceEvent(entityId, force));
                 }
             }
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.Events
+namespace Tank.Events
 {
     /// <summary>
     /// This class is a base class to defined entity based events

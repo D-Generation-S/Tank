@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.DataStructure;
 
-namespace Tank.src.Events.PhysicBased
+namespace Tank.Events.PhysicBased
 {
     /// <summary>
     /// This event will describe an collision with the terrain

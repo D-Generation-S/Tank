@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Diagnostics;
 using Tank.Components;
 using Tank.DataStructure;
+using Tank.Events.PhysicBased;
 using Tank.Interfaces.MapGenerators;
-using Tank.src.Events.PhysicBased;
 using Tank.Validator;
 
-namespace Tank.src.Systems
+namespace Tank.Systems
 {
     /// <summary>
     /// This system will create collisions events if some entites hit the ground
@@ -79,7 +77,7 @@ namespace Tank.src.Systems
                 if (mapEntity.Map.CollissionMap.GetValue(positionToCheck.X, positionToCheck.Y))
                 {
                     moveableComponent.OnGround = true;
-                    
+
                     for (int y = 0; y < colliderComponent.Collider.Height * 2; y++)
                     {
                         if (!mapEntity.Map.CollissionMap.GetValue(positionToCheck.X, positionToCheck.Y - y))
@@ -87,11 +85,11 @@ namespace Tank.src.Systems
                             int newYPosition = positionToCheck.Y - y;
                             newYPosition -= colliderComponent.Collider.Height;
                             Vector2 Position = new Vector2(placeableComponent.Position.X, newYPosition);
-                            
+
                             //VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
                             placeableComponent.Position = Position;
                             Position collisionPosition = new Position(positionToCheck.X, positionToCheck.Y - y);
-                            FireEvent<MapCollisionEvent>(new MapCollisionEvent(entityId, collisionPosition));
+                            FireEvent(new MapCollisionEvent(entityId, collisionPosition));
                             break;
                         }
                     }

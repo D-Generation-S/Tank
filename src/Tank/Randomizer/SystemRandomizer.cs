@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.Interfaces.Randomizer;
 
-namespace Tank.src.Randomizer
+namespace Tank.Randomizer
 {
     /// <summary>
     /// An instance of the system randomizer

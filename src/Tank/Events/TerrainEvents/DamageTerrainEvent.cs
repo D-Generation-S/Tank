@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.DataStructure;
 
-namespace Tank.src.Events.TerrainEvents
+namespace Tank.Events.TerrainEvents
 {
     /// <summary>
     /// This class is an event telling the system there should be some terrain damage

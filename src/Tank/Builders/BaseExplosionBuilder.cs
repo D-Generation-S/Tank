@@ -6,7 +6,7 @@ using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.Factories;
 
-namespace Tank.src.Builders
+namespace Tank.Builders
 {
     /// <summary>
     /// This class will build you an explosion based on a sprite sheet and some animation frames
@@ -34,7 +34,7 @@ namespace Tank.src.Builders
         /// <param name="spriteSheet">The sprite sheet to use</param>
         /// <param name="animationFrames">All the animation frames available in the sprite sheet</param>
         public BaseExplosionBuilder(Texture2D spriteSheet, List<Rectangle> animationFrames)
-            : this (spriteSheet, animationFrames, null)
+            : this(spriteSheet, animationFrames, null)
         {
         }
 

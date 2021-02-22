@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Tank.Components;
 using Tank.Validator;
 
-namespace Tank.src.Systems
+namespace Tank.Systems
 {
     /// <summary>
     /// This system will render any entity which is visible

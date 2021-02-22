@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.Factories;
 using Tank.Interfaces.Randomizer;
 
-namespace Tank.src.Factories
+namespace Tank.Factories
 {
     /// <summary>
     /// This class will randomly pick explosions from the builder list provided to the class

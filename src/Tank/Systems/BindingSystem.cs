@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Tank.Components;
-using Tank.src.Systems;
 using Tank.Validator;
 
 namespace Tank.Systems

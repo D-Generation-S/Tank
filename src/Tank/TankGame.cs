@@ -15,15 +15,14 @@ using Tank.Interfaces.MapGenerators;
 using Tank.Interfaces.Randomizer;
 using Tank.Map.Generators;
 using Tank.Map.Textureizer;
-using Tank.src.Builders;
-using Tank.src.EntityComponentSystem.Manager;
-using Tank.src.Events.PhysicBased;
-using Tank.src.Events.TerrainEvents;
-using Tank.src.Factories;
-using Tank.src.Randomizer;
-using Tank.src.Systems;
+using Tank.Builders;
+using Tank.EntityComponentSystem.Manager;
+using Tank.Randomizer;
 using Tank.Systems;
 using Tank.Wrapper;
+using Tank.Events.PhysicBased;
+using Tank.Events.TerrainEvents;
+using Tank.Factories;
 
 namespace Tank
 {

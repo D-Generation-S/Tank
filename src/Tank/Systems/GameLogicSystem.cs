@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using Tank.Components;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.Builders;
-using Tank.src.Components.Tags;
 using Tank.DataStructure;
-using Tank.src.Events.EntityBased;
 using Tank.Validator;
+using Tank.Builders;
+using Tank.Components.Tags;
+using Tank.Events.EntityBased;
 
-namespace Tank.src.Systems
+namespace Tank.Systems
 {
     class GameLogicSystem : AbstractSystem
     {
@@ -79,7 +79,7 @@ namespace Tank.src.Systems
                     animationFrames
                  );
                 AddEntityEvent tankEntity = new AddEntityEvent(tankObjectBuilder.BuildGameComponents());
-                eventManager.FireEvent<AddEntityEvent>(this, tankEntity);
+                eventManager.FireEvent(this, tankEntity);
             }
             List<IComponent> activePlayerArrow = new List<IComponent>()
             {
@@ -87,7 +87,7 @@ namespace Tank.src.Systems
                 new VisibleComponent(Color.White, contentManager.Content.Load<Texture2D>("Images/Entities/BasicTank"))
             };
             arrowEntity = entityManager.CreateEntity(false);
-            foreach(IComponent component in activePlayerArrow)
+            foreach (IComponent component in activePlayerArrow)
             {
                 entityManager.AddComponent(arrowEntity, component);
             }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tank.src.Events.EntityBased
+﻿namespace Tank.Events.EntityBased
 {
     /// <summary>
     /// A class instance will tell the system to remove an entity

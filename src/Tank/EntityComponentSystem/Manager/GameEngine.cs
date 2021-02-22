@@ -1,14 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Wrapper;
 
-namespace Tank.src.EntityComponentSystem.Manager
+namespace Tank.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This class is a container for all the game engine components

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tank.src.Events.ComponentBased
+﻿namespace Tank.Events.ComponentBased
 {
     /// <summary>
     /// This event will tell the systems that a new component was added

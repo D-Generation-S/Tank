@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Tank.Components;
-using Tank.src.Events.EntityBased;
 using Tank.Validator;
 
-namespace Tank.src.Systems
+namespace Tank.Systems
 {
     /// <summary>
     /// This system will play amimations assigned to the entity
@@ -23,8 +21,8 @@ namespace Tank.src.Systems
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            
-            float currentTime = (float)gameTime.ElapsedGameTime.Milliseconds;
+
+            float currentTime = gameTime.ElapsedGameTime.Milliseconds;
             updateLocked = true;
             foreach (uint entityId in watchedEntities)
             {

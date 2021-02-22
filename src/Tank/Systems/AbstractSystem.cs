@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Tank.EntityComponentSystem.Validator;
+using Tank.Events;
+using Tank.Events.ComponentBased;
+using Tank.Events.EntityBased;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.EntityComponentSystem.Validator;
-using Tank.src.Events;
-using Tank.src.Events.ComponentBased;
-using Tank.src.Events.EntityBased;
 using Tank.Wrapper;
 
-namespace Tank.src.Systems
+namespace Tank.Systems
 {
     /// <summary>
     /// This abstract class is a base instance of the system. The class implements the ISystem interface
@@ -98,7 +98,7 @@ namespace Tank.src.Systems
         /// <param name="args">The arguments of the event to fire</param>
         protected void FireEvent<T>(T args) where T : EventArgs
         {
-            eventManager.FireEvent<T>(this, args);
+            eventManager.FireEvent(this, args);
         }
 
         /// <summary>
@@ -121,12 +121,12 @@ namespace Tank.src.Systems
             if (eventArgs is EntityBasedEvent)
             {
                 EntityBasedEvent entityBasedEvent = (EntityBasedEvent)eventArgs;
-                if ((eventArgs is NewEntityEvent))
+                if (eventArgs is NewEntityEvent)
                 {
                     EntityAdded(entityBasedEvent.EntityId);
                     return;
                 }
-                if ((eventArgs is NewComponentEvent))
+                if (eventArgs is NewComponentEvent)
                 {
                     ComponentAdded(entityBasedEvent.EntityId);
                     return;
@@ -143,7 +143,7 @@ namespace Tank.src.Systems
             if (eventArgs is EntityBasedEvent)
             {
                 EntityBasedEvent entityBasedEvent = (EntityBasedEvent)eventArgs;
-                if ((eventArgs is EntityRemovedEvent))
+                if (eventArgs is EntityRemovedEvent)
                 {
                     EntityRemoved(entityBasedEvent.EntityId);
                     return;
@@ -205,7 +205,7 @@ namespace Tank.src.Systems
             {
                 entitiesToRemove.Add(entityId);
             }
-            
+
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace Tank.src.Systems
             }
             foreach (uint entityId in entitiesToRemove)
             {
-                FireEvent<RemoveEntityEvent>(new RemoveEntityEvent(entityId));
+                FireEvent(new RemoveEntityEvent(entityId));
             }
         }
 

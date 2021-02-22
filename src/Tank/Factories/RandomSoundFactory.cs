@@ -1,13 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Audio;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.Interfaces.Factories;
 using Tank.Interfaces.Randomizer;
 
-namespace Tank.src.Factories
+namespace Tank.Factories
 {
     /// <summary>
     /// This class will return you a random sound effect from a pool
@@ -31,7 +27,7 @@ namespace Tank.src.Factories
         public RandomSoundFactory(List<SoundEffect> possibleEffects, IRandomizer randomizer)
         {
             //this.gameObjecBuilders = gameObjecBuilders;
-            this.soundEffects = possibleEffects;
+            soundEffects = possibleEffects;
             this.randomizer = randomizer;
         }
 

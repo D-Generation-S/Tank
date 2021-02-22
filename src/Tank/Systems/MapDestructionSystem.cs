@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using Tank.Components;
 using Tank.DataStructure;
+using Tank.Events.TerrainEvents;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.Events.TerrainEvents;
 using Tank.Validator;
 
-namespace Tank.src.Systems
+namespace Tank.Systems
 {
     /// <summary>
     /// This system will damage the terrain if an event is catched
@@ -59,13 +59,13 @@ namespace Tank.src.Systems
                             {
                                 map.Map.ChangePixel(x, y, Color.Transparent, false);
                             }
-                            
+
                         }
                     }
                     foreach (uint physicEntity in physicEntities)
                     {
                         PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(physicEntity);
-                        ColliderComponent collider  = entityManager.GetComponent<ColliderComponent>(physicEntity);
+                        ColliderComponent collider = entityManager.GetComponent<ColliderComponent>(physicEntity);
                         if (placeable == null)
                         {
                             continue;
