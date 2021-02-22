@@ -3,6 +3,7 @@ using Tank.Components;
 using Tank.DataStructure;
 using Tank.Events.PhysicBased;
 using Tank.Interfaces.MapGenerators;
+using Tank.Utils;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -62,7 +63,7 @@ namespace Tank.Systems
                 ColliderComponent colliderComponent = entityManager.GetComponent<ColliderComponent>(entityId);
                 MoveableComponent moveableComponent = entityManager.GetComponent<MoveableComponent>(entityId);
 
-                if (!colliderComponent.MapCollision)// || moveableComponent.OnGround)
+                if (!colliderComponent.MapCollision)
                 {
                     continue;
                 }
@@ -71,31 +72,56 @@ namespace Tank.Systems
                     colliderComponent.Collider.Right,
                     colliderComponent.Collider.Bottom
                 );
-                positionToCheck.X += (int)placeableComponent.Position.X;
-                positionToCheck.Y += (int)placeableComponent.Position.Y;
-                moveableComponent.OnGround = false;
-                if (mapEntity.Map.CollissionMap.GetValue(positionToCheck.X, positionToCheck.Y))
+                Position CenterPosition = new Position(
+                    colliderComponent.Collider.Center.X,
+                    colliderComponent.Collider.Bottom
+                 );
+                positionToCheck.Add(placeableComponent.Position);
+                CenterPosition.Add(placeableComponent.Position);
+                Vector2 newPosition = placeableComponent.Position + moveableComponent.Velocity;
+                Vector2 direction = newPosition - placeableComponent.Position;
+                if (direction == Vector2.Zero)
                 {
-                    moveableComponent.OnGround = true;
-
-                    for (int y = 0; y < colliderComponent.Collider.Height * 2; y++)
+                    Position positionBelow = GetPositionBelow(positionToCheck.GetVector2(), colliderComponent.Collider.Height, mapEntity.Map);
+                    positionBelow = positionBelow == null ? GetPositionBelow(CenterPosition.GetVector2(), colliderComponent.Collider.Height, mapEntity.Map) : positionBelow;
+                    if (positionBelow != null)
                     {
-                        if (!mapEntity.Map.CollissionMap.GetValue(positionToCheck.X, positionToCheck.Y - y))
-                        {
-                            int newYPosition = positionToCheck.Y - y;
-                            newYPosition -= colliderComponent.Collider.Height;
-                            Vector2 Position = new Vector2(placeableComponent.Position.X, newYPosition);
-
-                            //VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
-                            placeableComponent.Position = Position;
-                            Position collisionPosition = new Position(positionToCheck.X, positionToCheck.Y - y);
-                            FireEvent(new MapCollisionEvent(entityId, collisionPosition));
-                            break;
-                        }
+                        FireEvent(new MapCollisionEvent(entityId, positionBelow));
+                    }
+                }
+                Raycast raycast = new Raycast(positionToCheck.GetVector2(), direction, direction.Length() * 3);
+                Position[] positions = raycast.GetPositions();
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    Position position = positions[i];
+                    if (mapEntity.Map.CollissionMap.GetValue(position.X, position.Y))
+                    {
+                        FireEvent(new MapCollisionEvent(entityId, position));
                     }
                 }
             }
             updateLocked = false;
+        }
+
+        /// <summary>
+        /// Get the position below
+        /// </summary>
+        /// <param name="position">The position origin</param>
+        /// <param name="colliderHeight">The height of the collider</param>
+        /// <param name="map">The map to check agains</param>
+        /// <returns>The first position which is a hit</returns>
+        private Position GetPositionBelow(Vector2 position, int colliderHeight, IMap map)
+        {
+            Raycast raycast = new Raycast(position, Vector2.UnitY, colliderHeight);
+            Position[] positions = raycast.GetPositions();
+            for (int i = 0; i < positions.Length; i++)
+            {
+                if (map.CollissionMap.GetValue(positions[i]))
+                {
+                    return positions[i];
+                }
+            }
+            return null;
         }
 
         /// <summary>

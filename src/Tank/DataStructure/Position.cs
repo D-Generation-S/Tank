@@ -54,5 +54,24 @@ namespace Tank.DataStructure
         {
             return new Vector2(X, Y);
         }
+
+        /// <summary>
+        /// Add a position to this position
+        /// </summary>
+        /// <param name="position">The position to add</param>
+        public void Add(Position position)
+        {
+            Add(position.GetVector2());
+        }
+
+        /// <summary>
+        /// Add a vector to this position
+        /// </summary>
+        /// <param name="position">The vector to add</param>
+        public void Add(Vector2 position)
+        {
+            X += (int)position.X;
+            Y += (int)position.Y;
+        }
     }
 }
