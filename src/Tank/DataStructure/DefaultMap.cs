@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.DataStructure;
 using Tank.Interfaces.MapGenerators;
 
@@ -192,7 +187,7 @@ namespace Tank.Code.Entities.Map
             {
                 changedCollisionMap = new FlattenArray<bool>(collissionMap.Array, Width);
             }
-                
+
             if (changedImageData == null)
             {
                 changedImageData = new FlattenArray<Color>(imageData.Array, Width);

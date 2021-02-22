@@ -1,14 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tank.Enums;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Tank.Code.GUIClasses;
+using System;
 using System.IO;
+using Tank.Code.GUIClasses;
+using Tank.Enums;
 
 namespace Tank.Code.Screenmanager
 {
@@ -200,8 +196,8 @@ namespace Tank.Code.Screenmanager
             {
                 Terrain.Instance.CurrentMap.SaveAsPng(writer.BaseStream, Terrain.Instance.CurrentMap.Width, Terrain.Instance.CurrentMap.Height);
             }
-                return true;
-            }
+            return true;
+        }
 
         private void SwitchGUIElementState(bool NewValue)
         {
@@ -268,8 +264,8 @@ namespace Tank.Code.Screenmanager
                 for (int x = 0; x < Size; x++)
                 {
                     int Index = x + y * Size;
-                    if (PointInCircle((int)_circlePos.X, (int)_circlePos.Y, x, y, Radius)) 
-                    colorData[Index] = Color.Black;
+                    if (PointInCircle((int)_circlePos.X, (int)_circlePos.Y, x, y, Radius))
+                        colorData[Index] = Color.Black;
 
 
                 }
@@ -395,7 +391,8 @@ namespace Tank.Code.Screenmanager
             if (!_drawMode)
             {
                 SB.DrawString(Settings.GlobalFont, $"Drawing disabled press {_drawKey.ToString()} to enable drawing", new Vector2(0, 0), Color.Red);
-            }else
+            }
+            else
                 SB.DrawString(Settings.GlobalFont, $"Drawing enabled press {_drawKey.ToString()} to disable drawing", new Vector2(0, 0), Color.Black);
 
             if (_currentBrush != null && _drawMode)

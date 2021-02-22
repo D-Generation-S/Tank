@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using Tank.Interfaces;
 
 namespace Tank.Code
@@ -236,7 +232,7 @@ namespace Tank.Code
                         if (remainingmass <= 0)
                             continue;
 
-                        
+
                     }
                 }
                 FinishUpMass();
@@ -328,7 +324,7 @@ namespace Tank.Code
             _colorData[Index] = ColorToUse;
 
 
-            
+
             //_currentTexture.SetData<Color>(_colorData); 
         }
 

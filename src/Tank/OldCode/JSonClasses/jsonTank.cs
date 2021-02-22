@@ -1,13 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Tank.Code.Entities;
-using Microsoft.Xna.Framework;
-using Tank.Code.SubClasses;
 using Tank.DataStructure;
 
 namespace Tank.Code.JSonClasses

@@ -8,7 +8,7 @@ namespace Tank.Code.Entities.Player
         public HumanPlayer(PlayerIndex index)
             : base(index)
         {
-            
+
         }
     }
 }

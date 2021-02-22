@@ -1,14 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Tank.Code.General;
 using Tank.Code.GUIClasses;
 using Tank.Code.JSonClasses;
 using Tank.Enums;
-using System;
-using Tank.Code.General;
-using Newtonsoft.Json;
-using System.Linq;
 
 namespace Tank.Code.Screenmanager
 {
@@ -39,7 +39,7 @@ namespace Tank.Code.Screenmanager
         {
             _availableTanks = new List<jsonTank>();
             LoadAvailableTanks();
-            
+
             base.ActivateScreen(FirstScreen);
 
             if (_availableTanks.Count > 0)
@@ -49,7 +49,7 @@ namespace Tank.Code.Screenmanager
                 SetTankDescription(_availableTanks[_tankIndex]);
             }
         }
-        
+
         private void LoadAvailableTanks()
         {
             string tankJson = CodeHelper.LoadJson("Entities\\tanks");

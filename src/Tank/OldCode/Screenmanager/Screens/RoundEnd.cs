@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 using Tank.Code.GUIClasses;
 using Tank.Enums;
 
@@ -23,7 +21,7 @@ namespace Tank.Code.Screenmanager
             _playerList = CurrentplayerList;
             DrawString = false;
             CreateText();
-            
+
         }
 
 

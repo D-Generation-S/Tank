@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Tank.Interfaces;
-using Tank.Code.Sound;
-using Tank.Code.JSonClasses;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Tank.Code.General;
-using Tank.Enums;
 using Tank.Code.GUIClasses;
-using Newtonsoft.Json;
+using Tank.Code.JSonClasses;
+using Tank.Code.Sound;
+using Tank.Enums;
+using Tank.Interfaces;
 
 namespace Tank.Code.Screenmanager
 {

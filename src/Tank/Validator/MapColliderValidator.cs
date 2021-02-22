@@ -11,7 +11,7 @@ namespace Tank.Validator
         /// <inheritdoc/>
         public override bool IsValidEntity(uint entityId, IEntityManager entityManager)
         {
-            bool valid =  base.IsValidEntity(entityId, entityManager);
+            bool valid = base.IsValidEntity(entityId, entityManager);
             valid &= entityManager.HasComponent(entityId, typeof(MoveableComponent));
             return valid;
         }

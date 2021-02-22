@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Tank.Enums;
 
 namespace Tank.Code.SubClasses
@@ -28,7 +24,7 @@ namespace Tank.Code.SubClasses
                 switch (LogType)
                 {
                     case DebugLog.Normal:
-                        cReturn =  Color.White;
+                        cReturn = Color.White;
                         break;
                     case DebugLog.Error:
                         cReturn = Color.Red;

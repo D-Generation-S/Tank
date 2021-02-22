@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Linq;
 using Tank.Interfaces;
 
 namespace Tank.Code
@@ -77,7 +77,7 @@ namespace Tank.Code
 
             if (bullet != null)
             {
-                
+
                 bullet.Rotation = (float)Math.Atan2(y - lastY, x - lastX);
 
                 bullet.X = (int)x;

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 using Tank.Enums;
-using Tank.Code.Entities;
 
 namespace Tank.Code.Screenmanager
 {
@@ -109,7 +106,7 @@ namespace Tank.Code.Screenmanager
             int PlayerAlive = 0;
             _players.ForEach(pTemp =>
             {
-               if (pTemp.IsAlive)
+                if (pTemp.IsAlive)
                 {
                     PlayerAlive++;
                 }

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Linq;
 
 namespace Tank.Code.GUIClasses
 {
-   
+
 
     public class GUITextBox : GUIPrimitiv
     {
@@ -86,7 +84,7 @@ namespace Tank.Code.GUIClasses
 
         public TextPosition DrawTextPosition;
 
-        public GUITextBox(int PositionX, int PositionY, int Width, int Height, Texture2D MainTexture, Texture2D ActiveTexture, Texture2D BlinkingCursor = null, bool Overlayer = false) 
+        public GUITextBox(int PositionX, int PositionY, int Width, int Height, Texture2D MainTexture, Texture2D ActiveTexture, Texture2D BlinkingCursor = null, bool Overlayer = false)
             : base(PositionX, PositionY, Width, Height, MainTexture, Overlayer)
         {
             t2dMainTexture = MainTexture;

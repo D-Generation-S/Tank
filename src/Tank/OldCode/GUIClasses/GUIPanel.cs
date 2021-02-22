@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -22,7 +17,7 @@ namespace Tank.Code.GUIClasses
 
         public GUIPanel(int PositionX, int PositionY, int Width, int Height, Texture2D Frame = null, bool Overlayer = false) : base(PositionX, PositionY, Width, Height, Frame, Overlayer)
         {
-            
+
         }
 
         public override void Draw(SpriteBatch SB)

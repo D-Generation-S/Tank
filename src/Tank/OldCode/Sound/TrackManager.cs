@@ -1,12 +1,8 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Tank.Code.General;
-using System.Text;
-using Microsoft.Xna.Framework.Media;
 //using System.Threading;
-using System.Timers;
 using Tank.Enums;
 
 namespace Tank.Code.Sound
@@ -135,7 +131,7 @@ namespace Tank.Code.Sound
             {
 
             }
-            
+
         }
 
         private void FadeOut()
@@ -156,7 +152,7 @@ namespace Tank.Code.Sound
         {
             if (MediaPlayer.State == MediaState.Stopped)
             {
-                if (_currentTrackIndexIndex < CategoryTrackIndexes.Count -1)
+                if (_currentTrackIndexIndex < CategoryTrackIndexes.Count - 1)
                     _currentTrackIndexIndex++;
                 else
                     _currentTrackIndexIndex = 0;
@@ -169,7 +165,7 @@ namespace Tank.Code.Sound
         {
             Instance.TrackCollection.Add(toAdd);
         }
-        
+
         public static void Play()
         {
             if (Instance.CategoryTrackIndexes.Count == 0 || MediaPlayer.State == MediaState.Playing)
@@ -180,7 +176,7 @@ namespace Tank.Code.Sound
             Instance._currentFadeMode = FadeMode.In;
             MediaPlayer.Play(currentSong);
         }
-        
+
         private void SortCategoryIndexes()
         {
             switch (Mode)
@@ -200,7 +196,7 @@ namespace Tank.Code.Sound
             CategoryTrackIndexes = new List<int>();
             for (int i = 0; i < TrackCollection.Count; i++)
             {
-                if(TrackCollection[i].Category == Category)
+                if (TrackCollection[i].Category == Category)
                     CategoryTrackIndexes.Add(i);
             }
             SortCategoryIndexes();

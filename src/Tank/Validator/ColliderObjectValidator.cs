@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tank.Components;
+﻿using Tank.Components;
 using Tank.EntityComponentSystem.Validator;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 

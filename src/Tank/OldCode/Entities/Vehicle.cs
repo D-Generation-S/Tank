@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using System;
 using Tank.Code.GUIClasses;
 using Tank.Interfaces;
 
@@ -271,7 +270,7 @@ namespace Tank.Code.Entities
         }
 
         public void Draw(SpriteBatch sb)
-        {            
+        {
             sb.Draw(Body, new Rectangle((int)x, (int)y, Width, Height), Color.White);
             sb.Draw(Canon, new Vector2(CanonX, CanonY), null, Color.White, Rotation, new Vector2(2, Canon.Height / 2), 1f, SpriteEffects.None, 0f);
         }

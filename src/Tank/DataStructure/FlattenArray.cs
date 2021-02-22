@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tank.DataStructure
+﻿namespace Tank.DataStructure
 {
     /// <summary>
     /// A helper class for creating flatten arrays and providing easier access methods

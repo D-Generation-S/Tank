@@ -1,12 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tank.Interfaces;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using Tank.Interfaces;
 
 namespace Tank.Code.Entities
 {
@@ -60,7 +56,7 @@ namespace Tank.Code.Entities
                 if (!string.IsNullOrEmpty(_description))
                     sb.DrawString(Settings.GlobalFont, _description, new Vector2(x + 20, y - 20), Color.Black);
             }
-                
+
         }
 
         public void Dispose()

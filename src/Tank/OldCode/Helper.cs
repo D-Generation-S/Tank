@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Tank.Code.SubClasses;
-using System.Text;
-using Microsoft.Xna.Framework.Input;
 using Tank.Code.GUIClasses;
+using Tank.Code.SubClasses;
 using Tank.DataStructure;
 
 namespace Tank.Code

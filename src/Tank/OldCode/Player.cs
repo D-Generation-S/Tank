@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json;
+using System;
 using Tank.Code.Entities;
-using Tank.Code.General;
 using Tank.Code.GUIClasses;
-using Tank.Code.JSonClasses;
-using Tank.Code.SubClasses;
 using Tank.DataStructure;
 using Tank.Interfaces;
 
@@ -43,7 +36,7 @@ namespace Tank.Code
                 return _playername;
             }
         }
-        
+
         public int Money
         {
             get;
@@ -116,7 +109,7 @@ namespace Tank.Code
             };
             _id = PIndex;
             _playername = playerName;
-            
+
             SecondaryFireTime = new TimeSpan(0, 0, 0, 0, 15);
             PrimaryFireTime = new TimeSpan(0, 0, 0, 0, 200);
             if (PIndex <= 4)

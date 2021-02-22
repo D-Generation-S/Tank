@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Linq;
 using Tank.Code.General;
 using Tank.Code.GUIClasses;
 using Tank.Code.Sound;
@@ -32,13 +30,13 @@ namespace Tank.Code.Screenmanager
                 masterVolume.Value = TrackManager.Instance.CurrentVolume;
             GUIToggle fullscreen = _toggles.Where(toggle => toggle.Name == "Toggle_Fullscreen").FirstOrDefault();
             //if (fullscreen != null)
-                //fullscreen.Checked = TankGame.GetIsFullscreen();
+            //fullscreen.Checked = TankGame.GetIsFullscreen();
 
         }
 
         private void Controls_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void BackButton_Click(object sender, EventArgs e)

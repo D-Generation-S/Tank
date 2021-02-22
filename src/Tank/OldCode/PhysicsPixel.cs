@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Tank.Interfaces;
 
@@ -19,7 +18,7 @@ namespace Tank.Code
 
         int TTL = 512;
         private bool _KillAfterTTL;
-        
+
         public float velX
         {
             get;
@@ -55,12 +54,12 @@ namespace Tank.Code
 
             _KillAfterTTL = KillAfterTTL;
         }
-        
+
         public void Draw(SpriteBatch sb)
         {
             sb.Draw(Settings.DynamicPixelTexture, new Rectangle((int)x, (int)y, Size, Size), col);
         }
-        
+
         public void checkConstraints(GameTime CurrentGameTime)
         {
             // Boundary constraints... only remove the pixel if it exits the sides or bottom of the map
@@ -120,10 +119,10 @@ namespace Tank.Code
 
                 velX -= pixelNormal[0] * d;
                 velY -= pixelNormal[1] * d;
-                
+
                 velX *= bounceFriction;
                 velY *= bounceFriction;
-                
+
                 x = thisX;
                 y = thisY;
             }

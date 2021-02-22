@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -57,12 +57,12 @@ namespace Tank.Code
 
         private bool FillGround;
 
-       //private enum ClimaticZones
-       //{
-       //    snow,
-       //    grass,
-       //    dirt,
-       //}
+        //private enum ClimaticZones
+        //{
+        //    snow,
+        //    grass,
+        //    dirt,
+        //}
 
         public ImageGenerator(GraphicsDevice gd, int Width, int Height, float displace, float roughness, bool fillGround = false, int seed = int.MinValue)
         {
@@ -130,7 +130,7 @@ namespace Tank.Code
                         GenerateImageWorker.ReportProgress(CurrentProgress);
                     }
                 }
-                
+
             }
         }
 
@@ -196,7 +196,7 @@ namespace Tank.Code
                         {
                             colorData[OldPoints[points]] = ReplaceColor; //;
                         }
-                        
+
                     }
                     ReplaceColor = CurrenColorToCheck;
                     CurrenColorToCheck = colorData[Index];

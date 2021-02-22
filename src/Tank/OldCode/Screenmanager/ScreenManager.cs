@@ -3,9 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Tank.Interfaces;
 
 namespace Tank.Code.Screenmanager
 {
@@ -67,7 +64,7 @@ namespace Tank.Code.Screenmanager
 
         public bool SetCurrentScreen(BasicScreen NewScreen, bool DeleteThisScreen = false, bool StoreOldScreen = true)
         {
-            for (int i = OldScreens.Count -1; i > 0; i--)
+            for (int i = OldScreens.Count - 1; i > 0; i--)
             {
                 if (OldScreens[i].IsBackgroundScreen)
                     OldScreens.RemoveAt(i);
@@ -122,11 +119,11 @@ namespace Tank.Code.Screenmanager
         private bool ScreenAlreadyExist(BasicScreen ScreenToCheck)
         {
             bool ReturnVal = false;
-            OldScreens.ForEach(CurrentScreen => 
+            OldScreens.ForEach(CurrentScreen =>
             {
                 if (CurrentScreen.Name == ScreenToCheck.Name)
                 {
-                    ReturnVal =  true;
+                    ReturnVal = true;
                 }
 
             });

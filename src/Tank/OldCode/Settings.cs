@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Tank.Code.SubClasses;
-using Microsoft.Xna.Framework.Audio;
-using System.Xml;
-using System.Xml.Serialization;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Xml.Serialization;
+using Tank.Code.SubClasses;
 
 namespace Tank.Code
 {
