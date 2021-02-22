@@ -13,7 +13,6 @@ namespace Tank.Validator
         public bool IsValidEntity(uint entityId, IEntityManager entityManager)
         {
             bool valid = entityManager.HasComponent(entityId, typeof(GameObjectTag));
-
             return valid;
         }
     }

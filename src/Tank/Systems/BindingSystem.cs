@@ -4,13 +4,20 @@ using Tank.Validator;
 
 namespace Tank.Systems
 {
+    /// <summary>
+    /// System to bind entities together
+    /// </summary>
     class BindingSystem : AbstractSystem
     {
+        /// <summary>
+        /// Create a new instance of the binding system
+        /// </summary>
         public BindingSystem() : base()
         {
             validators.Add(new BindEntityValidator());
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

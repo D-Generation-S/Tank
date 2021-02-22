@@ -72,8 +72,14 @@ namespace Tank.Components
         /// </summary>
         public int CenterDamageValue => centerDamageValue;
 
+        /// <summary>
+        /// The pushback to apply
+        /// </summary>
         private readonly float pushbackForce;
 
+        /// <summary>
+        /// The pushback to apply
+        /// </summary>
         public float PushbackForce => pushbackForce;
 
         /// <summary>

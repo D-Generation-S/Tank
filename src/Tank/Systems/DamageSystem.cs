@@ -97,6 +97,11 @@ namespace Tank.Systems
             FireEvent(new AddEntityEvent(components));
         }
 
+        /// <summary>
+        /// Pushback entities
+        /// </summary>
+        /// <param name="damageComponent">The damage component</param>
+        /// <param name="collisionEvent">The collision event</param>
         private void PushbackEntities(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
         {
             List<uint> entitiesWithComponents = entityManager.GetEntitiesWithComponent<ColliderComponent>();

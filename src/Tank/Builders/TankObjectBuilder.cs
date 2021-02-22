@@ -9,10 +9,24 @@ using Tank.Interfaces.EntityComponentSystem;
 
 namespace Tank.Builders
 {
+    /// <summary>
+    /// Create new tank object
+    /// </summary>
     class TankObjectBuilder : IGameObjectBuilder
     {
+        /// <summary>
+        /// The start position of the tank
+        /// </summary>
         private readonly Position startPosition;
+
+        /// <summary>
+        /// The spritesheet to use
+        /// </summary>
         private readonly Texture2D spriteSheet;
+
+        /// <summary>
+        /// The animation frames
+        /// </summary>
         private readonly List<Rectangle> animationFrames;
 
         /// <summary>
@@ -27,6 +41,10 @@ namespace Tank.Builders
             this.animationFrames = animationFrames;
         }
 
+        /// <summary>
+        /// Build all the game components
+        /// </summary>
+        /// <returns></returns>
         public List<IComponent> BuildGameComponents()
         {
             List<IComponent> returnComponents = new List<IComponent>();
