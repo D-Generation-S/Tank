@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tank.Builders;
 using Tank.Components;
+using Tank.Components.Tags;
 using Tank.DataStructure;
 using Tank.EntityComponentSystem.Manager;
 using Tank.Events.PhysicBased;
