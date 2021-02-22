@@ -8,7 +8,7 @@ using Tank.Code.SubClasses;
 using System.Text;
 using Microsoft.Xna.Framework.Input;
 using Tank.Code.GUIClasses;
-using Tank.src.DataStructure;
+using Tank.DataStructure;
 
 namespace Tank.Code
 {

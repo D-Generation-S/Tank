@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.DataStructure
+namespace Tank.DataStructure
 {
     /// <summary>
     /// This class represents a circly
@@ -53,7 +53,7 @@ namespace Tank.src.DataStructure
         /// <param name="y">The y position of the circle</param>
         /// <param name="radius">The radius for the circle</param>
         public Circle(int x, int y, int radius)
-            : this (new Position(x, y), radius)
+            : this(new Position(x, y), radius)
         {
         }
 
@@ -118,7 +118,7 @@ namespace Tank.src.DataStructure
         /// <returns>Returns true if x and y is inside of the circle</returns>
         public bool IsInInCircle(int x, int y)
         {
-            float TestValue = (float)Math.Sqrt(Math.Pow((x - center.X), 2) + Math.Pow((y - center.Y), 2));
+            float TestValue = (float)Math.Sqrt(Math.Pow(x - center.X, 2) + Math.Pow(y - center.Y, 2));
             return TestValue < Radius;
         }
     }

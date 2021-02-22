@@ -7,7 +7,7 @@ using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.Builders;
 using Tank.src.Components.Tags;
-using Tank.src.DataStructure;
+using Tank.DataStructure;
 using Tank.src.Events.EntityBased;
 using Tank.Validator;
 

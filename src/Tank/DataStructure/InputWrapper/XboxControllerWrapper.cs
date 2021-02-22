@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Tank.src.DataStructure.InputWrapper
+namespace Tank.DataStructure.InputWrapper
 {
     class XboxControllerWrapper
     {

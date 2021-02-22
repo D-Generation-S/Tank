@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.DataStructure
+namespace Tank.DataStructure
 {
     /// <summary>
     /// This class is representing a spritesheet it will provide you with some helper functions
@@ -70,7 +70,7 @@ namespace Tank.src.DataStructure
             maxDimensions = new Position();
 
             Color[] colors = new Color[completeImage.Width * completeImage.Height];
-            image.GetData<Color>(colors);
+            image.GetData(colors);
             pixelData = new FlattenArray<Color>(colors, completeImage.Width);
         }
 
@@ -95,7 +95,7 @@ namespace Tank.src.DataStructure
         /// <returns></returns>
         public Color[] GetColorArea(int startX, int startY, int endX, int endY)
         {
-            FlattenArray<Color> returnColor = new FlattenArray<Color>((endX - startX), (endY - startY));
+            FlattenArray<Color> returnColor = new FlattenArray<Color>(endX - startX, endY - startY);
             for (int x = startX; x < endX; x++)
             {
                 for (int y = startY; y < endY; y++)

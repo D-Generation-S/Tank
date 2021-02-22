@@ -7,13 +7,13 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Tank.Components;
+using Tank.DataStructure;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
+using Tank.Map.Generators;
+using Tank.Map.Textureizer;
 using Tank.src.Builders;
-using Tank.src.Code.MapGenerators.Generatos;
-using Tank.src.Code.Textureizer;
-using Tank.src.DataStructure;
 using Tank.src.EntityComponentSystem.Manager;
 using Tank.src.Events.PhysicBased;
 using Tank.src.Events.TerrainEvents;
@@ -177,7 +177,7 @@ namespace Tank
                     {
                         Collider = new Rectangle(0, 0, 32, 32)
                     });
-                    engine.EntityManager.AddComponent(projectileId, new DamageComponent(true, 1, new src.DataStructure.Circle(0, 0, 16), randomExplosionFactory)
+                    engine.EntityManager.AddComponent(projectileId, new DamageComponent(true, 1, new Circle(0, 0, 16), randomExplosionFactory)
                     {
                     });
                     engine.EntityManager.AddComponent(projectileId, new MoveableComponent()

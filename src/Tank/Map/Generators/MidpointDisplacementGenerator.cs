@@ -4,10 +4,10 @@ using System;
 using System.Threading.Tasks;
 using Tank.Code.Entities.Map;
 using Tank.src.Interfaces.Randomizer;
-using Tank.src.DataStructure;
 using Tank.src.Interfaces.MapGenerators;
+using Tank.DataStructure;
 
-namespace Tank.src.Code.MapGenerators.Generatos
+namespace Tank.Map.Generators
 {
     /// <summary>
     /// Create a new map using the midpoint displacement algorithm
@@ -88,7 +88,8 @@ namespace Tank.src.Code.MapGenerators.Generatos
             float displace,
             float roughness,
             IRandomizer randomizer
-        ) {
+        )
+        {
             this.graphicsDevice = graphicsDevice;
             this.displace = displace;
             this.roughness = roughness;
@@ -204,10 +205,10 @@ namespace Tank.src.Code.MapGenerators.Generatos
 
             float[] points = new float[size.X];
             float randomNumber = GetRandomNumber(internalRandomizer, 0, 1);
-            points[0] = size.Y / 2 + (randomNumber * displace * 2) - displace;
+            points[0] = size.Y / 2 + randomNumber * displace * 2 - displace;
 
             randomNumber = GetRandomNumber(internalRandomizer, 0, 1);
-            points[(int)power] = (float)(size.Y / 2 + (randomNumber * displace * 2) - displace);
+            points[(int)power] = size.Y / 2 + randomNumber * displace * 2 - displace;
 
             points[0] = MathHelper.Clamp(points[0], size.Y / 3, size.Y * 2);
             points[(int)power] = MathHelper.Clamp(points[(int)power], size.Y / 3, size.Y * 2);

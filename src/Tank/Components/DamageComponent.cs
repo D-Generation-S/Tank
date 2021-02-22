@@ -1,4 +1,4 @@
-﻿using Tank.src.DataStructure;
+﻿using Tank.DataStructure;
 using Tank.src.Interfaces.Factories;
 
 namespace Tank.Components

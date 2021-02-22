@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 using Tank.Components;
-using Tank.src.DataStructure;
+using Tank.DataStructure;
 using Tank.src.Events.PhysicBased;
 using Tank.src.Interfaces.MapGenerators;
 using Tank.Validator;

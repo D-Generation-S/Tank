@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.DataStructure
+namespace Tank.DataStructure
 {
     /// <summary>
     /// This class represents a position on the screen

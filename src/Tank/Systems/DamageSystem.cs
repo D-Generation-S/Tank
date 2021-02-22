@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using Tank.Components;
+using Tank.DataStructure;
 using Tank.Events.PhysicBased;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.DataStructure;
 using Tank.src.Events.EntityBased;
 using Tank.src.Events.PhysicBased;
 using Tank.src.Events.TerrainEvents;

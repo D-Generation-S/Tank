@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.DataStructure
+namespace Tank.DataStructure
 {
     /// <summary>
     /// A helper class for creating flatten arrays and providing easier access methods
@@ -89,7 +89,7 @@ namespace Tank.src.DataStructure
             int targetPosition = y * width + x;
             if (targetPosition > array.Length || targetPosition < 0)
             {
-                return default(T);
+                return default;
             }
 
             return array[targetPosition];

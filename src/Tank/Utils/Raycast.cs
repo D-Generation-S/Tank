@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Tank.src.DataStructure;
+using Tank.DataStructure;
 
 namespace Tank.Utils
 {

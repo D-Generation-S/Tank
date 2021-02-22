@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tank.Components;
+using Tank.DataStructure;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.src.Components.Tags;
-using Tank.src.DataStructure;
+using Tank.DataStructure;
 
 namespace Tank.src.Builders
 {

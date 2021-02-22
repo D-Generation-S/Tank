@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Input;
-using Tank.src.DataStructure.InputWrapper;
+using Tank.DataStructure.InputWrapper;
 using Tank.src.Interfaces.GameObjectControlling;
 
-namespace Tank.src.DataStructure
+namespace Tank.DataStructure
 {
     class StaticKeyboardControls : IGameObjectController
     {

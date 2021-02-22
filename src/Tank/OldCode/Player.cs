@@ -11,8 +11,8 @@ using Tank.Code.General;
 using Tank.Code.GUIClasses;
 using Tank.Code.JSonClasses;
 using Tank.Code.SubClasses;
+using Tank.DataStructure;
 using Tank.Interfaces;
-using Tank.src.DataStructure;
 
 namespace Tank.Code
 {

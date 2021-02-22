@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 
-namespace Tank.src.DataStructure.InputWrapper
+namespace Tank.DataStructure.InputWrapper
 {
     class KeyboardWrapper
     {
@@ -8,7 +8,7 @@ namespace Tank.src.DataStructure.InputWrapper
         private KeyboardState currentKeyState;
 
         public void UpdateState()
-        {         
+        {
             previousKeyState = currentKeyState;
             currentKeyState = Keyboard.GetState();
         }

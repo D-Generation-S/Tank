@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using Tank.Components;
+using Tank.DataStructure;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.DataStructure;
 using Tank.src.Events.TerrainEvents;
 using Tank.Validator;
 
