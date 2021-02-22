@@ -13,6 +13,9 @@ using Tank.Validator;
 
 namespace Tank.Systems
 {
+    /// <summary>
+    /// The basic game logic system
+    /// </summary>
     class GameLogicSystem : AbstractSystem
     {
         /// <summary>
@@ -40,14 +43,15 @@ namespace Tank.Systems
         /// </summary>
         private int currentPlayerIndex;
 
+        /// <summary>
+        /// The arrow entity to bind
+        /// </summary>
         private uint arrowEntity;
 
         /// <summary>
         /// The order of the players
         /// </summary>
         private readonly int[] playerOrder;
-
-        private int testCounter;
 
         /// <summary>
         /// Create a new instance of this system
@@ -136,16 +140,6 @@ namespace Tank.Systems
                 activePlayer = true;
                 entityManager.AddComponent(watchedEntities[currentPlayerIndex], new ActiveGameObjectTag());
                 entityManager.AddComponent(watchedEntities[currentPlayerIndex], new BindComponent(arrowEntity, new Vector2(0f, -35f), false, true));
-            }
-            testCounter++;
-            if (testCounter > 100)
-            {
-                testCounter = 0;
-                uint source = watchedEntities[currentPlayerIndex];
-                currentPlayerIndex++;
-                currentPlayerIndex = currentPlayerIndex >= playerCount ? 0 : currentPlayerIndex;
-                entityManager.MoveComponent<ActiveGameObjectTag>(source, watchedEntities[currentPlayerIndex]);
-                entityManager.MoveComponent<BindComponent>(source, watchedEntities[currentPlayerIndex]);
             }
         }
 

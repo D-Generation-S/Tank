@@ -24,7 +24,7 @@ namespace Tank.Systems
                 }
 
                 PlaceableComponent bindingPosition = entityManager.GetComponent<PlaceableComponent>(binding.BoundEntityId);
-                if (binding.Target)
+                if (binding.Source)
                 {
                     basePosition.Position = bindingPosition.Position + binding.Offset;
                     continue;
