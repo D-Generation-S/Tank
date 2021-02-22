@@ -64,7 +64,7 @@ namespace Tank
             engine.AddSystem(new BindingSystem());
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1920, 1080), 9.8f, 30));
-            //engine.AddSystem(new MapColliderSystem());
+            engine.AddSystem(new MapColliderSystem());
             engine.AddSystem(new DamageSystem());
             engine.AddSystem(new MapDestructionSystem());
             engine.AddSystem(new SoundEffectSystem());
@@ -158,6 +158,7 @@ namespace Tank
                     visible.Source = new Rectangle(0, 0, 32, 32);
                     visible.Destination = new Rectangle(0, 0, 32, 32);
                     engine.EntityManager.AddComponent(projectileId, visible);
+                    engine.EntityManager.AddComponent(projectileId, new MapColliderTag());
                     List<Rectangle> spriteSources = new List<Rectangle>() {
                         new Rectangle(0, 0, 32, 32),
                         new Rectangle(32, 0, 32, 32),

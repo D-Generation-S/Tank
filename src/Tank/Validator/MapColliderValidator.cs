@@ -1,4 +1,5 @@
 ﻿using Tank.Components;
+using Tank.Components.Tags;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.Validator
@@ -13,6 +14,7 @@ namespace Tank.Validator
         {
             bool valid = base.IsValidEntity(entityId, entityManager);
             valid &= entityManager.HasComponent(entityId, typeof(MoveableComponent));
+            valid &= entityManager.HasComponent(entityId, typeof(MapColliderTag));
             return valid;
         }
     }
