@@ -189,7 +189,7 @@ namespace Tank
                     {
                         Velocity = new Vector2((new Random()).Next(10, 20), 0),
                         PhysicRotate = true,
-                        Mass = 30
+                        Mass = 7
                     });
                 }
 
