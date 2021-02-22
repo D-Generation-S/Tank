@@ -84,6 +84,7 @@ namespace Tank.Systems
             validators.Add(new MapValidator());
         }
 
+        /// <inheritdoc/>
         public override void Initialize(IGameEngine gameEngine)
         {
             base.Initialize(gameEngine);
@@ -187,6 +188,7 @@ namespace Tank.Systems
             DoRemoveEntities();
         }
 
+        /// <inheritdoc/>
         public override void EventNotification(object sender, EventArgs eventArgs)
         {
             base.EventNotification(sender, eventArgs);
@@ -200,6 +202,13 @@ namespace Tank.Systems
             }
         }
 
+        /// <summary>
+        /// Get the normal force
+        /// </summary>
+        /// <param name="moveComponent">The current movement</param>
+        /// <param name="lowestPixel">The lowest pixel of the entity</param>
+        /// <param name="currentPosition">The current position of the entity</param>
+        /// <returns></returns>
         private Vector2 GetNormalForce(MoveableComponent moveComponent, Vector2 lowestPixel, Vector2 currentPosition)
         {
             Vector2 normalForce = Vector2.UnitY;

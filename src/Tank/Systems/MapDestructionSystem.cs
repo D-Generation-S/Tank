@@ -89,6 +89,12 @@ namespace Tank.Systems
             }
         }
 
+        /// <summary>
+        /// Get all the collider positions
+        /// </summary>
+        /// <param name="entityPosition">The entity position</param>
+        /// <param name="collider">The collider</param>
+        /// <returns></returns>
         private List<Position> GetColliderPositions(Position entityPosition, ColliderComponent collider)
         {
             List<Position> positions = new List<Position>();
