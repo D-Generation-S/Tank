@@ -68,6 +68,9 @@ namespace Tank.Components
             set => onGround = value;
         }
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public MoveableComponent()
         {
             mass = 1;

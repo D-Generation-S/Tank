@@ -11,14 +11,29 @@ namespace Tank.DataStructure
         /// </summary>
         private readonly KeyboardWrapper keyboardWrapper;
 
+        /// <summary>
+        /// The fire key to use
+        /// </summary>
         private Keys fire = Keys.Space;
 
+        /// <summary>
+        /// Increase the strenght
+        /// </summary>
         private Keys strenghtUp = Keys.W;
 
+        /// <summary>
+        /// Decrease the strengh
+        /// </summary>
         private Keys strenghtDown = Keys.S;
 
+        /// <summary>
+        /// Rotate the barrel up
+        /// </summary>
         private Keys rotationUp = Keys.A;
 
+        /// <summary>
+        /// Rotate the barrel down
+        /// </summary>
         private Keys rotationDown = Keys.D;
 
         /// <summary>
