@@ -100,7 +100,6 @@ namespace Tank.src.Systems
 
         private void PushbackEntities(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
         {
-            List<uint> entities = new List<uint>();
             List<uint>  entitiesWithComponents = entityManager.GetEntitiesWithComponent<ColliderComponent>();
             foreach(uint entityId in entitiesWithComponents)
             {
@@ -118,6 +117,7 @@ namespace Tank.src.Systems
                     Vector2 distanceToCenter = position - damageArea.Center.GetVector2();
                     float forcePercentage = distanceToCenter.Length() / damageArea.Radius;
                     float magnitude = damageComponent.PushbackForce * forcePercentage;
+                    magnitude = damageComponent.PushbackForce - magnitude;
                     Vector2 force = distanceToCenter;
                     force.Normalize();
                     force *= magnitude;
