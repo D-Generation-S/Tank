@@ -219,7 +219,7 @@ namespace Tank
                             PlaceableComponent placeableComponent = (PlaceableComponent)component;
                             placeableComponent.Position = Mouse.GetState().Position.ToVector2();
                             placeableComponent.Position -= new Vector2(32 / 2, 32 / 2);
-                            circle = new Circle(Mouse.GetState().Position.ToVector2(), 64);
+                            circle = new Circle(Mouse.GetState().Position.ToVector2(), 16);
                         }
                         engine.EntityManager.AddComponent(exposion, component);
                         if (circle != null)
