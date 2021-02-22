@@ -26,6 +26,9 @@ using Tank.Wrapper;
 
 namespace Tank
 {
+    /// <summary>
+    /// Main entry point of the game
+    /// </summary>
     public class TankGame : Game
     {
         private GraphicsDeviceManager graphics;
