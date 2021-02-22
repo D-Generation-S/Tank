@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tank.src.Wrapper;
+using Tank.Wrapper;
 
-namespace Tank.src.Interfaces.EntityComponentSystem.Manager
+namespace Tank.Interfaces.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This interface represents the game engine itself

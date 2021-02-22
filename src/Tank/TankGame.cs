@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -8,22 +7,23 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Tank.Components;
+using Tank.Interfaces.Builders;
+using Tank.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.Builders;
 using Tank.src.Code.MapGenerators.Generatos;
 using Tank.src.Code.Textureizer;
 using Tank.src.DataStructure;
 using Tank.src.EntityComponentSystem.Manager;
-using Tank.src.Events.EntityBased;
 using Tank.src.Events.PhysicBased;
 using Tank.src.Events.TerrainEvents;
 using Tank.src.Factories;
-using Tank.src.Interfaces.Builders;
-using Tank.src.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.Interfaces.MapGenerators;
 using Tank.src.Interfaces.Randomizer;
 using Tank.src.Randomizer;
 using Tank.src.Systems;
 using Tank.Systems;
+using Tank.Wrapper;
 
 namespace Tank
 {
@@ -57,7 +57,7 @@ namespace Tank
             randomizer = new SystemRandomizer();
             randomizer.Initzialize(100);
 
-            engine = new GameEngine(new EventManager(), new EntityManager(), new src.Wrapper.ContentWrapper(Content));
+            engine = new GameEngine(new EventManager(), new EntityManager(), new ContentWrapper(Content));
             engine.AddSystem(new RenderSystem(spriteBatch));
             engine.AddSystem(new BindingSystem());
             engine.AddSystem(new AnimationSystem());
@@ -212,7 +212,7 @@ namespace Tank
                     explosionBuilders.Add(new BaseExplosionBuilder(explosion, animationFrames, soundFactory));
                     RandomExplosionFactory randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);
 
-                    foreach(src.Interfaces.EntityComponentSystem.IComponent component in randomExplosionFactory.GetGameObjects())
+                    foreach(IComponent component in randomExplosionFactory.GetGameObjects())
                     {
                         Circle circle = null;
                         if (component is PlaceableComponent)

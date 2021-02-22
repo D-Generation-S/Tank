@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.src.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem;
 
 namespace Tank.src.Events.EntityBased
 {

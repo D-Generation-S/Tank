@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Tank.src.Interfaces.EntityComponentSystem.Manager
+namespace Tank.Interfaces.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This interface describes an entity manager

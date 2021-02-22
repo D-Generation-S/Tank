@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Tank.src.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem;
 
-namespace Tank.src.Interfaces.Builders
+namespace Tank.Interfaces.Builders
 {
     /// <summary>
     /// This interface defines a builder to create a component list

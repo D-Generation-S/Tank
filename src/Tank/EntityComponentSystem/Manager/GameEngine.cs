@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.src.Interfaces.EntityComponentSystem;
-using Tank.src.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.Wrapper;
+using Tank.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem.Manager;
+using Tank.Wrapper;
 
 namespace Tank.src.EntityComponentSystem.Manager
 {

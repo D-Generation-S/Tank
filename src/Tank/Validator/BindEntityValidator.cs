@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Tank.Components;
+﻿using Tank.Components;
+using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.EntityComponentSystem.Validator;
-using Tank.src.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.Validator
 {

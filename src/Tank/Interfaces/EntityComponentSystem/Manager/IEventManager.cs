@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.Interfaces.EntityComponentSystem.Manager
+namespace Tank.Interfaces.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This interface is the core of the event manager and allows you to subscribe, unsubscribe and fire events

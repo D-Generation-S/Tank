@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using Tank.Components;
 using Tank.Events.PhysicBased;
+using Tank.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.DataStructure;
 using Tank.src.Events.EntityBased;
 using Tank.src.Events.PhysicBased;
 using Tank.src.Events.TerrainEvents;
-using Tank.src.Interfaces.EntityComponentSystem;
-using Tank.src.Interfaces.EntityComponentSystem.Manager;
 using Tank.Validator;
 
 namespace Tank.src.Systems

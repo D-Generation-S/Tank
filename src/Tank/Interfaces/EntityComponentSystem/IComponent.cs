@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.Interfaces.EntityComponentSystem
+namespace Tank.Interfaces.EntityComponentSystem
 {
     /// <summary>
     /// This interface is representing a component from an entity

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.EntityComponentSystem.DataContainer;
-using Tank.src.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.src.EntityComponentSystem.Manager
 {

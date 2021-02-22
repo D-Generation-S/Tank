@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Tank.src.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem;
 
 namespace Tank.src.Interfaces.Factories
 {

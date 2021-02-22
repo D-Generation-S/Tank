@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tank.src.Interfaces.EntityComponentSystem.Manager;
+using Tank.Interfaces.EntityComponentSystem.Manager;
 
-namespace Tank.src.Interfaces.EntityComponentSystem
+namespace Tank.Interfaces.EntityComponentSystem
 {
     /// <summary>
     /// This interface describes a systems which can be added to the entity manager

@@ -2,18 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.Components;
+using Tank.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.Builders;
-using Tank.src.Components;
 using Tank.src.Components.Tags;
 using Tank.src.DataStructure;
-using Tank.src.Events.ComponentBased;
 using Tank.src.Events.EntityBased;
-using Tank.src.Interfaces.EntityComponentSystem;
-using Tank.src.Interfaces.EntityComponentSystem.Manager;
 using Tank.Validator;
 
 namespace Tank.src.Systems

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tank.src.DataStructure;
-using Tank.src.Interfaces.Builders;
+﻿using Tank.src.DataStructure;
 using Tank.src.Interfaces.Factories;
 
 namespace Tank.Components

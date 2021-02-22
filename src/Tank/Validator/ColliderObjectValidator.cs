@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.Components;
+using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.src.EntityComponentSystem.Validator;
-using Tank.src.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.Validator
 {
