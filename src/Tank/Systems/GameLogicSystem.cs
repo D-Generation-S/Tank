@@ -9,6 +9,8 @@ using Tank.DataStructure;
 using Tank.Events.EntityBased;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
+using Tank.Interfaces.MapGenerators;
+using Tank.Utils;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -26,7 +28,7 @@ namespace Tank.Systems
         /// <summary>
         /// The map width
         /// </summary>
-        private readonly int mapWidth;
+        private readonly IMap map;
 
         /// <summary>
         /// Is the system in setup mode
@@ -56,14 +58,14 @@ namespace Tank.Systems
         /// <summary>
         /// Create a new instance of this system
         /// </summary>
-        public GameLogicSystem(uint playerCount, int mapWidth) : base()
+        public GameLogicSystem(uint playerCount, IMap map) : base()
         {
             validators.Add(new PlayerObjectValidator());
             playerOrder = new int[playerCount];
             this.playerCount = playerCount;
             setup = true;
             currentPlayerIndex = 0;
-            this.mapWidth = mapWidth;
+            this.map = map;
         }
 
         /// <<inheritdoc/>
@@ -71,14 +73,27 @@ namespace Tank.Systems
         {
             base.Initialize(gameEngine);
 
-            int playerSpace = mapWidth / (int)(playerCount + 1);
+            int playerSpace = map.Width / (int)(playerCount + 1);
             for (int i = 0; i < playerCount; i++)
             {
                 int offset = i + 1;
                 List<Rectangle> animationFrames = new List<Rectangle>();
                 animationFrames.Add(new Rectangle(0, 0, 32, 32));
+                Vector2 playerStartPosition = new Vector2(playerSpace * offset, 0);
+                Raycast raycast = new Raycast(playerStartPosition, Vector2.UnitY, map.Height - 1);
+                Position[] positions = raycast.GetPositions();
+                for (int pIndex = positions.Length - 1; pIndex > 0; pIndex--)
+                {
+                    Position position = positions[pIndex];
+                    if (!map.CollissionMap.GetValue(position))
+                    {
+                        playerStartPosition += Vector2.UnitY * position.Y;
+                        break;
+                    }
+                }
+
                 TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
-                    new Position(playerSpace * offset, 0),
+                    new Position(playerStartPosition),
                     contentManager.Content.Load<Texture2D>("Images/Entities/BasicTank"),
                     animationFrames
                  );

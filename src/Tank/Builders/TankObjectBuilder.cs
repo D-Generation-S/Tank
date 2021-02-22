@@ -50,7 +50,7 @@ namespace Tank.Builders
             List<IComponent> returnComponents = new List<IComponent>();
             PlaceableComponent placeableComponent = new PlaceableComponent()
             {
-                Position = startPosition.GetVector2()
+                Position = startPosition.GetVector2() + new Vector2(spriteSheet.Width, spriteSheet.Height) * -1
             };
             VisibleComponent visibleComponent = new VisibleComponent()
             {
