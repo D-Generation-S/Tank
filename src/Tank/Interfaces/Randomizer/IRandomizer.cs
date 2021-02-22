@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tank.src.Interfaces.Randomizer
+﻿namespace Tank.Interfaces.Randomizer
 {
     /// <summary>
     /// This interface will represent a randomizer

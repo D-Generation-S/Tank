@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.src.Interfaces.Factories;
-using Tank.src.Interfaces.Randomizer;
+using Tank.Interfaces.Factories;
+using Tank.Interfaces.Randomizer;
 
 namespace Tank.src.Factories
 {

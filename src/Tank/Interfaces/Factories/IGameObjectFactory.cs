@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Tank.Interfaces.EntityComponentSystem;
 
-namespace Tank.src.Interfaces.Factories
+namespace Tank.Interfaces.Factories
 {
     /// <summary>
     /// The interface describes a factory for creating components based on a defined ruleset

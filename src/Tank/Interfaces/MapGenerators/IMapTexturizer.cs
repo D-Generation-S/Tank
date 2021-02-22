@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tank.src.Interfaces.Randomizer;
+using Tank.Interfaces.Randomizer;
 
-namespace Tank.src.Interfaces.MapGenerators
+namespace Tank.Interfaces.MapGenerators
 {
     /// <summary>
     /// This interface represents a map texturizer used to texturize a map

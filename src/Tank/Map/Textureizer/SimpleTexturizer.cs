@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using Tank.DataStructure;
-using Tank.src.Interfaces.MapGenerators;
-using Tank.src.Interfaces.Randomizer;
+using Tank.Interfaces.MapGenerators;
+using Tank.Interfaces.Randomizer;
 
 namespace Tank.Map.Textureizer
 {

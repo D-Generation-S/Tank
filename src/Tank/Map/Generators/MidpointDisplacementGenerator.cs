@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Threading.Tasks;
 using Tank.Code.Entities.Map;
-using Tank.src.Interfaces.Randomizer;
-using Tank.src.Interfaces.MapGenerators;
 using Tank.DataStructure;
+using Tank.Interfaces.MapGenerators;
+using Tank.Interfaces.Randomizer;
 
 namespace Tank.Map.Generators
 {

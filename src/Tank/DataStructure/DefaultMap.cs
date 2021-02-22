@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tank.DataStructure;
-using Tank.src.Interfaces.MapGenerators;
+using Tank.Interfaces.MapGenerators;
 
 namespace Tank.Code.Entities.Map
 {

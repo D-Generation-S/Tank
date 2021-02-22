@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using Tank.DataStructure.InputWrapper;
-using Tank.src.Interfaces.GameObjectControlling;
+using Tank.Interfaces.GameObjectControlling;
 
 namespace Tank.DataStructure
 {

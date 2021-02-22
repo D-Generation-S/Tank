@@ -1,5 +1,5 @@
 ﻿using Tank.DataStructure;
-using Tank.src.Interfaces.Factories;
+using Tank.Interfaces.Factories;
 
 namespace Tank.Components
 {

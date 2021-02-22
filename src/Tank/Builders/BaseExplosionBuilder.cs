@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Tank.Components;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
-using Tank.src.Interfaces.Factories;
+using Tank.Interfaces.Factories;
 
 namespace Tank.src.Builders
 {

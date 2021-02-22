@@ -1,13 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tank.DataStructure;
 
-namespace Tank.src.Interfaces.MapGenerators
+namespace Tank.Interfaces.MapGenerators
 {
     /// <summary>
     /// This interface represents a map object

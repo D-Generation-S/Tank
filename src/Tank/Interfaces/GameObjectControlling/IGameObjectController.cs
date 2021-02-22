@@ -1,11 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tank.src.Interfaces.GameObjectControlling
+﻿namespace Tank.Interfaces.GameObjectControlling
 {
     /// <summary>
     /// This interface will hide the used input device and generalize the input

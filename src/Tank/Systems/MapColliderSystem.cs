@@ -3,8 +3,8 @@ using System;
 using System.Diagnostics;
 using Tank.Components;
 using Tank.DataStructure;
+using Tank.Interfaces.MapGenerators;
 using Tank.src.Events.PhysicBased;
-using Tank.src.Interfaces.MapGenerators;
 using Tank.Validator;
 
 namespace Tank.src.Systems

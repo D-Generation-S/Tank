@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tank.DataStructure;
 
-namespace Tank.src.Interfaces.MapGenerators
+namespace Tank.Interfaces.MapGenerators
 {
     /// <summary>
     /// This interface represents a map generator

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.src.Interfaces.GameObjectControlling;
+using Tank.Interfaces.GameObjectControlling;
 
 namespace Tank.Components
 {

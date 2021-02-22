@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 
-namespace Tank.src.Interfaces.Factories
+namespace Tank.Interfaces.Factories
 {
     /// <summary>
     /// This interface defines a factory to return random sound effects
