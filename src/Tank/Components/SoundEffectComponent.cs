@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     class SoundEffectComponent : BaseComponent
     {
         /// <summary>
         /// Name of the sound effect
         /// </summary>
-        public string Name;   
+        public string Name;
 
         /// <summary>
         /// Readonly access if there should be a random pitch

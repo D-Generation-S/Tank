@@ -90,6 +90,15 @@ namespace Tank.src.EntityComponentSystem.Manager
         }
 
         /// <inheritdoc/>
+        public void AddSystems(params ISystem[] systemsToAdd)
+        {
+            foreach (ISystem system in systemsToAdd)
+            {
+                AddSystem(system);
+            }
+        }
+
+        /// <inheritdoc/>
         public void Update(GameTime gameTime)
         {
             if (!locked)

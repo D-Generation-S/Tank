@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     /// <summary>
     /// This class represents a animation on this object
@@ -153,7 +153,7 @@ namespace Tank.src.Components
             currentIndex = startIndex;
             this.frameSeconds = frameSeconds;
             this.spriteSources = spriteSources;
-            this.ForwardDirection = true;
+            ForwardDirection = true;
             allowMultiple = true;
         }
     }

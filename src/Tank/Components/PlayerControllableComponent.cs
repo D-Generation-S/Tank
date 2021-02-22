@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tank.src.Interfaces.GameObjectControlling;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     /// <summary>
     /// This object is controlable by a player

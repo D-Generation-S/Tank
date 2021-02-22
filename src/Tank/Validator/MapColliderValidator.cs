@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.src.Components;
+using Tank.Components;
 using Tank.src.Interfaces.EntityComponentSystem.Manager;
 
-namespace Tank.src.Validator
+namespace Tank.Validator
 {
     /// <summary>
     /// This class will calidate all the entites which can collide with the map

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.src.Components;
-using Tank.src.Validator;
+using Tank.Components;
+using Tank.Validator;
 
 namespace Tank.src.Systems
 {
@@ -38,6 +38,10 @@ namespace Tank.src.Systems
             foreach (uint entityId in watchedEntities)
             {
                 SoundEffectComponent soundEffect = entityManager.GetComponent<SoundEffectComponent>(entityId);
+                if (soundEffect == null)
+                {
+                    continue;
+                }
                 float pitch = 0f;
                 if (soundEffect.RandomPitch)
                 {

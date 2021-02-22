@@ -7,7 +7,7 @@ using Tank.src.DataStructure;
 using Tank.src.Interfaces.Builders;
 using Tank.src.Interfaces.Factories;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     /// <summary>
     /// This component represents that it can damage other entites
@@ -76,7 +76,11 @@ namespace Tank.src.Components
         /// <summary>
         /// Readonly access to the damange in the center of the damage area
         /// </summary>
-        private int CenterDamageValue => centerDamageValue;
+        public int CenterDamageValue => centerDamageValue;
+
+        private readonly float pushbackForce;
+
+        public float PushbackForce => pushbackForce;
 
         /// <summary>
         /// Create a new instance of this class
@@ -86,12 +90,25 @@ namespace Tank.src.Components
         /// <param name="damageArea">The area to apply the damage to</param>
         /// <param name="effectBuilder">The builder to use for the effects</param>
         public DamageComponent(bool damageTerrain, int centerDamage, Circle damageArea, IGameObjectFactory effectBuilder)
+            : this(damageTerrain, centerDamage, damageArea, effectBuilder, 0)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="damageTerrain">Can the entity damange the terrain</param>
+        /// <param name="centerDamage">´Damage for the center of the damage area</param>
+        /// <param name="damageArea">The area to apply the damage to</param>
+        /// <param name="effectBuilder">The builder to use for the effects</param>
+        public DamageComponent(bool damageTerrain, int centerDamage, Circle damageArea, IGameObjectFactory effectBuilder, float pushbackForce)
         {
             this.damageTerrain = damageTerrain;
             centerDamageValue = centerDamage;
             this.damageArea = damageArea;
-            this.effectFactory = effectBuilder;
+            effectFactory = effectBuilder;
             effect = effectBuilder != null;
+            this.pushbackForce = pushbackForce;
         }
     }
 }

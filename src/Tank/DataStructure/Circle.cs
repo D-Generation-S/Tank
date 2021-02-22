@@ -93,6 +93,26 @@ namespace Tank.src.DataStructure
         /// <summary>
         /// Is this position inside of the circle
         /// </summary>
+        /// <param name="position">The position to check</param>
+        /// <returns>Returns true if the position is in the circle</returns>
+        public bool IsInInCircle(Point position)
+        {
+            return IsInInCircle(position.X, position.Y);
+        }
+
+        /// <summary>
+        /// Is this position inside of the circle
+        /// </summary>
+        /// <param name="position">The position to check</param>
+        /// <returns>Returns true if the position is in the circle</returns>
+        public bool IsInInCircle(Vector2 position)
+        {
+            return IsInInCircle((int)position.X, (int)position.Y);
+        }
+
+        /// <summary>
+        /// Is this position inside of the circle
+        /// </summary>
         /// <param name="x">The x position to check</param>
         /// <param name="y">The y position to check</param>
         /// <returns>Returns true if x and y is inside of the circle</returns>

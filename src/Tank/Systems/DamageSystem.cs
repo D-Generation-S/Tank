@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Tank.src.Components;
+using Tank.Components;
+using Tank.Events.PhysicBased;
 using Tank.src.DataStructure;
 using Tank.src.Events.EntityBased;
 using Tank.src.Events.PhysicBased;
 using Tank.src.Events.TerrainEvents;
 using Tank.src.Interfaces.EntityComponentSystem;
 using Tank.src.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.Interfaces.Factories;
-using Tank.src.Validator;
+using Tank.Validator;
 
 namespace Tank.src.Systems
 {
@@ -21,7 +21,6 @@ namespace Tank.src.Systems
         /// <summary>
         /// Create a new instance of the damnage system
         /// </summary>
-        /// <param name="exlosionFactory">The factory to use for creating explosions</param>
         public DamageSystem() : base()
         {
             validators.Add(new DamageEntityValidator());
@@ -51,6 +50,7 @@ namespace Tank.src.Systems
                 FireEvent<RemoveEntityEvent>(new RemoveEntityEvent(collisionEvent.EntityId));
                 Effect(collisionEvent, damageComponent);
                 DamageTerrain(damageComponent, collisionEvent);
+                PushbackEntities(damageComponent, collisionEvent);
             }
         }
 
@@ -96,6 +96,35 @@ namespace Tank.src.Systems
                 }
             }
             FireEvent<AddEntityEvent>(new AddEntityEvent(components));
+        }
+
+        private void PushbackEntities(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
+        {
+            List<uint> entities = new List<uint>();
+            List<uint>  entitiesWithComponents = entityManager.GetEntitiesWithComponent<ColliderComponent>();
+            foreach(uint entityId in entitiesWithComponents)
+            {
+                if (!entityManager.HasComponent(entityId, typeof(MoveableComponent)) || !entityManager.HasComponent(entityId, typeof(PlaceableComponent)))
+                {
+                    continue;
+                }
+                ColliderComponent collider = entityManager.GetComponent<ColliderComponent>(entityId);
+                PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(entityId);
+                Vector2 position = new Vector2(collider.Collider.Center.X, collider.Collider.Center.Y);
+                position += placeable.Position;
+                Circle damageArea = damageComponent.DamageArea;
+                if (damageArea.IsInInCircle(position))
+                {
+                    Vector2 distanceToCenter = position - damageArea.Center.GetVector2();
+                    float forcePercentage = distanceToCenter.Length() / damageArea.Radius;
+                    float magnitude = damageComponent.PushbackForce * forcePercentage;
+                    Vector2 force = distanceToCenter;
+                    force.Normalize();
+                    force *= magnitude;
+
+                    FireEvent<ApplyForceEvent>(new ApplyForceEvent(entityId, force));
+                }
+            }
         }
     }
 }

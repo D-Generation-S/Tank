@@ -2,7 +2,7 @@
 using Tank.src.EntityComponentSystem.Validator;
 using Tank.src.Interfaces.EntityComponentSystem.Manager;
 
-namespace Tank.src.Validator
+namespace Tank.Validator
 {
     /// <summary>
     /// This class will check if a object is a game object

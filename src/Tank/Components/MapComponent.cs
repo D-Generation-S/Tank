@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tank.src.Interfaces.MapGenerators;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     /// <summary>
     /// This class will make an entity to an map component

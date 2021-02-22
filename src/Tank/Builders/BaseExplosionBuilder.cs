@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.src.Components;
+using Tank.Components;
 using Tank.src.Interfaces.Builders;
 using Tank.src.Interfaces.EntityComponentSystem;
 using Tank.src.Interfaces.Factories;

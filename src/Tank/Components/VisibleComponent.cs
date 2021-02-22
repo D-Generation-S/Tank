@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     /// <summary>
     /// This component will make a component visible in the gameworld
@@ -73,9 +73,30 @@ namespace Tank.src.Components
         /// <summary>
         /// Create a new instance of this component
         /// </summary>
-        public VisibleComponent()
+        public VisibleComponent() : this(Color.White)
         {
-            color = Color.White;
+        }
+
+        /// <summary>
+        /// Create a new instance of this component
+        /// </summary>
+        public VisibleComponent(Color color) : this(color, null)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of this component
+        /// </summary>
+        public VisibleComponent(Color color, Texture2D texture)
+        {
+            this.color = color;
+            this.texture = texture;
+            if (texture != null)
+            {
+                destination = new Rectangle(0, 0, texture.Width, texture.Height);
+                source = destination;
+            }
+
         }
     }
 }

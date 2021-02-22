@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     /// <summary>
     /// Make a entity moveable
@@ -27,6 +27,34 @@ namespace Tank.src.Components
         }
 
         /// <summary>
+        /// The current acceleration
+        /// </summary>
+        private Vector2 acceleration;
+
+        /// <summary>
+        /// The current acceleration
+        /// </summary>
+        public Vector2 Acceleration
+        {
+            get => acceleration;
+            set => acceleration = value;
+        }
+
+        /// <summary>
+        /// The mass of the object
+        /// </summary>
+        private float mass;
+
+        /// <summary>
+        /// The private mass of the object
+        /// </summary>
+        public float Mass
+        {
+            get => mass;
+            set => mass = value;
+        }
+
+        /// <summary>
         /// Should be rotated by physic
         /// </summary>
         public bool PhysicRotate;
@@ -43,6 +71,11 @@ namespace Tank.src.Components
         {
             get => onGround;
             set => onGround = value;
+        }
+
+        public MoveableComponent()
+        {
+            mass = 1;
         }
     }
 }

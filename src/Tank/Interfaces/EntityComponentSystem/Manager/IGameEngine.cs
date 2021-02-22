@@ -35,6 +35,12 @@ namespace Tank.src.Interfaces.EntityComponentSystem.Manager
         void AddSystem(ISystem systemToAdd);
 
         /// <summary>
+        /// This method allows you to add a undefined number of systems
+        /// </summary>
+        /// <param name="systemsToAdd">All the systems to add</param>
+        void AddSystems(params ISystem[] systemsToAdd);
+
+        /// <summary>
         /// Update this system
         /// </summary>
         /// <param name="gameTime">The current GameTime</param>

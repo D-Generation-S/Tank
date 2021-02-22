@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tank.src.Components;
+using Tank.Components;
 using Tank.src.DataStructure;
 using Tank.src.Events.TerrainEvents;
 using Tank.src.Interfaces.EntityComponentSystem.Manager;
-using Tank.src.Validator;
+using Tank.Validator;
 
 namespace Tank.src.Systems
 {

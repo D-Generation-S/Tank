@@ -139,6 +139,14 @@ namespace Tank.src.Interfaces.EntityComponentSystem.Manager
         bool MoveComponent(uint targetEntityId, IComponent componentToMove);
 
         /// <summary>
+        /// Move a component from one entity to another
+        /// </summary>
+        /// <param name="targetEntityId">The id of the target entity</param>
+        /// <param name="componentToMove">The component to move</param>
+        /// <returns></returns>
+        bool MoveComponent<T>(uint sourceEntity, uint targetEntityId) where T : IComponent;
+
+        /// <summary>
         /// This method will remove all components from a given type from the entity
         /// </summary>
         /// <param name="entityId">The entity id to remove the components from</param>

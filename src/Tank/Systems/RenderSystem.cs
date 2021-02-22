@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Tank.src.Components;
-using Tank.src.Validator;
+using Tank.Components;
+using Tank.Validator;
 
 namespace Tank.src.Systems
 {
@@ -34,6 +34,10 @@ namespace Tank.src.Systems
             {
                 PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
                 VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
+                if (placeableComponent == null || visibleComponent == null)
+                {
+                    continue;
+                }
                 Rectangle destination = visibleComponent.Destination;
                 destination.X = (int)placeableComponent.Position.X;
                 destination.Y = (int)placeableComponent.Position.Y;
@@ -54,7 +58,7 @@ namespace Tank.src.Systems
                 }
                 PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
                 VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
-                if (visibleComponent.Texture == null)
+                if (visibleComponent == null || placeableComponent == null || visibleComponent.Texture == null)
                 {
                     continue;
                 }

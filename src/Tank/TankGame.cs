@@ -7,13 +7,14 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Tank.Components;
 using Tank.src.Builders;
 using Tank.src.Code.MapGenerators.Generatos;
 using Tank.src.Code.Textureizer;
-using Tank.src.Components;
 using Tank.src.DataStructure;
 using Tank.src.EntityComponentSystem.Manager;
 using Tank.src.Events.EntityBased;
+using Tank.src.Events.PhysicBased;
 using Tank.src.Events.TerrainEvents;
 using Tank.src.Factories;
 using Tank.src.Interfaces.Builders;
@@ -22,6 +23,7 @@ using Tank.src.Interfaces.MapGenerators;
 using Tank.src.Interfaces.Randomizer;
 using Tank.src.Randomizer;
 using Tank.src.Systems;
+using Tank.Systems;
 
 namespace Tank
 {
@@ -57,9 +59,10 @@ namespace Tank
 
             engine = new GameEngine(new EventManager(), new EntityManager(), new src.Wrapper.ContentWrapper(Content));
             engine.AddSystem(new RenderSystem(spriteBatch));
-            engine.AddSystem(new PhysicSystem(new Rectangle(0,0, 1920, 1080)));
+            engine.AddSystem(new BindingSystem());
             engine.AddSystem(new AnimationSystem());
-            engine.AddSystem(new MapColliderSystem());
+            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1920, 1080), 9.8f, 30));
+            //engine.AddSystem(new MapColliderSystem());
             engine.AddSystem(new DamageSystem());
             engine.AddSystem(new MapDestructionSystem());
             engine.AddSystem(new SoundEffectSystem());
@@ -82,8 +85,15 @@ namespace Tank
                 new DefaultTextureizer(spriteSheet)
             ); 
             mapCreatingTask.ContinueWith((antecedent) => {
-                engine.EntityManager.AddComponent(mapId, new MapComponent(antecedent.Result));
-                engine.AddSystem(new GameLogicSystem(4));
+                MapComponent mapComponent = new MapComponent(antecedent.Result);
+                engine.EntityManager.AddComponent(mapId, mapComponent);
+                engine.AddSystem(new GameLogicSystem(1, 1440));
+
+                VisibleComponent visibleComponent = engine.EntityManager.GetComponent<VisibleComponent>(mapId);
+                IMap map = mapComponent.Map;
+                visibleComponent.Texture = map.Image;
+                visibleComponent.Source = new Rectangle(0, 0, map.Width, map.Height);
+                visibleComponent.Destination = visibleComponent.Source;
             });
 
             IsMouseVisible = true;
@@ -169,12 +179,12 @@ namespace Tank
                     });
                     engine.EntityManager.AddComponent(projectileId, new DamageComponent(true, 1, new src.DataStructure.Circle(0, 0, 16), randomExplosionFactory)
                     {
-                         
                     });
                     engine.EntityManager.AddComponent(projectileId, new MoveableComponent()
                     {
-                        Velocity = new Vector2((new Random()).Next(1, 30), 0),
-                        PhysicRotate = true
+                        Velocity = new Vector2((new Random()).Next(10, 20), 0),
+                        PhysicRotate = true,
+                        Mass = 30
                     });
                 }
 
@@ -210,12 +220,15 @@ namespace Tank
                             PlaceableComponent placeableComponent = (PlaceableComponent)component;
                             placeableComponent.Position = Mouse.GetState().Position.ToVector2();
                             placeableComponent.Position -= new Vector2(32 / 2, 32 / 2);
-                            circle = new Circle(Mouse.GetState().Position.ToVector2(), 16);
+                            circle = new Circle(Mouse.GetState().Position.ToVector2(), 64);
                         }
                         engine.EntityManager.AddComponent(exposion, component);
                         if (circle != null)
                         {
+                            DamageComponent damage = new DamageComponent(false, 100, circle, randomExplosionFactory, 9000);
+                            engine.EntityManager.AddComponent(exposion, damage);
                             engine.EventManager.FireEvent<DamageTerrainEvent>(this, new DamageTerrainEvent(circle));
+                            engine.EventManager.FireEvent<MapCollisionEvent>(this, new MapCollisionEvent(exposion, circle.Center));
                         }
                     }
                 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     /// <summary>
     /// Allow the entity to be placed in the world
@@ -38,6 +38,33 @@ namespace Tank.src.Components
         {
             get => rotation;
             set => rotation = value;
+        }
+
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        public PlaceableComponent() : this(0, 0)
+        {
+
+        }
+
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="x">The x position</param>
+        /// <param name="y">The y position</param>
+        public PlaceableComponent(float x, float y) : this(new Vector2(x, y))
+        {
+
+        }
+
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="position">The position</param>
+        public PlaceableComponent(Vector2 position)
+        {
+            this.position = position;
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tank.src.Interfaces.EntityComponentSystem;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     /// <summary>
     /// This class represents a component base class making the implementation easier

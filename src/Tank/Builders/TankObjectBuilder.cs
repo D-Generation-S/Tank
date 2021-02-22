@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Tank.src.Components;
+using Tank.Components;
 using Tank.src.Components.Tags;
 using Tank.src.DataStructure;
 using Tank.src.Interfaces.Builders;
@@ -44,6 +44,7 @@ namespace Tank.src.Builders
                 Texture = spriteSheet
             };
             MoveableComponent moveable = new MoveableComponent();
+            moveable.Mass = 15;
             ColliderComponent collider = new ColliderComponent()
             {
                 Collider = new Rectangle(0, 0, 32, 32)

@@ -193,9 +193,28 @@ namespace Tank.src.EntityComponentSystem.Manager
             return GetComponent(entityId, component) != null;
         }
 
+        /// <inheritdoc/>
         public bool HasComponent(uint entityId, IComponent component)
         {
             return HasComponent(entityId, component.GetType());
+        }
+
+        /// <inheritdoc/>
+        public bool MoveComponent<T>(uint sourceEntity, uint targetEntityId) where T : IComponent
+        {
+            if (!entities.Contains(sourceEntity))
+            {
+                return false;
+            }
+            Type type = typeof(T);
+            List<IComponent> components = GetComponents(sourceEntity, type);
+            bool returnValue = true;
+            foreach(IComponent componentToMove in components)
+            {
+                returnValue &= MoveComponent(targetEntityId, componentToMove);
+            }
+
+            return returnValue;
         }
 
         /// <inheritdoc/>

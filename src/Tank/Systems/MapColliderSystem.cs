@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Tank.src.Components;
+using System;
+using System.Diagnostics;
+using Tank.Components;
 using Tank.src.DataStructure;
 using Tank.src.Events.PhysicBased;
 using Tank.src.Interfaces.MapGenerators;
-using Tank.src.Validator;
+using Tank.Validator;
 
 namespace Tank.src.Systems
 {
@@ -62,7 +64,7 @@ namespace Tank.src.Systems
                 ColliderComponent colliderComponent = entityManager.GetComponent<ColliderComponent>(entityId);
                 MoveableComponent moveableComponent = entityManager.GetComponent<MoveableComponent>(entityId);
 
-                if (!colliderComponent.MapCollision || moveableComponent.OnGround)
+                if (!colliderComponent.MapCollision)// || moveableComponent.OnGround)
                 {
                     continue;
                 }
@@ -73,7 +75,7 @@ namespace Tank.src.Systems
                 );
                 positionToCheck.X += (int)placeableComponent.Position.X;
                 positionToCheck.Y += (int)placeableComponent.Position.Y;
-
+                moveableComponent.OnGround = false;
                 if (mapEntity.Map.CollissionMap.GetValue(positionToCheck.X, positionToCheck.Y))
                 {
                     moveableComponent.OnGround = true;
@@ -86,7 +88,7 @@ namespace Tank.src.Systems
                             newYPosition -= colliderComponent.Collider.Height;
                             Vector2 Position = new Vector2(placeableComponent.Position.X, newYPosition);
                             
-                            VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
+                            //VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
                             placeableComponent.Position = Position;
                             Position collisionPosition = new Position(positionToCheck.X, positionToCheck.Y - y);
                             FireEvent<MapCollisionEvent>(new MapCollisionEvent(entityId, collisionPosition));

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using Tank.src.Components;
+using Tank.Components;
 using Tank.src.Events.EntityBased;
-using Tank.src.Validator;
+using Tank.Validator;
 
 namespace Tank.src.Systems
 {

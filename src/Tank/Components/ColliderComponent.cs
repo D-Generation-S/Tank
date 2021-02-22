@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tank.src.Components
+namespace Tank.Components
 {
     /// <summary>
     /// This component describes a collider for an entity
@@ -42,7 +42,7 @@ namespace Tank.src.Components
         public ColliderComponent()
             : this(true)
         {
-            
+
         }
 
         /// <summary>
@@ -53,5 +53,7 @@ namespace Tank.src.Components
         {
             this.mapCollision = mapCollision;
         }
+
+        //public Vector2 getLowestPoint
     }
 }
