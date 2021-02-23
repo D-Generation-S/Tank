@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Tank.Components;
 using Tank.DataStructure;
 using Tank.Events.PhysicBased;
@@ -107,85 +108,106 @@ namespace Tank.Systems
             int timeSteps = (int)((deltaTime + leftOverDeltaTime) / fixedDeltaTime);
 
             leftOverDeltaTime = deltaTime - timeSteps * fixedDeltaTime;
-            List<uint> entitesToRemove = new List<uint>();
 
             updateLocked = true;
+
             foreach (uint entityId in watchedEntities)
             {
-                if (entityManager.HasComponent(entityId, typeof(MapComponent)))
+                if (entityManager.HasComponent(entityId, typeof(MapComponent)) || entitiesToRemove.Contains(entityId))
+                {
+                    continue;
+                }
+                CalculatePhysic(map, timeSteps, entityId);
+            }
+            updateLocked = false;
+        }
+
+        /// <summary>
+        /// Calculate the physic for the entity
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="timeSteps"></param>
+        /// <param name="entityId"></param>
+        private void CalculatePhysic(MapComponent map, int timeSteps, uint entityId)
+        {
+            for (int iteration = 0; iteration < timeSteps; iteration++)
+            {
+                PlaceableComponent placeComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
+                MoveableComponent moveComponent = entityManager.GetComponent<MoveableComponent>(entityId);
+                ColliderComponent colliderComponent = entityManager.GetComponent<ColliderComponent>(entityId);
+
+                if (placeComponent == null || moveComponent == null || colliderComponent == null)
                 {
                     continue;
                 }
 
-                for (int iteration = 0; iteration < timeSteps; iteration++)
+                ApplyForce(moveComponent, gravityForce, false);
+                ApplyForce(moveComponent, windForce);
+
+                Vector2 oldPosition = placeComponent.Position;
+                Vector2 bottomCenter = new Vector2(colliderComponent.Collider.Center.X, colliderComponent.Collider.Bottom - 2);
+                bottomCenter += oldPosition;
+                Raycast raycast = new Raycast(bottomCenter, moveComponent.Velocity, moveComponent.Velocity.Length());
+                Position[] rayPath = raycast.GetPositions();
+                for (int y = 0; y < rayPath.Length; y++)
                 {
-                    PlaceableComponent placeComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
-                    MoveableComponent moveComponent = entityManager.GetComponent<MoveableComponent>(entityId);
-                    ColliderComponent colliderComponent = entityManager.GetComponent<ColliderComponent>(entityId);
-                    if (moveComponent.OnGround)
+                    Position currentPosition = rayPath[y];
+                    if (map.Map.IsPixelSolid(currentPosition))
                     {
-                        moveComponent.Velocity = Vector2.Zero;
-                        continue;
-                    }
-
-                    ApplyForce(moveComponent, gravityForce, false);
-                    ApplyForce(moveComponent, windForce);
-
-                    Vector2 oldPosition = placeComponent.Position;
-                    Vector2 bottomCenter = new Vector2(colliderComponent.Collider.Center.X, colliderComponent.Collider.Bottom);
-                    bottomCenter += oldPosition;
-                    Raycast raycast = new Raycast(bottomCenter, moveComponent.Velocity, moveComponent.Velocity.Length());
-                    Position[] rayPath = raycast.GetPositions();
-                    for (int y = 0; y < rayPath.Length; y++)
-                    {
-                        Position currentPosition = rayPath[y];
-                        if (map.Map.CollissionMap.GetValue(currentPosition))
+                        Vector2 xForce = Vector2.UnitX;
+                        xForce *= moveComponent.Velocity.X;
+                        Raycast horizontalRaycast = new Raycast(bottomCenter, xForce, xForce.Length());
+                        Position[] horizontalRay = horizontalRaycast.GetPositions();
+                        for (int x = 0; x < horizontalRay.Length; x++)
                         {
-                            Vector2 xForce = Vector2.UnitX;
-                            xForce *= moveComponent.Velocity.X;
-                            Raycast horizontalRaycast = new Raycast(bottomCenter, xForce, xForce.Length());
-                            Position[] horizontalRay = horizontalRaycast.GetPositions();
-                            for (int x = 0; x < horizontalRay.Length; x++)
+                            Position currentXPosition = rayPath[x];
+                            if (map.Map.IsPixelSolid(currentXPosition))
                             {
-                                Position currentXPosition = rayPath[x];
-                                if (map.Map.CollissionMap.GetValue(currentXPosition))
-                                {
-                                    xForce *= -1;
-                                    xForce /= fixedDeltaTimeSeconds;
-                                    ApplyForce(moveComponent, xForce, false);
-                                    break;
-                                }
+                                xForce *= -1;
+                                ApplyForce(moveComponent, windForce * -1);
+                                ApplyForce(moveComponent, xForce, false);
+                                break;
                             }
-
-                            Vector2 normalForce = GetNormalForce(moveComponent, bottomCenter, currentPosition.GetVector2());
-                            ApplyForce(moveComponent, normalForce, false);
-                            ApplyForce(moveComponent, gravityForce * -1, false);
-                            break;
                         }
-                    }
-                    moveComponent.Acceleration = moveComponent.Acceleration * fixedDeltaTimeSeconds;
-                    moveComponent.Velocity += moveComponent.Acceleration;
-                    placeComponent.Position += moveComponent.Velocity;
 
-                    if (moveComponent.PhysicRotate)
-                    {
-                        Vector2 rotationTarget = placeComponent.Position - oldPosition;
-                        placeComponent.Rotation = (float)Math.Atan2(
-                            rotationTarget.Y,
-                            rotationTarget.X
-                        );
-                    }
+                        if (colliderComponent.FireCollideEvent)
+                        {
+                            Vector2 frontPosition = Vector2.UnitX;
+                            frontPosition *= colliderComponent.Collider.Width / 2;
+                            if (moveComponent.Velocity.X < 0)
+                            {
+                                frontPosition *= -1;
+                            }
+                            frontPosition += bottomCenter;
+                            FireEvent(new MapCollisionEvent(entityId, frontPosition));
+                            return;
+                        }
 
-                    if (!screenBound.Contains(placeComponent.Position))
-                    {
-                        entitesToRemove.Add(entityId);
+                        Vector2 normalForce = GetNormalForce(moveComponent, bottomCenter, currentPosition.GetVector2());
+                        ApplyForce(moveComponent, normalForce, false);
+                        ApplyForce(moveComponent, gravityForce * -1, false);
+                        break;
                     }
-                    moveComponent.Acceleration *= 0;
                 }
-            }
-            updateLocked = false;
+                moveComponent.Acceleration = moveComponent.Acceleration;
+                moveComponent.Velocity += moveComponent.Acceleration;
+                placeComponent.Position += moveComponent.Velocity;
 
-            DoRemoveEntities();
+                if (moveComponent.PhysicRotate)
+                {
+                    Vector2 rotationTarget = placeComponent.Position - oldPosition;
+                    placeComponent.Rotation = (float)Math.Atan2(
+                        rotationTarget.Y,
+                        rotationTarget.X
+                    );
+                }
+
+                if (!map.Map.IsPointOnMap(placeComponent.Position))
+                {
+                    RemoveEntity(entityId);
+                }
+                moveComponent.Acceleration *= 0;
+            }
         }
 
         /// <inheritdoc/>
@@ -216,7 +238,6 @@ namespace Tank.Systems
 
             normalForce += lowestPixel - currentPosition;
             normalForce *= -1;
-            normalForce /= fixedDeltaTimeSeconds;
 
             return normalForce;
         }
@@ -238,6 +259,10 @@ namespace Tank.Systems
         /// <param name="force">The force to apply</param>
         private void ApplyForce(MoveableComponent moveableComponent, Vector2 force, bool applyMass)
         {
+            if (moveableComponent == null)
+            {
+                return;
+            }
             Vector2 forceCopy = applyMass ? force : force * moveableComponent.Mass;
             moveableComponent.Acceleration += forceCopy / moveableComponent.Mass;
         }

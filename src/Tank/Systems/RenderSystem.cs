@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Tank.Components;
+using Tank.DataStructure;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -15,6 +17,10 @@ namespace Tank.Systems
         /// </summary>
         private readonly SpriteBatch spriteBatch;
 
+        private readonly Stack<RenderContainer> usedContainers;
+
+        private readonly List<RenderContainer> containersToRender;
+
         /// <summary>
         /// Create a new instance for the renderer
         /// </summary>
@@ -23,6 +29,9 @@ namespace Tank.Systems
         {
             this.spriteBatch = spriteBatch;
             validators.Add(new RenderableEntityValidator());
+
+            usedContainers = new Stack<RenderContainer>();
+            containersToRender = new List<RenderContainer>();
         }
 
         /// <inheritdoc/>
@@ -62,17 +71,32 @@ namespace Tank.Systems
                 {
                     continue;
                 }
-                spriteBatch.Draw(
-                    visibleComponent.Texture,
-                    visibleComponent.Destination,
-                    visibleComponent.Source,
-                    visibleComponent.Color,
-                    placeableComponent.Rotation,
-                    Vector2.Zero,
-                    SpriteEffects.None,
-                    1f
-                );
+                RenderContainer renderContainer = usedContainers.Count > 0 ? usedContainers.Pop() : new RenderContainer();
+                renderContainer.TextureToDraw = visibleComponent.Texture;
+                renderContainer.Destination = visibleComponent.Destination;
+                renderContainer.Source = visibleComponent.Source;
+                renderContainer.Color = visibleComponent.Color;
+                renderContainer.Rotation = placeableComponent.Rotation;
+                containersToRender.Add(renderContainer);
             }
+            containersToRender.Sort((containerA, containerB) => containerA.TextureToDraw.Name.CompareTo(containerB.TextureToDraw.Name));
+
+            for (int i = 0; i < containersToRender.Count; i++)
+            {
+                RenderContainer currentContainer = containersToRender[i];
+                 spriteBatch.Draw(
+                   currentContainer.TextureToDraw,
+                   currentContainer.Destination,
+                   currentContainer.Source,
+                   currentContainer.Color,
+                   currentContainer.Rotation,
+                   Vector2.Zero,
+                   SpriteEffects.None,
+                   1f
+               );
+                usedContainers.Push(currentContainer);
+            }
+            containersToRender.Clear();
             drawLocked = false;
         }
     }

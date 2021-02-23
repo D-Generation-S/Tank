@@ -261,5 +261,63 @@ namespace Tank.Code.Entities.Map
 
             image.SetData(imageData.Array);
         }
+
+        /// <inheritdoc/>
+        public bool IsPixelSolid(Vector2 vector)
+        {
+            if (vector == null)
+            {
+                return false;
+            }
+            return IsPixelSolid((int)vector.X, (int)vector.Y);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPixelSolid(Position position)
+        {
+            if (position == null)
+            {
+                return false;
+            }
+            return IsPixelSolid(position.X, position.Y);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPixelSolid(int x, int y)
+        {
+            if (!IsPointOnMap(x, y))
+            {
+                return false;
+            }
+            return collissionMap.GetValue(x, y);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPointOnMap(Vector2 vector)
+        {
+            if (vector == null)
+            {
+                return false;
+            }
+            return IsPointOnMap((int)vector.X, (int)vector.Y);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPointOnMap(Position position)
+        {
+            if (position == null)
+            {
+                return false;
+            }
+            return IsPointOnMap(position.X, position.Y);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPointOnMap(int x, int y)
+        {
+            bool valid = x > 0 && y > 0;
+            valid &= x < Width & y < Height;
+            return valid;
+        }
     }
 }

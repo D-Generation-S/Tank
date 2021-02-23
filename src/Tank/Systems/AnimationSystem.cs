@@ -37,7 +37,7 @@ namespace Tank.Systems
                     {
                         if (!animation.Loop)
                         {
-                            entitiesToRemove.Add(entityId);
+                            RemoveEntity(entityId);
 
                             continue;
                         }

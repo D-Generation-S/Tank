@@ -8,28 +8,16 @@ namespace Tank.Components
     class ColliderComponent : BaseComponent
     {
         /// <summary>
-        /// The entity can collide with the map
-        /// </summary>
-        private bool mapCollision;
-
-        /// <summary>
         /// Public readonly access if the entity can collide with the map
         /// </summary>
-        public bool MapCollision => mapCollision;
-
-        /// <summary>
-        /// The collider rectanble
-        /// </summary>
-        private Rectangle collider;
+        public bool MapCollision { get; }
 
         /// <summary>
         /// Public access to the collider rectangle
         /// </summary>
-        public Rectangle Collider
-        {
-            get => collider;
-            set => collider = value;
-        }
+        public Rectangle Collider { get; set; }
+
+        public bool FireCollideEvent { get; set;  }
 
         /// <summary>
         /// Create a new instance of this class. Map collision is on
@@ -37,7 +25,6 @@ namespace Tank.Components
         public ColliderComponent()
             : this(true)
         {
-
         }
 
         /// <summary>
@@ -45,10 +32,19 @@ namespace Tank.Components
         /// </summary>
         /// <param name="mapCollision">Should be entity collide with the map</param>
         public ColliderComponent(bool mapCollision)
+            : this(mapCollision, false)
         {
-            this.mapCollision = mapCollision;
         }
 
-        //public Vector2 getLowestPoint
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="mapCollision">Should be entity collide with the map</param>
+        public ColliderComponent(bool mapCollision, bool fireCollideEvent)
+        {
+            MapCollision = mapCollision;
+            FireCollideEvent = fireCollideEvent;
+        }
+
     }
 }

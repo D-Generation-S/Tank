@@ -85,7 +85,7 @@ namespace Tank.Systems
                 for (int pIndex = positions.Length - 1; pIndex > 0; pIndex--)
                 {
                     Position position = positions[pIndex];
-                    if (!map.CollissionMap.GetValue(position))
+                    if (!map.IsPixelSolid(position))
                     {
                         playerStartPosition += Vector2.UnitY * position.Y;
                         break;

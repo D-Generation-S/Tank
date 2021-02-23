@@ -201,11 +201,7 @@ namespace Tank.Systems
         /// <param name="entityId">The id to add to the remove list</param>
         protected virtual void EntityRemoved(uint entityId)
         {
-            if (!entitiesToRemove.Contains(entityId))
-            {
-                entitiesToRemove.Add(entityId);
-            }
-
+            RemoveEntity(entityId);
         }
 
         /// <summary>
@@ -226,6 +222,18 @@ namespace Tank.Systems
             if (!EntityIsRelevant(entityId))
             {
                 EntityRemoved(entityId);
+            }
+        }
+
+        /// <summary>
+        /// Add an entity for removing in the next cycle
+        /// </summary>
+        /// <param name="entityId"></param>
+        protected virtual void RemoveEntity(uint entityId)
+        {
+            if (!entitiesToRemove.Contains(entityId))
+            {
+                entitiesToRemove.Add(entityId);
             }
         }
 

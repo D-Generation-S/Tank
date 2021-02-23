@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tank.Components;
+using Tank.Components.Forces;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.Factories;
@@ -72,9 +73,14 @@ namespace Tank.Builders
                 components.Add(soundEffect);
             }
 
+            float radius = animationFrames[0].Width + animationFrames[0].Height;
+            radius /= 2;
+            ForceComponent forceComponent = new ForceComponent(radius, 100, Enums.ForceTypeEnum.Push, Enums.ForceTriggerTimeEnum.Add);
+
             components.Add(placeableComponent);
             components.Add(visibleComponent);
             components.Add(animation);
+            components.Add(forceComponent);
 
             return components;
         }

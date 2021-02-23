@@ -32,7 +32,7 @@ namespace Tank.Interfaces.MapGenerators
         /// <summary>
         /// The collision data for this map
         /// </summary>
-        FlattenArray<bool> CollissionMap { get; }
+        //FlattenArray<bool> CollissionMap { get; }
 
         /// <summary>
         /// Add or replace a new collideable pixel
@@ -135,5 +135,49 @@ namespace Tank.Interfaces.MapGenerators
         /// <param name="x">The x position of the pixel</param>
         /// <param name="y">The y position of the pixel</param>
         void RemovePixel(int x, int y);
+
+        /// <summary>
+        /// Check if the given pixel is solid
+        /// </summary>
+        /// <param name="vector">The position to check</param>
+        /// <returns>True if solid</returns>
+        bool IsPixelSolid(Vector2 vector);
+
+        /// <summary>
+        /// Check if the given pixel is solid
+        /// </summary>
+        /// <param name="position">The position to check</param>
+        /// <returns>True if solid</returns>
+        bool IsPixelSolid(Position position);
+
+        /// <summary>
+        /// Check if the given pixel is solid
+        /// </summary>
+        /// <param name="x">The x component of the position</param>
+        /// <param name="y">The y component of the position</param>
+        /// <returns>True if solid</returns>
+        bool IsPixelSolid(int x, int y);
+
+        /// <summary>
+        /// Is a given point still on the map
+        /// </summary>
+        /// <param name="vector">The position to check</param>
+        /// <returns>True if on map</returns>
+        bool IsPointOnMap(Vector2 vector);
+
+        /// <summary>
+        /// Is a given point still on the map
+        /// </summary>
+        /// <param name="position">The position to check</param>
+        /// <returns>True if on map</returns>
+        bool IsPointOnMap(Position position);
+
+        /// <summary>
+        /// Is a given point still on the map
+        /// </summary>
+        /// <param name="x">The x component of the position</param>
+        /// <param name="y">The y component of the position</param>
+        /// <returns></returns>
+        bool IsPointOnMap(int x, int y);
     }
 }

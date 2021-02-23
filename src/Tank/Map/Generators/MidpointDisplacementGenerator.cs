@@ -144,6 +144,7 @@ namespace Tank.Map.Generators
             }
 
             Texture2D texture = new Texture2D(graphicsDevice, size.X, size.Y);
+            texture.Name = "GeneratedMap";
             FlattenArray<bool> collisionMap = new FlattenArray<bool>(size.X, size.Y);
 
             IMap returnMap = new DefaultMap(texture, collisionMap, seed);
