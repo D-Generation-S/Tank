@@ -18,17 +18,29 @@ namespace Tank.Systems
         /// </summary>
         private readonly SpriteBatch spriteBatch;
 
+        /// <summary>
+        /// The graphic device to use
+        /// </summary>
+        private readonly GraphicsDevice graphicsDevice;
+
+        /// <summary>
+        /// All the already used containers to prevent gc
+        /// </summary>
         private readonly Stack<RenderContainer> usedContainers;
 
+        /// <summary>
+        /// The containers which should be drawn in this call
+        /// </summary>
         private readonly List<RenderContainer> containersToRender;
 
         /// <summary>
         /// Create a new instance for the renderer
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public RenderSystem(SpriteBatch spriteBatch) : base()
+        public RenderSystem(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice) : base()
         {
             this.spriteBatch = spriteBatch;
+            this.graphicsDevice = graphicsDevice;
             validators.Add(new RenderableEntityValidator());
 
             usedContainers = new Stack<RenderContainer>();
@@ -60,6 +72,8 @@ namespace Tank.Systems
         public override void Draw(GameTime gameTime)
         {
             drawLocked = true;
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, null);
+            graphicsDevice.Clear(Color.CornflowerBlue);
             foreach (uint entityId in watchedEntities)
             {
                 if (entitiesToRemove.Contains(entityId))
@@ -73,9 +87,15 @@ namespace Tank.Systems
                 RenderText(placeableComponent, textComponent);
             }
 
+            spriteBatch.End();
             drawLocked = false;
         }
 
+        /// <summary>
+        /// Render all the textures
+        /// </summary>
+        /// <param name="placeableComponent">The placeable component</param>
+        /// <param name="visibleComponent">The visible component</param>
         private void RenderTextures(PlaceableComponent placeableComponent, VisibleComponent visibleComponent)
         {
             if (visibleComponent == null || placeableComponent == null || visibleComponent.Texture == null)
@@ -111,6 +131,11 @@ namespace Tank.Systems
             containersToRender.Clear();
         }
 
+        /// <summary>
+        /// Render text data
+        /// </summary>
+        /// <param name="placeableComponent">The placeable component</param>
+        /// <param name="textComponent">The text component</param>
         private void RenderText(PlaceableComponent placeableComponent, VisibleTextComponent textComponent)
         {
             if (textComponent == null || placeableComponent == null || textComponent.Font == null)

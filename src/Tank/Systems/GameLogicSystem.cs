@@ -8,7 +8,6 @@ using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataStructure;
 using Tank.Events.EntityBased;
-using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Interfaces.MapGenerators;
 using Tank.Utils;

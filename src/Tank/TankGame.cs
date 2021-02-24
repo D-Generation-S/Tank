@@ -120,7 +120,7 @@ namespace Tank
             engine.AddSystem(new ForceSystem());
             engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1920, 1080), 0.098f, 0.3f));
 
-            engine.AddSystem(new RenderSystem(spriteBatch));
+            engine.AddSystem(new RenderSystem(spriteBatch, GraphicsDevice));
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new DamageSystem());
             engine.AddSystem(new MapDestructionSystem());
@@ -284,10 +284,8 @@ namespace Tank
 
         protected override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, null);
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+
             engine.Draw(gameTime);
-            spriteBatch.End();
 
             base.Draw(gameTime);
         }

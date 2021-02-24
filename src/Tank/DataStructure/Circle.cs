@@ -53,9 +53,6 @@ namespace Tank.DataStructure
         {
         }
 
-
-
-
         /// <summary>
         /// Create a new circle instance
         /// </summary>

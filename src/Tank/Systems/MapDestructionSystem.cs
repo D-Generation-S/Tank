@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using Tank.Components;
 using Tank.DataStructure;
 using Tank.Events.TerrainEvents;

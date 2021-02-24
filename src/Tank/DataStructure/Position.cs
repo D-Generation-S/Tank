@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 
 namespace Tank.DataStructure
 {
@@ -75,18 +74,47 @@ namespace Tank.DataStructure
             Y += (int)position.Y;
         }
 
+        /// <summary>
+        /// The plus operant for this object
+        /// </summary>
+        /// <param name="positionA">The first position</param>
+        /// <param name="positionB">The second position</param>
+        /// <returns>The position after the calculation</returns>
         public static Position operator+ (Position positionA, Position positionB) {
             return new Position(positionA.X + positionB.X, positionA.Y + positionB.Y);
         }
 
+        /// <summary>
+        /// The minus operant for this object
+        /// </summary>
+        /// <param name="positionA">The first position</param>
+        /// <param name="positionB">The second position</param>
+        /// <returns>The position after the calculation</returns>
         public static Position operator- (Position positionA, Position positionB)
         {
             return new Position(positionA.X - positionB.X, positionA.Y - positionB.Y);
         }
 
+        /// <summary>
+        /// The multiplication operation for this object
+        /// </summary>
+        /// <param name="positionA">The first position</param>
+        /// <param name="positionB">The second position</param>
+        /// <returns>The position after the calculation</returns>
         public static Position operator* (Position positionA, Position positionB)
         {
             return new Position(positionA.X * positionB.X, positionA.Y * positionB.Y);
+        }
+
+        /// <summary>
+        /// The division operant for this object
+        /// </summary>
+        /// <param name="positionA">The first position</param>
+        /// <param name="positionB">The second position</param>
+        /// <returns>The position after the calculation</returns>
+        public static Position operator/ (Position positionA, Position positionB)
+        {
+            return new Position(positionA.X / positionB.X, positionA.Y / positionB.Y);
         }
     }
 }

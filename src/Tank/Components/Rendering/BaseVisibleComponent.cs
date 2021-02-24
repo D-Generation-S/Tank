@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Tank.Components.Rendering
 {
+    /// <summary>
+    /// Base class for rendering system
+    /// </summary>
     internal abstract class BaseVisibleComponent : BaseComponent
     {
         /// <summary>
