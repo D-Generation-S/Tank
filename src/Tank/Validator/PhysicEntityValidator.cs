@@ -13,7 +13,7 @@ namespace Tank.Validator
         public bool IsValidEntity(uint entityId, IEntityManager entityManager)
         {
             bool valid = entityManager.HasComponent(entityId, typeof(PlaceableComponent));
-            valid = entityManager.HasComponent(entityId, typeof(ColliderComponent));
+            valid &= entityManager.HasComponent(entityId, typeof(ColliderComponent));
             valid &= entityManager.HasComponent(entityId, typeof(MoveableComponent));
             return valid;
         }

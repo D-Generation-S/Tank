@@ -32,18 +32,6 @@
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/Effects/Explosion132x32-Sheet.png;Images/Effects/Explosion132x32-Sheet.png
 
-#begin ../Assets/Images/Effects/Explosion132x32-Sheet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../Assets/Images/Effects/Explosion132x32-Sheet.png;Images/Effects/Explosion132x32-Sheet.png
-
 #begin ../Assets/Images/Entities/BasicMunitionSprite.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -55,30 +43,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/Entities/BasicMunitionSprite.png;Images/Entities/BasicMunitionSprite.png
-
-#begin ../Assets/Images/Entities/BasicMunitionSprite.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../Assets/Images/Entities/BasicMunitionSprite.png;Images/Entities/BasicMunitionSprite.png
-
-#begin ../Assets/Images/Entities/BasicTank.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../Assets/Images/Entities/BasicTank.png;Images/Entities/BasicTank.png
 
 #begin ../Assets/Images/Entities/BasicTank.png
 /importer:TextureImporter
@@ -104,18 +68,6 @@
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/Pixel.png;Images/Pixel.png
 
-#begin ../Assets/Images/Pixel.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../Assets/Images/Pixel.png;Images/Pixel.png
-
 #begin ../Assets/Images/SplashScreens/DGeneratonS.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -127,30 +79,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/SplashScreens/DGeneratonS.png;Images/SplashScreens/DGeneratonS.png
-
-#begin ../Assets/Images/SplashScreens/DGeneratonS.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../Assets/Images/SplashScreens/DGeneratonS.png;Images/SplashScreens/DGeneratonS.png
-
-#begin ../Assets/Images/SplashScreens/MonoGame_Logo.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../Assets/Images/SplashScreens/MonoGame_Logo.png;Images/SplashScreens/MonoGame_Logo.png
 
 #begin ../Assets/Images/SplashScreens/MonoGame_Logo.png
 /importer:TextureImporter
@@ -176,18 +104,6 @@
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/Textures/DefaultMapSprites.png;Images/Textures/DefaultMapSprites.png
 
-#begin ../Assets/Images/Textures/DefaultMapSprites.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../Assets/Images/Textures/DefaultMapSprites.png;Images/Textures/DefaultMapSprites.png
-
 #begin ../Assets/Images/Textures/DefaultMapSpritesNew.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -200,7 +116,7 @@
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/Textures/DefaultMapSpritesNew.png;Images/Textures/DefaultMapSpritesNew.png
 
-#begin ../Assets/Images/Textures/DefaultMapSpritesNew.png
+#begin ../Assets/Images/Textures/MoistContinentalSpritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -210,13 +126,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:../Assets/Images/Textures/DefaultMapSpritesNew.png;Images/Textures/DefaultMapSpritesNew.png
-
-#begin ../Assets/Sound/Effects/Explosion1.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:../Assets/Sound/Effects/Explosion1.wav;Sound/Effects/Explosion1.wav
+/build:../Assets/Images/Textures/MoistContinentalSpritesheet.png;Images/Textures/MoistContinentalSpritesheet.png
 
 #begin ../Assets/Sound/Effects/Explosion1.wav
 /importer:WavImporter
@@ -230,29 +140,11 @@
 /processorParam:Quality=Best
 /build:../Assets/Sound/Effects/Explosion2.wav;Sound/Effects/Explosion2.wav
 
-#begin ../Assets/Sound/Effects/Explosion2.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:../Assets/Sound/Effects/Explosion2.wav;Sound/Effects/Explosion2.wav
-
 #begin ../Assets/Sound/Effects/Explosion3.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:../Assets/Sound/Effects/Explosion3.wav;Sound/Effects/Explosion3.wav
-
-#begin ../Assets/Sound/Effects/Explosion3.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:../Assets/Sound/Effects/Explosion3.wav;Sound/Effects/Explosion3.wav
-
-#begin ../Assets/Sound/Effects/Explosion4.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:../Assets/Sound/Effects/Explosion4.wav;Sound/Effects/Explosion4.wav
 
 #begin ../Assets/Sound/Effects/Explosion4.wav
 /importer:WavImporter

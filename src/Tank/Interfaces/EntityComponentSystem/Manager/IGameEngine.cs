@@ -46,5 +46,30 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <param name="gameTime">The current GameTime</param>
         void Draw(GameTime gameTime);
+
+        /// <summary>
+        /// Get the total number of entities
+        /// </summary>
+        /// <returns>The total number of entities</returns>
+        int GetEntityCount();
+
+        /// <summary>
+        /// The number of components
+        /// </summary>
+        /// <returns>The number of component</returns>
+        int GetComponentCount();
+
+
+        /// <summary>
+        /// The number of used components
+        /// </summary>
+        /// <returns>The number of used components</returns>
+        int GetUsedComponentCount();
+
+        /// <summary>
+        /// Get the number of systems
+        /// </summary>
+        /// <returns>The number of active systems</returns>
+        int GetSystemCount();
     }
 }

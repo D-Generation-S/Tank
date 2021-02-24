@@ -46,6 +46,7 @@ namespace Tank.Systems
                 {
                     return;
                 }
+
                 FireEvent(new RemoveEntityEvent(collisionEvent.EntityId));
                 Effect(collisionEvent, damageComponent);
                 DamageTerrain(damageComponent, collisionEvent);
@@ -59,13 +60,12 @@ namespace Tank.Systems
         /// <param name="collisionEvent">The event where the collision occured</param>
         private void DamageTerrain(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
         {
-            if (!damageComponent.DamangeTerrain)
+            if (!damageComponent.DamageTerrain || damageComponent.DamageArea == null)
             {
                 return;
             }
             Circle damageArea = damageComponent.DamageArea;
-            damageArea.Center.X = collisionEvent.CollisionPosition.X;
-            damageArea.Center.Y = collisionEvent.CollisionPosition.Y;
+            damageArea.Center = collisionEvent.CollisionPosition;
 
             FireEvent(new DamageTerrainEvent(damageArea));
         }
@@ -84,13 +84,10 @@ namespace Tank.Systems
             List<IComponent> components = damageComponent.EffectFactory.GetGameObjects();
             foreach (IComponent component in components)
             {
-                if (component is PlaceableComponent)
+                if (component is PlaceableComponent placeable)
                 {
-                    Vector2 explosionPosition = new Vector2(
-                        collisionEvent.CollisionPosition.X,
-                        collisionEvent.CollisionPosition.Y
-                    );
-                    ((PlaceableComponent)component).Position += explosionPosition;
+                    Vector2 position = collisionEvent.CollisionPosition;
+                    placeable.Position += position;
                 }
             }
             FireEvent(new AddEntityEvent(components));

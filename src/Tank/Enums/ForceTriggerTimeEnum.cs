@@ -6,6 +6,7 @@ namespace Tank.Enums
 {
     public enum ForceTriggerTimeEnum
     {
+        None,
         Add,
         Continuous
     }

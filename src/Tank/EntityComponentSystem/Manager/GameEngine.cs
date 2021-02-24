@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
@@ -127,6 +128,29 @@ namespace Tank.EntityComponentSystem.Manager
                 system.Draw(gameTime);
             }
             locked = false;
+        }
+
+        /// <inheritdoc/>
+        public int GetEntityCount()
+        {
+            return entityManager.GetEntityCount();
+        }
+
+        /// <inheritdoc/>
+        public int GetComponentCount()
+        {
+             return entityManager.GetComponentCount();
+        }
+
+        /// <inheritdoc/>
+        public int GetSystemCount()
+        {
+            return systems.Count;
+        }
+
+        public int GetUsedComponentCount()
+        {
+            return entityManager.GetUsedComponentCount();
         }
     }
 }

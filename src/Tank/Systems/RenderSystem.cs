@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tank.Components;
+using Tank.Components.Rendering;
 using Tank.DataStructure;
 using Tank.Validator;
 
@@ -67,37 +68,66 @@ namespace Tank.Systems
                 }
                 PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
                 VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
-                if (visibleComponent == null || placeableComponent == null || visibleComponent.Texture == null)
-                {
-                    continue;
-                }
-                RenderContainer renderContainer = usedContainers.Count > 0 ? usedContainers.Pop() : new RenderContainer();
-                renderContainer.TextureToDraw = visibleComponent.Texture;
-                renderContainer.Destination = visibleComponent.Destination;
-                renderContainer.Source = visibleComponent.Source;
-                renderContainer.Color = visibleComponent.Color;
-                renderContainer.Rotation = placeableComponent.Rotation;
-                containersToRender.Add(renderContainer);
+                VisibleTextComponent textComponent = entityManager.GetComponent<VisibleTextComponent>(entityId);
+                RenderTextures(placeableComponent, visibleComponent);
+                RenderText(placeableComponent, textComponent);
             }
+
+            drawLocked = false;
+        }
+
+        private void RenderTextures(PlaceableComponent placeableComponent, VisibleComponent visibleComponent)
+        {
+            if (visibleComponent == null || placeableComponent == null || visibleComponent.Texture == null)
+            {
+                return;
+            }
+            RenderContainer renderContainer = usedContainers.Count > 0 ? usedContainers.Pop() : new RenderContainer();
+            renderContainer.TextureToDraw = visibleComponent.Texture;
+            renderContainer.Destination = visibleComponent.Destination;
+            renderContainer.Source = visibleComponent.Source;
+            renderContainer.Color = visibleComponent.Color;
+            renderContainer.Rotation = placeableComponent.Rotation;
+            renderContainer.Effect = visibleComponent.Effect;
+            renderContainer.LayerDepth = visibleComponent.LayerDepth;
+            containersToRender.Add(renderContainer);
             containersToRender.Sort((containerA, containerB) => containerA.TextureToDraw.Name.CompareTo(containerB.TextureToDraw.Name));
 
             for (int i = 0; i < containersToRender.Count; i++)
             {
                 RenderContainer currentContainer = containersToRender[i];
-                 spriteBatch.Draw(
-                   currentContainer.TextureToDraw,
-                   currentContainer.Destination,
-                   currentContainer.Source,
-                   currentContainer.Color,
-                   currentContainer.Rotation,
-                   Vector2.Zero,
-                   SpriteEffects.None,
-                   1f
-               );
+                spriteBatch.Draw(
+                  currentContainer.TextureToDraw,
+                  currentContainer.Destination,
+                  currentContainer.Source,
+                  currentContainer.Color,
+                  currentContainer.Rotation,
+                  Vector2.Zero,
+                  renderContainer.Effect,
+                  renderContainer.LayerDepth
+              );
                 usedContainers.Push(currentContainer);
             }
             containersToRender.Clear();
-            drawLocked = false;
+        }
+
+        private void RenderText(PlaceableComponent placeableComponent, VisibleTextComponent textComponent)
+        {
+            if (textComponent == null || placeableComponent == null || textComponent.Font == null)
+            {
+                return;
+            }
+            spriteBatch.DrawString(
+                textComponent.Font,
+                textComponent.Text,
+                placeableComponent.Position,
+                textComponent.Color,
+                placeableComponent.Rotation,
+                Vector2.Zero,
+                textComponent.Scale,
+                textComponent.Effect,
+                textComponent.LayerDepth
+            );
         }
     }
 }

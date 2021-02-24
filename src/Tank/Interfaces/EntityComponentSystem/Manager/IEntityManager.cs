@@ -128,6 +128,21 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         T GetComponent<T>(uint entityId) where T : IComponent;
 
         /// <summary>
+        /// Create a new component
+        /// </summary>
+        /// <typeparam name="T">The type of component to create</typeparam>
+        /// <returns>The new component</returns>
+        T CreateComponent<T>() where T : IComponent;
+
+        /// <summary>
+        /// Create a new component and add it to the entity
+        /// </summary>
+        /// <typeparam name="T">The type of component to create</typeparam>
+        /// <param name="entityId">The entity id to add it</param>
+        /// <returns>The new component</returns>
+        T CreateComponent<T>(uint entityId) where T : IComponent;
+
+        /// <summary>
         /// Move a component from one entity to another
         /// </summary>
         /// <param name="targetEntityId">The id of the target entity</param>
@@ -162,5 +177,23 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <param name="entityId">The entity id to remove the components from</param>
         void RemoveComponents(uint entityId);
+
+        /// <summary>
+        /// Get the total number of entities
+        /// </summary>
+        /// <returns>The total number of entities</returns>
+        int GetEntityCount();
+
+        /// <summary>
+        /// The the number of components
+        /// </summary>
+        /// <returns>The number of component</returns>
+        int GetComponentCount();
+
+        /// <summary>
+        /// The the number of components
+        /// </summary>
+        /// <returns>The number of component</returns>
+        int GetUsedComponentCount();
     }
 }

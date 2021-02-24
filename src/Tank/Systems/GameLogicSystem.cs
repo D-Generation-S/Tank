@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Tank.Builders;
 using Tank.Components;
+using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataStructure;
 using Tank.Events.EntityBased;
@@ -93,23 +94,20 @@ namespace Tank.Systems
                 }
 
                 TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
-                    new Position(playerStartPosition),
+                    playerStartPosition,
                     contentManager.Content.Load<Texture2D>("Images/Entities/BasicTank"),
                     animationFrames
                  );
+                tankObjectBuilder.Init(entityManager);
                 AddEntityEvent tankEntity = new AddEntityEvent(tankObjectBuilder.BuildGameComponents());
                 eventManager.FireEvent(this, tankEntity);
             }
-            List<IComponent> activePlayerArrow = new List<IComponent>()
-            {
-                new PlaceableComponent(50f, 50f),
-                new VisibleComponent(Color.White, contentManager.Content.Load<Texture2D>("Images/Entities/BasicTank"))
-            };
             arrowEntity = entityManager.CreateEntity(false);
-            foreach (IComponent component in activePlayerArrow)
-            {
-                entityManager.AddComponent(arrowEntity, component);
-            }
+            entityManager.CreateComponent<PlaceableComponent>(arrowEntity);
+            VisibleComponent arrowVisible = entityManager.CreateComponent<VisibleComponent>(arrowEntity);
+            arrowVisible.Texture = contentManager.Content.Load<Texture2D>("Images/Entities/BasicTank");
+            arrowVisible.Destination = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
+            arrowVisible.Source = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
         }
 
         /// <summary>
@@ -154,7 +152,12 @@ namespace Tank.Systems
             {
                 activePlayer = true;
                 entityManager.AddComponent(watchedEntities[currentPlayerIndex], new ActiveGameObjectTag());
-                entityManager.AddComponent(watchedEntities[currentPlayerIndex], new BindComponent(arrowEntity, new Vector2(0f, -35f), false, true));
+                entityManager.AddComponent(watchedEntities[currentPlayerIndex], new BindComponent()
+                {
+                    BoundEntityId = arrowEntity,
+                    Offset = new Vector2(0f, -35f),
+                    PositionBound = true
+                }); ;
             }
         }
 

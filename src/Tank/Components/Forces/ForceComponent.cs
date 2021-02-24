@@ -8,27 +8,21 @@ namespace Tank.Components.Forces
 {
     internal class ForceComponent : BaseComponent
     {
-        public float ForceRadius { get; }
+        public float ForceRadius { get; set; }
 
-        public float ForceBaseStrengh { get; }
+        public float ForceBaseStrenght { get; set; }
 
-        public ForceTypeEnum ForceType { get; }
+        public ForceTypeEnum ForceType { get; set; }
 
-        public ForceTriggerTimeEnum ForceTrigger { get; }
+        public ForceTriggerTimeEnum ForceTrigger { get; set; }
 
-        public ForceComponent(
-            float forceRadius,
-            float forceBaseStrengh,
-            ForceTypeEnum forceType,
-            ForceTriggerTimeEnum forceTrigger
-            )
+        /// <inheritdoc/>
+        public override void Init()
         {
-            allowMultiple = true;
-            ForceRadius = forceRadius;
-            ForceBaseStrengh = forceBaseStrengh;
-            ForceType = forceType;
-            ForceTrigger = forceTrigger;
+            ForceRadius = 0;
+            ForceBaseStrenght = 0;
+            ForceType = ForceTypeEnum.None;
+            ForceTrigger = ForceTriggerTimeEnum.None;
         }
-
     }
 }

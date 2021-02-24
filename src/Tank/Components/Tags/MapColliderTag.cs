@@ -1,6 +1,6 @@
 ﻿namespace Tank.Components.Tags
 {
-    class MapColliderTag : BaseComponent
+    class MapColliderTag : BaseTag
     {
     }
 }

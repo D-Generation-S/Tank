@@ -14,6 +14,7 @@ namespace Tank.Systems
     /// </summary>
     class MapDestructionSystem : AbstractSystem
     {
+        private MapComponent map;
         /// <summary>
         /// Create an new intance of this class
         /// </summary>
@@ -29,6 +30,16 @@ namespace Tank.Systems
             eventManager.SubscribeEvent(this, typeof(DamageTerrainEvent));
         }
 
+        /// <inheritdoc/>
+        protected override void AddEntity(uint entityId)
+        {
+            base.AddEntity(entityId);
+            if (entityManager.HasComponent(entityId, typeof(MapComponent)))
+            {
+                map = entityManager.GetComponent<MapComponent>(entityId);
+            }
+        }
+
         /// <summary>
         /// Remove some pixels from the map component if required
         /// </summary>
@@ -38,84 +49,33 @@ namespace Tank.Systems
         {
             base.EventNotification(sender, eventArgs);
 
-            if (eventArgs is DamageTerrainEvent)
+            if (map != null && eventArgs is DamageTerrainEvent damageTerrainEvent)
             {
-                DamageTerrainEvent damageTerrainEvent = (DamageTerrainEvent)eventArgs;
-                List<uint> physicEntities = entityManager.GetEntitiesWithComponent<MoveableComponent>();
-                foreach (uint entityId in watchedEntities)
+                Circle damageCircle = damageTerrainEvent.DamageArea;
+                Vector2 start = damageCircle.Center - Vector2.One * damageCircle.Radius;
+                Vector2 end = start + Vector2.One * damageCircle.Diameter;
+                for (int x = (int)start.X; x < (int)end.X; x++)
                 {
-                    MapComponent map = entityManager.GetComponent<MapComponent>(entityId);
-
-                    Circle damageCircle = damageTerrainEvent.DamageArea;
-                    int xStart = damageCircle.Center.X - damageCircle.Radius;
-                    int yStart = damageCircle.Center.Y - damageCircle.Radius;
-                    int xEnd = xStart + damageCircle.Diameter;
-                    int yEnd = yStart + damageCircle.Diameter;
-                    for (int x = xStart; x < xEnd; x++)
+                    for (int y = (int)start.Y; y < (int)end.Y; y++)
                     {
-                        for (int y = yStart; y < yEnd; y++)
+                        if (damageCircle.IsInInCircle(x, y))
                         {
-                            if (damageCircle.IsInInCircle(x, y))
-                            {
-                                map.Map.ChangePixel(x, y, Color.Transparent, false);
-                            }
-
+                            map.Map.ChangePixel(x, y, Color.Transparent, false);
                         }
                     }
-                    foreach (uint physicEntity in physicEntities)
-                    {
-                        PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(physicEntity);
-                        ColliderComponent collider = entityManager.GetComponent<ColliderComponent>(physicEntity);
-                        if (placeable == null)
-                        {
-                            continue;
-                        }
-
-                        MoveableComponent moveable = entityManager.GetComponent<MoveableComponent>(physicEntity);
-                        Position entityPosition = new Position(placeable.Position);
-                        List<Position> positions = GetColliderPositions(entityPosition, collider);
-                        foreach (Position position in positions)
-                        {
-                            if (damageCircle.IsInInCircle(position))
-                            {
-                                moveable.OnGround = false;
-                                break;
-                            }
-                        }
-
-                    }
-                    map.Map.ApplyChanges();
                 }
             }
         }
 
-        /// <summary>
-        /// Get all the collider positions
-        /// </summary>
-        /// <param name="entityPosition">The entity position</param>
-        /// <param name="collider">The collider</param>
-        /// <returns></returns>
-        private List<Position> GetColliderPositions(Position entityPosition, ColliderComponent collider)
+        /// <inheritdoc/>
+        public override void Update(GameTime gameTime)
         {
-            List<Position> positions = new List<Position>();
-            positions.Add(entityPosition);
-            if (collider != null)
+            base.Update(gameTime);
+            if (map == null || map.Map == null)
             {
-                positions.Add(new Position(
-                    entityPosition.X + collider.Collider.X + collider.Collider.Right,
-                    entityPosition.Y + collider.Collider.Y
-                ));
-                positions.Add(new Position(
-                    entityPosition.X + collider.Collider.X,
-                    entityPosition.Y + collider.Collider.Y + collider.Collider.Bottom
-                ));
-                positions.Add(new Position(
-                    entityPosition.X + collider.Collider.X + collider.Collider.Right,
-                    entityPosition.Y + collider.Collider.Y + collider.Collider.Bottom
-                ));
+                return;
             }
-
-            return positions;
+            map.Map.ApplyChanges();
         }
     }
 }

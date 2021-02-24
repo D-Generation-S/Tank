@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Tank.Components;
 using Tank.DataStructure;
+using Tank.Events.EntityBased;
 using Tank.Events.PhysicBased;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Utils;
@@ -130,6 +131,8 @@ namespace Tank.Systems
         /// <param name="entityId"></param>
         private void CalculatePhysic(MapComponent map, int timeSteps, uint entityId)
         {
+            Vector2 oldPosition = Vector2.Zero;
+            Vector2 bottomCenter = Vector2.Zero;
             for (int iteration = 0; iteration < timeSteps; iteration++)
             {
                 PlaceableComponent placeComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
@@ -144,8 +147,8 @@ namespace Tank.Systems
                 ApplyForce(moveComponent, gravityForce, false);
                 ApplyForce(moveComponent, windForce);
 
-                Vector2 oldPosition = placeComponent.Position;
-                Vector2 bottomCenter = new Vector2(colliderComponent.Collider.Center.X, colliderComponent.Collider.Bottom - 2);
+                oldPosition = placeComponent.Position;
+                bottomCenter = new Vector2(colliderComponent.Collider.Center.X, colliderComponent.Collider.Bottom - 2);
                 bottomCenter += oldPosition;
                 Raycast raycast = new Raycast(bottomCenter, moveComponent.Velocity, moveComponent.Velocity.Length());
                 Position[] rayPath = raycast.GetPositions();
@@ -204,7 +207,7 @@ namespace Tank.Systems
 
                 if (!map.Map.IsPointOnMap(placeComponent.Position))
                 {
-                    RemoveEntity(entityId);
+                    FireEvent(new RemoveEntityEvent(entityId));
                 }
                 moveComponent.Acceleration *= 0;
             }

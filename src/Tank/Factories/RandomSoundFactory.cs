@@ -34,6 +34,10 @@ namespace Tank.Factories
         /// <inheritdoc/>
         public SoundEffect GetRandomSoundEffect()
         {
+            if (soundEffects == null)
+            {
+                return null;
+            }
             int index = (int)randomizer.GetNewNumber(0, soundEffects.Count - 1);
             return soundEffects[index];
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace Tank.DataStructure
 {
@@ -52,7 +53,7 @@ namespace Tank.DataStructure
         /// <returns>A valid Vector2</returns>
         public Vector2 GetVector2()
         {
-            return new Vector2(X, Y);
+            return Vector2.UnitX * X + Vector2.UnitY * Y;
         }
 
         /// <summary>
@@ -72,6 +73,20 @@ namespace Tank.DataStructure
         {
             X += (int)position.X;
             Y += (int)position.Y;
+        }
+
+        public static Position operator+ (Position positionA, Position positionB) {
+            return new Position(positionA.X + positionB.X, positionA.Y + positionB.Y);
+        }
+
+        public static Position operator- (Position positionA, Position positionB)
+        {
+            return new Position(positionA.X - positionB.X, positionA.Y - positionB.Y);
+        }
+
+        public static Position operator* (Position positionA, Position positionB)
+        {
+            return new Position(positionA.X * positionB.X, positionA.Y * positionB.Y);
         }
     }
 }

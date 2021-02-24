@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tank.Code.Entities.Map;
 using Tank.DataStructure;
@@ -33,6 +34,7 @@ namespace Tank.Map.Generators
         /// The randomizer instance to use
         /// </summary>
         private readonly IRandomizer randomizer;
+        private readonly HashSet<Color> nonSolidColors;
 
         /// <summary>
         /// The default color to create the map
@@ -94,6 +96,8 @@ namespace Tank.Map.Generators
             this.displace = displace;
             this.roughness = roughness;
             this.randomizer = randomizer;
+            nonSolidColors = new HashSet<Color>();
+            nonSolidColors.Add(Color.Transparent);
 
             mapColor = Color.Black;
         }
@@ -145,9 +149,8 @@ namespace Tank.Map.Generators
 
             Texture2D texture = new Texture2D(graphicsDevice, size.X, size.Y);
             texture.Name = "GeneratedMap";
-            FlattenArray<bool> collisionMap = new FlattenArray<bool>(size.X, size.Y);
 
-            IMap returnMap = new DefaultMap(texture, collisionMap, seed);
+            IMap returnMap = new DefaultMap(texture, nonSolidColors, seed);
 
             float[] points = GeneratePoints(size, new Random(seed));
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Tank.Components;
+using Tank.Components.Rendering;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -27,6 +27,10 @@ namespace Tank.Systems
             foreach (uint entityId in watchedEntities)
             {
                 AnimationComponent animation = entityManager.GetComponent<AnimationComponent>(entityId);
+                if (animation == null)
+                {
+                    return;
+                }
                 animation.TimeThreshold += currentTime / 1000;
                 if (animation.TimeThreshold > animation.FrameSeconds)
                 {

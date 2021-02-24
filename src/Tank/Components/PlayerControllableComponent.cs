@@ -10,20 +10,7 @@ namespace Tank.Components
         /// <summary>
         /// The controller to use
         /// </summary>
-        private readonly IGameObjectController controller;
+        public IGameObjectController Controller { get; set; }
 
-        /// <summary>
-        /// The controller to use
-        /// </summary>
-        public IGameObjectController Controller => controller;
-
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        /// <param name="objectController">The controller to use</param>
-        public PlayerControllableComponent(IGameObjectController objectController)
-        {
-            controller = objectController;
-        }
     }
 }

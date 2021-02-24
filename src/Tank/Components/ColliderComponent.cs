@@ -10,41 +10,23 @@ namespace Tank.Components
         /// <summary>
         /// Public readonly access if the entity can collide with the map
         /// </summary>
-        public bool MapCollision { get; }
+        public bool MapCollision { get; set; }
 
         /// <summary>
         /// Public access to the collider rectangle
         /// </summary>
         public Rectangle Collider { get; set; }
 
-        public bool FireCollideEvent { get; set;  }
-
         /// <summary>
-        /// Create a new instance of this class. Map collision is on
+        /// Fire a collide event
         /// </summary>
-        public ColliderComponent()
-            : this(true)
-        {
-        }
+        public bool FireCollideEvent { get; set; }
 
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        /// <param name="mapCollision">Should be entity collide with the map</param>
-        public ColliderComponent(bool mapCollision)
-            : this(mapCollision, false)
+        public override void Init()
         {
+            MapCollision = false;
+            FireCollideEvent = false;
+            Collider = Rectangle.Empty;
         }
-
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        /// <param name="mapCollision">Should be entity collide with the map</param>
-        public ColliderComponent(bool mapCollision, bool fireCollideEvent)
-        {
-            MapCollision = mapCollision;
-            FireCollideEvent = fireCollideEvent;
-        }
-
     }
 }

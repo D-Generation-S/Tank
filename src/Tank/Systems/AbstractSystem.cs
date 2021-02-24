@@ -123,7 +123,7 @@ namespace Tank.Systems
                 EntityBasedEvent entityBasedEvent = (EntityBasedEvent)eventArgs;
                 if (eventArgs is NewEntityEvent)
                 {
-                    EntityAdded(entityBasedEvent.EntityId);
+                    AddEntity(entityBasedEvent.EntityId);
                     return;
                 }
                 if (eventArgs is NewComponentEvent)
@@ -145,7 +145,7 @@ namespace Tank.Systems
                 EntityBasedEvent entityBasedEvent = (EntityBasedEvent)eventArgs;
                 if (eventArgs is EntityRemovedEvent)
                 {
-                    EntityRemoved(entityBasedEvent.EntityId);
+                    RemoveEntity(entityBasedEvent.EntityId);
                     return;
                 }
 
@@ -179,7 +179,7 @@ namespace Tank.Systems
         /// This method is getting called if an entity was added
         /// </summary>
         /// <param name="entityId">The id of the entity which got added</param>
-        protected virtual void EntityAdded(uint entityId)
+        protected virtual void AddEntity(uint entityId)
         {
             if (EntityIsRelevant(entityId))
             {
@@ -199,6 +199,7 @@ namespace Tank.Systems
         /// This method will add an entity to the remove list
         /// </summary>
         /// <param name="entityId">The id to add to the remove list</param>
+        [Obsolete]
         protected virtual void EntityRemoved(uint entityId)
         {
             RemoveEntity(entityId);
@@ -210,7 +211,7 @@ namespace Tank.Systems
         /// <param name="entityId">The id of the entity an component was added to</param>
         protected virtual void ComponentAdded(uint entityId)
         {
-            EntityAdded(entityId);
+            AddEntity(entityId);
         }
 
         /// <summary>
@@ -221,7 +222,7 @@ namespace Tank.Systems
         {
             if (!EntityIsRelevant(entityId))
             {
-                EntityRemoved(entityId);
+                RemoveEntity(entityId);
             }
         }
 
