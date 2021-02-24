@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Tank.Components;
 using Tank.Components.Forces;
@@ -13,14 +12,34 @@ using Tank.Validator;
 
 namespace Tank.Systems
 {
+    /// <summary>
+    /// Force sytem class
+    /// </summary>
     internal class ForceSystem : AbstractSystem
     {
+        /// <summary>
+        /// The validator to use for targets
+        /// </summary>
         private readonly IValidatable targetValidator;
+
+        /// <summary>
+        /// Components current locked
+        /// </summary>
         private readonly object componentLock;
 
+        /// <summary>
+        /// All the used container
+        /// </summary>
         private Queue<AsyncComponentRemoveContainer> usedContainers;
+
+        /// <summary>
+        /// All the containers to remove after async part
+        /// </summary>
         List<AsyncComponentRemoveContainer> componentsToRemove;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public ForceSystem()
         {
             validators.Add(new ForceValidator());
@@ -30,6 +49,7 @@ namespace Tank.Systems
             componentsToRemove = new List<AsyncComponentRemoveContainer>();
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -64,6 +84,12 @@ namespace Tank.Systems
             componentsToRemove.Clear();
         }
 
+        /// <summary>
+        /// Apply all the forces
+        /// </summary>
+        /// <param name="entityId">The entity id to apply the forces for</param>
+        /// <param name="allTargets">The targets to check</param>
+        /// <returns>A list with components to remove</returns>
         private List<AsyncComponentRemoveContainer> ApplyForces(uint entityId, List<uint> allTargets)
         {
             List<AsyncComponentRemoveContainer> componentsToRemove = new List<AsyncComponentRemoveContainer>();
@@ -115,11 +141,25 @@ namespace Tank.Systems
             return componentsToRemove;
         }
 
+        /// <summary>
+        /// Get the push force
+        /// </summary>
+        /// <param name="force">The force component</param>
+        /// <param name="origin">The position of the object</param>
+        /// <param name="targetPosition">The position of the target</param>
+        /// <returns>The force to apply on the target</returns>
         private Vector2 GetPushForce(ForceComponent force, PlaceableComponent origin, PlaceableComponent targetPosition)
         {
             return GetPullForce(force, origin, targetPosition) * -1;
         }
 
+        /// <summary>
+        /// Get pull forces
+        /// </summary>
+        /// <param name="force">The force component</param>
+        /// <param name="origin">The position of the object</param>
+        /// <param name="targetPosition">The position of the target</param>
+        /// <returns>The force to apply on the target</returns>
         private Vector2 GetPullForce(ForceComponent force, PlaceableComponent origin, PlaceableComponent targetPosition)
         {
             Vector2 direction = origin.Position - targetPosition.Position;
@@ -132,12 +172,23 @@ namespace Tank.Systems
             return direction * strenght;
         }
 
+        /// <summary>
+        /// Is the point in the circle
+        /// </summary>
+        /// <param name="cirlceCenter">Center of the circle</param>
+        /// <param name="circleRadius">Circle radius</param>
+        /// <param name="pointToCheck">The point to check</param>
+        /// <returns></returns>
         private bool IsInCircle(Vector2 cirlceCenter, float circleRadius, Vector2 pointToCheck)
         {
             Vector2 distance = cirlceCenter - pointToCheck;
             return distance.Length() < circleRadius;
         }
 
+        /// <summary>
+        /// Get a new container or a used one
+        /// </summary>
+        /// <returns>A new or used container</returns>
         private AsyncComponentRemoveContainer GetContainer()
         {
             return usedContainers.Count > 0 ? usedContainers.Dequeue() : new AsyncComponentRemoveContainer();

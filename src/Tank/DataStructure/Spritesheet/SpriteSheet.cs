@@ -85,22 +85,42 @@ namespace Tank.DataStructure.Spritesheet
             pixelData = new FlattenArray<Color>(colors, completeImage.Width);
         }
 
+        /// <summary>
+        /// Set the pattern for the spritesheet
+        /// </summary>
+        /// <param name="patterns">Tge pattern to use</param>
         public void SetSpriteSheetPattern(List<SpriteSheetPattern> patterns)
         {
             this.patterns = patterns;
         }
 
+        /// <summary>
+        /// Get a texture by name
+        /// </summary>
+        /// <param name="name">The name of the pattern</param>
+        /// <returns>The texture image data</returns>
         public FlattenArray<Color> GetTextureByName(string name)
         {
             SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Name == name);
             return GetColorFromPattern(pattern);
         }
 
+        /// <summary>
+        /// Get a texture by position
+        /// </summary>
+        /// <param name="x">The x position</param>
+        /// <param name="y">The y position</param>
+        /// <returns></returns>
         public FlattenArray<Color> GetTextureByPosition(int x, int y)
         {
             return null;
         }
 
+        /// <summary>
+        /// Get the color from the pattern
+        /// </summary>
+        /// <param name="pattern">The pattern to use</param>
+        /// <returns>The color array</returns>
         private FlattenArray<Color> GetColorFromPattern(SpriteSheetPattern pattern)
         {
             if (pattern == null)
