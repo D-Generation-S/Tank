@@ -19,6 +19,11 @@ namespace Tank.Components.Rendering
         public SpriteEffects Effect;
 
         /// <summary>
+        /// The shader effect to use
+        /// </summary>
+        public Effect ShaderEffect;
+
+        /// <summary>
         /// The depth of the layer
         /// </summary>
         public float LayerDepth;
@@ -29,6 +34,7 @@ namespace Tank.Components.Rendering
             Color = Color.White;
             LayerDepth = 1f;
             Effect = SpriteEffects.None;
+            ShaderEffect = null;
         }
     }
 }

@@ -128,6 +128,18 @@
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/Textures/MoistContinentalSpritesheet.png;Images/Textures/MoistContinentalSpritesheet.png
 
+#begin ../Assets/Shaders/BlackWhite.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:../Assets/Shaders/BlackWhite.fx;Shaders/BlackWhite.fx
+
+#begin ../Assets/Shaders/Default.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:../Assets/Shaders/Default.fx;Shaders/Default.fx
+
 #begin ../Assets/Sound/Effects/Explosion1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

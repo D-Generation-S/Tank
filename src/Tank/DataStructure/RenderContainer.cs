@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Tank.Enums;
 
 namespace Tank.DataStructure
 {
@@ -8,6 +9,16 @@ namespace Tank.DataStructure
     /// </summary>
     public class RenderContainer
     {
+        /// <summary>
+        /// The name of the container
+        /// </summary>
+        public string Name;
+
+        /// <summary>
+        /// The render type for this container
+        /// </summary>
+        public RenderTypeEnum RenderType;
+
         /// <summary>
         /// The texture to draw
         /// </summary>
@@ -44,9 +55,34 @@ namespace Tank.DataStructure
         public SpriteEffects Effect;
 
         /// <summary>
+        /// The shader effect to use
+        /// </summary>
+        public Effect ShaderEffect;
+
+        /// <summary>
         /// The layer this is drawn on
         /// </summary>
         public float LayerDepth;
+
+        /// <summary>
+        /// The position to render the text
+        /// </summary>
+        public Vector2 Position;
+
+        /// <summary>
+        /// The text to write
+        /// </summary>
+        public string Text;
+
+        /// <summary>
+        /// The font to use
+        /// </summary>
+        public SpriteFont Font;
+
+        /// <summary>
+        /// The scale of the text
+        /// </summary>
+        public float Scale;
 
         /// <summary>
         /// Create a new instance of this object
