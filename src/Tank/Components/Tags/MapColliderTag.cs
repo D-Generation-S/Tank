@@ -1,6 +1,9 @@
 ﻿namespace Tank.Components.Tags
 {
-    class MapColliderTag : BaseComponent
+    /// <summary>
+    /// Should collide with map and send a event
+    /// </summary>
+    class MapColliderTag : BaseTag
     {
     }
 }

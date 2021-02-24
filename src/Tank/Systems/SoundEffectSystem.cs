@@ -44,6 +44,10 @@ namespace Tank.Systems
                     pitch = random.Next(-15, 15);
                     pitch /= 100;
                 }
+                if (soundEffect.SoundEffect == null)
+                {
+                    return;
+                }
                 soundEffect.SoundEffect.Play(1f, pitch, 0f);
                 entityManager.RemoveComponents(entityId, soundEffect);
             }

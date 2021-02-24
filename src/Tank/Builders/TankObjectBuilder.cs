@@ -2,22 +2,24 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tank.Components;
+using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataStructure;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.Builders
 {
     /// <summary>
     /// Create new tank object
     /// </summary>
-    class TankObjectBuilder : IGameObjectBuilder
+    class TankObjectBuilder : BaseBuilder
     {
         /// <summary>
         /// The start position of the tank
         /// </summary>
-        private readonly Position startPosition;
+        private readonly Vector2 startPosition;
 
         /// <summary>
         /// The spritesheet to use
@@ -34,7 +36,7 @@ namespace Tank.Builders
         /// </summary>
         /// <param name="spriteSheet"></param>
         /// <param name="animationFrames"></param>
-        public TankObjectBuilder(Position startPosition, Texture2D spriteSheet, List<Rectangle> animationFrames)
+        public TankObjectBuilder(Vector2 startPosition, Texture2D spriteSheet, List<Rectangle> animationFrames)
         {
             this.startPosition = startPosition;
             this.spriteSheet = spriteSheet;
@@ -45,29 +47,28 @@ namespace Tank.Builders
         /// Build all the game components
         /// </summary>
         /// <returns></returns>
-        public List<IComponent> BuildGameComponents()
+        public override List<IComponent> BuildGameComponents()
         {
             List<IComponent> returnComponents = new List<IComponent>();
-            PlaceableComponent placeableComponent = new PlaceableComponent()
+            if (entityManager == null)
             {
-                Position = startPosition.GetVector2() + new Vector2(spriteSheet.Width, spriteSheet.Height) * -1
-            };
-            VisibleComponent visibleComponent = new VisibleComponent()
-            {
-                Color = Color.White,
-                Source = animationFrames[0],
-                Destination = animationFrames[0],
-                Texture = spriteSheet
-            };
-            MoveableComponent moveable = new MoveableComponent();
+                return returnComponents;
+            }
+            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
+            placeableComponent.Position = startPosition + new Vector2(spriteSheet.Width, spriteSheet.Height) * -1;
+            VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
+            visibleComponent.Color = Color.White;
+            visibleComponent.Source = animationFrames[0];
+            visibleComponent.Destination = animationFrames[0];
+            visibleComponent.Texture = spriteSheet;
+            MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
             moveable.Mass = 15;
-            ColliderComponent collider = new ColliderComponent()
-            {
-                Collider = new Rectangle(0, 0, 32, 32)
-            };
+            ColliderComponent collider = entityManager.CreateComponent<ColliderComponent>();
+            collider.Collider = new Rectangle(0, 0, 32, 32);
 
-            PlayerControllableComponent controllableComponent = new PlayerControllableComponent(new StaticKeyboardControls());
-            GameObjectTag gameObjectTag = new GameObjectTag();
+            PlayerControllableComponent controllableComponent = entityManager.CreateComponent<PlayerControllableComponent>();
+            controllableComponent.Controller = new StaticKeyboardControls();
+            GameObjectTag gameObjectTag = entityManager.CreateComponent<GameObjectTag>();
 
             returnComponents.Add(placeableComponent);
             returnComponents.Add(visibleComponent);

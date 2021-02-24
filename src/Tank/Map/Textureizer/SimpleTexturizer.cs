@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using Tank.DataStructure;
+using Tank.DataStructure.Spritesheet;
 using Tank.Interfaces.MapGenerators;
 using Tank.Interfaces.Randomizer;
 
@@ -15,6 +16,11 @@ namespace Tank.Map.Textureizer
         /// The spritesheet to use
         /// </summary>
         private readonly SpriteSheet spriteSheet;
+
+        /// <summary>
+        /// The foreground items to use
+        /// </summary>
+        private readonly SpriteSheet foregroundItems;
 
         /// <summary>
         /// The internal randomizer if nothing was set
@@ -39,10 +45,15 @@ namespace Tank.Map.Textureizer
         /// <summary>
         /// Create a new instance of the class
         /// </summary>
-        /// <param name="spriteSheet">The spritesheet to use</param>
-        public DefaultTextureizer(SpriteSheet spriteSheet)
+        /// <param name="backgroundTexture">The spritesheet to use</param>
+        public DefaultTextureizer(SpriteSheet backgroundTexture) : this(backgroundTexture, null)
         {
-            this.spriteSheet = spriteSheet;
+        }
+
+        public DefaultTextureizer(SpriteSheet backgroundTexture, SpriteSheet foregroundItems)
+        {
+            spriteSheet = backgroundTexture;
+            this.foregroundItems = foregroundItems;
         }
 
         /// <summary>
@@ -69,8 +80,8 @@ namespace Tank.Map.Textureizer
             this.randomizer = randomizer;
             internalRandomizer = randomizer == null ? new Random(map.Seed) : null;
 
-            Color[] colorsToUse = spriteSheet.GetColorFromSprite(0, 0);
-            FlattenArray<Color> colors = new FlattenArray<Color>(colorsToUse, spriteSheet.SingleImageSize.X);
+            FlattenArray<Color> colors = spriteSheet.GetTextureByName("stone");
+            //FlattenArray<Color> colors = new FlattenArray<Color>(colorsToUse, spriteSheet.SingleImageSize.X);
 
             for (int x = 0; x < map.Width; x++)
             {
@@ -99,6 +110,8 @@ namespace Tank.Map.Textureizer
 
             return;
         }
+
+        //private float 
 
         /// <summary>
         /// Get a random number

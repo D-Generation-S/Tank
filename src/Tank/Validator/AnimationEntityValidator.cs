@@ -1,4 +1,4 @@
-﻿using Tank.Components;
+﻿using Tank.Components.Rendering;
 using Tank.EntityComponentSystem.Validator;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 

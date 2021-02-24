@@ -3,7 +3,7 @@
     /// <summary>
     /// Tag to flag entites as active
     /// </summary>
-    class ActiveGameObjectTag : BaseComponent
+    class ActiveGameObjectTag : BaseTag
     {
     }
 }

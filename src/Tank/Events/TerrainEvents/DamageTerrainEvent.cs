@@ -9,14 +9,9 @@ namespace Tank.Events.TerrainEvents
     class DamageTerrainEvent : EventArgs
     {
         /// <summary>
-        /// The area where the damage should be applied to
-        /// </summary>
-        private readonly Circle damageArea;
-
-        /// <summary>
         /// Readonly access to the area where the damage should be applied to
         /// </summary>
-        public Circle DamageArea => damageArea;
+        public Circle DamageArea { get; }
 
         /// <summary>
         /// Create a new instance of this event
@@ -24,7 +19,7 @@ namespace Tank.Events.TerrainEvents
         /// <param name="damageArea"></param>
         public DamageTerrainEvent(Circle damageArea)
         {
-            this.damageArea = damageArea;
+            this.DamageArea = damageArea;
         }
     }
 }

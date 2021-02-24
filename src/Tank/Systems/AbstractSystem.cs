@@ -16,6 +16,10 @@ namespace Tank.Systems
     /// </summary>
     abstract class AbstractSystem : ISystem
     {
+
+        /// <inheritdoc/>
+        public uint SystemId { get; private set; }
+
         /// <summary>
         /// Update system is currently locked
         /// </summary>
@@ -61,6 +65,7 @@ namespace Tank.Systems
         /// </summary>
         protected ContentWrapper contentManager => gameEngine.ContentManager;
 
+
         /// <summary>
         /// The list of the validators to define if an entity is managed by this system
         /// </summary>
@@ -72,6 +77,12 @@ namespace Tank.Systems
         public AbstractSystem()
         {
             validators = new List<IValidatable>();
+        }
+
+        /// <inheritdoc/>
+        public void SetSystemId(uint systemId)
+        {
+            SystemId = systemId;
         }
 
         /// <summary>
@@ -123,7 +134,7 @@ namespace Tank.Systems
                 EntityBasedEvent entityBasedEvent = (EntityBasedEvent)eventArgs;
                 if (eventArgs is NewEntityEvent)
                 {
-                    EntityAdded(entityBasedEvent.EntityId);
+                    AddEntity(entityBasedEvent.EntityId);
                     return;
                 }
                 if (eventArgs is NewComponentEvent)
@@ -145,7 +156,7 @@ namespace Tank.Systems
                 EntityBasedEvent entityBasedEvent = (EntityBasedEvent)eventArgs;
                 if (eventArgs is EntityRemovedEvent)
                 {
-                    EntityRemoved(entityBasedEvent.EntityId);
+                    RemoveEntity(entityBasedEvent.EntityId);
                     return;
                 }
 
@@ -179,7 +190,7 @@ namespace Tank.Systems
         /// This method is getting called if an entity was added
         /// </summary>
         /// <param name="entityId">The id of the entity which got added</param>
-        protected virtual void EntityAdded(uint entityId)
+        protected virtual void AddEntity(uint entityId)
         {
             if (EntityIsRelevant(entityId))
             {
@@ -199,13 +210,10 @@ namespace Tank.Systems
         /// This method will add an entity to the remove list
         /// </summary>
         /// <param name="entityId">The id to add to the remove list</param>
+        [Obsolete]
         protected virtual void EntityRemoved(uint entityId)
         {
-            if (!entitiesToRemove.Contains(entityId))
-            {
-                entitiesToRemove.Add(entityId);
-            }
-
+            RemoveEntity(entityId);
         }
 
         /// <summary>
@@ -214,7 +222,7 @@ namespace Tank.Systems
         /// <param name="entityId">The id of the entity an component was added to</param>
         protected virtual void ComponentAdded(uint entityId)
         {
-            EntityAdded(entityId);
+            AddEntity(entityId);
         }
 
         /// <summary>
@@ -225,7 +233,19 @@ namespace Tank.Systems
         {
             if (!EntityIsRelevant(entityId))
             {
-                EntityRemoved(entityId);
+                RemoveEntity(entityId);
+            }
+        }
+
+        /// <summary>
+        /// Add an entity for removing in the next cycle
+        /// </summary>
+        /// <param name="entityId"></param>
+        protected virtual void RemoveEntity(uint entityId)
+        {
+            if (!entitiesToRemove.Contains(entityId))
+            {
+                entitiesToRemove.Add(entityId);
             }
         }
 
@@ -274,5 +294,6 @@ namespace Tank.Systems
         public virtual void Draw(GameTime gameTime)
         {
         }
+
     }
 }

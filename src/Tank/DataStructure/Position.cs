@@ -52,7 +52,7 @@ namespace Tank.DataStructure
         /// <returns>A valid Vector2</returns>
         public Vector2 GetVector2()
         {
-            return new Vector2(X, Y);
+            return Vector2.UnitX * X + Vector2.UnitY * Y;
         }
 
         /// <summary>
@@ -72,6 +72,49 @@ namespace Tank.DataStructure
         {
             X += (int)position.X;
             Y += (int)position.Y;
+        }
+
+        /// <summary>
+        /// The plus operant for this object
+        /// </summary>
+        /// <param name="positionA">The first position</param>
+        /// <param name="positionB">The second position</param>
+        /// <returns>The position after the calculation</returns>
+        public static Position operator+ (Position positionA, Position positionB) {
+            return new Position(positionA.X + positionB.X, positionA.Y + positionB.Y);
+        }
+
+        /// <summary>
+        /// The minus operant for this object
+        /// </summary>
+        /// <param name="positionA">The first position</param>
+        /// <param name="positionB">The second position</param>
+        /// <returns>The position after the calculation</returns>
+        public static Position operator- (Position positionA, Position positionB)
+        {
+            return new Position(positionA.X - positionB.X, positionA.Y - positionB.Y);
+        }
+
+        /// <summary>
+        /// The multiplication operation for this object
+        /// </summary>
+        /// <param name="positionA">The first position</param>
+        /// <param name="positionB">The second position</param>
+        /// <returns>The position after the calculation</returns>
+        public static Position operator* (Position positionA, Position positionB)
+        {
+            return new Position(positionA.X * positionB.X, positionA.Y * positionB.Y);
+        }
+
+        /// <summary>
+        /// The division operant for this object
+        /// </summary>
+        /// <param name="positionA">The first position</param>
+        /// <param name="positionB">The second position</param>
+        /// <returns>The position after the calculation</returns>
+        public static Position operator/ (Position positionA, Position positionB)
+        {
+            return new Position(positionA.X / positionB.X, positionA.Y / positionB.Y);
         }
     }
 }

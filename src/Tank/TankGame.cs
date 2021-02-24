@@ -8,8 +8,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tank.Builders;
 using Tank.Components;
-using Tank.Components.Tags;
+using Tank.Components.Rendering;
 using Tank.DataStructure;
+using Tank.DataStructure.Spritesheet;
 using Tank.EntityComponentSystem.Manager;
 using Tank.Events.PhysicBased;
 using Tank.Events.TerrainEvents;
@@ -23,6 +24,7 @@ using Tank.Map.Generators;
 using Tank.Map.Textureizer;
 using Tank.Randomizer;
 using Tank.Systems;
+using Tank.Utils;
 using Tank.Wrapper;
 
 namespace Tank
@@ -44,6 +46,20 @@ namespace Tank
         IMapGenerator mapGenerator;
         IRandomizer randomizer;
 
+        Texture2D bulletTestExplosion;
+        Texture2D bulletTest;
+        private List<SoundEffect> soundEffectsTest;
+        List<Rectangle> explosionAnimationFrames;
+
+        uint entityCounter;
+        int ticksToFire = 2000;
+        private RandomExplosionFactory randomExplosionFactory;
+        private List<IGameObjectBuilder> explosionBuilders;
+        private List<Rectangle> projectiveAnimationFrames;
+        private BaseBulletBuilder bulletBuilder;
+        Vector2 bulletSpawnLocation;
+
+
         public TankGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -55,31 +71,81 @@ namespace Tank
             PublicGraphicsDevice = GraphicsDevice;
             PublicContentManager = Content;
             InitResolution(1440, 900);
+            bulletSpawnLocation = new Vector2(200, 200);
+            engine = new GameEngine(new EventManager(), new EntityManager(), new ContentWrapper(Content));
+            explosionAnimationFrames = new List<Rectangle>() {
+                        new Rectangle(0, 0, 32, 32),
+                        new Rectangle(32, 0, 32, 32),
+                        new Rectangle(64, 0, 32, 32),
+                        new Rectangle(0, 32, 32, 32),
+                        new Rectangle(32, 32, 32, 32),
+                        new Rectangle(64, 32, 32, 32),
+                        new Rectangle(0, 64, 32, 32),
+                        new Rectangle(32, 64, 32, 32),
+                    };
+            projectiveAnimationFrames = new List<Rectangle>() {
+                            new Rectangle(0, 0, 32, 32),
+                            new Rectangle(32, 0, 32, 32),
+                            new Rectangle(64, 0, 32, 32),
+                            new Rectangle(0, 32, 32, 32),
+                            new Rectangle(32, 32, 32, 32),
+                            new Rectangle(64, 32, 32, 32),
+                            new Rectangle(0, 64, 32, 32),
+                            new Rectangle(32, 64, 32, 32),
+                        };
 
-            base.Initialize();
+            bulletTestExplosion = Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
+            bulletTest = Content.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
+
+            soundEffectsTest = new List<SoundEffect>();
+            soundEffectsTest.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion1"));
+            soundEffectsTest.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion2"));
+            soundEffectsTest.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion3"));
+            soundEffectsTest.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion4"));
+
             randomizer = new SystemRandomizer();
             randomizer.Initzialize(100);
+            explosionBuilders = new List<IGameObjectBuilder>();
+            RandomSoundFactory soundFactory = new RandomSoundFactory(soundEffectsTest, randomizer);
+            IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(bulletTestExplosion, explosionAnimationFrames, soundFactory);
+            explosionBuilder.Init(engine);
+            explosionBuilders.Add(explosionBuilder);
+            randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);
+            bulletBuilder = new BaseBulletBuilder(projectiveAnimationFrames, bulletTest, randomExplosionFactory);
+            bulletBuilder.Init(engine);
 
-            engine = new GameEngine(new EventManager(), new EntityManager(), new ContentWrapper(Content));
-            engine.AddSystem(new RenderSystem(spriteBatch));
+            base.Initialize();
+
             engine.AddSystem(new BindingSystem());
+            engine.AddSystem(new ForceSystem());
+            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1920, 1080), 0.098f, 0.3f));
+
+            engine.AddSystem(new RenderSystem(spriteBatch, GraphicsDevice, Content.Load<Effect>("Shaders/Default")));
             engine.AddSystem(new AnimationSystem());
-            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1920, 1080), 9.8f, 30));
-            engine.AddSystem(new MapColliderSystem());
             engine.AddSystem(new DamageSystem());
             engine.AddSystem(new MapDestructionSystem());
             engine.AddSystem(new SoundEffectSystem());
 
             uint mapId = engine.EntityManager.CreateEntity();
-            engine.EntityManager.AddComponent(mapId, new PlaceableComponent());
+            engine.EntityManager.AddComponent(mapId, new PlaceableComponent()
+            {
+                Position = new Vector2(0, 0)
+            });
             engine.EntityManager.AddComponent(mapId, new VisibleComponent());
 
             mapGenerator = new MidpointDisplacementGenerator(GraphicsDevice, 900 / 4, 0.5f, randomizer);
             SpriteSheet spriteSheet = new SpriteSheet(
-            Content.Load<Texture2D>("Images/Textures/DefaultMapSprites"),
-            new Position(64, 64),
+            Content.Load<Texture2D>("Images/Textures/MoistContinentalSpritesheet"),
+            new Position(32, 32),
             0
             );
+            spriteSheet.SetSpriteSheetPattern(new List<SpriteSheetPattern>()
+            {
+                new SpriteSheetPattern("dirt", new Position(0,1)),
+                new SpriteSheetPattern("stone", new Position(1,1))
+            });
+
+            FlattenArray<Color> stone = spriteSheet.GetTextureByName("stone");
             Task<IMap> mapCreatingTask = mapGenerator.AsyncGenerateNewMap(
                 new Position(
                     1440,
@@ -89,7 +155,10 @@ namespace Tank
             );
             mapCreatingTask.ContinueWith((antecedent) =>
             {
-                MapComponent mapComponent = new MapComponent(antecedent.Result);
+                MapComponent mapComponent = new MapComponent()
+                {
+                    Map = antecedent.Result
+                };
                 engine.EntityManager.AddComponent(mapId, mapComponent);
                 engine.AddSystem(new GameLogicSystem(4, antecedent.Result));
 
@@ -98,6 +167,21 @@ namespace Tank
                 visibleComponent.Texture = map.Image;
                 visibleComponent.Source = new Rectangle(0, 0, map.Width, map.Height);
                 visibleComponent.Destination = visibleComponent.Source;
+
+
+                entityCounter = engine.EntityManager.CreateEntity(false);
+                engine.EntityManager.AddComponent(entityCounter, new PlaceableComponent()
+                {
+                    Position = Vector2.Zero
+                });
+
+                engine.EntityManager.AddComponent(entityCounter, new VisibleTextComponent()
+                {
+                    Text = "",
+                    Color = Color.White,
+                    Font = Content.Load<SpriteFont>("gameFont"),
+                    Scale = 2f
+                });
             });
 
             IsMouseVisible = true;
@@ -119,103 +203,43 @@ namespace Tank
             Content.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
         }
 
-
-        protected override void UnloadContent()
-        {
-        }
-
         protected override void Update(GameTime gameTime)
         {
             if (IsActive)
             {
-                engine.Update(gameTime);
-                if (Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
+                VisibleTextComponent entityCounterText = engine.EntityManager.GetComponent<VisibleTextComponent>(entityCounter);
+                if (entityCounterText != null)
                 {
-                    uint projectileId = engine.EntityManager.CreateEntity();
+                    entityCounterText.Text = "Fps: " + Math.Round(1 / gameTime.ElapsedGameTime.TotalSeconds);
+                    entityCounterText.Text += "\nEntities: " + engine.GetEntityCount();
+                    entityCounterText.Text += "\nComponents: " + engine.GetComponentCount();
+                    entityCounterText.Text += "\nUsed Components: " + engine.GetUsedComponentCount();
+                    entityCounterText.Text += "\nSystems: " + engine.GetSystemCount();
+                }
 
-                    List<Rectangle> animationFrames = new List<Rectangle>() {
-                        new Rectangle(0, 0, 32, 32),
-                        new Rectangle(32, 0, 32, 32),
-                        new Rectangle(64, 0, 32, 32),
-                        new Rectangle(0, 32, 32, 32),
-                        new Rectangle(32, 32, 32, 32),
-                        new Rectangle(64, 32, 32, 32),
-                        new Rectangle(0, 64, 32, 32),
-                        new Rectangle(32, 64, 32, 32),
-                    };
-                    List<SoundEffect> soundEffects = new List<SoundEffect>();
-                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion1"));
-                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion2"));
-                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion3"));
-                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion4"));
-                    RandomSoundFactory soundFactory = new RandomSoundFactory(soundEffects, randomizer);
-                    List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
-                    explosionBuilders.Add(new BaseExplosionBuilder(Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet"), animationFrames, soundFactory));
-                    RandomExplosionFactory randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);
 
-                    engine.EntityManager.AddComponent(projectileId, new PlaceableComponent() { Position = new Vector2(200, 200) });
-                    VisibleComponent visible = new VisibleComponent();
-                    visible.Texture = Content.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
-                    visible.Source = new Rectangle(0, 0, 32, 32);
-                    visible.Destination = new Rectangle(0, 0, 32, 32);
-                    engine.EntityManager.AddComponent(projectileId, visible);
-                    engine.EntityManager.AddComponent(projectileId, new MapColliderTag());
-                    List<Rectangle> spriteSources = new List<Rectangle>() {
-                        new Rectangle(0, 0, 32, 32),
-                        new Rectangle(32, 0, 32, 32),
-                        new Rectangle(64, 0, 32, 32),
-                        new Rectangle(0, 32, 32, 32),
-                        new Rectangle(32, 32, 32, 32),
-                        new Rectangle(64, 32, 32, 32),
-                        new Rectangle(0, 64, 32, 32),
-                        new Rectangle(32, 64, 32, 32),
-                    };
-                    engine.EntityManager.AddComponent(projectileId, new AnimationComponent(0.02f, spriteSources)
+                engine.Update(gameTime);
+                ticksToFire--;
+                if (ticksToFire > 0 || Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
+                {
+                    uint projectileId = engine.EntityManager.CreateEntity(false);
+                    foreach(IComponent component in bulletBuilder.BuildGameComponents())
                     {
-                        Name = "Idle",
-                        Active = true,
-                        Loop = true,
-                        PingPong = true
-                    });
-
-                    engine.EntityManager.AddComponent(projectileId, new ColliderComponent()
-                    {
-                        Collider = new Rectangle(0, 0, 32, 32)
-                    });
-                    engine.EntityManager.AddComponent(projectileId, new DamageComponent(true, 1, new Circle(0, 0, 16), randomExplosionFactory)
-                    {
-                    });
-                    engine.EntityManager.AddComponent(projectileId, new MoveableComponent()
-                    {
-                        Velocity = new Vector2((new Random()).Next(10, 20), 0),
-                        PhysicRotate = true,
-                        Mass = 7
-                    });
+                        if (component is MoveableComponent moveable)
+                        {
+                            moveable.Velocity = new Vector2(randomizer.GetNewNumber(10, 15), 0);
+                        }
+                        if (component is PlaceableComponent placeable)
+                        {
+                            placeable.Position += bulletSpawnLocation;
+                        }
+                        engine.EntityManager.AddComponent(projectileId, component);
+                    }
                 }
 
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
                 {
                     uint exposion = engine.EntityManager.CreateEntity();
-                    List<Rectangle> animationFrames = new List<Rectangle>() {
-                        new Rectangle(0, 0, 32, 32),
-                        new Rectangle(32, 0, 32, 32),
-                        new Rectangle(64, 0, 32, 32),
-                        new Rectangle(0, 32, 32, 32),
-                        new Rectangle(32, 32, 32, 32),
-                        new Rectangle(64, 32, 32, 32),
-                        new Rectangle(0, 64, 32, 32),
-                        new Rectangle(32, 64, 32, 32),
-                    };
-                    List<SoundEffect> soundEffects = new List<SoundEffect>();
-                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion1"));
-                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion2"));
-                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion3"));
-                    soundEffects.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion4"));
-                    RandomSoundFactory soundFactory = new RandomSoundFactory(soundEffects, randomizer);
-                    List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
-                    Texture2D explosion = Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
-                    explosionBuilders.Add(new BaseExplosionBuilder(explosion, animationFrames, soundFactory));
-                    RandomExplosionFactory randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);
 
                     foreach (IComponent component in randomExplosionFactory.GetGameObjects())
                     {
@@ -230,12 +254,26 @@ namespace Tank
                         engine.EntityManager.AddComponent(exposion, component);
                         if (circle != null)
                         {
-                            DamageComponent damage = new DamageComponent(false, 100, circle, randomExplosionFactory, 9000);
+                            DamageComponent damage = new DamageComponent()
+                            {
+                                DamagingDone = false,
+                                CenterDamageValue = 100,
+                                DamageArea = circle,
+                                EffectFactory = randomExplosionFactory,
+                                PushbackForce = 9000
+
+                            };
                             engine.EntityManager.AddComponent(exposion, damage);
                             engine.EventManager.FireEvent<DamageTerrainEvent>(this, new DamageTerrainEvent(circle));
                             engine.EventManager.FireEvent<MapCollisionEvent>(this, new MapCollisionEvent(exposion, circle.Center));
                         }
                     }
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Escape) && !previousState.IsKeyDown(Keys.Escape))
+                {
+                    engine.Clear();
+                    Exit();
                 }
                 base.Update(gameTime);
 
@@ -246,10 +284,8 @@ namespace Tank
 
         protected override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, null);
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+
             engine.Draw(gameTime);
-            spriteBatch.End();
 
             base.Draw(gameTime);
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Tank.DataStructure;
 using Tank.Interfaces.MapGenerators;
 
@@ -26,16 +27,6 @@ namespace Tank.Code.Entities.Map
         private FlattenArray<Color> imageData;
 
         /// <summary>
-        /// The map to check collision on
-        /// </summary>
-        private FlattenArray<bool> collissionMap;
-
-        /// <summary>
-        /// Readonly access to the collision map
-        /// </summary>
-        public FlattenArray<bool> CollissionMap => collissionMap;
-
-        /// <summary>
         /// A copy of the image data to make cached changes to apply later
         /// </summary>
         private FlattenArray<Color> changedImageData;
@@ -43,17 +34,14 @@ namespace Tank.Code.Entities.Map
         /// <summary>
         /// The changed collision map chached for faster changing
         /// </summary>
-        private FlattenArray<bool> changedCollisionMap;
+        //private FlattenArray<bool> changedCollisionMap;
 
-        /// <summary>
-        /// The seed the map was created with
-        /// </summary>
-        private readonly int seed;
+        private readonly HashSet<Color> nonSolidColors;
 
         /// <summary>
         /// Readonly access to the seed the map was created with
         /// </summary>
-        public int Seed => seed;
+        public int Seed { get; }
 
         /// <summary>
         /// Height of the map in pixels
@@ -70,10 +58,9 @@ namespace Tank.Code.Entities.Map
         /// </summary>
         /// <param name="image">The image to use for this map</param>
         /// <param name="collissionMap">The collision map to use for the map</param>
-        public DefaultMap(Texture2D image, FlattenArray<bool> collissionMap)
-            : this(image, collissionMap, 0)
+        public DefaultMap(Texture2D image, HashSet<Color> nonSolidColors)
+            : this(image, nonSolidColors, 0)
         {
-
         }
 
         /// <summary>
@@ -82,7 +69,7 @@ namespace Tank.Code.Entities.Map
         /// <param name="image">The image to use for this map</param>
         /// <param name="collissionMap">The collision map to use for the map</param>
         /// <param name="seed">The seed used to create the map</param>
-        public DefaultMap(Texture2D image, FlattenArray<bool> collissionMap, int seed)
+        public DefaultMap(Texture2D image, HashSet<Color> nonSolidColors, int seed)
         {
             this.image = image;
             Color[] tempData = new Color[image.Width * image.Height];
@@ -90,8 +77,8 @@ namespace Tank.Code.Entities.Map
             image.GetData<Color>(tempData);
             imageData = new FlattenArray<Color>(tempData, image.Width);
 
-            this.collissionMap = collissionMap;
-            this.seed = seed;
+            this.nonSolidColors = nonSolidColors;
+            this.Seed = seed;
         }
 
         /// <summary>
@@ -137,7 +124,6 @@ namespace Tank.Code.Entities.Map
         public void SetPixel(int x, int y, Color color, bool collidable)
         {
             imageData.SetValue(x, y, color);
-            collissionMap.SetValue(x, y, collidable);
 
             image.SetData(imageData.Array);
         }
@@ -183,18 +169,12 @@ namespace Tank.Code.Entities.Map
         /// <param name="collidable">Is this cached pixel collideable</param>
         public void ChangePixel(int x, int y, Color color, bool collidable)
         {
-            if (changedCollisionMap == null)
-            {
-                changedCollisionMap = new FlattenArray<bool>(collissionMap.Array, Width);
-            }
-
             if (changedImageData == null)
             {
-                changedImageData = new FlattenArray<Color>(imageData.Array, Width);
+                RevertChanges();
             }
 
             changedImageData.SetValue(x, y, color);
-            changedCollisionMap.SetValue(x, y, collidable);
         }
 
         /// <summary>
@@ -202,8 +182,7 @@ namespace Tank.Code.Entities.Map
         /// </summary>
         public void RevertChanges()
         {
-            changedImageData = null;
-            changedCollisionMap = null;
+            changedImageData = imageData;
         }
 
         /// <summary>
@@ -211,10 +190,12 @@ namespace Tank.Code.Entities.Map
         /// </summary>
         public void ApplyChanges()
         {
+            if (changedImageData == null)
+            {
+                return;
+            }
             imageData = changedImageData;
             image.SetData<Color>(imageData.Array);
-
-            collissionMap = changedCollisionMap;
 
             RevertChanges();
         }
@@ -257,9 +238,67 @@ namespace Tank.Code.Entities.Map
         public void RemovePixel(int x, int y)
         {
             imageData.SetValue(x, y, Color.Transparent);
-            collissionMap.SetValue(x, y, false);
 
             image.SetData(imageData.Array);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPixelSolid(Vector2 vector)
+        {
+            if (vector == null)
+            {
+                return false;
+            }
+            return IsPixelSolid((int)vector.X, (int)vector.Y);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPixelSolid(Position position)
+        {
+            if (position == null)
+            {
+                return false;
+            }
+            return IsPixelSolid(position.X, position.Y);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPixelSolid(int x, int y)
+        {
+            if (!IsPointOnMap(x, y))
+            {
+                return false;
+            }
+            Color color = GetPixel(x, y);
+            return !nonSolidColors.Contains(color);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPointOnMap(Vector2 vector)
+        {
+            if (vector == null)
+            {
+                return false;
+            }
+            return IsPointOnMap((int)vector.X, (int)vector.Y);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPointOnMap(Position position)
+        {
+            if (position == null)
+            {
+                return false;
+            }
+            return IsPointOnMap(position.X, position.Y);
+        }
+
+        /// <inheritdoc/>
+        public bool IsPointOnMap(int x, int y)
+        {
+            bool valid = x > 0 && y > 0;
+            valid &= x < Width & y < Height;
+            return valid;
         }
     }
 }

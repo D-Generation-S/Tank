@@ -30,10 +30,9 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         void AddSystem(ISystem systemToAdd);
 
         /// <summary>
-        /// This method allows you to add a undefined number of systems
+        /// Remove a system from the system list
         /// </summary>
-        /// <param name="systemsToAdd">All the systems to add</param>
-        void AddSystems(params ISystem[] systemsToAdd);
+        void RemoveSystem(ISystem systemToRemove);
 
         /// <summary>
         /// Update this system
@@ -46,5 +45,34 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <param name="gameTime">The current GameTime</param>
         void Draw(GameTime gameTime);
+
+        /// <summary>
+        /// Get the total number of entities
+        /// </summary>
+        /// <returns>The total number of entities</returns>
+        int GetEntityCount();
+
+        /// <summary>
+        /// The number of components
+        /// </summary>
+        /// <returns>The number of component</returns>
+        int GetComponentCount();
+
+        /// <summary>
+        /// The number of used components
+        /// </summary>
+        /// <returns>The number of used components</returns>
+        int GetUsedComponentCount();
+
+        /// <summary>
+        /// Get the number of systems
+        /// </summary>
+        /// <returns>The number of active systems</returns>
+        int GetSystemCount();
+
+        /// <summary>
+        /// Clear the whole engine
+        /// </summary>
+        void Clear();
     }
 }

@@ -24,6 +24,16 @@ namespace Tank.EntityComponentSystem.Manager
         private readonly List<IComponent> components;
 
         /// <summary>
+        /// A list with all the used components
+        /// </summary>
+        private readonly List<IComponent> usedComponents;
+
+        /// <summary>
+        /// The maximum amount of components to keep
+        /// </summary>
+        private readonly int maxComponentsToKeep;
+
+        /// <summary>
         /// All the ids which already got used
         /// </summary>
         private readonly Queue<uint> removedEntities;
@@ -46,7 +56,8 @@ namespace Tank.EntityComponentSystem.Manager
             entities = new List<uint>();
             components = new List<IComponent>();
             removedEntities = new Queue<uint>();
-
+            usedComponents = new List<IComponent>();
+            maxComponentsToKeep = 200;
             nextId = uint.MinValue;
         }
 
@@ -160,7 +171,7 @@ namespace Tank.EntityComponentSystem.Manager
         {
             return components.FindAll((component) =>
             {
-                return component.EntityId == entityId;
+                return component != null && component.EntityId == entityId;
             });
         }
 
@@ -235,6 +246,7 @@ namespace Tank.EntityComponentSystem.Manager
         {
             foreach (IComponent removeComponent in GetComponents(entityId, componentType))
             {
+                AddRemovedComponent(removeComponent);
                 components.Remove(removeComponent);
             }
             eventManager.FireEvent(this, new ComponentRemovedEvent(entityId));
@@ -251,9 +263,20 @@ namespace Tank.EntityComponentSystem.Manager
         {
             foreach (IComponent removeComponent in GetComponents(entityId))
             {
+                AddRemovedComponent(removeComponent);
                 components.Remove(removeComponent);
             }
             eventManager.FireEvent(this, new ComponentRemovedEvent(entityId));
+        }
+
+        /// <inheritdoc/>
+        private void AddRemovedComponent(IComponent component)
+        {
+            if (usedComponents.Count >= maxComponentsToKeep)
+            {
+                usedComponents.RemoveAt(0);
+            }
+            usedComponents.Add(component);
         }
 
         /// <inheritdoc/>
@@ -294,6 +317,58 @@ namespace Tank.EntityComponentSystem.Manager
                 RemoveEntityEvent removeEntityEvent = (RemoveEntityEvent)eventArgs;
                 RemoveEntity(removeEntityEvent.EntityId);
             }
+        }
+
+        /// <inheritdoc/>
+        public int GetEntityCount()
+        {
+            return entities.Count;
+        }
+
+        /// <inheritdoc/>
+        public int GetComponentCount()
+        {
+            return components.Count;
+        }
+
+        /// <inheritdoc/>
+        public T CreateComponent<T>() where T : IComponent
+        {
+            Type type = typeof(T);
+            T component = (T)usedComponents.Find(item => item.GetType() == type);
+            if (component != null)
+            {
+                usedComponents.Remove(component);
+                component.Init();
+            }
+            return component == null ? (T)Activator.CreateInstance(type) : component;
+        }
+
+        /// <inheritdoc/>
+        public T CreateComponent<T>(uint entityId) where T : IComponent
+        {
+            T component = CreateComponent<T>();
+            AddComponent(entityId, component);
+            return component;
+        }
+
+        /// <inheritdoc/>
+        public int GetUsedComponentCount()
+        {
+            return usedComponents.Count;
+        }
+
+        /// <inheritdoc/>
+        public void Clear()
+        {
+            for (int i = entities.Count - 1; i >= 0; i--)
+            {
+                RemoveEntity(entities[i]);
+            }
+            usedComponents.Clear();
+            components.Clear();
+            removedEntities.Clear();
+            nextId = 0;
         }
     }
 }

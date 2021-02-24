@@ -79,7 +79,13 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public void RemoveListner(IEventReceiver eventReciver)
         {
-            throw new NotImplementedException();
+            eventReceivers.ForEach(item => item.EventReceivers.Remove(eventReciver));
+        }
+
+        /// <inheritdoc/>
+        public void Clear()
+        {
+            eventReceivers.Clear();
         }
     }
 }

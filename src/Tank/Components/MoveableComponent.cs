@@ -8,72 +8,38 @@ namespace Tank.Components
     class MoveableComponent : BaseComponent
     {
         /// <summary>
-        /// The velocity of the entity
-        /// </summary>
-        private Vector2 velocity;
-
-        /// <summary>
         /// Public access to the velocity
         /// </summary>
-        public Vector2 Velocity
-        {
-            get => velocity;
-            set => velocity = value;
-        }
+        public Vector2 Velocity { get; set; }
 
         /// <summary>
         /// The current acceleration
         /// </summary>
-        private Vector2 acceleration;
-
-        /// <summary>
-        /// The current acceleration
-        /// </summary>
-        public Vector2 Acceleration
-        {
-            get => acceleration;
-            set => acceleration = value;
-        }
-
-        /// <summary>
-        /// The mass of the object
-        /// </summary>
-        private float mass;
+        public Vector2 Acceleration { get; set; }
 
         /// <summary>
         /// The private mass of the object
         /// </summary>
-        public float Mass
-        {
-            get => mass;
-            set => mass = value;
-        }
+        public float Mass { get; set; }
 
         /// <summary>
         /// Should be rotated by physic
         /// </summary>
-        public bool PhysicRotate;
-
-        /// <summary>
-        /// Is the entity on the ground
-        /// </summary>
-        private bool onGround;
+        public bool PhysicRotate { get; set; }
 
         /// <summary>
         /// Public access if the entity is on the ground
         /// </summary>
-        public bool OnGround
-        {
-            get => onGround;
-            set => onGround = value;
-        }
+        public bool OnGround { get; set; }
 
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        public MoveableComponent()
+        /// <inheritdoc/>
+        public override void Init()
         {
-            mass = 1;
+            Mass = 1;
+            OnGround = false;
+            PhysicRotate = false;
+            Velocity = Vector2.Zero;
+            Acceleration = Vector2.Zero;
         }
     }
 }

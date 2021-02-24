@@ -37,6 +37,10 @@ namespace Tank.Factories
         /// <returns>A list of components making up a explosion</returns>
         public List<IComponent> GetGameObjects()
         {
+            if (randomizer == null)
+            {
+                return new List<IComponent>();
+            }
             int position = (int)randomizer.GetNewNumber(0, gameObjecBuilders.Count - 1);
             return gameObjecBuilders[position].BuildGameComponents();
         }

@@ -14,5 +14,10 @@
         /// The strenght to fire the next round
         /// </summary>
         public float Strenght;
+
+        /// <inheritdoc/>
+        public override void Init()
+        {
+        }
     }
 }

@@ -8,22 +8,14 @@ namespace Tank.Components
     class MapComponent : BaseComponent
     {
         /// <summary>
-        /// An instance of a map to use for the game
-        /// </summary>
-        private IMap map;
-
-        /// <summary>
         /// Public readonly access to the map instance
         /// </summary>
-        public IMap Map => map;
+        public IMap Map { get; set; }
 
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        /// <param name="map">The map instance to use</param>
-        public MapComponent(IMap map)
+        /// <inheritdoc/>
+        public override void Init()
         {
-            this.map = map;
+            Map = null;
         }
     }
 }

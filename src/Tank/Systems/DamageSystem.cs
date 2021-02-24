@@ -46,10 +46,10 @@ namespace Tank.Systems
                 {
                     return;
                 }
+
                 FireEvent(new RemoveEntityEvent(collisionEvent.EntityId));
                 Effect(collisionEvent, damageComponent);
                 DamageTerrain(damageComponent, collisionEvent);
-                PushbackEntities(damageComponent, collisionEvent);
             }
         }
 
@@ -60,13 +60,12 @@ namespace Tank.Systems
         /// <param name="collisionEvent">The event where the collision occured</param>
         private void DamageTerrain(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
         {
-            if (!damageComponent.DamangeTerrain)
+            if (!damageComponent.DamageTerrain || damageComponent.DamageArea == null)
             {
                 return;
             }
             Circle damageArea = damageComponent.DamageArea;
-            damageArea.Center.X = collisionEvent.CollisionPosition.X;
-            damageArea.Center.Y = collisionEvent.CollisionPosition.Y;
+            damageArea.Center = collisionEvent.CollisionPosition;
 
             FireEvent(new DamageTerrainEvent(damageArea));
         }
@@ -85,50 +84,13 @@ namespace Tank.Systems
             List<IComponent> components = damageComponent.EffectFactory.GetGameObjects();
             foreach (IComponent component in components)
             {
-                if (component is PlaceableComponent)
+                if (component is PlaceableComponent placeable)
                 {
-                    Vector2 explosionPosition = new Vector2(
-                        collisionEvent.CollisionPosition.X,
-                        collisionEvent.CollisionPosition.Y
-                    );
-                    ((PlaceableComponent)component).Position += explosionPosition;
+                    Vector2 position = collisionEvent.CollisionPosition;
+                    placeable.Position += position;
                 }
             }
             FireEvent(new AddEntityEvent(components));
-        }
-
-        /// <summary>
-        /// Pushback entities
-        /// </summary>
-        /// <param name="damageComponent">The damage component</param>
-        /// <param name="collisionEvent">The collision event</param>
-        private void PushbackEntities(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
-        {
-            List<uint> entitiesWithComponents = entityManager.GetEntitiesWithComponent<ColliderComponent>();
-            foreach (uint entityId in entitiesWithComponents)
-            {
-                if (!entityManager.HasComponent(entityId, typeof(MoveableComponent)) || !entityManager.HasComponent(entityId, typeof(PlaceableComponent)))
-                {
-                    continue;
-                }
-                ColliderComponent collider = entityManager.GetComponent<ColliderComponent>(entityId);
-                PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(entityId);
-                Vector2 position = new Vector2(collider.Collider.Center.X, collider.Collider.Center.Y);
-                position += placeable.Position;
-                Circle damageArea = damageComponent.DamageArea;
-                if (damageArea.IsInInCircle(position))
-                {
-                    Vector2 distanceToCenter = position - damageArea.Center.GetVector2();
-                    float forcePercentage = distanceToCenter.Length() / damageArea.Radius;
-                    float magnitude = damageComponent.PushbackForce * forcePercentage;
-                    magnitude = damageComponent.PushbackForce - magnitude;
-                    Vector2 force = distanceToCenter;
-                    force.Normalize();
-                    force *= magnitude;
-
-                    FireEvent(new ApplyForceEvent(entityId, force));
-                }
-            }
         }
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Flag entity as game object
     /// </summary>
-    class GameObjectTag : BaseComponent
+    class GameObjectTag : BaseTag
     {
     }
 }

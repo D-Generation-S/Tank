@@ -20,5 +20,10 @@
         /// </summary>
         /// <param name="newId">The new id for this component</param>
         void SetEntityId(uint newId);
+
+        /// <summary>
+        /// Initialize this component
+        /// </summary>
+        void Init();
     }
 }

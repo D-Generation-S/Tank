@@ -11,12 +11,12 @@ namespace Tank.DataStructure
         /// <summary>
         /// The center position of the circle
         /// </summary>
-        private Position center;
+        private Vector2 center;
 
         /// <summary>
         /// Public accessor of the circle position
         /// </summary>
-        public Position Center
+        public Vector2 Center
         {
             get => center;
             set => center = value;
@@ -53,14 +53,13 @@ namespace Tank.DataStructure
         {
         }
 
-
         /// <summary>
         /// Create a new circle instance
         /// </summary>
         /// <param name="position">The position of the circle</param>
         /// <param name="radius">The radius for the circle</param>
-        public Circle(Vector2 position, int radius)
-            : this(new Position(position), radius)
+        public Circle(Position position, int radius)
+            : this(new Vector2(position.X, position.Y), radius)
         {
         }
 
@@ -69,7 +68,7 @@ namespace Tank.DataStructure
         /// </summary>
         /// <param name="position">The position of the circle</param>
         /// <param name="radius">The radius for the circle</param>
-        public Circle(Position position, int radius)
+        public Circle(Vector2 position, int radius)
         {
             center = position;
             this.radius = radius;
@@ -103,7 +102,8 @@ namespace Tank.DataStructure
         /// <returns>Returns true if the position is in the circle</returns>
         public bool IsInInCircle(Vector2 position)
         {
-            return IsInInCircle((int)position.X, (int)position.Y);
+            Vector2 distance = center - position;
+            return distance.Length() < radius;
         }
 
         /// <summary>
@@ -114,8 +114,9 @@ namespace Tank.DataStructure
         /// <returns>Returns true if x and y is inside of the circle</returns>
         public bool IsInInCircle(int x, int y)
         {
-            float TestValue = (float)Math.Sqrt(Math.Pow(x - center.X, 2) + Math.Pow(y - center.Y, 2));
-            return TestValue < Radius;
+            Vector2 position = Vector2.UnitX * x + Vector2.UnitY * y;
+            return IsInInCircle(position);
         }
     }
 }
+
