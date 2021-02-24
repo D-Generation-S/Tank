@@ -27,16 +27,6 @@ namespace Tank.Code.Entities.Map
         private FlattenArray<Color> imageData;
 
         /// <summary>
-        /// The map to check collision on
-        /// </summary>
-        //private FlattenArray<bool> collissionMap;
-
-        /// <summary>
-        /// Readonly access to the collision map
-        /// </summary>
-        //public FlattenArray<bool> CollissionMap => collissionMap;
-
-        /// <summary>
         /// A copy of the image data to make cached changes to apply later
         /// </summary>
         private FlattenArray<Color> changedImageData;
@@ -49,14 +39,9 @@ namespace Tank.Code.Entities.Map
         private readonly HashSet<Color> nonSolidColors;
 
         /// <summary>
-        /// The seed the map was created with
-        /// </summary>
-        private readonly int seed;
-
-        /// <summary>
         /// Readonly access to the seed the map was created with
         /// </summary>
-        public int Seed => seed;
+        public int Seed { get; }
 
         /// <summary>
         /// Height of the map in pixels
@@ -93,7 +78,7 @@ namespace Tank.Code.Entities.Map
             imageData = new FlattenArray<Color>(tempData, image.Width);
 
             this.nonSolidColors = nonSolidColors;
-            this.seed = seed;
+            this.Seed = seed;
         }
 
         /// <summary>
@@ -211,8 +196,6 @@ namespace Tank.Code.Entities.Map
             }
             imageData = changedImageData;
             image.SetData<Color>(imageData.Array);
-
-            //collissionMap = changedCollisionMap;
 
             RevertChanges();
         }
