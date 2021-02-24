@@ -269,6 +269,12 @@ namespace Tank
                         }
                     }
                 }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Escape) && !previousState.IsKeyDown(Keys.Escape))
+                {
+                    engine.Clear();
+                    Exit();
+                }
                 base.Update(gameTime);
 
                 previousState = Keyboard.GetState();

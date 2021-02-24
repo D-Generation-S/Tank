@@ -179,6 +179,11 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         void RemoveComponents(uint entityId);
 
         /// <summary>
+        /// This method will clear the whole manager and reset it
+        /// </summary>
+        void Clear();
+
+        /// <summary>
         /// Get the total number of entities
         /// </summary>
         /// <returns>The total number of entities</returns>

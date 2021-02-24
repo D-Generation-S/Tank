@@ -15,6 +15,7 @@
         /// </summary>
         public float Strenght;
 
+        /// <inheritdoc/>
         public override void Init()
         {
         }

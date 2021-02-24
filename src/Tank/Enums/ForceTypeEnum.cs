@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tank.Enums
+﻿namespace Tank.Enums
 {
+    /// <summary>
+    /// Force type enum
+    /// </summary>
     public enum ForceTypeEnum
     {
         None,

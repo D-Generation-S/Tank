@@ -1,8 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Tank.Components.Rendering
 {
@@ -23,6 +20,7 @@ namespace Tank.Components.Rendering
         /// </summary>
         public float LayerDepth;
 
+        /// <inheritdoc/>
         public override void Init()
         {
             Color = Color.White;

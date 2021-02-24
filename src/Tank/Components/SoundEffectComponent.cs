@@ -2,6 +2,9 @@
 
 namespace Tank.Components
 {
+    /// <summary>
+    /// Sound effect component
+    /// </summary>
     class SoundEffectComponent : BaseComponent
     {
         /// <summary>

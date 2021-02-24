@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tank.Enums
+﻿namespace Tank.Enums
 {
+    /// <summary>
+    /// The force trigger
+    /// </summary>
     public enum ForceTriggerTimeEnum
     {
         None,

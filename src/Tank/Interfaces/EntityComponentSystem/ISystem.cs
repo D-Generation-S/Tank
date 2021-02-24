@@ -9,6 +9,17 @@ namespace Tank.Interfaces.EntityComponentSystem
     interface ISystem : IEventReceiver
     {
         /// <summary>
+        /// The system id
+        /// </summary>
+        uint SystemId { get; }
+
+        /// <summary>
+        /// Set the system id for identification
+        /// </summary>
+        /// <param name="systemId">The system id to add</param>
+        void SetSystemId(uint systemId);
+
+        /// <summary>
         /// Initialize this system
         /// </summary>
         /// <param name="gameEngine">The current game engine</param>

@@ -16,6 +16,10 @@ namespace Tank.Systems
     /// </summary>
     abstract class AbstractSystem : ISystem
     {
+
+        /// <inheritdoc/>
+        public uint SystemId { get; private set; }
+
         /// <summary>
         /// Update system is currently locked
         /// </summary>
@@ -61,6 +65,7 @@ namespace Tank.Systems
         /// </summary>
         protected ContentWrapper contentManager => gameEngine.ContentManager;
 
+
         /// <summary>
         /// The list of the validators to define if an entity is managed by this system
         /// </summary>
@@ -72,6 +77,12 @@ namespace Tank.Systems
         public AbstractSystem()
         {
             validators = new List<IValidatable>();
+        }
+
+        /// <inheritdoc/>
+        public void SetSystemId(uint systemId)
+        {
+            SystemId = systemId;
         }
 
         /// <summary>
@@ -283,5 +294,6 @@ namespace Tank.Systems
         public virtual void Draw(GameTime gameTime)
         {
         }
+
     }
 }

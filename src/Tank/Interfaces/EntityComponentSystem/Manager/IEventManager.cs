@@ -34,5 +34,10 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <param name="eventReceiver">The listner to remove</param>
         void RemoveListner(IEventReceiver eventReceiver);
+
+        /// <summary>
+        /// Clear the event manager
+        /// </summary>
+        void Clear();
     }
 }

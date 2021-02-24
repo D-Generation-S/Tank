@@ -30,10 +30,9 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         void AddSystem(ISystem systemToAdd);
 
         /// <summary>
-        /// This method allows you to add a undefined number of systems
+        /// Remove a system from the system list
         /// </summary>
-        /// <param name="systemsToAdd">All the systems to add</param>
-        void AddSystems(params ISystem[] systemsToAdd);
+        void RemoveSystem(ISystem systemToRemove);
 
         /// <summary>
         /// Update this system
@@ -59,7 +58,6 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// <returns>The number of component</returns>
         int GetComponentCount();
 
-
         /// <summary>
         /// The number of used components
         /// </summary>
@@ -71,5 +69,10 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <returns>The number of active systems</returns>
         int GetSystemCount();
+
+        /// <summary>
+        /// Clear the whole engine
+        /// </summary>
+        void Clear();
     }
 }

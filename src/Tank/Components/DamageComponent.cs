@@ -43,6 +43,7 @@ namespace Tank.Components
         /// </summary>
         public float PushbackForce { get; set; }
 
+        /// <inheritdoc/>
         public override void Init()
         {
             DamageTerrain = false;

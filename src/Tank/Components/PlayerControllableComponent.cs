@@ -11,6 +11,5 @@ namespace Tank.Components
         /// The controller to use
         /// </summary>
         public IGameObjectController Controller { get; set; }
-
     }
 }

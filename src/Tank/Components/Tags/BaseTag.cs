@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tank.Components.Tags
+﻿namespace Tank.Components.Tags
 {
+    /// <summary>
+    /// Base tag class
+    /// </summary>
     class BaseTag : BaseComponent
     {
+        /// <inheritdoc/>
         public override void Init()
         {
         }

@@ -12,6 +12,7 @@ namespace Tank.Components
         /// </summary>
         public IMap Map { get; set; }
 
+        /// <inheritdoc/>
         public override void Init()
         {
             Map = null;

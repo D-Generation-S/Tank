@@ -272,7 +272,7 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         private void AddRemovedComponent(IComponent component)
         {
-            if (usedComponents.Count > 200)
+            if (usedComponents.Count >= maxComponentsToKeep)
             {
                 usedComponents.RemoveAt(0);
             }
@@ -356,6 +356,19 @@ namespace Tank.EntityComponentSystem.Manager
         public int GetUsedComponentCount()
         {
             return usedComponents.Count;
+        }
+
+        /// <inheritdoc/>
+        public void Clear()
+        {
+            for (int i = entities.Count - 1; i >= 0; i--)
+            {
+                RemoveEntity(entities[i]);
+            }
+            usedComponents.Clear();
+            components.Clear();
+            removedEntities.Clear();
+            nextId = 0;
         }
     }
 }

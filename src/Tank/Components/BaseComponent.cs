@@ -27,6 +27,9 @@ namespace Tank.Components
         /// </summary>
         public bool AllowMultiple => allowMultiple;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public BaseComponent()
         {
             allowMultiple = false;

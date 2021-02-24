@@ -13,7 +13,6 @@ namespace Tank.Components.Rendering
         /// </summary>
         public string Name { get; set; }
 
-
         /// <summary>
         /// Public accessor if the animation is active right now
         /// </summary>

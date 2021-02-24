@@ -7,7 +7,6 @@ namespace Tank.Components
     /// </summary>
     class PlaceableComponent : BaseComponent
     {
-
         /// <summary>
         /// Public access to the position of the entity in the world
         /// </summary>

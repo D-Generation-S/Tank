@@ -18,34 +18,24 @@ namespace Tank.EntityComponentSystem.Manager
         private bool locked;
 
         /// <summary>
-        /// A instance of the event manager to use in the current game engine
+        /// The next system id
         /// </summary>
-        private readonly IEventManager eventManager;
+        private uint nextSystemId;
 
         /// <summary>
         /// Readonly access to the event manager for classes from the outside
         /// </summary>
-        public IEventManager EventManager => eventManager;
-
-        /// <summary>
-        /// A instance of the entity manager to use in the current game engine
-        /// </summary>
-        private readonly IEntityManager entityManager;
+        public IEventManager EventManager { get; }
 
         /// <summary>
         /// Readonly access to the entity manager for external reading
         /// </summary>
-        public IEntityManager EntityManager => entityManager;
-
-        /// <summary>
-        /// A warpper class to provide the game engine some content
-        /// </summary>
-        private readonly ContentWrapper contentManager;
+        public IEntityManager EntityManager { get; }
 
         /// <summary>
         /// Readonly access to the content manager for loading new content into the game
         /// </summary>
-        public ContentWrapper ContentManager => contentManager;
+        public ContentWrapper ContentManager { get; }
 
         /// <summary>
         /// A private list of all the systems currently registered
@@ -73,26 +63,25 @@ namespace Tank.EntityComponentSystem.Manager
             systems = new List<ISystem>();
             systemsToAdd = new List<ISystem>();
             systemsToRemove = new List<ISystem>();
-            this.eventManager = eventManager;
+            EventManager = eventManager;
             entityManager.Initialize(eventManager);
-            this.entityManager = entityManager;
-            contentManager = contentWrapper;
+            EntityManager = entityManager;
+            ContentManager = contentWrapper;
+            nextSystemId = 0;
         }
 
         /// <inheritdoc/>
         public void AddSystem(ISystem systemToAdd)
         {
             systemToAdd.Initialize(this);
+            systemToAdd.SetSystemId(nextSystemId);
             systemsToAdd.Add(systemToAdd);
+            nextSystemId++;
         }
 
-        /// <inheritdoc/>
-        public void AddSystems(params ISystem[] systemsToAdd)
+        public void RemoveSystem(ISystem systemToRemove)
         {
-            foreach (ISystem system in systemsToAdd)
-            {
-                AddSystem(system);
-            }
+            systems.RemoveAll(system => system.SystemId == systemToRemove.SystemId);
         }
 
         /// <inheritdoc/>
@@ -133,13 +122,13 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public int GetEntityCount()
         {
-            return entityManager.GetEntityCount();
+            return EntityManager.GetEntityCount();
         }
 
         /// <inheritdoc/>
         public int GetComponentCount()
         {
-             return entityManager.GetComponentCount();
+             return EntityManager.GetComponentCount();
         }
 
         /// <inheritdoc/>
@@ -148,9 +137,26 @@ namespace Tank.EntityComponentSystem.Manager
             return systems.Count;
         }
 
+        /// <inheritdoc/>
         public int GetUsedComponentCount()
         {
-            return entityManager.GetUsedComponentCount();
+            return EntityManager.GetUsedComponentCount();
         }
+
+        /// <inheritdoc/>
+        public void Clear()
+        {
+            locked = true;
+            systemsToAdd.Clear();
+            EventManager.Clear();
+            for (int i = systems.Count - 1; i >= 0; i--)
+            {
+                RemoveSystem(systems[i]);
+            }
+            nextSystemId = 0;
+            EntityManager.Clear();
+            locked = false;
+        }
+
     }
 }

@@ -22,6 +22,7 @@ namespace Tank.Components
         /// </summary>
         public bool FireCollideEvent { get; set; }
 
+        /// <inheritdoc/>
         public override void Init()
         {
             MapCollision = false;
