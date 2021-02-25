@@ -49,6 +49,16 @@ namespace Tank.EntityComponentSystem.Manager
         private IEventManager eventManager;
 
         /// <summary>
+        /// The current component actions
+        /// </summary>
+        private uint componentActions;
+
+        /// <summary>
+        /// How many actions until we need to sort
+        /// </summary>
+        private readonly uint sortThreshold;
+
+        /// <summary>
         /// Create a new instance of the entity manager
         /// </summary>
         public EntityManager()
@@ -58,6 +68,7 @@ namespace Tank.EntityComponentSystem.Manager
             removedEntities = new Queue<uint>();
             usedComponents = new List<IComponent>();
             maxComponentsToKeep = 200;
+            sortThreshold = 200;
             nextId = uint.MinValue;
         }
 
@@ -139,14 +150,19 @@ namespace Tank.EntityComponentSystem.Manager
             {
                 eventManager.FireEvent(this, new NewComponentEvent(entityId));
             }
-
+            componentActions++;
+            if (componentActions > sortThreshold)
+            {
+                componentActions = 0;
+                OptimizeComponents();
+            }
             return true;
         }
 
         /// <inheritdoc/>
         public T GetComponent<T>(uint entityId) where T : IComponent
         {
-            IComponent returnComponent = GetComponents(entityId, typeof(T)).FirstOrDefault();
+            IComponent returnComponent = GetComponent(entityId, typeof(T));
             if (returnComponent == null)
             {
                 return default;
@@ -157,13 +173,16 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public IComponent GetComponent(uint entityId, Type componentType)
         {
-            return GetComponents(entityId, componentType).FirstOrDefault();
+            return components.Find(component =>
+            {
+                return component != null && component.Type == componentType && component.EntityId == entityId;
+            });
         }
 
         /// <inheritdoc/>
         public IComponent GetComponent(uint entityId, IComponent component)
         {
-            return GetComponent(entityId, component.GetType());
+            return GetComponent(entityId, component.Type);
         }
 
         /// <inheritdoc/>
@@ -184,7 +203,7 @@ namespace Tank.EntityComponentSystem.Manager
                 {
                     return false;
                 }
-                bool matchingComponent = componentToCheck.GetType() == componentType;
+                bool matchingComponent = componentToCheck.Type == componentType;
                 matchingComponent &= componentToCheck.EntityId == entityId;
                 return matchingComponent;
             });
@@ -193,7 +212,7 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public List<IComponent> GetComponents(uint entityId, IComponent component)
         {
-            return GetComponents(entityId, component.GetType());
+            return GetComponents(entityId, component.Type);
         }
 
         /// <inheritdoc/>
@@ -205,7 +224,7 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public bool HasComponent(uint entityId, IComponent component)
         {
-            return HasComponent(entityId, component.GetType());
+            return HasComponent(entityId, component.Type);
         }
 
         /// <inheritdoc/>
@@ -255,7 +274,7 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public void RemoveComponents(uint entityId, IComponent component)
         {
-            RemoveComponents(entityId, component.GetType());
+            RemoveComponents(entityId, component.Type);
         }
 
         /// <inheritdoc/>
@@ -335,7 +354,7 @@ namespace Tank.EntityComponentSystem.Manager
         public T CreateComponent<T>() where T : IComponent
         {
             Type type = typeof(T);
-            T component = (T)usedComponents.Find(item => item.GetType() == type);
+            T component = (T)usedComponents.Find(item => item.Type == type);
             if (component != null)
             {
                 usedComponents.Remove(component);
@@ -369,6 +388,14 @@ namespace Tank.EntityComponentSystem.Manager
             components.Clear();
             removedEntities.Clear();
             nextId = 0;
+        }
+
+        /// <summary>
+        /// Optimize the components
+        /// </summary>
+        public void OptimizeComponents()
+        {
+            components.Sort((componentA, componentB) => componentB.Priority - componentA.Priority);
         }
     }
 }

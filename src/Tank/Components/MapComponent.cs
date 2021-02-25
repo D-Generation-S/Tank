@@ -12,6 +12,14 @@ namespace Tank.Components
         /// </summary>
         public IMap Map { get; set; }
 
+        /// <summary>
+        /// The map component
+        /// </summary>
+        public MapComponent()
+        {
+            Priority = 5000;
+        }
+
         /// <inheritdoc/>
         public override void Init()
         {

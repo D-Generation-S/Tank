@@ -140,6 +140,12 @@
 /processorParam:DebugMode=Auto
 /build:../Assets/Shaders/Inverted.fx;Shaders/Inverted.fx
 
+#begin ../Assets/Shaders/Postprocessing/Sepia.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:../Assets/Shaders/Postprocessing/Sepia.fx;Shaders/Postprocessing/Sepia.fx
+
 #begin ../Assets/Sound/Effects/Explosion1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

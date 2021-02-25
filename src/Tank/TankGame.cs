@@ -24,7 +24,6 @@ using Tank.Map.Generators;
 using Tank.Map.Textureizer;
 using Tank.Randomizer;
 using Tank.Systems;
-using Tank.Utils;
 using Tank.Wrapper;
 
 namespace Tank
@@ -58,6 +57,7 @@ namespace Tank
         private List<Rectangle> projectiveAnimationFrames;
         private BaseBulletBuilder bulletBuilder;
         Vector2 bulletSpawnLocation;
+        float fps;
 
 
         public TankGame()
@@ -119,8 +119,11 @@ namespace Tank
             engine.AddSystem(new BindingSystem());
             engine.AddSystem(new ForceSystem());
             engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1920, 1080), 0.098f, 0.3f));
-
-            engine.AddSystem(new RenderSystem(spriteBatch, GraphicsDevice, Content.Load<Effect>("Shaders/Default")));
+            engine.AddSystem(new RenderSystem(
+                spriteBatch,
+                GraphicsDevice,
+                Content.Load<Effect>("Shaders/Default")
+                ));
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new DamageSystem());
             engine.AddSystem(new MapDestructionSystem());
@@ -210,7 +213,8 @@ namespace Tank
                 VisibleTextComponent entityCounterText = engine.EntityManager.GetComponent<VisibleTextComponent>(entityCounter);
                 if (entityCounterText != null)
                 {
-                    entityCounterText.Text = "Fps: " + Math.Round(1 / gameTime.ElapsedGameTime.TotalSeconds);
+                    entityCounterText.Text = "Fps: " + fps;
+                    entityCounterText.Text += "\nUpdate ms: " + gameTime.ElapsedGameTime.TotalMilliseconds;
                     entityCounterText.Text += "\nEntities: " + engine.GetEntityCount();
                     entityCounterText.Text += "\nComponents: " + engine.GetComponentCount();
                     entityCounterText.Text += "\nUsed Components: " + engine.GetUsedComponentCount();
@@ -219,7 +223,11 @@ namespace Tank
 
 
                 engine.Update(gameTime);
-                ticksToFire--;
+                if (ticksToFire > 0)
+                {
+                    ticksToFire--;
+                }
+                
                 if (ticksToFire > 0 || Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
                 {
                     uint projectileId = engine.EntityManager.CreateEntity(false);
@@ -284,7 +292,7 @@ namespace Tank
 
         protected override void Draw(GameTime gameTime)
         {
-
+            fps = (float)Math.Round(1 / gameTime.ElapsedGameTime.TotalSeconds);
             engine.Draw(gameTime);
 
             base.Draw(gameTime);

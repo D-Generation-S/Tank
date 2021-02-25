@@ -57,7 +57,7 @@ namespace Tank.Systems
                 {
                     for (int y = (int)start.Y; y < (int)end.Y; y++)
                     {
-                        if (damageCircle.IsInInCircle(x, y))
+                        if (damageCircle.IsInInCircle(x, y) && x >= 0 && x < map.Map.Width)
                         {
                             map.Map.ChangePixel(x, y, Color.Transparent, false);
                         }

@@ -32,6 +32,14 @@ namespace Tank.Components
         /// </summary>
         public bool OnGround { get; set; }
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        public MoveableComponent()
+        {
+            Priority = 50;
+        }
+
         /// <inheritdoc/>
         public override void Init()
         {
