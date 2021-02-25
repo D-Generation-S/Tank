@@ -1,4 +1,6 @@
-﻿namespace Tank.Interfaces.EntityComponentSystem
+﻿using System;
+
+namespace Tank.Interfaces.EntityComponentSystem
 {
     /// <summary>
     /// This interface is representing a component from an entity
@@ -9,6 +11,16 @@
         /// The id of the entity this component belongs to
         /// </summary>
         uint EntityId { get; }
+
+        /// <summary>
+        /// The component type
+        /// </summary>
+        Type Type { get; }
+
+        /// <summary>
+        /// The priority for sorting for this component
+        /// </summary>
+        int Priority { get; }
 
         /// <summary>
         /// Is it allowed to add mulitple instances from this component to an entity

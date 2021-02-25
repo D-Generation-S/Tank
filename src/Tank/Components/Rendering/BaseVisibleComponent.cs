@@ -28,6 +28,14 @@ namespace Tank.Components.Rendering
         /// </summary>
         public float LayerDepth;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        public BaseVisibleComponent()
+        {
+            Priority = 500;
+        }
+
         /// <inheritdoc/>
         public override void Init()
         {

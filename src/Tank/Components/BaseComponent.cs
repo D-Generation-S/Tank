@@ -1,4 +1,5 @@
-﻿using Tank.Interfaces.EntityComponentSystem;
+﻿using System;
+using Tank.Interfaces.EntityComponentSystem;
 
 namespace Tank.Components
 {
@@ -7,39 +8,33 @@ namespace Tank.Components
     /// </summary>
     abstract class BaseComponent : IComponent
     {
-        /// <summary>
-        /// The id of the entity the component is assigned to
-        /// </summary>
-        private uint entityId;
+        /// <inheritdoc/>
+        public uint EntityId { get; private set; }
 
-        /// <summary>
-        /// Readonly access to the entity id the component is assigned to
-        /// </summary>
-        public uint EntityId => entityId;
+        /// <inheritdoc/>
+        public bool AllowMultiple { get; }
 
-        /// <summary>
-        /// Allow multiple instances of this component per entity
-        /// </summary>
-        protected bool allowMultiple;
+        /// <inheritdoc/>
+        public Type Type { get; }
 
-        /// <summary>
-        /// Readonly access if multiple component instances are allowed per entity
-        /// </summary>
-        public bool AllowMultiple => allowMultiple;
+        /// <inheritdoc/>
+        public int Priority { get; protected set; }
 
         /// <summary>
         /// Create a new instance of this class
         /// </summary>
         public BaseComponent()
         {
-            allowMultiple = false;
+            AllowMultiple = false;
+            Type = GetType();
+            Priority = 0;
             Init();
         }
 
         /// <inheritdoc/>
         public void SetEntityId(uint newId)
         {
-            entityId = newId;
+            EntityId = newId;
         }
 
         /// <inheritdoc/>

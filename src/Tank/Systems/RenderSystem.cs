@@ -35,17 +35,60 @@ namespace Tank.Systems
         /// </summary>
         private List<RenderContainer> containersToRender;
 
+        /// <summary>
+        /// Current effect to apply
+        /// </summary>
         private Effect currentEffect;
 
+        /// <summary>
+        /// The default sprite effect
+        /// </summary>
         private readonly Effect defaultEffect;
 
+        /// <summary>
+        /// Rendertarget to use
+        /// </summary>
+        private RenderTarget2D gameRenderTarget;
+
+        /// <summary>
+        /// Rendertarget to use
+        /// </summary>
+        private RenderTarget2D postProcessingRenderTarget;
+
+        /// <summary>
+        /// The color to copy over for new draw cycle
+        /// </summary>
+        private readonly Color[] targetContent;
+
+        /// <summary>
+        /// All the post processing effects
+        /// </summary>
+        private readonly List<Effect> postProcessing;
+
+        /// <summary>
+        /// Is this the start of the draw call
+        /// </summary>
         private bool drawStart;
 
         /// <summary>
         /// Create a new instance for the renderer
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public RenderSystem(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, Effect defaultEffect) : base()
+        public RenderSystem(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, Effect defaultEffect)
+            : this(spriteBatch, graphicsDevice, defaultEffect, new List<Effect>() { defaultEffect })
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance for the renderer
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        public RenderSystem(
+            SpriteBatch spriteBatch,
+            GraphicsDevice graphicsDevice,
+            Effect defaultEffect,
+            List<Effect> postProcessing
+            ) : base()
         {
             this.spriteBatch = spriteBatch;
             this.graphicsDevice = graphicsDevice;
@@ -54,6 +97,10 @@ namespace Tank.Systems
             usedContainers = new Stack<RenderContainer>();
             containersToRender = new List<RenderContainer>();
             this.defaultEffect = defaultEffect;
+            this.postProcessing = postProcessing;
+            gameRenderTarget = new RenderTarget2D(graphicsDevice, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
+            postProcessingRenderTarget = new RenderTarget2D(graphicsDevice, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
+            targetContent = new Color[postProcessingRenderTarget.Width * postProcessingRenderTarget.Height];
             drawStart = true;
         }
 
@@ -83,6 +130,7 @@ namespace Tank.Systems
         {
             drawLocked = true;
             drawStart = true;
+
             foreach (uint entityId in watchedEntities)
             {
                 if (entitiesToRemove.Contains(entityId))
@@ -92,52 +140,103 @@ namespace Tank.Systems
                 PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
                 VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
                 VisibleTextComponent textComponent = entityManager.GetComponent<VisibleTextComponent>(entityId);
+                if (placeableComponent == null)
+                {
+                    continue;
+                }
                 CollectTextures(placeableComponent, visibleComponent);
                 CollectText(placeableComponent, textComponent);
             }
 
-
             containersToRender = containersToRender.OrderBy(container => container.ShaderEffect).ThenBy(container => container.Name).ToList();
+            graphicsDevice.SetRenderTarget(gameRenderTarget);
             for (int i = 0; i < containersToRender.Count; i++)
             {
-                RenderContainer currentContainer = containersToRender[i];
-                BeginDraw(currentContainer.ShaderEffect);
-                switch (currentContainer.RenderType)
-                {
-                    case RenderTypeEnum.Texture:
-                        spriteBatch.Draw(
-                          currentContainer.TextureToDraw,
-                          currentContainer.Destination,
-                          currentContainer.Source,
-                          currentContainer.Color,
-                          currentContainer.Rotation,
-                          Vector2.Zero,
-                          currentContainer.Effect,
-                          currentContainer.LayerDepth
-                        );
-                        break;
-                    case RenderTypeEnum.Text:
-                        spriteBatch.DrawString(
-                            currentContainer.Font,
-                            currentContainer.Text,
-                            currentContainer.Position,
-                            currentContainer.Color,
-                            currentContainer.Rotation,
-                            Vector2.Zero,
-                            currentContainer.Scale,
-                            currentContainer.Effect,
-                            currentContainer.LayerDepth
-                        );
-                        break;
-                    default:
-                        break;
-                }
-                usedContainers.Push(currentContainer);
+                RenderEntities(i);
             }
             containersToRender.Clear();
+            if (drawStart)
+            {
+                graphicsDevice.SetRenderTarget(null);
+                return;
+            }
+            spriteBatch.End();
+
+            graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
+            for (int i = 0; i < postProcessing.Count; i++)
+            {
+                spriteBatch.Begin(
+                    SpriteSortMode.Immediate,
+                    BlendState.AlphaBlend,
+                    null,
+                    null,
+                    null,
+                    postProcessing[i],
+                    null
+                    );
+
+                spriteBatch.Draw(gameRenderTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
+                postProcessingRenderTarget.GetData<Color>(targetContent);
+                gameRenderTarget.SetData<Color>(targetContent);
+            }
+            graphicsDevice.SetRenderTarget(null);
+            graphicsDevice.Clear(Color.Violet);
+            spriteBatch.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                null,
+                null,
+                null,
+                defaultEffect,
+                null
+            );
+
+            spriteBatch.Draw(
+                postProcessing.Count == 0 ? gameRenderTarget : postProcessingRenderTarget,
+                Vector2.Zero,
+                Color.White
+                );
 
             spriteBatch.End();
             drawLocked = false;
+        }
+
+        private void RenderEntities(int i)
+        {
+            RenderContainer currentContainer = containersToRender[i];
+            BeginDraw(currentContainer.ShaderEffect);
+            switch (currentContainer.RenderType)
+            {
+                case RenderTypeEnum.Texture:
+                    spriteBatch.Draw(
+                      currentContainer.TextureToDraw,
+                      currentContainer.Destination,
+                      currentContainer.Source,
+                      currentContainer.Color,
+                      currentContainer.Rotation,
+                      Vector2.Zero,
+                      currentContainer.Effect,
+                      currentContainer.LayerDepth
+                    );
+                    break;
+                case RenderTypeEnum.Text:
+                    spriteBatch.DrawString(
+                        currentContainer.Font,
+                        currentContainer.Text,
+                        currentContainer.Position,
+                        currentContainer.Color,
+                        currentContainer.Rotation,
+                        Vector2.Zero,
+                        currentContainer.Scale,
+                        currentContainer.Effect,
+                        currentContainer.LayerDepth
+                    );
+                    break;
+                default:
+                    break;
+            }
+            usedContainers.Push(currentContainer);
         }
 
         /// <summary>
@@ -150,7 +249,7 @@ namespace Tank.Systems
             if (drawStart)
             {
                 spriteBatch.Begin(
-                    SpriteSortMode.Deferred,
+                    SpriteSortMode.Immediate,
                     BlendState.AlphaBlend,
                     null,
                     null,
@@ -166,7 +265,7 @@ namespace Tank.Systems
             {
                 spriteBatch.End();
                 spriteBatch.Begin(
-                    SpriteSortMode.Deferred,
+                    SpriteSortMode.Immediate,
                     BlendState.AlphaBlend,
                     null,
                     null,
@@ -185,7 +284,7 @@ namespace Tank.Systems
         /// <param name="visibleComponent">The visible component</param>
         private void CollectTextures(PlaceableComponent placeableComponent, VisibleComponent visibleComponent)
         {
-            if (visibleComponent == null || placeableComponent == null || visibleComponent.Texture == null)
+            if (visibleComponent == null || visibleComponent.Texture == null)
             {
                 return;
             }
@@ -210,7 +309,7 @@ namespace Tank.Systems
         /// <param name="textComponent">The text component</param>
         private void CollectText(PlaceableComponent placeableComponent, VisibleTextComponent textComponent)
         {
-            if (textComponent == null || placeableComponent == null || textComponent.Font == null)
+            if (textComponent == null || textComponent.Font == null)
             {
                 return;
             }

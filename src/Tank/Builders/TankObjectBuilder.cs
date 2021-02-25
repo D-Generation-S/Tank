@@ -5,9 +5,7 @@ using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataStructure;
-using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.Builders
 {
@@ -32,15 +30,31 @@ namespace Tank.Builders
         private readonly List<Rectangle> animationFrames;
 
         /// <summary>
+        /// The shader effect to use
+        /// </summary>
+        private readonly Effect effect;
+
+        /// <summary>
         /// Create a new instance of this class to spawn game objects
         /// </summary>
         /// <param name="spriteSheet"></param>
         /// <param name="animationFrames"></param>
         public TankObjectBuilder(Vector2 startPosition, Texture2D spriteSheet, List<Rectangle> animationFrames)
+            : this(startPosition, spriteSheet, animationFrames, null)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of this class to spawn game objects
+        /// </summary>
+        /// <param name="spriteSheet"></param>
+        /// <param name="animationFrames"></param>
+        public TankObjectBuilder(Vector2 startPosition, Texture2D spriteSheet, List<Rectangle> animationFrames, Effect effect)
         {
             this.startPosition = startPosition;
             this.spriteSheet = spriteSheet;
             this.animationFrames = animationFrames;
+            this.effect = effect;
         }
 
         /// <summary>
@@ -61,6 +75,7 @@ namespace Tank.Builders
             visibleComponent.Source = animationFrames[0];
             visibleComponent.Destination = animationFrames[0];
             visibleComponent.Texture = spriteSheet;
+            visibleComponent.ShaderEffect = effect;
             MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
             moveable.Mass = 15;
             ColliderComponent collider = entityManager.CreateComponent<ColliderComponent>();
