@@ -1,4 +1,4 @@
-﻿using Tank.DataStructure;
+﻿using Tank.DataStructure.Geometrics;
 using Tank.Interfaces.Factories;
 
 namespace Tank.Components
@@ -38,11 +38,6 @@ namespace Tank.Components
         /// </summary>
         public int CenterDamageValue { get; set; }
 
-        /// <summary>
-        /// The pushback to apply
-        /// </summary>
-        public float PushbackForce { get; set; }
-
         /// <inheritdoc/>
         public override void Init()
         {
@@ -51,7 +46,6 @@ namespace Tank.Components
             EffectFactory = null;
             DamagingDone = false;
             CenterDamageValue = 0;
-            PushbackForce = 0;
         }
     }
 }

@@ -5,11 +5,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.DataStructure;
+using Tank.DataStructure.Geometrics;
+using Tank.DataStructure.Quadtree;
 using Tank.DataStructure.Spritesheet;
 using Tank.EntityComponentSystem.Manager;
 using Tank.Events.PhysicBased;
@@ -58,6 +61,9 @@ namespace Tank
         private BaseBulletBuilder bulletBuilder;
         Vector2 bulletSpawnLocation;
         float fps;
+        QuadTree quadTree;
+
+        Texture2D pixelTexture;
 
 
         public TankGame()
@@ -71,6 +77,11 @@ namespace Tank
             PublicGraphicsDevice = GraphicsDevice;
             PublicContentManager = Content;
             InitResolution(1440, 900);
+            pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
+            pixelTexture.Name = "Single pixel";
+            Color[] data = new Color[1];
+            data[0] = Color.White;
+            pixelTexture.SetData<Color>(data);
             bulletSpawnLocation = new Vector2(200, 200);
             engine = new GameEngine(new EventManager(), new EntityManager(), new ContentWrapper(Content));
             explosionAnimationFrames = new List<Rectangle>() {
@@ -117,8 +128,9 @@ namespace Tank
             base.Initialize();
 
             engine.AddSystem(new BindingSystem());
-            engine.AddSystem(new ForceSystem());
-            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1920, 1080), 0.098f, 0.3f));
+            quadTree = new QuadTree(new VectorRectangle(0, 0, 1440, 900), 4);
+            engine.AddSystem(new ForceSystem(quadTree));
+            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1440, 900), 0.098f, 0.3f));
             engine.AddSystem(new RenderSystem(
                 spriteBatch,
                 GraphicsDevice,
@@ -144,8 +156,8 @@ namespace Tank
             );
             spriteSheet.SetSpriteSheetPattern(new List<SpriteSheetPattern>()
             {
-                new SpriteSheetPattern("dirt", new Position(0,1)),
-                new SpriteSheetPattern("stone", new Position(1,1))
+                new SpriteSheetPattern("dirt", new Position(1,1)),
+                new SpriteSheetPattern("stone", new Position(0,1))
             });
 
             FlattenArray<Color> stone = spriteSheet.GetTextureByName("stone");
@@ -183,7 +195,7 @@ namespace Tank
                     Text = "",
                     Color = Color.White,
                     Font = Content.Load<SpriteFont>("gameFont"),
-                    Scale = 2f
+                    Scale = 1f
                 });
             });
 
@@ -227,11 +239,11 @@ namespace Tank
                 {
                     ticksToFire--;
                 }
-                
+
                 if (ticksToFire > 0 || Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
                 {
                     uint projectileId = engine.EntityManager.CreateEntity(false);
-                    foreach(IComponent component in bulletBuilder.BuildGameComponents())
+                    foreach (IComponent component in bulletBuilder.BuildGameComponents())
                     {
                         if (component is MoveableComponent moveable)
                         {
@@ -259,7 +271,6 @@ namespace Tank
                             placeableComponent.Position -= new Vector2(32 / 2, 32 / 2);
                             circle = new Circle(Mouse.GetState().Position.ToVector2(), 16);
                         }
-                        engine.EntityManager.AddComponent(exposion, component);
                         if (circle != null)
                         {
                             DamageComponent damage = new DamageComponent()
@@ -267,8 +278,7 @@ namespace Tank
                                 DamagingDone = false,
                                 CenterDamageValue = 100,
                                 DamageArea = circle,
-                                EffectFactory = randomExplosionFactory,
-                                PushbackForce = 9000
+                                EffectFactory = randomExplosionFactory
 
                             };
                             engine.EntityManager.AddComponent(exposion, damage);

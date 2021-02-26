@@ -19,8 +19,24 @@ namespace Tank.Components.Rendering
         public Rectangle Destination { get; set; }
 
         /// <summary>
+        /// Single texture size
+        /// </summary>
+        public Rectangle SingleTextureSize { get; set; }
+
+        /// <summary>
         /// Public access to the draw position in the sprite
         /// </summary>
         public Rectangle Source { get; set; }
+
+        /// <summary>
+        /// Draw sprite to the middle
+        /// </summary>
+        public bool DrawMiddle { get; set; }
+
+        public override void Init()
+        {
+            base.Init();
+            SingleTextureSize = Rectangle.Empty;
+        }
     }
 }

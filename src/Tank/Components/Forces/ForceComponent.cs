@@ -13,6 +13,11 @@ namespace Tank.Components.Forces
         public float ForceRadius { get; set; }
 
         /// <summary>
+        /// The diameter of the force
+        /// </summary>
+        public float ForceDiameter => ForceRadius * 2;
+
+        /// <summary>
         /// The strenght at the center
         /// </summary>
         public float ForceBaseStrenght { get; set; }

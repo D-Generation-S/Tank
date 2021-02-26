@@ -107,6 +107,7 @@ namespace Tank.Systems
             arrowVisible.Texture = contentManager.Content.Load<Texture2D>("Images/Entities/BasicTank");
             arrowVisible.Destination = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
             arrowVisible.Source = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
+            arrowVisible.DrawMiddle = true;
         }
 
         /// <summary>

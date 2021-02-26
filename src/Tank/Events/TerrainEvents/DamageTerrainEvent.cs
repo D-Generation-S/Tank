@@ -1,5 +1,5 @@
 ﻿using System;
-using Tank.DataStructure;
+using Tank.DataStructure.Geometrics;
 
 namespace Tank.Events.TerrainEvents
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace Tank.DataStructure
+namespace Tank.DataStructure.Geometrics
 {
     /// <summary>
     /// This class represents a circly
@@ -9,28 +9,14 @@ namespace Tank.DataStructure
     class Circle
     {
         /// <summary>
-        /// The center position of the circle
-        /// </summary>
-        private Vector2 center;
-
-        /// <summary>
         /// Public accessor of the circle position
         /// </summary>
-        public Vector2 Center
-        {
-            get => center;
-            set => center = value;
-        }
-
-        /// <summary>
-        /// Circle radius
-        /// </summary>
-        private readonly int radius;
+        public Vector2 Center;
 
         /// <summary>
         /// Readonly access to the circle radius
         /// </summary>
-        public int Radius => radius;
+        public int Radius { get; }
 
         /// <summary>
         /// Circle diameter
@@ -70,8 +56,8 @@ namespace Tank.DataStructure
         /// <param name="radius">The radius for the circle</param>
         public Circle(Vector2 position, int radius)
         {
-            center = position;
-            this.radius = radius;
+            Center = position;
+            Radius = radius;
             diameter = radius * 2;
         }
 
@@ -102,8 +88,8 @@ namespace Tank.DataStructure
         /// <returns>Returns true if the position is in the circle</returns>
         public bool IsInInCircle(Vector2 position)
         {
-            Vector2 distance = center - position;
-            return distance.Length() < radius;
+            Vector2 distance = Center - position;
+            return distance.Length() < Radius;
         }
 
         /// <summary>

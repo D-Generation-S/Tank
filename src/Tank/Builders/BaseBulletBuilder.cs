@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataStructure;
+using Tank.DataStructure.Geometrics;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.Factories;
 
@@ -24,6 +24,8 @@ namespace Tank.Builders
         /// The collider for the bullets
         /// </summary>
         private readonly Rectangle collider;
+
+        private readonly Rectangle source;
 
         /// <summary>
         /// The texture for the bullets
@@ -57,7 +59,8 @@ namespace Tank.Builders
             IGameObjectFactory explosionFactory
             )
         {
-            collider = new Rectangle(0, 0, 32, 32);
+            collider = new Rectangle(0, 0, 16, 16);
+            source = new Rectangle(0, 0, 32, 32);
             this.animationFrames = animationFrames;
             this.texture = texture;
             this.explosionFactory = explosionFactory;
@@ -83,8 +86,10 @@ namespace Tank.Builders
 
             VisibleComponent visuals = entityManager.CreateComponent<VisibleComponent>();
             visuals.Texture = texture;
-            visuals.Source = collider;
+            visuals.Source = source;
             visuals.Destination = collider;
+            visuals.SingleTextureSize = collider;
+            visuals.DrawMiddle = true;
             MapColliderTag colliderTag = entityManager.CreateComponent<MapColliderTag>();
 
             AnimationComponent animation = entityManager.CreateComponent<AnimationComponent>();

@@ -28,6 +28,7 @@ namespace Tank.Builders
         /// The animation frames
         /// </summary>
         private readonly List<Rectangle> animationFrames;
+        private readonly Rectangle colliderDestination;
 
         /// <summary>
         /// The shader effect to use
@@ -55,6 +56,9 @@ namespace Tank.Builders
             this.spriteSheet = spriteSheet;
             this.animationFrames = animationFrames;
             this.effect = effect;
+            int textureWidth = animationFrames[0].Width;
+            int textureHeight = animationFrames[0].Height;
+            colliderDestination = new Rectangle(-textureWidth / 2, -textureHeight / 2, textureWidth, textureHeight);
         }
 
         /// <summary>
@@ -76,10 +80,11 @@ namespace Tank.Builders
             visibleComponent.Destination = animationFrames[0];
             visibleComponent.Texture = spriteSheet;
             visibleComponent.ShaderEffect = effect;
+            visibleComponent.DrawMiddle = true;
             MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
             moveable.Mass = 15;
             ColliderComponent collider = entityManager.CreateComponent<ColliderComponent>();
-            collider.Collider = new Rectangle(0, 0, 32, 32);
+            collider.Collider = colliderDestination;
 
             PlayerControllableComponent controllableComponent = entityManager.CreateComponent<PlayerControllableComponent>();
             controllableComponent.Controller = new StaticKeyboardControls();
