@@ -25,6 +25,9 @@ namespace Tank.Builders
         /// </summary>
         private readonly Rectangle collider;
 
+        /// <summary>
+        /// The source of the bullet
+        /// </summary>
         private readonly Rectangle source;
 
         /// <summary>
