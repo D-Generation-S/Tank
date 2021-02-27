@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Tank.Components;
-using Tank.DataStructure;
+using Tank.DataStructure.Geometrics;
 using Tank.Events.EntityBased;
 using Tank.Events.PhysicBased;
 using Tank.Events.TerrainEvents;
@@ -86,8 +86,7 @@ namespace Tank.Systems
             {
                 if (component is PlaceableComponent placeable)
                 {
-                    Vector2 position = collisionEvent.CollisionPosition;
-                    placeable.Position += position;
+                    placeable.Position = collisionEvent.CollisionPosition;
                 }
             }
             FireEvent(new AddEntityEvent(components));

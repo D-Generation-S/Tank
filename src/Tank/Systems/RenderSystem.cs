@@ -105,27 +105,6 @@ namespace Tank.Systems
         }
 
         /// <inheritdoc/>
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-            updateLocked = true;
-            foreach (uint entityId in watchedEntities)
-            {
-                PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
-                VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
-                if (placeableComponent == null || visibleComponent == null)
-                {
-                    continue;
-                }
-                Rectangle destination = visibleComponent.Destination;
-                destination.X = (int)placeableComponent.Position.X;
-                destination.Y = (int)placeableComponent.Position.Y;
-                visibleComponent.Destination = destination;
-            }
-            updateLocked = false;
-        }
-
-        /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
             drawLocked = true;
@@ -288,10 +267,23 @@ namespace Tank.Systems
             {
                 return;
             }
+
+            Rectangle destination = visibleComponent.Destination;
+            destination.X = (int)placeableComponent.Position.X;
+            destination.Y = (int)placeableComponent.Position.Y;
+            if (visibleComponent.DrawMiddle)
+            {
+                int witdth = visibleComponent.SingleTextureSize != Rectangle.Empty ? visibleComponent.SingleTextureSize.Width : visibleComponent.Texture.Width;
+                int height = visibleComponent.SingleTextureSize != Rectangle.Empty ? visibleComponent.SingleTextureSize.Height : visibleComponent.Texture.Height;
+                destination.X -= witdth / 2;
+                destination.Y -= height / 2;
+            }
+            visibleComponent.Destination = destination;
+
             RenderContainer renderContainer = GetRenderContainer();
             renderContainer.RenderType = RenderTypeEnum.Texture;
             renderContainer.TextureToDraw = visibleComponent.Texture;
-            renderContainer.Destination = visibleComponent.Destination;
+            renderContainer.Destination =  visibleComponent.Destination;
             renderContainer.Source = visibleComponent.Source;
             renderContainer.Color = visibleComponent.Color;
             renderContainer.Rotation = placeableComponent.Rotation;

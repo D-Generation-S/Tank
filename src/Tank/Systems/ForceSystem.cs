@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Tank.Components;
 using Tank.Components.Forces;
-using Tank.DataStructure;
+using Tank.DataStructure.Geometrics;
+using Tank.DataStructure.Quadtree;
 using Tank.EntityComponentSystem.Validator;
 using Tank.Enums;
 using Tank.Events.PhysicBased;
@@ -23,85 +23,93 @@ namespace Tank.Systems
         private readonly IValidatable targetValidator;
 
         /// <summary>
-        /// Components current locked
+        /// The quadtree to use
         /// </summary>
-        private readonly object componentLock;
+        private readonly QuadTree quadTree;
 
         /// <summary>
-        /// All the used container
+        /// The used data containers
         /// </summary>
-        private Queue<AsyncComponentRemoveContainer> usedContainers;
+        private Queue<QuadTreeData> usedDataContainer;
 
         /// <summary>
-        /// All the containers to remove after async part
+        /// The currently active data containers
         /// </summary>
-        List<AsyncComponentRemoveContainer> componentsToRemove;
+        private List<QuadTreeData> activeDataContainer;
 
         /// <summary>
         /// Create a new instance of this class
         /// </summary>
-        public ForceSystem()
+        public ForceSystem(VectorRectangle forceBounding)
+            :this(new QuadTree(forceBounding, 4))
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        public ForceSystem(QuadTree quadTree)
         {
             validators.Add(new ForceValidator());
             targetValidator = new PhysicEntityValidator();
-            componentLock = new object();
-            usedContainers = new Queue<AsyncComponentRemoveContainer>();
-            componentsToRemove = new List<AsyncComponentRemoveContainer>();
+            usedDataContainer = new Queue<QuadTreeData>();
+            activeDataContainer = new List<QuadTreeData>();
+            for (int i = 0; i < 20; i++)
+            {
+                usedDataContainer.Enqueue(new QuadTreeData());
+            }
+
+            this.quadTree = quadTree;
         }
 
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            quadTree.Clear();
             List<uint> allTargets = entityManager.GetEntitiesWithComponent<MoveableComponent>();
-            int processes = watchedEntities.Count;
-            using (ManualResetEvent resetEvent = new ManualResetEvent(false))
+            for (int i = 0; i < allTargets.Count; i++)
             {
-                if (processes == 0)
-                {
-                    resetEvent.Set();
-                }
-                foreach (uint entityId in watchedEntities)
-                {
-                    ThreadPool.QueueUserWorkItem(x =>
-                    {
-                        List<AsyncComponentRemoveContainer> dataToRemove = ApplyForces(entityId, allTargets);
-                        lock (componentLock)
-                        {
-                            componentsToRemove.AddRange(dataToRemove);
-                        }
-                        if (Interlocked.Decrement(ref processes) == 0)
-                            resetEvent.Set();
-                    });
-                }
-                resetEvent.WaitOne();
+                uint entityId = allTargets[i];
+                PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(entityId);
+                QuadTreeData quadTreeData = GetDataContainer(placeable.Position, entityId);
+                quadTree.Insert(quadTreeData);
+                activeDataContainer.Add(quadTreeData);
             }
-            foreach(AsyncComponentRemoveContainer container in componentsToRemove)
+
+
+            foreach (uint entityId in watchedEntities)
             {
-                usedContainers.Enqueue(container);
-                entityManager.RemoveComponents(container.EntityId, container.ComponentType);
+                ForceComponent force = entityManager.GetComponent<ForceComponent>(entityId);
+                PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(entityId);
+                ApplyForces(entityId, force, placeable);
             }
-            componentsToRemove.Clear();
+
+            foreach(QuadTreeData treeData in activeDataContainer)
+            {
+                usedDataContainer.Enqueue(treeData);
+            }
+            activeDataContainer.Clear();
         }
 
         /// <summary>
-        /// Apply all the forces
+        /// Apply the forces for every entity
         /// </summary>
-        /// <param name="entityId">The entity id to apply the forces for</param>
-        /// <param name="allTargets">The targets to check</param>
-        /// <returns>A list with components to remove</returns>
-        private List<AsyncComponentRemoveContainer> ApplyForces(uint entityId, List<uint> allTargets)
+        /// <param name="entityId">The entity id to get the forces from</param>
+        /// <param name="force">The force component</param>
+        /// <param name="origin">The origin of the entity to apply forces from</param>
+        private void ApplyForces(uint entityId, ForceComponent force, PlaceableComponent origin)
         {
-            List<AsyncComponentRemoveContainer> componentsToRemove = new List<AsyncComponentRemoveContainer>();
-            ForceComponent force = entityManager.GetComponent<ForceComponent>(entityId);
-            PlaceableComponent origin = entityManager.GetComponent<PlaceableComponent>(entityId);
             if (force == null || origin == null)
             {
-                return componentsToRemove;
+                return;
             }
-
-            foreach (uint targetId in allTargets)
+            VectorRectangle searchArea = new VectorRectangle(origin.Position, force.ForceDiameter * 2);
+            int count = 0;
+            foreach (QuadTreeData data in quadTree.Query(searchArea))
             {
+                uint targetId = data.GetData<uint>();
                 if (!targetValidator.IsValidEntity(targetId, entityManager) || targetId == entityId)
                 {
                     continue;
@@ -112,7 +120,6 @@ namespace Tank.Systems
                 {
                     continue;
                 }
-
                 Vector2 forceToApply = Vector2.Zero;
                 switch (force.ForceType)
                 {
@@ -128,18 +135,13 @@ namespace Tank.Systems
 
                 if (force.ForceTrigger == ForceTriggerTimeEnum.Add)
                 {
-                    lock (componentLock)
-                    {
-                        AsyncComponentRemoveContainer container = GetContainer();
-                        container.EntityId = entityId;
-                        container.ComponentType = force.GetType();
-                        componentsToRemove.Add(container);
-                    }
+                    entityManager.RemoveComponents(entityId, force.Type);
                 }
+
                 FireEvent(new ApplyForceEvent(targetId, forceToApply));
             }
-            return componentsToRemove;
         }
+
 
         /// <summary>
         /// Get the push force
@@ -186,12 +188,14 @@ namespace Tank.Systems
         }
 
         /// <summary>
-        /// Get a new container or a used one
+        /// Get a new quadtree data container
         /// </summary>
-        /// <returns>A new or used container</returns>
-        private AsyncComponentRemoveContainer GetContainer()
+        /// <returns>A quadtree data container</returns>
+        private QuadTreeData GetDataContainer(Vector2 position, object data)
         {
-            return usedContainers.Count > 0 ? usedContainers.Dequeue() : new AsyncComponentRemoveContainer();
+            QuadTreeData returnData = usedDataContainer.Count > 0 ? usedDataContainer.Dequeue() : new QuadTreeData();
+            returnData.Init(position, data);
+            return returnData;
         }
     }
 }

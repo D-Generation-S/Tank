@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using Tank.Components;
-using Tank.DataStructure;
+using Tank.DataStructure.Geometrics;
 using Tank.Events.TerrainEvents;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Validator;

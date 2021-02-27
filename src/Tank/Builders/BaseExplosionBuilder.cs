@@ -75,7 +75,6 @@ namespace Tank.Builders
             position = new Vector2(-(animationFrames[0].Width / 2), -(animationFrames[0].Height / 2));
             name = "Idle";
             radius = animationFrames[0].Width + animationFrames[0].Height;
-            radius /= 2;
         }
 
         /// <summary>
@@ -94,6 +93,8 @@ namespace Tank.Builders
             visibleComponent.Texture = spriteSheet;
             visibleComponent.Source = animationFrames[0];
             visibleComponent.Destination = animationFrames[0];
+            visibleComponent.SingleTextureSize = animationFrames[0];
+            visibleComponent.DrawMiddle = true;
             placeableComponent.Position = position;
             AnimationComponent animation = entityManager.CreateComponent<AnimationComponent>();
             animation.FrameSeconds = 0.03f;
@@ -102,7 +103,6 @@ namespace Tank.Builders
 
             if (soundFactory != null)
             {
-
                 SoundEffectComponent soundEffect = entityManager.CreateComponent<SoundEffectComponent>();
                 soundEffect.SoundEffect = soundFactory.GetRandomSoundEffect();
                 soundEffect.RandomPitch = true;
@@ -112,7 +112,7 @@ namespace Tank.Builders
 
             ForceComponent forceComponent = entityManager.CreateComponent<ForceComponent>();
             forceComponent.ForceRadius = radius;
-            forceComponent.ForceBaseStrenght = 100;
+            forceComponent.ForceBaseStrenght = 50;
             forceComponent.ForceType = Enums.ForceTypeEnum.Push;
             forceComponent.ForceTrigger = Enums.ForceTriggerTimeEnum.Add;
 
