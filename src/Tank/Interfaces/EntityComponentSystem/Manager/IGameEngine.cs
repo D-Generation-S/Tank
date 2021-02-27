@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Tank.EntityComponentSystem.Manager;
 using Tank.Wrapper;
 
 namespace Tank.Interfaces.EntityComponentSystem.Manager
@@ -6,7 +7,7 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
     /// <summary>
     /// This interface represents the game engine itself
     /// </summary>
-    interface IGameEngine
+    interface IGameEngine : IClearable
     {
         /// <summary>
         /// The event manager to use in the game engine
@@ -69,10 +70,5 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <returns>The number of active systems</returns>
         int GetSystemCount();
-
-        /// <summary>
-        /// Clear the whole engine
-        /// </summary>
-        void Clear();
     }
 }
