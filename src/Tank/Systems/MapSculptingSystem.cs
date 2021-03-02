@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using Tank.Components;
+using Tank.Components.Rendering;
+using Tank.Components.Tags;
 using Tank.DataStructure.Geometrics;
+using Tank.Events.PhysicBased;
 using Tank.Events.TerrainEvents;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Validator;
@@ -11,13 +14,13 @@ namespace Tank.Systems
     /// <summary>
     /// This system will damage the terrain if an event is catched
     /// </summary>
-    class MapDestructionSystem : AbstractSystem
+    class MapSculptingSystem : AbstractSystem
     {
         private MapComponent map;
         /// <summary>
         /// Create an new intance of this class
         /// </summary>
-        public MapDestructionSystem() : base()
+        public MapSculptingSystem() : base()
         {
             validators.Add(new MapValidator());
         }
@@ -27,6 +30,7 @@ namespace Tank.Systems
         {
             base.Initialize(gameEngine);
             eventManager.SubscribeEvent(this, typeof(DamageTerrainEvent));
+            eventManager.SubscribeEvent(this, typeof(MapCollisionEvent));
         }
 
         /// <inheritdoc/>
@@ -47,8 +51,12 @@ namespace Tank.Systems
         public override void EventNotification(object sender, EventArgs eventArgs)
         {
             base.EventNotification(sender, eventArgs);
+            if (map == null)
+            {
+                return;
+            }
 
-            if (map != null && eventArgs is DamageTerrainEvent damageTerrainEvent)
+            if (eventArgs is DamageTerrainEvent damageTerrainEvent)
             {
                 Circle damageCircle = damageTerrainEvent.DamageArea;
                 Vector2 start = damageCircle.Center - Vector2.One * damageCircle.Radius;
@@ -64,6 +72,57 @@ namespace Tank.Systems
                     }
                 }
             }
+
+            if (eventArgs is MapCollisionEvent mapCollision)
+            {
+                uint entityId = mapCollision.EntityId;
+                if (!entityManager.HasComponent<AddTerrainTag>(entityId))
+                {
+                    return;
+                }
+
+                ColliderComponent collider = entityManager.GetComponent<ColliderComponent>(entityId);
+                VisibleComponent visual = entityManager.GetComponent<VisibleComponent>(entityId);
+
+                if (collider == null || visual == null)
+                {
+                    return;
+                }
+
+                Vector2 start = new Vector2(-collider.Collider.Bottom, -collider.Collider.Height);
+                start += mapCollision.Position;
+                Vector2 end = start + collider.Collider.Size.ToVector2();
+
+                for (int x = (int)start.X; x < (int)end.X; x++)
+                {
+                    for (int y = (int)start.Y; y < (int)end.Y; y++)
+                    {
+                        if (!map.Map.IsPixelSolid(x, y) && x >= 0 && x < map.Map.Width)
+                        {
+                            map.Map.ChangePixel(x, y, visual.Color, false);
+                        }
+                    }
+                }
+
+                entityManager.RemoveEntity(entityId);
+            }
+        }
+
+        private Vector2 FindLowestPoint(Vector2 start)
+        {
+            Vector2 startCopy = Vector2.One * start;
+            startCopy.Y -= 5;
+            for (int i = 0; i < 20; i++)
+            {
+                int position = (int)start.Y + i;
+                if (map.Map.IsPixelSolid((int)start.X, position))
+                {
+                    start.Y = position;
+                    return start;
+                }
+            }
+
+            return start;
         }
 
         /// <inheritdoc/>

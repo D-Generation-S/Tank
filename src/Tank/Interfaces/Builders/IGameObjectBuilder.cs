@@ -17,6 +17,13 @@ namespace Tank.Interfaces.Builders
         List<IComponent> BuildGameComponents();
 
         /// <summary>
+        /// The method to call to build the game components for the new entity
+        /// </summary>
+        /// <param name="parameter">Some parameter for the component builder</param>
+        /// <returns>A list with all the components neede for the new game object</returns>
+        List<IComponent> BuildGameComponents(object parameter);
+
+        /// <summary>
         /// Initialize this builder
         /// </summary>
         /// <param name="entityManager">The entity manager to use</param>

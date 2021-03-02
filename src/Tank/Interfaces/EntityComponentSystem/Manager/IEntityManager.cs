@@ -67,6 +67,14 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// <summary>
         /// This method will tell you if a component does exists on a entity
         /// </summary>
+        /// <typeparam name="T">The object to check for</typeparam>
+        /// <param name="entityId">The id of the entity to check</param>
+        /// <returns>True if component exists</returns>
+        bool HasComponent<T>(uint entityId) where T : IComponent;
+
+        /// <summary>
+        /// This method will tell you if a component does exists on a entity
+        /// </summary>
         /// <param name="entityId">The id of the entity to check</param>
         /// <param name="component">The component to check if it exists on the entity</param>
         /// <returns>Return true if the component is existing</returns>

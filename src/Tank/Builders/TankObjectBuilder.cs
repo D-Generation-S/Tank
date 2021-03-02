@@ -65,7 +65,7 @@ namespace Tank.Builders
         /// Build all the game components
         /// </summary>
         /// <returns></returns>
-        public override List<IComponent> BuildGameComponents()
+        public override List<IComponent> BuildGameComponents(object parameter)
         {
             List<IComponent> returnComponents = new List<IComponent>();
             if (entityManager == null)

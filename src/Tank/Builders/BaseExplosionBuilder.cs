@@ -81,7 +81,7 @@ namespace Tank.Builders
         /// Create the game components for the new entity
         /// </summary>
         /// <returns>A component list making up the new explosion entity</returns>
-        public override List<IComponent> BuildGameComponents()
+        public override List<IComponent> BuildGameComponents(object parameter)
         {
             List<IComponent> returnComponents = new List<IComponent>();
             if (entityManager == null)

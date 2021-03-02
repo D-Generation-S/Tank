@@ -175,8 +175,23 @@ namespace Tank.Systems
 
                         if (colliderComponent.FireCollideEvent)
                         {
+                            if (colliderComponent.FireBelow)
+                            {
+                                Raycast bottomCast = new Raycast(bottomCenter, Vector2.UnitY, 10);
+                                Position[] cast = bottomCast.GetPositions();
+                                for (int i = 0; i < cast.Length; i++)
+                                {
+                                    if (map.Map.IsPixelSolid(cast[i]))
+                                    {
+                                        FireEvent(new MapCollisionEvent(entityId, cast[i].GetVector2()));
+                                        break;
+                                    }
+                                }
+                                return;
+                            }
+
                             Vector2 frontPosition = Vector2.UnitX;
-                            frontPosition *= colliderComponent.Collider.Width / 2;
+                            frontPosition *= colliderComponent.Collider.Right;
                             if (moveComponent.Velocity.X < 0)
                             {
                                 frontPosition *= -1;

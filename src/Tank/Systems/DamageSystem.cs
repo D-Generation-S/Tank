@@ -65,7 +65,7 @@ namespace Tank.Systems
                 return;
             }
             Circle damageArea = damageComponent.DamageArea;
-            damageArea.Center = collisionEvent.CollisionPosition;
+            damageArea.Center = collisionEvent.Position;
 
             FireEvent(new DamageTerrainEvent(damageArea));
         }
@@ -86,7 +86,7 @@ namespace Tank.Systems
             {
                 if (component is PlaceableComponent placeable)
                 {
-                    placeable.Position = collisionEvent.CollisionPosition;
+                    placeable.Position = collisionEvent.Position;
                 }
             }
             FireEvent(new AddEntityEvent(components));

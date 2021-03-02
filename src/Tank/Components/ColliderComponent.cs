@@ -22,11 +22,17 @@ namespace Tank.Components
         /// </summary>
         public bool FireCollideEvent { get; set; }
 
+        /// <summary>
+        /// Fire the event always below
+        /// </summary>
+        public bool FireBelow { get; set; }
+
         /// <inheritdoc/>
         public override void Init()
         {
             MapCollision = false;
             FireCollideEvent = false;
+            FireBelow = false;
             Collider = Rectangle.Empty;
         }
     }
