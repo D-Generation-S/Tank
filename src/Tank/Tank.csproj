@@ -39,4 +39,7 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataManagement\Data\" />
+  </ItemGroup>
 </Project>
