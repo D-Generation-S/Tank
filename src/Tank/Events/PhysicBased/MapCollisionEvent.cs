@@ -10,12 +10,12 @@ namespace Tank.Events.PhysicBased
         /// <summary>
         /// The position of the collision
         /// </summary>
-        private readonly Vector2 collisionPosition;
+        private readonly Vector2 position;
 
         /// <summary>
         /// Readonly access to the collision position
         /// </summary>
-        public Vector2 CollisionPosition => collisionPosition;
+        public Vector2 Position => position;
 
         /// <summary>
         /// Create a new instance of the class
@@ -24,7 +24,7 @@ namespace Tank.Events.PhysicBased
         /// <param name="collisionPosition">The position of the collision</param>
         public MapCollisionEvent(uint entityId, Vector2 collisionPosition) : base(entityId)
         {
-            this.collisionPosition = collisionPosition;
+            this.position = collisionPosition;
         }
     }
 }

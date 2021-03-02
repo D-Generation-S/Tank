@@ -5,14 +5,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.DataStructure;
 using Tank.DataStructure.Geometrics;
-using Tank.DataStructure.Quadtree;
 using Tank.DataStructure.Spritesheet;
 using Tank.EntityComponentSystem.Manager;
 using Tank.Events.PhysicBased;
@@ -59,11 +57,10 @@ namespace Tank
         private List<IGameObjectBuilder> explosionBuilders;
         private List<Rectangle> projectiveAnimationFrames;
         private BaseBulletBuilder bulletBuilder;
+        private MapDebriBuilder debriBuilder;
+        private Texture2D pixelTexture;
         Vector2 bulletSpawnLocation;
         float fps;
-        QuadTree quadTree;
-
-        Texture2D pixelTexture;
 
 
         public TankGame()
@@ -77,11 +74,6 @@ namespace Tank
             PublicGraphicsDevice = GraphicsDevice;
             PublicContentManager = Content;
             InitResolution(1440, 900);
-            pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
-            pixelTexture.Name = "Single pixel";
-            Color[] data = new Color[1];
-            data[0] = Color.White;
-            pixelTexture.SetData<Color>(data);
             bulletSpawnLocation = new Vector2(200, 200);
             engine = new GameEngine(new EventManager(), new EntityManager(), new ContentWrapper(Content));
             explosionAnimationFrames = new List<Rectangle>() {
@@ -107,6 +99,7 @@ namespace Tank
 
             bulletTestExplosion = Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
             bulletTest = Content.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
+            pixelTexture = Content.Load<Texture2D>("Images/Entities/Pixel");
 
             soundEffectsTest = new List<SoundEffect>();
             soundEffectsTest.Add(Content.Load<SoundEffect>("Sound/Effects/Explosion1"));
@@ -124,13 +117,15 @@ namespace Tank
             randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);
             bulletBuilder = new BaseBulletBuilder(projectiveAnimationFrames, bulletTest, randomExplosionFactory);
             bulletBuilder.Init(engine);
+            debriBuilder = new MapDebriBuilder(pixelTexture);
+            debriBuilder.Init(engine);
 
             base.Initialize();
 
             engine.AddSystem(new BindingSystem());
-            quadTree = new QuadTree(new VectorRectangle(0, 0, 1440, 900), 4);
-            engine.AddSystem(new ForceSystem(quadTree));
-            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1440, 900), 0.098f, 0.3f));
+            engine.AddSystem(new MapSculptingSystem());
+            engine.AddSystem(new ForceSystem(new VectorRectangle(0, 0, 1440, 900)));
+            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, 1920, 1080), 0.098f, 0.3f));
             engine.AddSystem(new RenderSystem(
                 spriteBatch,
                 GraphicsDevice,
@@ -138,7 +133,6 @@ namespace Tank
                 ));
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new DamageSystem());
-            engine.AddSystem(new MapDestructionSystem());
             engine.AddSystem(new SoundEffectSystem());
 
             uint mapId = engine.EntityManager.CreateEntity();
@@ -239,11 +233,25 @@ namespace Tank
                 {
                     ticksToFire--;
                 }
-
+                
                 if (ticksToFire > 0 || Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
                 {
+                    /**
+                    uint debriId = engine.EntityManager.CreateEntity(false);
+                    foreach(IComponent component in debriBuilder.BuildGameComponents(Color.Red))
+                    {
+                        engine.EntityManager.AddComponent(debriId, component);
+
+                        if (component is PlaceableComponent placeable)
+                        {
+                            placeable.Position += Mouse.GetState().Position.ToVector2();
+                        }
+                    }
+                    **/
+
+
                     uint projectileId = engine.EntityManager.CreateEntity(false);
-                    foreach (IComponent component in bulletBuilder.BuildGameComponents())
+                    foreach(IComponent component in bulletBuilder.BuildGameComponents())
                     {
                         if (component is MoveableComponent moveable)
                         {
@@ -271,6 +279,7 @@ namespace Tank
                             placeableComponent.Position -= new Vector2(32 / 2, 32 / 2);
                             circle = new Circle(Mouse.GetState().Position.ToVector2(), 16);
                         }
+                        engine.EntityManager.AddComponent(exposion, component);
                         if (circle != null)
                         {
                             DamageComponent damage = new DamageComponent()

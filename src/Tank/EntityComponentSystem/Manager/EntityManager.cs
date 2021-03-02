@@ -216,6 +216,12 @@ namespace Tank.EntityComponentSystem.Manager
         }
 
         /// <inheritdoc/>
+        public bool HasComponent<T>(uint entityId) where T : IComponent
+        {
+            return HasComponent(entityId, typeof(T));
+        }
+
+        /// <inheritdoc/>
         public bool HasComponent(uint entityId, Type component)
         {
             return GetComponent(entityId, component) != null;

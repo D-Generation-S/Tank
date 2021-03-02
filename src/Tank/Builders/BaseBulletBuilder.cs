@@ -72,7 +72,7 @@ namespace Tank.Builders
         }
 
         /// <inheritdoc/>
-        public override List<IComponent> BuildGameComponents()
+        public override List<IComponent> BuildGameComponents(object parameter)
         {
             List<IComponent> returnComponents = new List<IComponent>();
             if (entityManager == null)

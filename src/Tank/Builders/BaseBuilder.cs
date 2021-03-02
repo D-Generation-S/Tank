@@ -16,7 +16,13 @@ namespace Tank.Builders
         protected IEntityManager entityManager;
 
         /// <inheritdoc/>
-        public abstract List<IComponent> BuildGameComponents();
+        public virtual List<IComponent> BuildGameComponents()
+        {
+            return BuildGameComponents(null);
+        }
+
+        /// <inheritdoc/>
+        public abstract List<IComponent> BuildGameComponents(object parameter);
 
         /// <inheritdoc/>
         public void Init(IEntityManager entityManager)
