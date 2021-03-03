@@ -5,7 +5,7 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
     /// <summary>
     /// This interface is the core of the event manager and allows you to subscribe, unsubscribe and fire events
     /// </summary>
-    interface IEventManager
+    interface IEventManager : IClearable
     {
         /// <summary>
         /// This method will fire an event for the whole system
@@ -34,10 +34,5 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <param name="eventReceiver">The listner to remove</param>
         void RemoveListner(IEventReceiver eventReceiver);
-
-        /// <summary>
-        /// Clear the event manager
-        /// </summary>
-        void Clear();
     }
 }

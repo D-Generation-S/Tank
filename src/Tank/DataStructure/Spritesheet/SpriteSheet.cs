@@ -11,14 +11,9 @@ namespace Tank.DataStructure.Spritesheet
     class SpriteSheet
     {
         /// <summary>
-        /// An container containing the complete image
-        /// </summary>
-        private Texture2D completeImage;
-
-        /// <summary>
         /// Readonly public access to the complete image
         /// </summary>
-        public Texture2D CompleteImage => completeImage;
+        public Texture2D CompleteImage { get; }
 
         /// <summary>
         /// The pixel data
@@ -26,14 +21,9 @@ namespace Tank.DataStructure.Spritesheet
         private readonly FlattenArray<Color> pixelData;
 
         /// <summary>
-        /// The size of a single image in the container
-        /// </summary>
-        private Position singleImageSize;
-
-        /// <summary>
         /// Readonly public access to the single image size
         /// </summary>
-        public Position SingleImageSize => singleImageSize;
+        public Position SingleImageSize { get; }
 
         /// <summary>
         /// The distance between images
@@ -72,17 +62,17 @@ namespace Tank.DataStructure.Spritesheet
         /// <param name="distanceBetweenImages">The extra distrance between images</param>
         public SpriteSheet(Texture2D image, Position singleImageSize, int distanceBetweenImages, List<SpriteSheetPattern> patterns)
         {
-            completeImage = image;
-            this.singleImageSize = singleImageSize;
+            CompleteImage = image;
+            this.SingleImageSize = singleImageSize;
             this.distanceBetweenImages = distanceBetweenImages;
             SetSpriteSheetPattern(patterns);
-            int xDimension = (int)Math.Floor((float)completeImage.Width / (singleImageSize.X + distanceBetweenImages));
-            int yDimension = (int)Math.Floor((float)completeImage.Height / (singleImageSize.Y + distanceBetweenImages));
+            int xDimension = (int)Math.Floor((float)CompleteImage.Width / (singleImageSize.X + distanceBetweenImages));
+            int yDimension = (int)Math.Floor((float)CompleteImage.Height / (singleImageSize.Y + distanceBetweenImages));
             maxDimensions = new Position(xDimension, yDimension);
 
-            Color[] colors = new Color[completeImage.Width * completeImage.Height];
+            Color[] colors = new Color[CompleteImage.Width * CompleteImage.Height];
             image.GetData(colors);
-            pixelData = new FlattenArray<Color>(colors, completeImage.Width);
+            pixelData = new FlattenArray<Color>(colors, CompleteImage.Width);
         }
 
         /// <summary>
@@ -184,8 +174,8 @@ namespace Tank.DataStructure.Spritesheet
         /// <returns>The whole color of the requested sprite</returns>
         public Color[] GetColorFromSprite(int xPosition, int yPosition)
         {
-            int xEnd = xPosition + singleImageSize.X;
-            int yEnd = yPosition + singleImageSize.Y;
+            int xEnd = xPosition + SingleImageSize.X;
+            int yEnd = yPosition + SingleImageSize.Y;
             return GetColorArea(xPosition, yPosition, xEnd, yEnd);
         }
 
@@ -210,7 +200,7 @@ namespace Tank.DataStructure.Spritesheet
         public FlattenArray<Color> GetColorFromSpriteAsFlatten(int xPosition, int yPosition)
         {
             Color[] data = GetColorFromSprite(xPosition, yPosition);
-            return new FlattenArray<Color>(data, singleImageSize.X);
+            return new FlattenArray<Color>(data, SingleImageSize.X);
         }
     }
 }
