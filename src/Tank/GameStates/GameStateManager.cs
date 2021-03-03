@@ -43,6 +43,16 @@ namespace Tank.GameStates
         }
 
         /// <summary>
+        /// Clear all the states and add a new one
+        /// </summary>
+        /// <param name="state">The new only state to add</param>
+        public void ResetState(IState state)
+        {
+            stateStack.Clear();
+            Add(state);
+        }
+
+        /// <summary>
         /// Add a new state on top of the current one
         /// </summary>
         /// <param name="state">The state to add</param>

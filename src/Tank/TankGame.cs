@@ -32,15 +32,10 @@ namespace Tank
         {
             base.Initialize();
             gameStateManager = new GameStateManager(new ContentWrapper(Content), spriteBatch);
-            GameSettings settings = new GameSettings(0.098f, 0.3f, 4, int.MinValue, "MoistContinentalSpritesheet");
-#if DEBUG
-            settings.SetDebug();
-#endif
-            //gameStateManager.Add(new GameLoadingScreen(new MidpointDisplacementGenerator(GraphicsDevice, 900 / 4, 0.5f, new SystemRandomizer()), settings));
-            
             PublicGraphicsDevice = GraphicsDevice;
             PublicContentManager = Content;
             InitResolution(1440, 900);
+
             gameStateManager.Add(new MainMenuState());
             IsMouseVisible = true;
         }

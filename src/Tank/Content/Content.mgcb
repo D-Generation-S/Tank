@@ -170,6 +170,12 @@
 /processorParam:DebugMode=Auto
 /build:../Assets/Shaders/Postprocessing/Sepia.fx;Shaders/Postprocessing/Sepia.fx
 
+#begin ../Assets/Sound/Effects/ButtonClick.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Effects/ButtonClick.wav;Sound/Effects/ButtonClick.wav
+
 #begin ../Assets/Sound/Effects/Explosion1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

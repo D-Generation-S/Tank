@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Threading.Tasks;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
@@ -37,6 +38,9 @@ namespace Tank.GameStates.States
         /// </summary>
         private SpriteSheet spritesheetToUse;
 
+        private bool loadingComplete;
+        private IMap map;
+
         /// <summary>
         /// Create a new instance of this class
         /// </summary>
@@ -58,6 +62,7 @@ namespace Tank.GameStates.States
             this.mapGenerator = mapGenerator;
             this.gameSettings = gameSettings;
             this.dataLoader = dataLoader;
+            loadingComplete = false;
         }
 
 
@@ -87,9 +92,18 @@ namespace Tank.GameStates.States
             );
             mapCreatingTask.ContinueWith((antecedent) =>
             {
-                IState gameState = new GameState(antecedent.Result, gameSettings);
-                gameStateManager.Replace(gameState);
+                map = antecedent.Result;
+                loadingComplete = true;
             });
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (loadingComplete)
+            {
+                IState gameState = new GameState(map, gameSettings);
+                gameStateManager.Replace(gameState);
+            }
         }
     }
 }

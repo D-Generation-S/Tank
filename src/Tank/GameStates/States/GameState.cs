@@ -233,6 +233,12 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                gameStateManager.Add(new EscMenuScreen());
+                return;
+            }
+
             if (debugOn)
             {
                 fps = (float)Math.Round(1 / gameTime.ElapsedGameTime.TotalSeconds);

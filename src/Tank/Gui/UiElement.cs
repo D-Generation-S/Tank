@@ -1,39 +1,35 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using Tank.DataStructure.Spritesheet;
 
 namespace Tank.Gui
 {
     class UiElement : IGuiElement
     {
-        protected readonly Vector2 position;
+        public Vector2 Position { get; protected set; }
+        public Vector2 Size { get; protected set; }
         protected readonly int width;
-        protected readonly SpriteSheet textureToShow;
-        protected readonly SpriteBatch spriteBatch;
+        public string Name { get; set; }
 
-        public UiElement(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch)
+        public UiElement(Vector2 position, int width)
         {
-            this.position = position;
+            Position = position;
+            Size = Vector2.Zero;
             this.width = width;
-            this.textureToShow = textureToShow;
-            this.spriteBatch = spriteBatch;
+            Name = string.Empty;
         }
 
-        public void Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime)
         {
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
         }
 
-        protected Vector2 GetTextLenght(string text, SpriteFont font)
+        public virtual void SetPosition(Vector2 position)
         {
-            return font.MeasureString(text);
+            Position = position;
         }
     }
 }
