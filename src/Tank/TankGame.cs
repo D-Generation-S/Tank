@@ -36,11 +36,12 @@ namespace Tank
 #if DEBUG
             settings.SetDebug();
 #endif
-            gameStateManager.Add(new GameLoadingScreen(new MidpointDisplacementGenerator(GraphicsDevice, 900 / 4, 0.5f, new SystemRandomizer()), settings));
+            //gameStateManager.Add(new GameLoadingScreen(new MidpointDisplacementGenerator(GraphicsDevice, 900 / 4, 0.5f, new SystemRandomizer()), settings));
+            
             PublicGraphicsDevice = GraphicsDevice;
             PublicContentManager = Content;
             InitResolution(1440, 900);
-
+            gameStateManager.Add(new MainMenuState());
             IsMouseVisible = true;
         }
 
@@ -65,6 +66,10 @@ namespace Tank
             if (IsActive)
             {
                 gameStateManager.Update(gameTime);
+                if (!gameStateManager.StateAvailable)
+                {
+                    Exit();
+                }
             }
         }
 

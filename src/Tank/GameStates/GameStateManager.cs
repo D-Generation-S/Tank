@@ -23,7 +23,12 @@ namespace Tank.GameStates
         /// <summary>
         /// The spritebatch to use for state init
         /// </summary>
-        private readonly SpriteBatch spriteBatch;        
+        private readonly SpriteBatch spriteBatch;
+
+        /// <summary>
+        /// Is there a game state available
+        /// </summary>
+        public bool StateAvailable { get; private set; }
 
         /// <summary>
         /// Create a new instance of this class
@@ -90,10 +95,12 @@ namespace Tank.GameStates
         {
             if (stateStack.Count == 0)
             {
+                StateAvailable = false;
                 return;
             }
             IState currentState = stateStack.Peek();
             currentState.Draw(gameTime);
+            StateAvailable = true;
         }
 
         /// <inheritdoc/>
@@ -101,10 +108,12 @@ namespace Tank.GameStates
         {
             if (stateStack.Count == 0)
             {
+                StateAvailable = false;
                 return;
             }
             IState currentState = stateStack.Peek();
             currentState.Update(gameTime);
+            StateAvailable = true;
         }
     }
 }

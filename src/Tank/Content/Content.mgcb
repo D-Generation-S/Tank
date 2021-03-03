@@ -68,6 +68,18 @@
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/Entities/Pixel.png;Images/Entities/Pixel.png
 
+#begin ../Assets/Images/Gui/WindowSpriteSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../Assets/Images/Gui/WindowSpriteSheet.png;Images/Gui/WindowSpriteSheet.png
+
 #begin ../Assets/Images/Pixel.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -1,0 +1,52 @@
+﻿{
+  "TextureName": "Images/Gui/WindowSpriteSheet",
+  "DistanceBetweenImages": 0,
+  "SingleImageSize": {
+    "X": 16,
+    "Y": 64
+  },
+  "Patterns": [
+    {
+      "Name": "ButtonLeft",
+      "Position": {
+        "X": 0,
+        "Y": 0
+      }
+    },
+    {
+      "Name": "ButtonMiddle",
+      "Position": {
+        "X": 1,
+        "Y": 0
+      }
+    },
+    {
+      "Name": "ButtonRight",
+      "Position": {
+        "X": 2,
+        "Y": 0
+      }
+    },
+    {
+      "Name": "ButtonActiveLeft",
+      "Position": {
+        "X": 0,
+        "Y": 1
+      }
+    },
+    {
+      "Name": "ButtonActiveMiddle",
+      "Position": {
+        "X": 1,
+        "Y": 1
+      }
+    },
+    {
+      "Name": "ButtonActiveRight",
+      "Position": {
+        "X": 2,
+        "Y": 1
+      }
+    }
+  ]
+}
