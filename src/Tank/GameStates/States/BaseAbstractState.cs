@@ -11,10 +11,23 @@ namespace Tank.GameStates.States
     {
         /// <inheritdoc/>
         public bool Initialized { get; protected set; }
+
+        /// <summary>
+        /// The game state manager to use
+        /// </summary>
         protected GameStateManager gameStateManager;
+
+        /// <summary>
+        /// The content wrapper to use
+        /// </summary>
         protected ContentWrapper contentWrapper;
+
+        /// <summary>
+        /// The spritebatch to use
+        /// </summary>
         protected SpriteBatch spriteBatch;
 
+        /// <inheritdoc/>
         public virtual void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
             this.contentWrapper = contentWrapper;
@@ -22,25 +35,31 @@ namespace Tank.GameStates.States
             Initialized = true;
         }
 
+        /// <inheritdoc/>
         abstract public void LoadContent();
 
+        /// <inheritdoc/>
         public virtual void SetActive()
         {
         }
 
+        /// <inheritdoc/>
         public void SetGameStateManager(GameStateManager gameStateManager)
         {
             this.gameStateManager = gameStateManager;
         }
 
+        /// <inheritdoc/>
         public virtual void Draw(GameTime gameTime)
         {
         }
 
+        /// <inheritdoc/>
         public virtual void Update(GameTime gameTime)
         {
         }
 
+        /// <inheritdoc/>
         public virtual void Destruct()
         {
         }

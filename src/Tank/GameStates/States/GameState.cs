@@ -24,6 +24,10 @@ using Tank.Wrapper;
 
 namespace Tank.GameStates.States
 {
+    /// <summary>
+    /// The game state class
+    /// Since this is not done just yet the summary blocks are missing right now
+    /// </summary>
     class GameState : BaseAbstractState
     {
         private int ticksToFire;
@@ -74,6 +78,7 @@ namespace Tank.GameStates.States
             debugIdGenerated = false;
         }
 
+        /// <inheritdoc/>
         public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
             base.Initialize(contentWrapper, spriteBatch);
@@ -146,6 +151,7 @@ namespace Tank.GameStates.States
             engine.EntityManager.AddComponent(mapId, mapComponent);
         }
 
+        /// <inheritdoc/>
         public override void LoadContent()
         {
             bulletTestExplosion = contentWrapper.Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
@@ -159,6 +165,7 @@ namespace Tank.GameStates.States
             gameFont = contentWrapper.Content.Load<SpriteFont>("gameFont");
         }
 
+        /// <inheritdoc/>
         public override void SetActive()
         {
             RandomSoundFactory soundFactory = new RandomSoundFactory(explosionSounds, randomizer);
@@ -199,6 +206,7 @@ namespace Tank.GameStates.States
             debugIdGenerated = false;
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             if (debugOn)
@@ -222,6 +230,7 @@ namespace Tank.GameStates.States
             engine.Update(gameTime);
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
             if (debugOn)
@@ -318,6 +327,7 @@ namespace Tank.GameStates.States
             engine.Draw(gameTime);
         }
 
+        /// <inheritdoc/>
         public override void Destruct()
         {
             engine.Clear();
