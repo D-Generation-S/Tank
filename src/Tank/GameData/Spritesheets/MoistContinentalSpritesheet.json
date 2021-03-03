@@ -1,0 +1,24 @@
+﻿{
+  "TextureName": "Images/Textures/MoistContinentalSpritesheet",
+  "DistanceBetweenImages": 0,
+  "SingleImageSize": {
+    "X": 32,
+    "Y": 32
+  },
+  "Patterns": [
+    {
+      "Name": "stone",
+      "Position": {
+        "X": 0,
+        "Y": 1
+      }
+    },
+    {
+      "Name": "dirt",
+      "Position": {
+        "X": 1,
+        "Y": 1
+      }
+    }
+  ]
+}

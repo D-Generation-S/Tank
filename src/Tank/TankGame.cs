@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Tank.GameStates;
 using Tank.GameStates.Data;
 using Tank.GameStates.States;
@@ -31,7 +32,7 @@ namespace Tank
         {
             base.Initialize();
             gameStateManager = new GameStateManager(new ContentWrapper(Content), spriteBatch);
-            GameSettings settings = new GameSettings(0.098f, 0.3f, 4, "MoistContinentalSpritesheet");
+            GameSettings settings = new GameSettings(0.098f, 0.3f, 4, int.MinValue, "MoistContinentalSpritesheet");
 #if DEBUG
             settings.SetDebug();
 #endif
