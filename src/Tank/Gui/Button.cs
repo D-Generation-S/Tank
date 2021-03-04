@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Tank.DataStructure.Spritesheet;
 
 namespace Tank.Gui
@@ -13,17 +11,17 @@ namespace Tank.Gui
     {
         private MouseState lastMouseState;
 
-        private Texture2D leftButtonTexture;
-        private Texture2D middleButtonTexture;
-        private Texture2D rightButtonTexture;
+        private Rectangle leftButtonSource;
+        private Rectangle middleButtonSource;
+        private Rectangle rightButtonSource;
 
-        private Texture2D leftActiveButtonTexture;
-        private Texture2D middleActiveButtonTexture;
-        private Texture2D rightActiveButtonTexture;
+        private Rectangle leftActiveButtonSource;
+        private Rectangle middleActiveButtonSource;
+        private Rectangle rightActiveButtonSource;
 
-        private Texture2D currentLeftTexture;
-        private Texture2D currentmiddleTexture;
-        private Texture2D currentrightTexture;
+        private Rectangle currentLeftSource;
+        private Rectangle currentMiddleSource;
+        private Rectangle currentRightSource;
 
         private SoundEffectInstance hoverEffect;
         private SoundEffectInstance clickEffect;
@@ -49,9 +47,9 @@ namespace Tank.Gui
             middlePartCount = (int)Math.Round((float)width / textureToShow.SingleImageSize.X);
             middlePartCount = middlePartCount == 0 ? 1 : middlePartCount;
 
-            currentLeftTexture = leftButtonTexture;
-            currentmiddleTexture = middleButtonTexture;
-            currentrightTexture = rightButtonTexture;
+            currentLeftSource = leftButtonSource;
+            currentMiddleSource = middleButtonSource;
+            currentRightSource = rightButtonSource;
 
             completeXSize = textureToShow.SingleImageSize.X * 2;
             completeXSize += textureToShow.SingleImageSize.X * middlePartCount;
@@ -79,35 +77,43 @@ namespace Tank.Gui
 
         private void FillTextures(SpriteSheet textureToShow)
         {
-            leftButtonTexture = new Texture2D(TankGame.PublicGraphicsDevice, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y);
-            middleButtonTexture = new Texture2D(TankGame.PublicGraphicsDevice, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y);
-            rightButtonTexture = new Texture2D(TankGame.PublicGraphicsDevice, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y);
+            leftButtonSource = textureToShow.GetAreaFromPatternName("ButtonLeft");
+            middleButtonSource = textureToShow.GetAreaFromPatternName("ButtonMiddle");
+            rightButtonSource = textureToShow.GetAreaFromPatternName("ButtonRight");
 
-            leftActiveButtonTexture = new Texture2D(TankGame.PublicGraphicsDevice, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y);
-            middleActiveButtonTexture = new Texture2D(TankGame.PublicGraphicsDevice, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y);
-            rightActiveButtonTexture = new Texture2D(TankGame.PublicGraphicsDevice, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y);
-
-            leftButtonTexture.SetData<Color>(textureToShow.GetTextureByName("ButtonLeft").Array);
-            middleButtonTexture.SetData<Color>(textureToShow.GetTextureByName("ButtonMiddle").Array);
-            rightButtonTexture.SetData<Color>(textureToShow.GetTextureByName("ButtonRight").Array);
-
-            leftActiveButtonTexture.SetData<Color>(textureToShow.GetTextureByName("ButtonActiveLeft").Array);
-            middleActiveButtonTexture.SetData<Color>(textureToShow.GetTextureByName("ButtonActiveMiddle").Array);
-            rightActiveButtonTexture.SetData<Color>(textureToShow.GetTextureByName("ButtonActiveRight").Array);
+            leftActiveButtonSource = textureToShow.GetAreaFromPatternName("ButtonActiveLeft");
+            middleActiveButtonSource = textureToShow.GetAreaFromPatternName("ButtonActiveMiddle");
+            rightActiveButtonSource = textureToShow.GetAreaFromPatternName("ButtonActiveRight");
         }
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Draw(currentLeftTexture, new Rectangle((int)Position.X, (int)Position.Y, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y), Color.White);
+            spriteBatch.Draw(
+                textureToShow.CompleteImage,
+                new Rectangle((int)Position.X, (int)Position.Y, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y),
+                currentLeftSource,
+                Color.White
+                );
 
             for (int i = 0; i < middlePartCount; i++)
             {
                 int index = i + 1;
-                spriteBatch.Draw(currentmiddleTexture, new Rectangle((int)Position.X + textureToShow.SingleImageSize.X * index, (int)Position.Y, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y), Color.White);
+                spriteBatch.Draw(
+                    textureToShow.CompleteImage,
+                    new Rectangle((int)Position.X + textureToShow.SingleImageSize.X * index, (int)Position.Y, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y),
+                    currentMiddleSource,
+                    Color.White
+                    );
             }
+
             int xPosition = (int)Position.X + textureToShow.SingleImageSize.X * 2;
             xPosition += textureToShow.SingleImageSize.X * (middlePartCount - 1);
-            spriteBatch.Draw(currentrightTexture, new Rectangle(xPosition, (int)Position.Y, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y), Color.White);
+            spriteBatch.Draw(
+                textureToShow.CompleteImage,
+                new Rectangle(xPosition, (int)Position.Y, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y),
+                currentRightSource,
+                Color.White
+                );
 
             Vector2 textPosition = Position;
             textPosition.X += textureToShow.SingleImageSize.X;
@@ -123,16 +129,16 @@ namespace Tank.Gui
         {
             MouseState mouseState = Mouse.GetState();
 
-            currentLeftTexture = leftButtonTexture;
-            currentmiddleTexture = middleButtonTexture;
-            currentrightTexture = rightButtonTexture;
+            currentLeftSource = leftButtonSource;
+            currentMiddleSource = middleButtonSource;
+            currentRightSource = rightButtonSource;
 
             Clicked = false;
             if (collider.Contains(mouseState.Position))
             {
-                currentLeftTexture = leftActiveButtonTexture;
-                currentmiddleTexture = middleActiveButtonTexture;
-                currentrightTexture = rightActiveButtonTexture;
+                currentLeftSource = leftActiveButtonSource;
+                currentMiddleSource = middleActiveButtonSource;
+                currentRightSource = rightActiveButtonSource;
 
                 if (mouseState.LeftButton == ButtonState.Pressed && !waitForSound)
                 {

@@ -47,11 +47,15 @@ namespace Tank.Systems
         /// </summary>
         private Vector2 gravityForce;
 
-
         /// <summary>
         /// The wind applied by the physic system
         /// </summary>
         private Vector2 windForce;
+
+        /// <summary>
+        /// The physic system got restored
+        /// </summary>
+        private bool gotRestored;
 
         /// <summary>
         /// Create a new instance of the physic system with a given screen bound
@@ -84,6 +88,7 @@ namespace Tank.Systems
 
             validators.Add(new PhysicEntityValidator());
             validators.Add(new MapValidator());
+            gotRestored = true;
         }
 
         /// <inheritdoc/>
@@ -108,7 +113,13 @@ namespace Tank.Systems
 
             int timeSteps = (int)((deltaTime + leftOverDeltaTime) / fixedDeltaTime);
 
-            leftOverDeltaTime = deltaTime - timeSteps * fixedDeltaTime;
+            leftOverDeltaTime = deltaTime - (timeSteps * fixedDeltaTime);
+            if (gotRestored)
+            {
+                gotRestored = false;
+                leftOverDeltaTime = 0;
+                timeSteps = 1;
+            }
 
             updateLocked = true;
 
@@ -121,6 +132,12 @@ namespace Tank.Systems
                 CalculatePhysic(map, timeSteps, entityId);
             }
             updateLocked = false;
+        }
+
+        /// <inheritdoc/>
+        public override void Restore()
+        {
+            gotRestored = true;
         }
 
         /// <summary>
@@ -207,7 +224,7 @@ namespace Tank.Systems
                         break;
                     }
                 }
-                moveComponent.Acceleration = moveComponent.Acceleration;
+                //moveComponent.Acceleration = moveComponent.Acceleration;
                 moveComponent.Velocity += moveComponent.Acceleration;
                 placeComponent.Position += moveComponent.Velocity;
 

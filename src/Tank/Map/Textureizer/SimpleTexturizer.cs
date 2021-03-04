@@ -80,7 +80,7 @@ namespace Tank.Map.Textureizer
             this.randomizer = randomizer;
             internalRandomizer = randomizer == null ? new Random(map.Seed) : null;
 
-            FlattenArray<Color> colors = spriteSheet.GetTextureByName("stone");
+            FlattenArray<Color> colors = spriteSheet.GetColorByName("stone");
             //FlattenArray<Color> colors = new FlattenArray<Color>(colorsToUse, spriteSheet.SingleImageSize.X);
 
             for (int x = 0; x < map.Width; x++)

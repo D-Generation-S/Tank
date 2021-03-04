@@ -30,7 +30,9 @@ namespace Tank.DataStructure.Spritesheet
         /// </summary>
         private int distanceBetweenImages;
 
-
+        /// <summary>
+        /// The patterns on this spritesheet
+        /// </summary>
         private List<SpriteSheetPattern> patterns;
 
         /// <summary>
@@ -89,7 +91,7 @@ namespace Tank.DataStructure.Spritesheet
         /// </summary>
         /// <param name="name">The name of the pattern</param>
         /// <returns>The texture image data</returns>
-        public FlattenArray<Color> GetTextureByName(string name)
+        public FlattenArray<Color> GetColorByName(string name)
         {
             SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Name == name);
             return GetColorFromPattern(pattern);
@@ -101,9 +103,29 @@ namespace Tank.DataStructure.Spritesheet
         /// <param name="x">The x position</param>
         /// <param name="y">The y position</param>
         /// <returns></returns>
-        public FlattenArray<Color> GetTextureByPosition(int x, int y)
+        public FlattenArray<Color> GetColorByPosition(int x, int y)
         {
-            return null;
+            SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Position.X == x && pattern.Position.Y == y);
+            return GetColorFromPattern(pattern);
+        }
+
+        public Rectangle GetAreaFromPatternName(string name)
+        {
+            SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Name == name);
+            return GetAreaFromPattern(pattern);
+        }
+
+        public Rectangle GetAreaFromPattern(SpriteSheetPattern pattern)
+        {
+            if (pattern == null)
+            {
+                return Rectangle.Empty;
+            }
+            int startPositionX = pattern.Position.X * SingleImageSize.X;
+            int startPositionY = pattern.Position.Y * SingleImageSize.Y;
+
+            return new Rectangle(startPositionX, startPositionY, SingleImageSize.X, SingleImageSize.Y);
+
         }
 
         /// <summary>
@@ -118,7 +140,7 @@ namespace Tank.DataStructure.Spritesheet
                 return null;
             }
 
-            Position startPosition = SingleImageSize * pattern.position;
+            Position startPosition = SingleImageSize * pattern.Position;
             return GetColorFromSpriteAsFlatten(startPosition);
         }
 

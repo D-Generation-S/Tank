@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Tank.Components.Rendering;
+using Tank.Events.EntityBased;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -41,7 +42,7 @@ namespace Tank.Systems
                     {
                         if (!animation.Loop)
                         {
-                            RemoveEntity(entityId);
+                            FireEvent(new RemoveEntityEvent(entityId));
 
                             continue;
                         }
@@ -64,8 +65,6 @@ namespace Tank.Systems
                 }
             }
             updateLocked = false;
-
-            DoRemoveEntities();
         }
     }
 }

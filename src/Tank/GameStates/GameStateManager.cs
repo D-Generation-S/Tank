@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using Tank.GameStates.States;
 using Tank.Wrapper;
 
 namespace Tank.GameStates
@@ -70,6 +71,10 @@ namespace Tank.GameStates
                 state.LoadContent();
                 state.SetActive();
             }
+            if (stateStack.Count > 0 )
+            {
+                stateStack.Peek().Suspend();
+            }
             stateStack.Push(state);
             return true;
         }
@@ -97,6 +102,10 @@ namespace Tank.GameStates
             }
             IState state = stateStack.Pop();
             state.Destruct();
+            if (stateStack.Count > 0)
+            {
+                stateStack.Peek().Restore();
+            }
             return;
         }
 

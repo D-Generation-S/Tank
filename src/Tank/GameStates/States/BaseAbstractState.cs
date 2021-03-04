@@ -50,6 +50,16 @@ namespace Tank.GameStates.States
         }
 
         /// <inheritdoc/>
+        public virtual void Restore()
+        {
+        }
+
+        /// <inheritdoc/>
+        public virtual void Suspend()
+        {
+        }
+
+        /// <inheritdoc/>
         public virtual void Draw(GameTime gameTime)
         {
         }

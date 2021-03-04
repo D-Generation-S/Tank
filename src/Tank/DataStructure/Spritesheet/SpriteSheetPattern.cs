@@ -13,7 +13,7 @@
         /// <summary>
         /// The position on the sheet
         /// </summary>
-        public Position position { get; }
+        public Position Position { get; }
 
         /// <summary>
         /// Create a new instance of this class
@@ -23,7 +23,7 @@
         public SpriteSheetPattern(string name, Position position)
         {
             Name = name;
-            this.position = position;
+            Position = position;
         }
     }
 }

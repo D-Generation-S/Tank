@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
@@ -206,35 +207,25 @@ namespace Tank.GameStates.States
             debugIdGenerated = false;
         }
 
-        /// <inheritdoc/>
-        public override void Update(GameTime gameTime)
+        public override void Suspend()
         {
-            if (debugOn)
-            {
-                if (!debugIdGenerated)
-                {
-                    GenerateDebugEntity();
-                    debugIdGenerated = true;
-                }
-                VisibleTextComponent entityCounterText = engine.EntityManager.GetComponent<VisibleTextComponent>(entityCounter);
-                if (entityCounterText != null)
-                {
-                    entityCounterText.Text = "Fps: " + fps;
-                    entityCounterText.Text += "\nUpdate ms: " + gameTime.ElapsedGameTime.TotalMilliseconds;
-                    entityCounterText.Text += "\nEntities: " + engine.GetEntityCount();
-                    entityCounterText.Text += "\nComponents: " + engine.GetComponentCount();
-                    entityCounterText.Text += "\nUsed Components: " + engine.GetUsedComponentCount();
-                    entityCounterText.Text += "\nSystems: " + engine.GetSystemCount();
-                }
-            }
-            engine.Update(gameTime);
+            engine.Suspend();
+            Debug.WriteLine("Suspend");
+        }
+
+        public override void Restore()
+        {
+            engine.Restore();
+            Debug.WriteLine("Restore");
         }
 
         /// <inheritdoc/>
-        public override void Draw(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
+                engine.Update(gameTime);
                 gameStateManager.Add(new EscMenuScreen());
                 return;
             }
@@ -284,7 +275,8 @@ namespace Tank.GameStates.States
                 {
                     debugOn = false;
                     RemoveDebugEntity();
-                } else
+                }
+                else
                 {
                     debugOn = true;
                 }
@@ -328,8 +320,34 @@ namespace Tank.GameStates.States
                 }
             }
 
+            if (debugOn)
+            {
+                if (!debugIdGenerated)
+                {
+                    GenerateDebugEntity();
+                    debugIdGenerated = true;
+                }
+                VisibleTextComponent entityCounterText = engine.EntityManager.GetComponent<VisibleTextComponent>(entityCounter);
+                if (entityCounterText != null)
+                {
+                    entityCounterText.Text = "Fps: " + fps;
+                    entityCounterText.Text += "\nUpdate ms: " + gameTime.ElapsedGameTime.TotalMilliseconds;
+                    entityCounterText.Text += "\nEntities: " + engine.GetEntityCount();
+                    entityCounterText.Text += "\nComponents: " + engine.GetComponentCount();
+                    entityCounterText.Text += "\nUsed Components: " + engine.GetUsedComponentCount();
+                    entityCounterText.Text += "\nSystems: " + engine.GetSystemCount();
+                    Debug.WriteLine(engine.GetEntityCount());
+                    Debug.WriteLine(engine.GetComponentCount());
+                }
+            }
+            engine.Update(gameTime);
             previousState = Keyboard.GetState();
             previousMouseState = Mouse.GetState();
+        }
+
+        /// <inheritdoc/>
+        public override void Draw(GameTime gameTime)
+        {
             engine.Draw(gameTime);
         }
 
