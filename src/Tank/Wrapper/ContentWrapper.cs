@@ -27,9 +27,15 @@ namespace Tank.Wrapper
             this.contentManager = contentManager;
         }
 
+        /// <summary>
+        /// Load the content
+        /// </summary>
+        /// <typeparam name="T">The type of content to load</typeparam>
+        /// <param name="fileName">The name of the content file to load</param>
+        /// <returns>The loaded content or null</returns>
         public T Load<T>(string fileName)
         {
-            return Content.Load<T>(fileName);
+            return contentManager.Load<T>(fileName);
         }
     }
 }

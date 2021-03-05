@@ -61,8 +61,19 @@ namespace Tank.Systems
         /// </summary>
         private readonly List<Effect> postProcessing;
 
+        /// <summary>
+        /// The graphic device to use
+        /// </summary>
         private GraphicsDevice graphicsDevice => TankGame.PublicGraphicsDevice;
+
+        /// <summary>
+        /// The viewport adapter
+        /// </summary>
         private IViewportAdapter viewportAdapter => TankGame.PublicViewportAdapter;
+
+        /// <summary>
+        /// The virtual viewport
+        /// </summary>
         private Viewport viewport => viewportAdapter.VirtualViewport;
 
         /// <summary>
