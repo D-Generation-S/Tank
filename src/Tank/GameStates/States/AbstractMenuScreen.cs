@@ -49,6 +49,9 @@ namespace Tank.GameStates.States
         /// </summary>
         protected IGuiElement elementToDraw;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public AbstractMenuScreen()
             : this(new JsonTextureLoader())
         {
