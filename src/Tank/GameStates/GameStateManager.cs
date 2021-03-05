@@ -56,7 +56,7 @@ namespace Tank.GameStates
         /// <param name="state">The new only state to add</param>
         public void ResetState(IState state)
         {
-            stateStack.Clear();
+            Clear();
             Add(state);
         }
 
@@ -114,6 +114,14 @@ namespace Tank.GameStates
                 stateStack.Peek().Restore();
             }
             return;
+        }
+
+        /// <summary>
+        /// Clear the whole game state manager
+        /// </summary>
+        public void Clear()
+        {
+            stateStack.Clear();
         }
 
         /// <inheritdoc/>

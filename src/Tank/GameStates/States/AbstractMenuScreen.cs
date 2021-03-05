@@ -17,6 +17,7 @@ namespace Tank.GameStates.States
         protected SpriteFont baseFont;
         protected DataManager<SpriteSheet> spriteSetManager;
         protected SoundEffect buttonClick;
+        protected SoundEffect buttonHover;
 
         protected IGuiElement elementToDraw;
 
@@ -40,8 +41,9 @@ namespace Tank.GameStates.States
         public override void LoadContent()
         {
             guiSprite = spriteSetManager.GetData("GuiSpriteSheet");
-            baseFont = contentWrapper.Content.Load<SpriteFont>("gameFont");
-            buttonClick = contentWrapper.Content.Load<SoundEffect>("Sound/Effects/ButtonClick");
+            baseFont = contentWrapper.Load<SpriteFont>("gameFont");
+            buttonClick = contentWrapper.Load<SoundEffect>("Sound/Effects/ButtonClick");
+            buttonHover = contentWrapper.Load<SoundEffect>("Sound/Effects/ButtonClick");
         }
 
         public override void Update(GameTime gameTime)

@@ -3,13 +3,14 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using Tank.Commands;
 using Tank.DataStructure.Spritesheet;
 
 namespace Tank.Gui
 {
     class Button : VisibleUiElement
     {
-        private MouseState lastMouseState;
+        MouseState lastMouseState;
 
         private Rectangle leftButtonSource;
         private Rectangle middleButtonSource;
@@ -36,6 +37,8 @@ namespace Tank.Gui
         public bool Clicked { get; private set; }
         private bool waitForSound;
 
+        private ICommand command;
+
         public Button(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spritebatch, SpriteFont font)
             : base(position, width, textureToShow, spritebatch)
         {
@@ -56,9 +59,19 @@ namespace Tank.Gui
             UpdateCollider();
         }
 
-        public void SetClickEffect(SoundEffect soundEffect)
+        public void SetCommand(ICommand command)
         {
-            clickEffect = soundEffect.CreateInstance();
+            this.command = command;
+        }
+
+        public void SetClickEffect(SoundEffect clickEffect)
+        {
+            this.clickEffect = clickEffect.CreateInstance();
+        }
+
+        public void SetHoverEffect(SoundEffect hoverEffect)
+        {
+            this.hoverEffect = hoverEffect.CreateInstance();
         }
 
         public override void SetPosition(Vector2 position)
@@ -137,6 +150,12 @@ namespace Tank.Gui
                 currentLeftSource = leftActiveButtonSource;
                 currentMiddleSource = middleActiveButtonSource;
                 currentRightSource = rightActiveButtonSource;
+                if (hoverEffect != null 
+                    && !collider.Contains(mouseWrapper.GetPosition(lastMouseState.Position)) 
+                    && clickEffect.State != SoundState.Playing)
+                {
+                    hoverEffect.Play();
+                }
 
                 if (mouseState.LeftButton == ButtonState.Pressed && !waitForSound)
                 {
@@ -153,6 +172,10 @@ namespace Tank.Gui
             if (waitForSound && clickEffect.State == SoundState.Stopped)
             {
                 waitForSound = false;
+                if (command != null && command.CanExecute())
+                {
+                    command.Execute();
+                }
                 Clicked = true;
             }
 

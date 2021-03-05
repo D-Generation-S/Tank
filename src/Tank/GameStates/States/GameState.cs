@@ -67,6 +67,8 @@ namespace Tank.GameStates.States
         private bool debugOn;
         private bool debugIdGenerated;
 
+        private bool newState;
+
         private float fps;
 
         public GameState(IMap mapToUse, GameSettings gameSettings)
@@ -214,14 +216,18 @@ namespace Tank.GameStates.States
 
         public override void Restore()
         {
+            newState = true;
             engine.Restore();
         }
 
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyUp(Keys.Escape))
+            {
+                newState = false;
+            }
+            if (!newState && Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 engine.Update(gameTime);
                 gameStateManager.Add(new EscMenuScreen());

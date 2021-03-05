@@ -15,6 +15,7 @@ namespace Tank.Wrapper
         /// <summary>
         /// Read access to the Monogame content manager
         /// </summary>
+        [System.Obsolete]
         public ContentManager Content => contentManager;
 
         /// <summary>
@@ -24,6 +25,11 @@ namespace Tank.Wrapper
         public ContentWrapper(ContentManager contentManager)
         {
             this.contentManager = contentManager;
+        }
+
+        public T Load<T>(string fileName)
+        {
+            return Content.Load<T>(fileName);
         }
     }
 }

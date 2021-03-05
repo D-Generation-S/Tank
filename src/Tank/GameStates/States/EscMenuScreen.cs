@@ -1,29 +1,65 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.Xna.Framework.Input;
+using Tank.Commands;
+using Tank.Commands.GameManager;
 using Tank.Gui;
+using Tank.Wrapper;
 
 namespace Tank.GameStates.States
 {
+    /// <summary>
+    /// The esacpe screen menu
+    /// </summary>
     class EscMenuScreen : AbstractMenuScreen
     {
-        private Button mainMenu;
-        private Button back;
+        /// <summary>
+        /// Command to use to get back to the main menu
+        /// </summary>
+        private ICommand mainMenuCommand;
+
+        /// <summary>
+        /// Command to use to close this screen
+        /// </summary>
+        private ICommand closeStateCommand;
+
+        /// <summary>
+        /// The stack panel to use for drawing
+        /// </summary>
         private VerticalStackPanel verticalStackPanel;
 
+        /// <summary>
+        /// If the state is currently new
+        /// </summary>
+        private bool newState;
+
+        /// <summary>
+        /// Initialize this class
+        /// </summary>
+        /// <param name="contentWrapper"></param>
+        /// <param name="spriteBatch"></param>
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
+        {
+            base.Initialize(contentWrapper, spriteBatch);
+            closeStateCommand = new CloseStateCommand(gameStateManager);
+            mainMenuCommand = new RevertToMainMenuCommand(gameStateManager);
+
+        }
+
+        /// <inheritdoc/>
         public override void SetActive()
         {
             base.SetActive();
-            mainMenu = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
+            newState = true;
+            Button mainMenu = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
             mainMenu.Text = "Main menu";
             mainMenu.SetClickEffect(buttonClick);
+            mainMenu.SetCommand(mainMenuCommand);
 
-            back = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
+            Button back = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
             back.Text = "Back";
             back.SetClickEffect(buttonClick);
+            back.SetCommand(closeStateCommand);
 
             verticalStackPanel = new VerticalStackPanel(
                 new Vector2(0, TankGame.PublicGraphicsDevice.Viewport.Height / 2),
@@ -41,13 +77,14 @@ namespace Tank.GameStates.States
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (back.Clicked)
+            if (newState && Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
-                gameStateManager.Pop();
+                return;
             }
-            if (mainMenu.Clicked)
+            newState = false;
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
-                gameStateManager.ResetState(new MainMenuState());
+                closeStateCommand.Execute();
             }
         }
     }
