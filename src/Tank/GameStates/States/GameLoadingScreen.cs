@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Threading.Tasks;
+using Tank.Adapter;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure;
@@ -82,10 +83,11 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void SetActive()
         {
+            base.SetActive();
             Task<IMap> mapCreatingTask = mapGenerator.AsyncGenerateNewMap(
                 new Position(
-                    1440,
-                    900
+                    viewportAdapter.VirtualWidth,
+                    viewportAdapter.VirtualHeight
                 ),
                 new DefaultTextureizer(spritesheetToUse),
                 gameSettings.MapSeed

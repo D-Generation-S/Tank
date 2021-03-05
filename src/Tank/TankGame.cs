@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Tank.Adapter;
 using Tank.GameStates;
 using Tank.GameStates.Data;
 using Tank.GameStates.States;
@@ -16,11 +17,15 @@ namespace Tank
     /// </summary>
     public class TankGame : Game
     {
+
+        private IViewportAdapter viewportAdapter;
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private GameStateManager gameStateManager;
         public static GraphicsDevice PublicGraphicsDevice;
         public static ContentManager PublicContentManager;
+        public static IViewportAdapter PublicViewportAdapter;
 
         public TankGame()
         {
@@ -31,11 +36,13 @@ namespace Tank
         protected override void Initialize()
         {
             base.Initialize();
-            gameStateManager = new GameStateManager(new ContentWrapper(Content), spriteBatch);
+
+            InitResolution(1280, 720);
             PublicGraphicsDevice = GraphicsDevice;
             PublicContentManager = Content;
-            InitResolution(1440, 900);
+            PublicViewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1920, 1080); ;
 
+            gameStateManager = new GameStateManager(new ContentWrapper(Content), spriteBatch);
             gameStateManager.Add(new MainMenuState());
             IsMouseVisible = true;
         }
@@ -75,7 +82,6 @@ namespace Tank
             {
                 gameStateManager.Draw(gameTime);
             }
-
         }
     }
 }

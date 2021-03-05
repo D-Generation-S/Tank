@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using Tank.Adapter;
 using Tank.GameStates.States;
 using Tank.Wrapper;
 
@@ -27,6 +28,11 @@ namespace Tank.GameStates
         private readonly SpriteBatch spriteBatch;
 
         /// <summary>
+        /// The viewport adapter to use
+        /// </summary>
+        private IViewportAdapter viewportAdapter => TankGame.PublicViewportAdapter;
+
+        /// <summary>
         /// Is there a game state available
         /// </summary>
         public bool StateAvailable { get; private set; }
@@ -36,6 +42,7 @@ namespace Tank.GameStates
         /// </summary>
         /// <param name="contentWrapper">The content wrapper to use</param>
         /// <param name="spriteBatch">The spritebatch to use</param>
+        /// <param name="viewportAdapter">The viewport adapter to use</param>
         public GameStateManager(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
             stateStack = new Stack<IState>();

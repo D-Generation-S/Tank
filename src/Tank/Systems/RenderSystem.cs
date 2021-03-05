@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
+using Tank.Adapter;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.DataStructure;
@@ -19,11 +20,6 @@ namespace Tank.Systems
         /// The spritebatch instance to use
         /// </summary>
         private readonly SpriteBatch spriteBatch;
-
-        /// <summary>
-        /// The graphic device to use
-        /// </summary>
-        private readonly GraphicsDevice graphicsDevice;
 
         /// <summary>
         /// All the already used containers to prevent gc
@@ -65,6 +61,10 @@ namespace Tank.Systems
         /// </summary>
         private readonly List<Effect> postProcessing;
 
+        private GraphicsDevice graphicsDevice => TankGame.PublicGraphicsDevice;
+        private IViewportAdapter viewportAdapter => TankGame.PublicViewportAdapter;
+        private Viewport viewport => viewportAdapter.VirtualViewport;
+
         /// <summary>
         /// Is this the start of the draw call
         /// </summary>
@@ -74,8 +74,8 @@ namespace Tank.Systems
         /// Create a new instance for the renderer
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public RenderSystem(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, Effect defaultEffect)
-            : this(spriteBatch, graphicsDevice, defaultEffect, new List<Effect>() { defaultEffect })
+        public RenderSystem(SpriteBatch spriteBatch, Effect defaultEffect)
+            : this(spriteBatch, defaultEffect, new List<Effect>() { defaultEffect })
         {
         }
 
@@ -85,21 +85,19 @@ namespace Tank.Systems
         /// <param name="spriteBatch"></param>
         public RenderSystem(
             SpriteBatch spriteBatch,
-            GraphicsDevice graphicsDevice,
             Effect defaultEffect,
             List<Effect> postProcessing
             ) : base()
         {
             this.spriteBatch = spriteBatch;
-            this.graphicsDevice = graphicsDevice;
             validators.Add(new RenderableEntityValidator());
 
             usedContainers = new Stack<RenderContainer>();
             containersToRender = new List<RenderContainer>();
             this.defaultEffect = defaultEffect;
             this.postProcessing = postProcessing;
-            gameRenderTarget = new RenderTarget2D(graphicsDevice, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
-            postProcessingRenderTarget = new RenderTarget2D(graphicsDevice, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height);
+            gameRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
+            postProcessingRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
             targetContent = new Color[postProcessingRenderTarget.Width * postProcessingRenderTarget.Height];
             drawStart = true;
         }
@@ -151,16 +149,17 @@ namespace Tank.Systems
                     null,
                     null,
                     postProcessing[i],
-                    null
+                    viewportAdapter.GetScaleMatrix()
                     );
 
-                spriteBatch.Draw(gameRenderTarget, Vector2.Zero, Color.White);
+                spriteBatch.Draw(gameRenderTarget, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.White);
                 spriteBatch.End();
                 postProcessingRenderTarget.GetData<Color>(targetContent);
                 gameRenderTarget.SetData<Color>(targetContent);
             }
             graphicsDevice.SetRenderTarget(null);
-            graphicsDevice.Clear(Color.Violet);
+            viewportAdapter.Reset();
+            graphicsDevice.Clear(Color.Black);
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -168,12 +167,12 @@ namespace Tank.Systems
                 null,
                 null,
                 defaultEffect,
-                null
+                viewportAdapter.GetScaleMatrix()
             );
 
             spriteBatch.Draw(
                 postProcessing.Count == 0 ? gameRenderTarget : postProcessingRenderTarget,
-                Vector2.Zero,
+                new Rectangle(0, 0, viewport.Width, viewport.Height),
                 Color.White
                 );
 
@@ -234,7 +233,7 @@ namespace Tank.Systems
                     null,
                     null,
                     effect,
-                    null);
+                    viewportAdapter.GetScaleMatrix());
                 graphicsDevice.Clear(Color.CornflowerBlue);
                 drawStart = false;
                 currentEffect = effect;
@@ -250,7 +249,7 @@ namespace Tank.Systems
                     null,
                     null,
                     effect,
-                    null
+                    viewportAdapter.GetScaleMatrix()
                     );
                 currentEffect = effect;
             }

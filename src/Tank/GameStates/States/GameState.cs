@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Tank.Adapter;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
@@ -48,7 +49,6 @@ namespace Tank.GameStates.States
 
         private List<SoundEffect> explosionSounds;
         private Effect defaultShader;
-
 
         Vector2 bulletSpawnLocation;
 
@@ -113,8 +113,8 @@ namespace Tank.GameStates.States
 
         private void AddEngineSystems()
         {
-            int screenWidth = TankGame.PublicGraphicsDevice.Viewport.Width;
-            int screenHeight = TankGame.PublicGraphicsDevice.Viewport.Height;
+            int screenWidth = viewportAdapter.VirtualWidth;
+            int screenHeight = viewportAdapter.VirtualHeight;
 
             engine.AddSystem(new BindingSystem());
             engine.AddSystem(new MapSculptingSystem());
@@ -125,7 +125,6 @@ namespace Tank.GameStates.States
             engine.AddSystem(new SoundEffectSystem());
             engine.AddSystem(new RenderSystem(
                  spriteBatch,
-                 TankGame.PublicGraphicsDevice,
                  defaultShader
              ));
             engine.AddSystem(new GameLogicSystem(gameSettings.PlayerCount, mapToUse));
@@ -169,6 +168,7 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void SetActive()
         {
+            base.SetActive();
             RandomSoundFactory soundFactory = new RandomSoundFactory(explosionSounds, randomizer);
             IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(bulletTestExplosion, explosionAnimationFrames, soundFactory);
             explosionBuilder.Init(engine);
@@ -210,13 +210,11 @@ namespace Tank.GameStates.States
         public override void Suspend()
         {
             engine.Suspend();
-            Debug.WriteLine("Suspend");
         }
 
         public override void Restore()
         {
             engine.Restore();
-            Debug.WriteLine("Restore");
         }
 
         /// <inheritdoc/>
@@ -284,7 +282,13 @@ namespace Tank.GameStates.States
 
             if (Keyboard.GetState().IsKeyDown(Keys.F5) && !previousState.IsKeyDown(Keys.F5))
             {
-                IState gameLoading = new GameLoadingScreen(new MidpointDisplacementGenerator(TankGame.PublicGraphicsDevice, 900 / 4, 0.5f, new SystemRandomizer()), gameSettings);
+                IState gameLoading = new GameLoadingScreen(
+                    new MidpointDisplacementGenerator(
+                        TankGame.PublicGraphicsDevice,
+                        viewportAdapter.VirtualWidth / 4,
+                        0.5f,
+                        new SystemRandomizer()
+                        ), gameSettings);
                 gameStateManager.Replace(gameLoading);
             }
 
@@ -298,9 +302,9 @@ namespace Tank.GameStates.States
                     if (component is PlaceableComponent)
                     {
                         PlaceableComponent placeableComponent = (PlaceableComponent)component;
-                        placeableComponent.Position = Mouse.GetState().Position.ToVector2();
+                        placeableComponent.Position = mouseWrapper.GetMouseVectorPosition();
                         placeableComponent.Position -= new Vector2(32 / 2, 32 / 2);
-                        circle = new Circle(Mouse.GetState().Position.ToVector2(), 16);
+                        circle = new Circle(mouseWrapper.GetMouseVectorPosition(), 16);
                     }
                     engine.EntityManager.AddComponent(exposion, component);
                     if (circle != null)
@@ -336,8 +340,6 @@ namespace Tank.GameStates.States
                     entityCounterText.Text += "\nComponents: " + engine.GetComponentCount();
                     entityCounterText.Text += "\nUsed Components: " + engine.GetUsedComponentCount();
                     entityCounterText.Text += "\nSystems: " + engine.GetSystemCount();
-                    Debug.WriteLine(engine.GetEntityCount());
-                    Debug.WriteLine(engine.GetComponentCount());
                 }
             }
             engine.Update(gameTime);

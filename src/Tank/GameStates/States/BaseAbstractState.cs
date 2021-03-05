@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Tank.Adapter;
 using Tank.Wrapper;
 
 namespace Tank.GameStates.States
@@ -23,6 +24,16 @@ namespace Tank.GameStates.States
         protected ContentWrapper contentWrapper;
 
         /// <summary>
+        /// The viewport adapter
+        /// </summary>
+        protected IViewportAdapter viewportAdapter => TankGame.PublicViewportAdapter;
+
+        /// <summary>
+        /// Mouse wrapper to use
+        /// </summary>
+        protected MouseWrapper mouseWrapper;
+
+        /// <summary>
         /// The spritebatch to use
         /// </summary>
         protected SpriteBatch spriteBatch;
@@ -32,7 +43,13 @@ namespace Tank.GameStates.States
         {
             this.contentWrapper = contentWrapper;
             this.spriteBatch = spriteBatch;
+            mouseWrapper = new MouseWrapper(viewportAdapter);
             Initialized = true;
+        }
+
+        protected Matrix GetScaleMatrix()
+        {
+            return viewportAdapter.GetScaleMatrix();
         }
 
         /// <inheritdoc/>
@@ -41,6 +58,7 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public virtual void SetActive()
         {
+            viewportAdapter.Reset();
         }
 
         /// <inheritdoc/>

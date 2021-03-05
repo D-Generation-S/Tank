@@ -16,6 +16,7 @@ namespace Tank.GameStates.States
 
         public override void SetActive()
         {
+            base.SetActive();
             mainMenu = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
             mainMenu.Text = "Main menu";
             mainMenu.SetClickEffect(buttonClick);
@@ -30,6 +31,7 @@ namespace Tank.GameStates.States
                 15,
                 true
                 );
+            verticalStackPanel.SetMouseWrapper(mouseWrapper);
             verticalStackPanel.AddElement(mainMenu);
             verticalStackPanel.AddElement(back);
 

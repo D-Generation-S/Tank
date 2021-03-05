@@ -23,6 +23,7 @@ namespace Tank.GameStates.States
 
         public override void SetActive()
         {
+            base.SetActive();
             exitButton = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
             exitButton.Text = "Exit game";
             exitButton.SetClickEffect(buttonClick);
@@ -31,12 +32,12 @@ namespace Tank.GameStates.States
             startGameButton.Text = "Start game";
             startGameButton.SetClickEffect(buttonClick);
 
-            verticalStackPanel = new VerticalStackPanel(new Vector2(0, 0), TankGame.PublicGraphicsDevice.Viewport.Width / 6, 15, true);
+            verticalStackPanel = new VerticalStackPanel(new Vector2(0, 0), viewportAdapter.VirtualViewport.Width / 6, 15, true);
             verticalStackPanel.AddElement(startGameButton);
             verticalStackPanel.AddElement(exitButton);
+            verticalStackPanel.SetMouseWrapper(mouseWrapper);
 
             elementToDraw = verticalStackPanel;
-            
         }
 
         public override void Update(GameTime gameTime)
@@ -48,7 +49,13 @@ namespace Tank.GameStates.States
 #if DEBUG
                 settings.SetDebug();
 #endif
-                gameStateManager.Replace(new GameLoadingScreen(new MidpointDisplacementGenerator(TankGame.PublicGraphicsDevice, 900 / 4, 0.5f, new SystemRandomizer()), settings));
+                gameStateManager.Replace(new GameLoadingScreen(
+                    new MidpointDisplacementGenerator(
+                        TankGame.PublicGraphicsDevice,
+                        viewportAdapter.VirtualWidth / 4,
+                        0.5f,
+                        new SystemRandomizer()),
+                    settings));
             }
             if (exitButton.Clicked)
             {

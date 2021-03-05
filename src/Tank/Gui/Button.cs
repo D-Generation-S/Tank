@@ -26,8 +26,6 @@ namespace Tank.Gui
         private SoundEffectInstance hoverEffect;
         private SoundEffectInstance clickEffect;
 
-        
-
         public string Text;
         private readonly SpriteFont font;
 
@@ -134,7 +132,7 @@ namespace Tank.Gui
             currentRightSource = rightButtonSource;
 
             Clicked = false;
-            if (collider.Contains(mouseState.Position))
+            if (collider.Contains(GetMousePosition()))
             {
                 currentLeftSource = leftActiveButtonSource;
                 currentMiddleSource = middleActiveButtonSource;

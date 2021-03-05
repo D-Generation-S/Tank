@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Tank.Adapter;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Spritesheet;
@@ -51,8 +52,17 @@ namespace Tank.GameStates.States
         public override void Draw(GameTime gameTime)
         {
             TankGame.PublicGraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
+            spriteBatch.Begin(
+                SpriteSortMode.Deferred,
+                null,
+                null,
+                null,
+                null,
+                null,
+                GetScaleMatrix()
+                );
             elementToDraw.Draw(gameTime);
+            
             spriteBatch.End();
         }
     }

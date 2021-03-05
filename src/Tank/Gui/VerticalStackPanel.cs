@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Tank.DataStructure.Spritesheet;
+using Tank.Wrapper;
 
 namespace Tank.Gui
 {
@@ -25,13 +26,23 @@ namespace Tank.Gui
             this.centerVertical = centerVertical;
         }
 
+        public override void SetMouseWrapper(MouseWrapper mouseWrapper)
+        {
+            base.SetMouseWrapper(mouseWrapper);
+            foreach(IGuiElement guiElement in Container)
+            {
+                guiElement.SetMouseWrapper(mouseWrapper);
+            }
+        }
+
         public override void AddElement(IGuiElement elementToAdd)
         {
             if (centerVertical)
             {
+                elementToAdd.SetMouseWrapper(mouseWrapper);
                 base.AddElement(elementToAdd);
 
-                Vector2 center = Vector2.UnitY * TankGame.PublicGraphicsDevice.Viewport.Height / 2;
+                Vector2 center = Vector2.UnitY * TankGame.PublicViewportAdapter.VirtualViewport.Height / 2;
                 float totalHeight = 0;
                 foreach (IGuiElement element in Container)
                 {
