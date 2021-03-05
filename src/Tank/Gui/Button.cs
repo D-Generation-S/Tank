@@ -2,68 +2,94 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using Tank.Commands;
-using Tank.DataStructure;
 using Tank.DataStructure.Spritesheet;
 
 namespace Tank.Gui
 {
-    class Button : VisibleUiElement
+    /// <summary>
+    /// A simple button
+    /// </summary>
+    class Button : TextArea
     {
+        /// <summary>
+        /// The last mouse state
+        /// </summary>
         private MouseState lastMouseState;
 
+        /// <summary>
+        /// The normal left button source
+        /// </summary>
         private Rectangle leftButtonSource;
+
+        /// <summary>
+        /// The normal middle button source
+        /// </summary>
         private Rectangle middleButtonSource;
+
+        /// <summary>
+        /// The normal right button soruce
+        /// </summary>
         private Rectangle rightButtonSource;
 
+        /// <summary>
+        /// The hover left button soruce
+        /// </summary>
         private Rectangle leftActiveButtonSource;
+
+        /// <summary>
+        /// The hover middle button source
+        /// </summary>
         private Rectangle middleActiveButtonSource;
+
+        /// <summary>
+        /// The hover right button source
+        /// </summary>
         private Rectangle rightActiveButtonSource;
 
-        private Rectangle currentLeftSource;
-        private Rectangle currentMiddleSource;
-        private Rectangle currentRightSource;
 
-        private Position imageSize; 
-
-        private int middlePartCount;
-        private int completeXSize;
-
+        /// <summary>
+        /// Is the button clicked
+        /// </summary>
         public bool Clicked { get; private set; }
+
+        /// <summary>
+        /// wait for the sound to complete
+        /// </summary>
         private bool waitForSound;
 
+        /// <summary>
+        /// The command to use
+        /// </summary>
         private ICommand command;
 
+        /// <inheritdoc/>
         public Button(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spritebatch)
             : base(position, width, textureToShow, spritebatch)
         {
+            lastMouseState = Mouse.GetState();
         }
 
+        /// <inheritdoc/>
         protected override void Setup()
         {
-            middlePartCount = (int)Math.Round((float)width / textureToShow.SingleImageSize.X);
-            middlePartCount = middlePartCount == 0 ? 1 : middlePartCount;
+            base.Setup();
 
             currentLeftSource = leftButtonSource;
             currentMiddleSource = middleButtonSource;
             currentRightSource = rightButtonSource;
-
-            completeXSize = imageSize.X * 2;
-            completeXSize += imageSize.X * middlePartCount;
         }
 
+        /// <summary>
+        /// Set the command to use on click
+        /// </summary>
+        /// <param name="command">The command to use</param>
         public void SetCommand(ICommand command)
         {
             this.command = command;
         }
 
-        protected override void UpdateCollider()
-        {
-            collider = new Rectangle((int)Position.X, (int)Position.Y, completeXSize, imageSize.Y);
-            Size = collider.Size.ToVector2();
-        }
-
+        /// <inheritdoc/>
         protected override void SetupTextures()
         {
             imageSize = textureToShow.GetPatternImageSize("buttonLeft");
@@ -76,49 +102,7 @@ namespace Tank.Gui
             rightActiveButtonSource = textureToShow.GetAreaFromPatternName("ButtonActiveRight");
         }
 
-        public override void Draw(GameTime gameTime)
-        {
-            spriteBatch.Draw(
-                textureToShow.CompleteImage,
-                new Rectangle((int)Position.X, (int)Position.Y, imageSize.X, imageSize.Y),
-                currentLeftSource,
-                Color.White
-                );
-
-            for (int i = 0; i < middlePartCount; i++)
-            {
-                int index = i + 1;
-                spriteBatch.Draw(
-                    textureToShow.CompleteImage,
-                    new Rectangle((int)Position.X + imageSize.X * index, (int)Position.Y, imageSize.X, imageSize.Y),
-                    currentMiddleSource,
-                    Color.White
-                    );
-            }
-
-            int xPosition = (int)Position.X + imageSize.X * 2;
-            xPosition += imageSize.X * (middlePartCount - 1);
-            spriteBatch.Draw(
-                textureToShow.CompleteImage,
-                new Rectangle(xPosition, (int)Position.Y, imageSize.X, imageSize.Y),
-                currentRightSource,
-                Color.White
-                );
-
-            if (font == null)
-            {
-                return;
-            }
-            Vector2 textPosition = Position;
-            textPosition.X += imageSize.X;
-            Vector2 textSize = GetTextLenght(text, font);
-            textPosition += Vector2.UnitY * textSize.Y;
-            float middleSize = imageSize.X * middlePartCount;
-            textPosition.X += middleSize / 2;
-            textPosition -= Vector2.UnitX * textSize.X / 2;
-            spriteBatch.DrawString(font, text, textPosition, Color.Black);
-        }
-
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             MouseState mouseState = Mouse.GetState();
@@ -135,14 +119,14 @@ namespace Tank.Gui
                 currentRightSource = rightActiveButtonSource;
                 if (hoverSound != null 
                     && !collider.Contains(mouseWrapper.GetPosition(lastMouseState.Position)) 
-                    && hoverSound.State != SoundState.Playing)
+                    && hoverSoundInstance.State != SoundState.Playing)
                 {
                     hoverSound.Play();
                 }
 
-                if (mouseState.LeftButton == ButtonState.Pressed && !waitForSound)
+                if (mouseState.LeftButton == ButtonState.Pressed && lastMouseState.LeftButton == ButtonState.Released && !waitForSound)
                 {
-                    if (clickSound != null && clickSound.State != SoundState.Playing)
+                    if (clickSound != null && clickSoundInstance.State != SoundState.Playing)
                     {
                         clickSound.Play();
                         waitForSound = true;
@@ -152,7 +136,7 @@ namespace Tank.Gui
                 }
             }
 
-            if (waitForSound && clickSound.State == SoundState.Stopped)
+            if (waitForSound && clickSoundInstance.State == SoundState.Stopped)
             {
                 waitForSound = false;
                 if (command != null && command.CanExecute())

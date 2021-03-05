@@ -67,14 +67,14 @@ namespace Tank.Gui
                 sourceToDraw = Checked ? checkedHoverSource : uncheckedHoverSource;
                 if (hoverSound != null
                     && !collider.Contains(mouseWrapper.GetPosition(lastMouseState.Position))
-                    && hoverSound.State != SoundState.Playing)
+                    && hoverSoundInstance.State != SoundState.Playing)
                 {
                     hoverSound.Play();
                 }
 
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed && lastMouseState.LeftButton == ButtonState.Released)
                 {
-                    if (clickSound != null && clickSound.State != SoundState.Playing)
+                    if (clickSound != null && clickSoundInstance.State != SoundState.Playing)
                     {
                         clickSound.Play();
                     }

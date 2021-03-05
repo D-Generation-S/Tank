@@ -17,8 +17,10 @@ namespace Tank.Gui
         protected Rectangle collider;
         protected Vector2 renderOffset;
 
-        protected SoundEffectInstance clickSound;
-        protected SoundEffectInstance hoverSound;
+        protected SoundEffect clickSound;
+        protected SoundEffectInstance clickSoundInstance;
+        protected SoundEffect hoverSound;
+        protected SoundEffectInstance hoverSoundInstance;
 
         public VisibleUiElement(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch) : base(position, width)
         {
@@ -45,31 +47,33 @@ namespace Tank.Gui
 
         protected abstract void UpdateCollider();
 
-        public void SetClickEffect(SoundEffect clickSound)
+        public virtual void SetClickEffect(SoundEffect clickSound)
         {
             if (clickSound == null)
             {
                 return;
             }
-            this.clickSound = clickSound.CreateInstance();
+            this.clickSound = clickSound;
+            clickSoundInstance = clickSound.CreateInstance();
         }
 
-        public void SetHoverEffect(SoundEffect hoverSound)
+        public virtual void SetHoverEffect(SoundEffect hoverSound)
         {
             if (hoverSound == null)
             {
                 return;
             }
-            this.hoverSound = hoverSound.CreateInstance();
+            this.hoverSound = hoverSound;
+            hoverSoundInstance = hoverSound.CreateInstance();
         }
 
-        public void SetText(string text)
+        public virtual void SetText(string text)
         {
             this.text = text;
             UpdateCollider();
         }
 
-        public void SetFont(SpriteFont font)
+        public virtual void SetFont(SpriteFont font)
         {
             this.font = font;
         }

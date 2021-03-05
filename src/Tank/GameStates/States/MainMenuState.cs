@@ -8,6 +8,7 @@ using Tank.Commands;
 using Tank.Commands.GameManager;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
+using Tank.DataStructure;
 using Tank.DataStructure.Spritesheet;
 using Tank.Factories;
 using Tank.Factories.Gui;
@@ -58,8 +59,6 @@ namespace Tank.GameStates.States
                                         settings);
             openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState());
             startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
-
-            
         }
 
         /// <inheritdoc/>
@@ -80,6 +79,7 @@ namespace Tank.GameStates.States
             startGameButton.SetCommand(startGameCommand);
 
             VerticalStackPanel verticalStackPanel = new VerticalStackPanel(new Vector2(0, 0), viewportAdapter.VirtualViewport.Width / 6, 15, true);
+
             verticalStackPanel.AddElement(startGameButton);
             verticalStackPanel.AddElement(openSettings);
             verticalStackPanel.AddElement(exitButton);
