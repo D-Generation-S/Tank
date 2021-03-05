@@ -1,29 +1,56 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Tank.DataStructure.Spritesheet;
 using Tank.Wrapper;
 
 namespace Tank.Gui
 {
+    /// <summary>
+    /// A panel which stacks ui elements on top of each other
+    /// </summary>
     class VerticalStackPanel : Panel
     {
+        /// <summary>
+        /// Center of the stack panel
+        /// </summary>
         private readonly float center;
+
+        /// <summary>
+        /// Space between the elements
+        /// </summary>
         private readonly int elementSpace;
+
+        /// <summary>
+        /// Should center the elements on the vertical center
+        /// </summary>
         private readonly bool centerVertical;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="width">The width of the class</param>
+        /// <param name="elementSpace">The space between the elements</param>
         public VerticalStackPanel(int width, int elementSpace)
     : this(Vector2.Zero, width, elementSpace)
         {
         }
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="position">The position of the panel</param>
+        /// <param name="width">The width of the class</param>
+        /// <param name="elementSpace">The space between the elements</param>
         public VerticalStackPanel(Vector2 position, int width, int elementSpace)
             :this(position, width, elementSpace, false)
         {
         }
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="position">The position of the panel</param>
+        /// <param name="width">The width of the class</param>
+        /// <param name="elementSpace">The space between the elements</param>
+        /// <param name="centerVertical">Should place elements on vertical middle</param>
         public VerticalStackPanel(Vector2 position, int width, int elementSpace, bool centerVertical) : base(position, width)
         {
             center = width / 2;
@@ -31,6 +58,7 @@ namespace Tank.Gui
             this.centerVertical = centerVertical;
         }
 
+        /// <inheritdoc/>
         public override void SetMouseWrapper(MouseWrapper mouseWrapper)
         {
             base.SetMouseWrapper(mouseWrapper);
@@ -40,6 +68,7 @@ namespace Tank.Gui
             }
         }
 
+        /// <inheritdoc/>
         public override void AddElement(IGuiElement elementToAdd)
         {
             elementToAdd.SetMouseWrapper(mouseWrapper);

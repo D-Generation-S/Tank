@@ -47,7 +47,6 @@ namespace Tank.Gui
         /// </summary>
         private Rectangle rightActiveButtonSource;
 
-
         /// <summary>
         /// Is the button clicked
         /// </summary>

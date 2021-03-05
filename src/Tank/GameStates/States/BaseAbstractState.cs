@@ -47,6 +47,10 @@ namespace Tank.GameStates.States
             Initialized = true;
         }
 
+        /// <summary>
+        /// Get the current scale matrix
+        /// </summary>
+        /// <returns></returns>
         protected Matrix GetScaleMatrix()
         {
             return viewportAdapter.GetScaleMatrix();

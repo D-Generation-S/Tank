@@ -71,6 +71,7 @@ namespace Tank.GameStates.States
             elementToDraw = verticalStackPanel;
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

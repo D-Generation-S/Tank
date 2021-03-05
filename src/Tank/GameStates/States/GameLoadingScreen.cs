@@ -27,6 +27,10 @@ namespace Tank.GameStates.States
         /// The game settings to use
         /// </summary>
         private readonly GameSettings gameSettings;
+
+        /// <summary>
+        /// The data loader to use
+        /// </summary>
         private readonly IDataLoader<SpriteSheet> dataLoader;
 
         /// <summary>
@@ -39,7 +43,14 @@ namespace Tank.GameStates.States
         /// </summary>
         private SpriteSheet spritesheetToUse;
 
+        /// <summary>
+        /// Is loading complete
+        /// </summary>
         private bool loadingComplete;
+
+        /// <summary>
+        /// The map to use
+        /// </summary>
         private IMap map;
 
         /// <summary>
@@ -99,6 +110,7 @@ namespace Tank.GameStates.States
             });
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             if (loadingComplete)

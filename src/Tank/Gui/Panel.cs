@@ -1,21 +1,32 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Tank.DataStructure.Spritesheet;
 
 namespace Tank.Gui
 {
+    /// <summary>
+    /// Base class for all panel type ui elements
+    /// </summary>
     class Panel : UiElement
     {
+        /// <summary>
+        /// A list with all the sub elements
+        /// </summary>
         public List<IGuiElement> Container { get; }
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="position">The position to use</param>
+        /// <param name="width">The width of the element</param>
         public Panel(Vector2 position, int width) : base(position, width)
         {
             Container = new List<IGuiElement>();
         }
 
+        /// <summary>
+        /// Add a new element to the container
+        /// </summary>
+        /// <param name="elementToAdd">The element to add</param>
         public virtual void AddElement(IGuiElement elementToAdd)
         {
             if (Container.Contains(elementToAdd))
@@ -35,6 +46,7 @@ namespace Tank.Gui
             return Container.Find(item => item.Name == name);
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
             foreach (IGuiElement guiElement in Container)
@@ -43,6 +55,7 @@ namespace Tank.Gui
             }
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             foreach (IGuiElement guiElement in Container)

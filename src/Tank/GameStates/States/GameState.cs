@@ -209,11 +209,13 @@ namespace Tank.GameStates.States
             debugIdGenerated = false;
         }
 
+        /// <inheritdoc/>
         public override void Suspend()
         {
             engine.Suspend();
         }
 
+        /// <inheritdoc/>
         public override void Restore()
         {
             newState = true;

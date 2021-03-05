@@ -2,30 +2,68 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Tank.DataStructure;
 using Tank.DataStructure.Spritesheet;
 
 namespace Tank.Gui
 {
+    /// <summary>
+    /// Simple checkbox class
+    /// </summary>
     class Checkbox : VisibleUiElement
     {
+        /// <summary>
+        /// The last known mouse state
+        /// </summary>
         private MouseState lastMouseState;
 
+        /// <summary>
+        /// Is the box currently checked
+        /// </summary>
         public bool Checked;
 
+        /// <summary>
+        /// The area to use if not checked and not hovered
+        /// </summary>
         private Rectangle uncheckedSource;
+
+        /// <summary>
+        /// The area to use if not checked but hovered
+        /// </summary>
         private Rectangle uncheckedHoverSource;
+        
+        /// <summary>
+        /// The area to use if checked but not hovered
+        /// </summary>
         private Rectangle checkedSource;
+
+        /// <summary>
+        /// The area to use if checked and hovered
+        /// </summary>
         private Rectangle checkedHoverSource;
+
+        /// <summary>
+        /// The current source to draw
+        /// </summary>
         private Rectangle sourceToDraw;
 
+        /// <summary>
+        /// The space between the checkbox and the text
+        /// </summary>
         private readonly int boxTextSpace;
 
+        /// <summary>
+        /// The size of a single image
+        /// </summary>
         private Position imageSize;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="position">The position to place this element</param>
+        /// <param name="width">The width of the element</param>
+        /// <param name="textureToShow">The texture to use</param>
+        /// <param name="spriteBatch">The spritebatch for drawing call</param>
         public Checkbox(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch) : base(position, width, textureToShow, spriteBatch)
         {
             boxTextSpace = 10;
@@ -104,7 +142,5 @@ namespace Tank.Gui
             textPosition.Y -= GetTextLenght(text, font).Y / 2;
             spriteBatch.DrawString(font, text, textPosition, Color.White);
         }
-
-
     }
 }
