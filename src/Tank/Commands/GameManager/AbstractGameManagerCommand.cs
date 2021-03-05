@@ -7,6 +7,9 @@ namespace Tank.Commands.GameManager
     /// </summary>
     abstract class AbstractGameManagerCommand : ICommand
     {
+        /// <summary>
+        /// The game state manager to use
+        /// </summary>
         protected readonly GameStateManager gameStateManager;
 
         /// <summary>
@@ -24,6 +27,7 @@ namespace Tank.Commands.GameManager
             return gameStateManager != null;
         }
 
+        /// <inheritdoc/>
         public abstract void Execute();
     }
 }

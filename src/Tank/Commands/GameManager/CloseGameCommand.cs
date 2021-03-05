@@ -2,6 +2,9 @@
 
 namespace Tank.Commands.GameManager
 {
+    /// <summary>
+    /// Close the game command
+    /// </summary>
     class CloseGameCommand : AbstractGameManagerCommand
     {
         /// <summary>
