@@ -94,7 +94,7 @@ namespace Tank.Systems
 
                 TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
                     playerStartPosition,
-                    contentManager.Content.Load<Texture2D>("Images/Entities/BasicTank"),
+                    contentManager.Load<Texture2D>("Images/Entities/BasicTank"),
                     animationFrames
                  );
                 tankObjectBuilder.Init(entityManager);
@@ -104,7 +104,7 @@ namespace Tank.Systems
             arrowEntity = entityManager.CreateEntity(false);
             entityManager.CreateComponent<PlaceableComponent>(arrowEntity);
             VisibleComponent arrowVisible = entityManager.CreateComponent<VisibleComponent>(arrowEntity);
-            arrowVisible.Texture = contentManager.Content.Load<Texture2D>("Images/Entities/BasicTank");
+            arrowVisible.Texture = contentManager.Load<Texture2D>("Images/Entities/BasicTank");
             arrowVisible.Destination = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
             arrowVisible.Source = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
             arrowVisible.DrawMiddle = true;

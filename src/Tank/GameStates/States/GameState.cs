@@ -156,15 +156,15 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void LoadContent()
         {
-            bulletTestExplosion = contentWrapper.Content.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
-            bulletTest = contentWrapper.Content.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
-            pixelTexture = contentWrapper.Content.Load<Texture2D>("Images/Entities/Pixel");
-            explosionSounds.Add(contentWrapper.Content.Load<SoundEffect>("Sound/Effects/Explosion1"));
-            explosionSounds.Add(contentWrapper.Content.Load<SoundEffect>("Sound/Effects/Explosion2"));
-            explosionSounds.Add(contentWrapper.Content.Load<SoundEffect>("Sound/Effects/Explosion3"));
-            explosionSounds.Add(contentWrapper.Content.Load<SoundEffect>("Sound/Effects/Explosion4"));
-            defaultShader = contentWrapper.Content.Load<Effect>("Shaders/Default");
-            gameFont = contentWrapper.Content.Load<SpriteFont>("gameFont");
+            bulletTestExplosion = contentWrapper.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
+            bulletTest = contentWrapper.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
+            pixelTexture = contentWrapper.Load<Texture2D>("Images/Entities/Pixel");
+            explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion1"));
+            explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion2"));
+            explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion3"));
+            explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion4"));
+            defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
+            gameFont = contentWrapper.Load<SpriteFont>("gameFont");
         }
 
         /// <inheritdoc/>

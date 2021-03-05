@@ -13,12 +13,6 @@ namespace Tank.Wrapper
         private readonly ContentManager contentManager;
 
         /// <summary>
-        /// Read access to the Monogame content manager
-        /// </summary>
-        [System.Obsolete]
-        public ContentManager Content => contentManager;
-
-        /// <summary>
         /// Create a new instance of the wrapper
         /// </summary>
         /// <param name="contentManager"></param>
