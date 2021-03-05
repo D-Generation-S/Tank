@@ -144,6 +144,24 @@ namespace Tank.EntityComponentSystem.Manager
         }
 
         /// <inheritdoc/>
+        public void Suspend()
+        {
+            foreach (ISystem system in systems)
+            {
+                system.Suspend();
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Restore()
+        {
+            foreach (ISystem system in systems)
+            {
+                system.Restore();
+            }
+        }
+
+        /// <inheritdoc/>
         public void Clear()
         {
             locked = true;
@@ -157,6 +175,7 @@ namespace Tank.EntityComponentSystem.Manager
             EntityManager.Clear();
             locked = false;
         }
+
 
     }
 }

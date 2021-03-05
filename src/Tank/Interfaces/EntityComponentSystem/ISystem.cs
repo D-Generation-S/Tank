@@ -36,5 +36,15 @@ namespace Tank.Interfaces.EntityComponentSystem
         /// </summary>
         /// <param name="gameTime">The current GameTime</param>
         void Draw(GameTime gameTime);
+
+        /// <summary>
+        /// Suspend this system
+        /// </summary>
+        void Suspend();
+
+        /// <summary>
+        /// Restore this system
+        /// </summary>
+        void Restore();
     }
 }

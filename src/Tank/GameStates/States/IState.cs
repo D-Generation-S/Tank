@@ -1,7 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Tank.Adapter;
 using Tank.Wrapper;
 
-namespace Tank.GameStates
+namespace Tank.GameStates.States
 {
     /// <summary>
     /// Interface for the current game state
@@ -24,6 +26,7 @@ namespace Tank.GameStates
         /// </summary>
         /// <param name="contentWrapper">The content wrapper to use</param>
         /// <param name="spriteBatch">Sprite batch to use for drawing</param>
+        /// <param name="viewportAdapter">The viewport adapter to use</param>
         void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch);
 
         /// <summary>
@@ -35,6 +38,16 @@ namespace Tank.GameStates
         /// Set this state to active, this is called right before the state goes live
         /// </summary>
         void SetActive();
+
+        /// <summary>
+        /// Restore this state
+        /// </summary>
+        void Restore();
+
+        /// <summary>
+        /// Suspend this state
+        /// </summary>
+        void Suspend();
 
         /// <summary>
         /// State is getting deleted

@@ -5,8 +5,8 @@ using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataStructure.Geometrics;
+using Tank.Factories;
 using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.Factories;
 
 namespace Tank.Builders
 {
@@ -38,7 +38,7 @@ namespace Tank.Builders
         /// <summary>
         /// The explosion factory to use
         /// </summary>
-        private readonly IGameObjectFactory explosionFactory;
+        private readonly IFactory<List<IComponent>> explosionFactory;
 
         /// <summary>
         /// The area to make some damage
@@ -59,7 +59,7 @@ namespace Tank.Builders
         public BaseBulletBuilder(
             List<Rectangle> animationFrames,
             Texture2D texture,
-            IGameObjectFactory explosionFactory
+            IFactory<List<IComponent>> explosionFactory
             )
         {
             collider = new Rectangle(0, 0, 16, 16);

@@ -30,7 +30,9 @@ namespace Tank.DataStructure.Spritesheet
         /// </summary>
         private int distanceBetweenImages;
 
-
+        /// <summary>
+        /// The patterns on this spritesheet
+        /// </summary>
         private List<SpriteSheetPattern> patterns;
 
         /// <summary>
@@ -89,7 +91,7 @@ namespace Tank.DataStructure.Spritesheet
         /// </summary>
         /// <param name="name">The name of the pattern</param>
         /// <returns>The texture image data</returns>
-        public FlattenArray<Color> GetTextureByName(string name)
+        public FlattenArray<Color> GetColorByName(string name)
         {
             SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Name == name);
             return GetColorFromPattern(pattern);
@@ -101,10 +103,62 @@ namespace Tank.DataStructure.Spritesheet
         /// <param name="x">The x position</param>
         /// <param name="y">The y position</param>
         /// <returns></returns>
-        public FlattenArray<Color> GetTextureByPosition(int x, int y)
+        public FlattenArray<Color> GetColorByPosition(int x, int y)
         {
-            return null;
+            SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Position.X == x && pattern.Position.Y == y);
+            return GetColorFromPattern(pattern);
         }
+
+        /// <summary>
+        /// Get a specific area defined by the pattern
+        /// </summary>
+        /// <param name="name">The name of the pattern</param>
+        /// <returns>The usable rectangle</returns>
+        public Rectangle GetAreaFromPatternName(string name)
+        {
+            SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Name == name);
+            return GetAreaFromPattern(pattern);
+        }
+
+        /// <summary>
+        /// Get a specific area defined by the pattern
+        /// </summary>
+        /// <param name="pattern">The pattern to get the data from</param>
+        /// <returns>The usable rectangle</returns>
+        public Rectangle GetAreaFromPattern(SpriteSheetPattern pattern)
+        {
+            if (pattern == null)
+            {
+                return Rectangle.Empty;
+            }
+            Position imageSize = pattern.SizeOverwritten ? pattern.PatternSizeOverwrite : SingleImageSize;
+            int startPositionX = pattern.Position.X * imageSize.X;
+            int startPositionY = pattern.Position.Y * imageSize.Y;
+
+            return new Rectangle(startPositionX, startPositionY, imageSize.X, imageSize.Y);
+        }
+
+        /// <summary>
+        /// Get the pattern image size
+        /// </summary>
+        /// <param name="name">The name of the pattern</param>
+        /// <returns>The size of the image</returns>
+        public Position GetPatternImageSize(string name)
+        {
+            SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Name == name);
+            return GetPatternImageSize(pattern);
+        }
+
+        /// <summary>
+        /// Get the pattern image size
+        /// </summary>
+        /// <param name="pattern">The pattern to get the data from</param>
+        /// <returns>The size of the image</returns>
+        public Position GetPatternImageSize(SpriteSheetPattern pattern)
+        {
+            return pattern != null && pattern.SizeOverwritten ? pattern.PatternSizeOverwrite : SingleImageSize;
+        }
+
 
         /// <summary>
         /// Get the color from the pattern
@@ -118,7 +172,8 @@ namespace Tank.DataStructure.Spritesheet
                 return null;
             }
 
-            Position startPosition = SingleImageSize * pattern.position;
+            Position imageSize = pattern.SizeOverwritten ? pattern.PatternSizeOverwrite : SingleImageSize; 
+            Position startPosition = imageSize * pattern.Position;
             return GetColorFromSpriteAsFlatten(startPosition);
         }
 

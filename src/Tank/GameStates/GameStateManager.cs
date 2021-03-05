@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using Tank.Adapter;
+using Tank.GameStates.States;
 using Tank.Wrapper;
 
 namespace Tank.GameStates
@@ -23,18 +25,39 @@ namespace Tank.GameStates
         /// <summary>
         /// The spritebatch to use for state init
         /// </summary>
-        private readonly SpriteBatch spriteBatch;        
+        private readonly SpriteBatch spriteBatch;
+
+        /// <summary>
+        /// The viewport adapter to use
+        /// </summary>
+        private IViewportAdapter viewportAdapter => TankGame.PublicViewportAdapter;
+
+        /// <summary>
+        /// Is there a game state available
+        /// </summary>
+        public bool StateAvailable { get; private set; }
 
         /// <summary>
         /// Create a new instance of this class
         /// </summary>
         /// <param name="contentWrapper">The content wrapper to use</param>
         /// <param name="spriteBatch">The spritebatch to use</param>
+        /// <param name="viewportAdapter">The viewport adapter to use</param>
         public GameStateManager(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
             stateStack = new Stack<IState>();
             this.contentWrapper = contentWrapper;
             this.spriteBatch = spriteBatch;
+        }
+
+        /// <summary>
+        /// Clear all the states and add a new one
+        /// </summary>
+        /// <param name="state">The new only state to add</param>
+        public void ResetState(IState state)
+        {
+            Clear();
+            Add(state);
         }
 
         /// <summary>
@@ -54,6 +77,10 @@ namespace Tank.GameStates
                 state.Initialize(contentWrapper, spriteBatch);
                 state.LoadContent();
                 state.SetActive();
+            }
+            if (stateStack.Count > 0 )
+            {
+                stateStack.Peek().Suspend();
             }
             stateStack.Push(state);
             return true;
@@ -82,7 +109,19 @@ namespace Tank.GameStates
             }
             IState state = stateStack.Pop();
             state.Destruct();
+            if (stateStack.Count > 0)
+            {
+                stateStack.Peek().Restore();
+            }
             return;
+        }
+
+        /// <summary>
+        /// Clear the whole game state manager
+        /// </summary>
+        public void Clear()
+        {
+            stateStack.Clear();
         }
 
         /// <inheritdoc/>
@@ -90,10 +129,12 @@ namespace Tank.GameStates
         {
             if (stateStack.Count == 0)
             {
+                StateAvailable = false;
                 return;
             }
             IState currentState = stateStack.Peek();
             currentState.Draw(gameTime);
+            StateAvailable = true;
         }
 
         /// <inheritdoc/>
@@ -101,10 +142,12 @@ namespace Tank.GameStates
         {
             if (stateStack.Count == 0)
             {
+                StateAvailable = false;
                 return;
             }
             IState currentState = stateStack.Peek();
             currentState.Update(gameTime);
+            StateAvailable = true;
         }
     }
 }

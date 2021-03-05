@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
-using Tank.Interfaces.Factories;
 using Tank.Interfaces.Randomizer;
 
 namespace Tank.Factories
@@ -8,7 +7,7 @@ namespace Tank.Factories
     /// <summary>
     /// This class will return you a random sound effect from a pool
     /// </summary>
-    class RandomSoundFactory : ISoundFactory
+    class RandomSoundFactory : IFactory<SoundEffect>
     {
         /// <summary>
         /// A list with all the possible sound effects
@@ -32,7 +31,7 @@ namespace Tank.Factories
         }
 
         /// <inheritdoc/>
-        public SoundEffect GetRandomSoundEffect()
+        public SoundEffect GetNewObject()
         {
             if (soundEffects == null)
             {

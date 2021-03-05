@@ -1,5 +1,7 @@
-﻿using Tank.DataStructure.Geometrics;
-using Tank.Interfaces.Factories;
+﻿using System.Collections.Generic;
+using Tank.DataStructure.Geometrics;
+using Tank.Factories;
+using Tank.Interfaces.EntityComponentSystem;
 
 namespace Tank.Components
 {
@@ -21,7 +23,7 @@ namespace Tank.Components
         /// <summary>
         /// Public access to the effect factory
         /// </summary>
-        public IGameObjectFactory EffectFactory { get; set;  }
+        public IFactory<List<IComponent>> EffectFactory { get; set;  }
 
         /// <summary>
         /// Public access to the bool if this is a explosive

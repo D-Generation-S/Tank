@@ -68,6 +68,18 @@
 /processorParam:TextureFormat=Color
 /build:../Assets/Images/Entities/Pixel.png;Images/Entities/Pixel.png
 
+#begin ../Assets/Images/Gui/WindowSpriteSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../Assets/Images/Gui/WindowSpriteSheet.png;Images/Gui/WindowSpriteSheet.png
+
 #begin ../Assets/Images/Pixel.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -181,4 +193,16 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:../Assets/Sound/Effects/Explosion4.wav;Sound/Effects/Explosion4.wav
+
+#begin ../Assets/Sound/Effects/UiClick.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Effects/UiClick.wav;Sound/Effects/UiClick.wav
+
+#begin ../Assets/Sound/Effects/UiHover.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Effects/UiHover.wav;Sound/Effects/UiHover.wav
 

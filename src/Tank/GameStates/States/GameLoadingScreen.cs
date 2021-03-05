@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Threading.Tasks;
+using Tank.Adapter;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure;
@@ -25,6 +27,10 @@ namespace Tank.GameStates.States
         /// The game settings to use
         /// </summary>
         private readonly GameSettings gameSettings;
+
+        /// <summary>
+        /// The data loader to use
+        /// </summary>
         private readonly IDataLoader<SpriteSheet> dataLoader;
 
         /// <summary>
@@ -36,6 +42,16 @@ namespace Tank.GameStates.States
         /// The spritesheet to use for the map
         /// </summary>
         private SpriteSheet spritesheetToUse;
+
+        /// <summary>
+        /// Is loading complete
+        /// </summary>
+        private bool loadingComplete;
+
+        /// <summary>
+        /// The map to use
+        /// </summary>
+        private IMap map;
 
         /// <summary>
         /// Create a new instance of this class
@@ -58,6 +74,7 @@ namespace Tank.GameStates.States
             this.mapGenerator = mapGenerator;
             this.gameSettings = gameSettings;
             this.dataLoader = dataLoader;
+            loadingComplete = false;
         }
 
 
@@ -77,19 +94,30 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void SetActive()
         {
+            base.SetActive();
             Task<IMap> mapCreatingTask = mapGenerator.AsyncGenerateNewMap(
                 new Position(
-                    1440,
-                    900
+                    viewportAdapter.VirtualWidth,
+                    viewportAdapter.VirtualHeight
                 ),
                 new DefaultTextureizer(spritesheetToUse),
                 gameSettings.MapSeed
             );
             mapCreatingTask.ContinueWith((antecedent) =>
             {
-                IState gameState = new GameState(antecedent.Result, gameSettings);
-                gameStateManager.Replace(gameState);
+                map = antecedent.Result;
+                loadingComplete = true;
             });
+        }
+
+        /// <inheritdoc/>
+        public override void Update(GameTime gameTime)
+        {
+            if (loadingComplete)
+            {
+                IState gameState = new GameState(map, gameSettings);
+                gameStateManager.Replace(gameState);
+            }
         }
     }
 }

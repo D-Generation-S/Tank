@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.Factories;
 using Tank.Interfaces.Randomizer;
 
 namespace Tank.Factories
@@ -9,7 +8,7 @@ namespace Tank.Factories
     /// <summary>
     /// This class will randomly pick explosions from the builder list provided to the class
     /// </summary>
-    class RandomExplosionFactory : IGameObjectFactory
+    class RandomExplosionFactory : IFactory<List<IComponent>>
     {
         /// <summary>
         /// All the builders the factory can pick one from
@@ -31,11 +30,8 @@ namespace Tank.Factories
             this.randomizer = randomizer;
         }
 
-        /// <summary>
-        /// Get all the components from a new explosion
-        /// </summary>
-        /// <returns>A list of components making up a explosion</returns>
-        public List<IComponent> GetGameObjects()
+        /// <inheritdoc/>
+        public List<IComponent> GetNewObject()
         {
             if (randomizer == null)
             {

@@ -69,5 +69,15 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <returns>The number of active systems</returns>
         int GetSystemCount();
+
+        /// <summary>
+        /// The engine got suspended
+        /// </summary>
+        void Suspend();
+
+        /// <summary>
+        /// Restore this engine from sleet
+        /// </summary>
+        void Restore();
     }
 }

@@ -295,5 +295,14 @@ namespace Tank.Systems
         {
         }
 
+        /// <inheritdoc/>
+        public virtual void Suspend()
+        {
+        }
+
+        /// <inheritdoc/>
+        public virtual void Restore()
+        {
+        }
     }
 }

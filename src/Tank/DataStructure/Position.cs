@@ -4,7 +4,7 @@ namespace Tank.DataStructure
 {
     /// <summary>
     /// This class represents a position on the screen
-    /// </summary>
+    /// </summary>   
     public class Position
     {
         /// <summary>
