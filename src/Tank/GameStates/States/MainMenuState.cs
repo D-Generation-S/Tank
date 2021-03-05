@@ -9,6 +9,8 @@ using Tank.Commands.GameManager;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Spritesheet;
+using Tank.Factories;
+using Tank.Factories.Gui;
 using Tank.GameStates.Data;
 using Tank.Gui;
 using Tank.Map.Generators;
@@ -22,10 +24,6 @@ namespace Tank.GameStates.States
     /// </summary>
     class MainMenuState : AbstractMenuScreen
     {
-        /// <summary>
-        /// The stack panel to use for data preperation
-        /// </summary>
-        private VerticalStackPanel verticalStackPanel;
 
         /// <summary>
         /// The close game command
@@ -36,6 +34,11 @@ namespace Tank.GameStates.States
         /// The start game command
         /// </summary>
         private ICommand startGameCommand;
+
+        /// <summary>
+        /// Open the setting menu
+        /// </summary>
+        private ICommand openSettingCommand;
 
         /// <inheritdoc/>
         public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
@@ -53,25 +56,32 @@ namespace Tank.GameStates.States
                                             0.5f,
                                             new SystemRandomizer()),
                                         settings);
+            openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState());
             startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
+
+            
         }
 
         /// <inheritdoc/>
         public override void SetActive()
         {
             base.SetActive();
-            Button exitButton = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
-            exitButton.Text = "Exit game";
-            exitButton.SetClickEffect(buttonClick);
+            IFactory<Button> buttonFactory = new ButtonFactory(baseFont, guiSprite, spriteBatch, 100, Vector2.Zero, buttonClick, buttonHover);
+            Button exitButton = buttonFactory.GetNewObject();
+            exitButton.SetText("Exit game");
             exitButton.SetCommand(closeGameCommand);
 
-            Button startGameButton = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
-            startGameButton.Text = "Start game";
-            startGameButton.SetClickEffect(buttonClick);
+            Button openSettings = buttonFactory.GetNewObject();
+            openSettings.SetText("Settings");
+            openSettings.SetCommand(openSettingCommand);
+
+            Button startGameButton = buttonFactory.GetNewObject();
+            startGameButton.SetText("Start game");
             startGameButton.SetCommand(startGameCommand);
 
-            verticalStackPanel = new VerticalStackPanel(new Vector2(0, 0), viewportAdapter.VirtualViewport.Width / 6, 15, true);
+            VerticalStackPanel verticalStackPanel = new VerticalStackPanel(new Vector2(0, 0), viewportAdapter.VirtualViewport.Width / 6, 15, true);
             verticalStackPanel.AddElement(startGameButton);
+            verticalStackPanel.AddElement(openSettings);
             verticalStackPanel.AddElement(exitButton);
             verticalStackPanel.SetMouseWrapper(mouseWrapper);
 

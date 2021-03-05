@@ -14,6 +14,11 @@ namespace Tank.Gui
         private readonly int elementSpace;
         private readonly bool centerVertical;
 
+        public VerticalStackPanel(int width, int elementSpace)
+    : this(Vector2.Zero, width, elementSpace)
+        {
+        }
+
         public VerticalStackPanel(Vector2 position, int width, int elementSpace)
             :this(position, width, elementSpace, false)
         {
@@ -37,9 +42,9 @@ namespace Tank.Gui
 
         public override void AddElement(IGuiElement elementToAdd)
         {
+            elementToAdd.SetMouseWrapper(mouseWrapper);
             if (centerVertical)
             {
-                elementToAdd.SetMouseWrapper(mouseWrapper);
                 base.AddElement(elementToAdd);
 
                 Vector2 center = Vector2.UnitY * TankGame.PublicViewportAdapter.VirtualViewport.Height / 2;

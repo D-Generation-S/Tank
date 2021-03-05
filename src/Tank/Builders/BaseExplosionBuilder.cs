@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tank.Components;
 using Tank.Components.Forces;
 using Tank.Components.Rendering;
-using Tank.Interfaces.Builders;
+using Tank.Factories;
 using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.Factories;
 
 namespace Tank.Builders
 {
@@ -23,7 +23,7 @@ namespace Tank.Builders
         /// <summary>
         /// A factory to create sounds for this effect
         /// </summary>
-        private readonly ISoundFactory soundFactory;
+        private readonly IFactory<SoundEffect> soundFactory;
 
         /// <summary>
         /// The list with all the animations frames to use
@@ -66,7 +66,7 @@ namespace Tank.Builders
         public BaseExplosionBuilder(
             Texture2D spriteSheet,
             List<Rectangle> animationFrames,
-            ISoundFactory soundFactory
+            IFactory<SoundEffect> soundFactory
             )
         {
             this.spriteSheet = spriteSheet;
@@ -104,7 +104,7 @@ namespace Tank.Builders
             if (soundFactory != null)
             {
                 SoundEffectComponent soundEffect = entityManager.CreateComponent<SoundEffectComponent>();
-                soundEffect.SoundEffect = soundFactory.GetRandomSoundEffect();
+                soundEffect.SoundEffect = soundFactory.GetNewObject();
                 soundEffect.RandomPitch = true;
                 returnComponents.Add(soundEffect);
             }

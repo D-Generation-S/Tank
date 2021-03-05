@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Tank.Commands;
 using Tank.Commands.GameManager;
+using Tank.Factories;
+using Tank.Factories.Gui;
 using Tank.Gui;
 using Tank.Wrapper;
 
@@ -22,11 +24,6 @@ namespace Tank.GameStates.States
         /// Command to use to close this screen
         /// </summary>
         private ICommand closeStateCommand;
-
-        /// <summary>
-        /// The stack panel to use for drawing
-        /// </summary>
-        private VerticalStackPanel verticalStackPanel;
 
         /// <summary>
         /// If the state is currently new
@@ -51,17 +48,17 @@ namespace Tank.GameStates.States
         {
             base.SetActive();
             newState = true;
-            Button mainMenu = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
-            mainMenu.Text = "Main menu";
-            mainMenu.SetClickEffect(buttonClick);
+            IFactory<Button> buttonFactory = new ButtonFactory(baseFont, guiSprite, spriteBatch, 100, Vector2.Zero, buttonClick, buttonHover);
+            Button mainMenu = buttonFactory.GetNewObject();
+            mainMenu.SetText("Main menu");
             mainMenu.SetCommand(mainMenuCommand);
 
-            Button back = new Button(Vector2.Zero, 100, guiSprite, spriteBatch, baseFont);
-            back.Text = "Back";
+            Button back = buttonFactory.GetNewObject();
+            back.SetText("Back");
             back.SetClickEffect(buttonClick);
             back.SetCommand(closeStateCommand);
 
-            verticalStackPanel = new VerticalStackPanel(
+            VerticalStackPanel verticalStackPanel = new VerticalStackPanel(
                 new Vector2(0, TankGame.PublicGraphicsDevice.Viewport.Height / 2),
                 TankGame.PublicGraphicsDevice.Viewport.Width,
                 15,

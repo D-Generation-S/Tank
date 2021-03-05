@@ -302,7 +302,7 @@ namespace Tank.GameStates.States
             {
                 uint exposion = engine.EntityManager.CreateEntity();
 
-                foreach (IComponent component in randomExplosionFactory.GetGameObjects())
+                foreach (IComponent component in randomExplosionFactory.GetNewObject())
                 {
                     Circle circle = null;
                     if (component is PlaceableComponent)

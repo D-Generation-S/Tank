@@ -109,24 +109,56 @@ namespace Tank.DataStructure.Spritesheet
             return GetColorFromPattern(pattern);
         }
 
+        /// <summary>
+        /// Get a specific area defined by the pattern
+        /// </summary>
+        /// <param name="name">The name of the pattern</param>
+        /// <returns>The usable rectangle</returns>
         public Rectangle GetAreaFromPatternName(string name)
         {
             SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Name == name);
             return GetAreaFromPattern(pattern);
         }
 
+        /// <summary>
+        /// Get a specific area defined by the pattern
+        /// </summary>
+        /// <param name="pattern">The pattern to get the data from</param>
+        /// <returns>The usable rectangle</returns>
         public Rectangle GetAreaFromPattern(SpriteSheetPattern pattern)
         {
             if (pattern == null)
             {
                 return Rectangle.Empty;
             }
-            int startPositionX = pattern.Position.X * SingleImageSize.X;
-            int startPositionY = pattern.Position.Y * SingleImageSize.Y;
+            Position imageSize = pattern.SizeOverwritten ? pattern.PatternSizeOverwrite : SingleImageSize;
+            int startPositionX = pattern.Position.X * imageSize.X;
+            int startPositionY = pattern.Position.Y * imageSize.Y;
 
-            return new Rectangle(startPositionX, startPositionY, SingleImageSize.X, SingleImageSize.Y);
-
+            return new Rectangle(startPositionX, startPositionY, imageSize.X, imageSize.Y);
         }
+
+        /// <summary>
+        /// Get the pattern image size
+        /// </summary>
+        /// <param name="name">The name of the pattern</param>
+        /// <returns>The size of the image</returns>
+        public Position GetPatternImageSize(string name)
+        {
+            SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Name == name);
+            return GetPatternImageSize(pattern);
+        }
+
+        /// <summary>
+        /// Get the pattern image size
+        /// </summary>
+        /// <param name="pattern">The pattern to get the data from</param>
+        /// <returns>The size of the image</returns>
+        public Position GetPatternImageSize(SpriteSheetPattern pattern)
+        {
+            return pattern != null && pattern.SizeOverwritten ? pattern.PatternSizeOverwrite : SingleImageSize;
+        }
+
 
         /// <summary>
         /// Get the color from the pattern
@@ -140,7 +172,8 @@ namespace Tank.DataStructure.Spritesheet
                 return null;
             }
 
-            Position startPosition = SingleImageSize * pattern.Position;
+            Position imageSize = pattern.SizeOverwritten ? pattern.PatternSizeOverwrite : SingleImageSize; 
+            Position startPosition = imageSize * pattern.Position;
             return GetColorFromSpriteAsFlatten(startPosition);
         }
 

@@ -81,7 +81,7 @@ namespace Tank.Systems
             {
                 return;
             }
-            List<IComponent> components = damageComponent.EffectFactory.GetGameObjects();
+            List<IComponent> components = damageComponent.EffectFactory.GetNewObject();
             foreach (IComponent component in components)
             {
                 if (component is PlaceableComponent placeable)

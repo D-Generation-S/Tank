@@ -42,17 +42,25 @@ namespace Tank.GameStates.States
         {
             guiSprite = spriteSetManager.GetData("GuiSpriteSheet");
             baseFont = contentWrapper.Load<SpriteFont>("gameFont");
-            buttonClick = contentWrapper.Load<SoundEffect>("Sound/Effects/ButtonClick");
-            buttonHover = contentWrapper.Load<SoundEffect>("Sound/Effects/ButtonClick");
+            buttonClick = contentWrapper.Load<SoundEffect>("Sound/Effects/UiClick");
+            buttonHover = contentWrapper.Load<SoundEffect>("Sound/Effects/UiHover");
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (elementToDraw == null)
+            {
+                return;
+            }
             elementToDraw.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
+            if (elementToDraw == null)
+            {
+                return;
+            }
             TankGame.PublicGraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,

@@ -4,13 +4,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Tank.Commands;
+using Tank.DataStructure;
 using Tank.DataStructure.Spritesheet;
 
 namespace Tank.Gui
 {
     class Button : VisibleUiElement
     {
-        MouseState lastMouseState;
+        private MouseState lastMouseState;
 
         private Rectangle leftButtonSource;
         private Rectangle middleButtonSource;
@@ -24,14 +25,9 @@ namespace Tank.Gui
         private Rectangle currentMiddleSource;
         private Rectangle currentRightSource;
 
-        private SoundEffectInstance hoverEffect;
-        private SoundEffectInstance clickEffect;
-
-        public string Text;
-        private readonly SpriteFont font;
+        private Position imageSize; 
 
         private int middlePartCount;
-        private Rectangle collider;
         private int completeXSize;
 
         public bool Clicked { get; private set; }
@@ -39,12 +35,13 @@ namespace Tank.Gui
 
         private ICommand command;
 
-        public Button(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spritebatch, SpriteFont font)
+        public Button(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spritebatch)
             : base(position, width, textureToShow, spritebatch)
         {
-            this.font = font;
-            FillTextures(textureToShow);
+        }
 
+        protected override void Setup()
+        {
             middlePartCount = (int)Math.Round((float)width / textureToShow.SingleImageSize.X);
             middlePartCount = middlePartCount == 0 ? 1 : middlePartCount;
 
@@ -52,11 +49,8 @@ namespace Tank.Gui
             currentMiddleSource = middleButtonSource;
             currentRightSource = rightButtonSource;
 
-            completeXSize = textureToShow.SingleImageSize.X * 2;
-            completeXSize += textureToShow.SingleImageSize.X * middlePartCount;
-            
-            Text = string.Empty;
-            UpdateCollider();
+            completeXSize = imageSize.X * 2;
+            completeXSize += imageSize.X * middlePartCount;
         }
 
         public void SetCommand(ICommand command)
@@ -64,30 +58,15 @@ namespace Tank.Gui
             this.command = command;
         }
 
-        public void SetClickEffect(SoundEffect clickEffect)
+        protected override void UpdateCollider()
         {
-            this.clickEffect = clickEffect.CreateInstance();
-        }
-
-        public void SetHoverEffect(SoundEffect hoverEffect)
-        {
-            this.hoverEffect = hoverEffect.CreateInstance();
-        }
-
-        public override void SetPosition(Vector2 position)
-        {
-            base.SetPosition(position);
-            UpdateCollider();
-        }
-
-        private void UpdateCollider()
-        {
-            collider = new Rectangle((int)Position.X, (int)Position.Y, completeXSize, textureToShow.SingleImageSize.Y);
+            collider = new Rectangle((int)Position.X, (int)Position.Y, completeXSize, imageSize.Y);
             Size = collider.Size.ToVector2();
         }
 
-        private void FillTextures(SpriteSheet textureToShow)
+        protected override void SetupTextures()
         {
+            imageSize = textureToShow.GetPatternImageSize("buttonLeft");
             leftButtonSource = textureToShow.GetAreaFromPatternName("ButtonLeft");
             middleButtonSource = textureToShow.GetAreaFromPatternName("ButtonMiddle");
             rightButtonSource = textureToShow.GetAreaFromPatternName("ButtonRight");
@@ -101,7 +80,7 @@ namespace Tank.Gui
         {
             spriteBatch.Draw(
                 textureToShow.CompleteImage,
-                new Rectangle((int)Position.X, (int)Position.Y, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y),
+                new Rectangle((int)Position.X, (int)Position.Y, imageSize.X, imageSize.Y),
                 currentLeftSource,
                 Color.White
                 );
@@ -111,29 +90,33 @@ namespace Tank.Gui
                 int index = i + 1;
                 spriteBatch.Draw(
                     textureToShow.CompleteImage,
-                    new Rectangle((int)Position.X + textureToShow.SingleImageSize.X * index, (int)Position.Y, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y),
+                    new Rectangle((int)Position.X + imageSize.X * index, (int)Position.Y, imageSize.X, imageSize.Y),
                     currentMiddleSource,
                     Color.White
                     );
             }
 
-            int xPosition = (int)Position.X + textureToShow.SingleImageSize.X * 2;
-            xPosition += textureToShow.SingleImageSize.X * (middlePartCount - 1);
+            int xPosition = (int)Position.X + imageSize.X * 2;
+            xPosition += imageSize.X * (middlePartCount - 1);
             spriteBatch.Draw(
                 textureToShow.CompleteImage,
-                new Rectangle(xPosition, (int)Position.Y, textureToShow.SingleImageSize.X, textureToShow.SingleImageSize.Y),
+                new Rectangle(xPosition, (int)Position.Y, imageSize.X, imageSize.Y),
                 currentRightSource,
                 Color.White
                 );
 
+            if (font == null)
+            {
+                return;
+            }
             Vector2 textPosition = Position;
-            textPosition.X += textureToShow.SingleImageSize.X;
-            Vector2 textSize = GetTextLenght(Text, font);
+            textPosition.X += imageSize.X;
+            Vector2 textSize = GetTextLenght(text, font);
             textPosition += Vector2.UnitY * textSize.Y;
-            float middleSize = textureToShow.SingleImageSize.X * middlePartCount;
+            float middleSize = imageSize.X * middlePartCount;
             textPosition.X += middleSize / 2;
             textPosition -= Vector2.UnitX * textSize.X / 2;
-            spriteBatch.DrawString(font, Text, textPosition, Color.Black);
+            spriteBatch.DrawString(font, text, textPosition, Color.Black);
         }
 
         public override void Update(GameTime gameTime)
@@ -150,18 +133,18 @@ namespace Tank.Gui
                 currentLeftSource = leftActiveButtonSource;
                 currentMiddleSource = middleActiveButtonSource;
                 currentRightSource = rightActiveButtonSource;
-                if (hoverEffect != null 
+                if (hoverSound != null 
                     && !collider.Contains(mouseWrapper.GetPosition(lastMouseState.Position)) 
-                    && clickEffect.State != SoundState.Playing)
+                    && hoverSound.State != SoundState.Playing)
                 {
-                    hoverEffect.Play();
+                    hoverSound.Play();
                 }
 
                 if (mouseState.LeftButton == ButtonState.Pressed && !waitForSound)
                 {
-                    if (clickEffect != null && clickEffect.State != SoundState.Playing)
+                    if (clickSound != null && clickSound.State != SoundState.Playing)
                     {
-                        clickEffect.Play();
+                        clickSound.Play();
                         waitForSound = true;
                         return;
                     }
@@ -169,7 +152,7 @@ namespace Tank.Gui
                 }
             }
 
-            if (waitForSound && clickEffect.State == SoundState.Stopped)
+            if (waitForSound && clickSound.State == SoundState.Stopped)
             {
                 waitForSound = false;
                 if (command != null && command.CanExecute())

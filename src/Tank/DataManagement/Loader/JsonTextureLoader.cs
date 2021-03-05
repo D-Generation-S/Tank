@@ -43,7 +43,7 @@ namespace Tank.DataManagement.Loader
                     Texture2D texture = contentWrapper.Content.Load<Texture2D>(data.TextureName);
                     dataToReturn = new SpriteSheet(texture, data.SingleImageSize, data.DistanceBetweenImages, data.Patterns);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // Could not load the file, return null
                 }

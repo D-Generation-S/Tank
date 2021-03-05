@@ -25,6 +25,16 @@ namespace Tank.Gui
             Container.Add(elementToAdd);
         }
 
+        /// <summary>
+        /// Return a gui element by it's name
+        /// </summary>
+        /// <param name="name">The name of the gui element</param>
+        /// <returns>The gui element or null</returns>
+        public IGuiElement GetElementByName(string name)
+        {
+            return Container.Find(item => item.Name == name);
+        }
+
         public override void Draw(GameTime gameTime)
         {
             foreach (IGuiElement guiElement in Container)

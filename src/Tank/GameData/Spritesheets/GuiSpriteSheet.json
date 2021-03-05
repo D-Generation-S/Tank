@@ -47,6 +47,50 @@
         "X": 2,
         "Y": 1
       }
+    },
+    {
+      "Name": "CheckboxUnchecked",
+      "Position": {
+        "X": 2,
+        "Y": 0
+      },
+      "PatternSizeOverwrite": {
+        "X": 32,
+        "Y": 32
+      }
+    },
+    {
+      "Name": "CheckboxChecked",
+      "Position": {
+        "X": 2,
+        "Y": 1
+      },
+      "PatternSizeOverwrite": {
+        "X": 32,
+        "Y": 32
+      }
+    },
+    {
+      "Name": "CheckboxHoverUnchecked",
+      "Position": {
+        "X": 3,
+        "Y": 0
+      },
+      "PatternSizeOverwrite": {
+        "X": 32,
+        "Y": 32
+      }
+    },
+    {
+      "Name": "CheckboxHoverChecked",
+      "Position": {
+        "X": 3,
+        "Y": 1
+      },
+      "PatternSizeOverwrite": {
+        "X": 32,
+        "Y": 32
+      }
     }
   ]
 }
