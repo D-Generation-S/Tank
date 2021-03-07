@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Spritesheet;
 using Tank.Gui;
+using Tank.Music;
 using Tank.Wrapper;
 
 namespace Tank.GameStates.States
@@ -50,10 +52,21 @@ namespace Tank.GameStates.States
         protected IGuiElement elementToDraw;
 
         /// <summary>
+        /// The manager to use
+        /// </summary>
+        protected MusicManager musicManager;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         public AbstractMenuScreen()
             : this(new JsonTextureLoader())
+        {
+
+        }
+
+        public AbstractMenuScreen(MusicManager manager)
+            : this(new JsonTextureLoader(), manager)
         {
 
         }
@@ -63,8 +76,15 @@ namespace Tank.GameStates.States
         /// </summary>
         /// <param name="dataLoader">The data loader to use</param>
         public AbstractMenuScreen(IDataLoader<SpriteSheet> dataLoader)
+            :this(dataLoader, null)
+        {
+            
+        }
+
+        public AbstractMenuScreen(IDataLoader<SpriteSheet> dataLoader, MusicManager manager)
         {
             this.dataLoader = dataLoader;
+            this.musicManager = manager;
         }
 
         /// <inheritdoc/>
@@ -72,6 +92,10 @@ namespace Tank.GameStates.States
         {
             base.Initialize(contentWrapper, spriteBatch);
             spriteSetManager = new DataManager<SpriteSheet>(contentWrapper, dataLoader);
+            if (musicManager == null)
+            {
+                musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader(), true));
+            }
         }
 
         /// <inheritdoc/>
@@ -81,11 +105,21 @@ namespace Tank.GameStates.States
             baseFont = contentWrapper.Load<SpriteFont>("gameFont");
             buttonClick = contentWrapper.Load<SoundEffect>("Sound/Effects/UiClick");
             buttonHover = contentWrapper.Load<SoundEffect>("Sound/Effects/UiHover");
+            if (!musicManager.PlaylistLoaded)
+            {
+                musicManager.LoadPlaylist("MenuMusic");
+            }
         }
 
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
+            //MediaPlayer.Volume = 1.0f;
+            if (MediaPlayer.State == MediaState.Stopped)
+            {
+                Song song = musicManager.GetNextSong();
+                MediaPlayer.Play(song);
+            }
             if (elementToDraw == null)
             {
                 return;

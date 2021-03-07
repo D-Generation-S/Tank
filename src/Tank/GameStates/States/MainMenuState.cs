@@ -57,7 +57,7 @@ namespace Tank.GameStates.States
                                             0.5f,
                                             new SystemRandomizer()),
                                         settings);
-            openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState());
+            openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState(musicManager));
             startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
         }
 

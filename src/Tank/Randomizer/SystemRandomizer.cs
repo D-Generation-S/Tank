@@ -38,5 +38,17 @@ namespace Tank.Randomizer
         {
             return GetNewNumber() * (maxValue - minValue) + minValue;
         }
+
+        /// <inheritdoc/>
+        public int GetNewIntNumber()
+        {
+            return random.Next();
+        }
+
+        /// <inheritdoc/>
+        public int GetNewIntNumber(int minValue, int maxValue)
+        {
+            return random.Next(minValue, maxValue);
+        }
     }
 }

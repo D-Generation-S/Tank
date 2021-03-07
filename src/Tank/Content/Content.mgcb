@@ -206,3 +206,9 @@
 /processorParam:Quality=Best
 /build:../Assets/Sound/Effects/UiHover.wav;Sound/Effects/UiHover.wav
 
+#begin ../Assets/Sound/Music/MainTheme.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Music/MainTheme.wav;Sound/Music/MainTheme.wav
+

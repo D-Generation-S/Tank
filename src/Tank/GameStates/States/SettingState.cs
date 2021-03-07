@@ -5,6 +5,7 @@ using Tank.Commands.GameManager;
 using Tank.Factories;
 using Tank.Factories.Gui;
 using Tank.Gui;
+using Tank.Music;
 using Tank.Wrapper;
 
 namespace Tank.GameStates.States
@@ -18,6 +19,10 @@ namespace Tank.GameStates.States
         /// The command to use to close the setting page
         /// </summary>
         private ICommand closeSettingsCommand;
+
+        public SettingState(MusicManager manager) : base(manager)
+        {
+        }
 
         /// <inheritdoc/>
         public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)

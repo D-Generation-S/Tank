@@ -1,12 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using System;
 using Tank.Adapter;
+using Tank.DataManagement;
+using Tank.DataManagement.Loader;
 using Tank.GameStates;
 using Tank.GameStates.Data;
 using Tank.GameStates.States;
 using Tank.Map.Generators;
+using Tank.Music;
 using Tank.Randomizer;
 using Tank.Wrapper;
 
@@ -26,6 +30,7 @@ namespace Tank
         public static GraphicsDevice PublicGraphicsDevice;
         public static ContentManager PublicContentManager;
         public static IViewportAdapter PublicViewportAdapter;
+        
 
         public TankGame()
         {
@@ -60,6 +65,8 @@ namespace Tank
         {
             base.LoadContent();
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            ContentWrapper contentWrapper = new ContentWrapper(Content);
         }
 
         protected override void Update(GameTime gameTime)
