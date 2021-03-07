@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
+using Tank.DataStructure.Settings;
 using Tank.DataStructure.Spritesheet;
 using Tank.Gui;
 using Tank.Music;
@@ -88,14 +89,15 @@ namespace Tank.GameStates.States
         }
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
         {
-            base.Initialize(contentWrapper, spriteBatch);
+            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             spriteSetManager = new DataManager<SpriteSheet>(contentWrapper, dataLoader);
             if (musicManager == null)
             {
                 musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader(), true));
             }
+            MediaPlayer.Volume = settings.MusicVolume;
         }
 
         /// <inheritdoc/>
@@ -111,10 +113,15 @@ namespace Tank.GameStates.States
             }
         }
 
+        public override void Restore()
+        {
+            base.Restore();
+            MediaPlayer.Volume = settings.MusicVolume;
+        }
+
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            //MediaPlayer.Volume = 1.0f;
             if (MediaPlayer.State == MediaState.Stopped)
             {
                 Song song = musicManager.GetNextSong();

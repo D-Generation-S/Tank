@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Tank.Commands;
 using Tank.Commands.GameManager;
+using Tank.DataStructure.Settings;
 using Tank.Factories;
 using Tank.Factories.Gui;
 using Tank.Gui;
@@ -35,9 +36,9 @@ namespace Tank.GameStates.States
         /// </summary>
         /// <param name="contentWrapper"></param>
         /// <param name="spriteBatch"></param>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
         {
-            base.Initialize(contentWrapper, spriteBatch);
+            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             closeStateCommand = new CloseStateCommand(gameStateManager);
             mainMenuCommand = new RevertToMainMenuCommand(gameStateManager);
 

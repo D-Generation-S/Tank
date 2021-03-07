@@ -31,6 +31,11 @@ namespace Tank.Gui
         private SelectionData data;
 
         /// <summary>
+        /// Has the content be changed
+        /// </summary>
+        public bool Changed { get; private set; }
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         /// <param name="position">The position to use</param>
@@ -131,6 +136,7 @@ namespace Tank.Gui
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
+            Changed = false;
             leftButton.Update(gameTime);
             base.Update(gameTime);
             rightButton.Update(gameTime);
@@ -138,13 +144,14 @@ namespace Tank.Gui
             if (leftButton.Clicked && data != null)
             {
                 data.PreviousDataSet();
+                Changed = true;
             }
 
             if (rightButton.Clicked && data != null)
             {
                 data.NextDataSet();
+                Changed = true;
             }
-
 
             text = data.GetCurrentDataSet().DisplayText;
         }

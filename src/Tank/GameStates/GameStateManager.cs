@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tank.Adapter;
+using Tank.DataStructure.Settings;
 using Tank.GameStates.States;
 using Tank.Wrapper;
 
@@ -28,6 +29,11 @@ namespace Tank.GameStates
         private readonly SpriteBatch spriteBatch;
 
         /// <summary>
+        /// The application settings to use
+        /// </summary>
+        private readonly ApplicationSettings applicationSettings;
+
+        /// <summary>
         /// The viewport adapter to use
         /// </summary>
         private IViewportAdapter viewportAdapter => TankGame.PublicViewportAdapter;
@@ -43,11 +49,12 @@ namespace Tank.GameStates
         /// <param name="contentWrapper">The content wrapper to use</param>
         /// <param name="spriteBatch">The spritebatch to use</param>
         /// <param name="viewportAdapter">The viewport adapter to use</param>
-        public GameStateManager(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
+        public GameStateManager(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
         {
             stateStack = new Stack<IState>();
             this.contentWrapper = contentWrapper;
             this.spriteBatch = spriteBatch;
+            this.applicationSettings = applicationSettings;
         }
 
         /// <summary>
@@ -74,7 +81,7 @@ namespace Tank.GameStates
             if (!state.Initialized)
             {
                 state.SetGameStateManager(this);
-                state.Initialize(contentWrapper, spriteBatch);
+                state.Initialize(contentWrapper, spriteBatch, applicationSettings);
                 state.LoadContent();
                 state.SetActive();
             }

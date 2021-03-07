@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Tank.Adapter;
+using Tank.DataStructure.Settings;
 using Tank.Wrapper;
 
 namespace Tank.GameStates.States
@@ -38,12 +39,18 @@ namespace Tank.GameStates.States
         /// </summary>
         protected SpriteBatch spriteBatch;
 
+        /// <summary>
+        /// The settings for the application
+        /// </summary>
+        protected ApplicationSettings settings;
+
         /// <inheritdoc/>
-        public virtual void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
+        public virtual void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
         {
             this.contentWrapper = contentWrapper;
             this.spriteBatch = spriteBatch;
             mouseWrapper = new MouseWrapper(viewportAdapter);
+            settings = applicationSettings;
             Initialized = true;
         }
 

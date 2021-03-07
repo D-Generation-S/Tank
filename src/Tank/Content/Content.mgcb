@@ -212,3 +212,9 @@
 /processorParam:Quality=Best
 /build:../Assets/Sound/Music/MainTheme.wav;Sound/Music/MainTheme.wav
 
+#begin ../Assets/Sound/Music/MainTheme2.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Music/MainTheme2.wav;Sound/Music/MainTheme2.wav
+

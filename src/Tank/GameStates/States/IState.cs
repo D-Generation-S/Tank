@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Tank.Adapter;
+using Tank.DataStructure.Settings;
 using Tank.Wrapper;
 
 namespace Tank.GameStates.States
@@ -27,7 +28,7 @@ namespace Tank.GameStates.States
         /// <param name="contentWrapper">The content wrapper to use</param>
         /// <param name="spriteBatch">Sprite batch to use for drawing</param>
         /// <param name="viewportAdapter">The viewport adapter to use</param>
-        void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch);
+        void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings);
 
         /// <summary>
         /// Load the content for the state this is called second

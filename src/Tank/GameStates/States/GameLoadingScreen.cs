@@ -5,6 +5,7 @@ using Tank.Adapter;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure;
+using Tank.DataStructure.Settings;
 using Tank.DataStructure.Spritesheet;
 using Tank.GameStates.Data;
 using Tank.Interfaces.MapGenerators;
@@ -79,9 +80,9 @@ namespace Tank.GameStates.States
 
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
         {
-            base.Initialize(contentWrapper, spriteBatch);
+            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             spriteSetManager = new DataManager<SpriteSheet>(contentWrapper, dataLoader);
         }
 

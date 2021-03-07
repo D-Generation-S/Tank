@@ -9,6 +9,7 @@ using Tank.Commands.GameManager;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure;
+using Tank.DataStructure.Settings;
 using Tank.DataStructure.Spritesheet;
 using Tank.Factories;
 using Tank.Factories.Gui;
@@ -42,9 +43,9 @@ namespace Tank.GameStates.States
         private ICommand openSettingCommand;
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
         {
-            base.Initialize(contentWrapper, spriteBatch);
+            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             closeGameCommand = new CloseGameCommand(gameStateManager);
             GameSettings settings = new GameSettings(0.098f, 0.3f, 4, int.MinValue, "MoistContinentalSpritesheet");
 #if DEBUG

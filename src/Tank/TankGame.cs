@@ -6,6 +6,7 @@ using System;
 using Tank.Adapter;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
+using Tank.DataStructure.Settings;
 using Tank.GameStates;
 using Tank.GameStates.Data;
 using Tank.GameStates.States;
@@ -47,7 +48,7 @@ namespace Tank
             PublicContentManager = Content;
             PublicViewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1920, 1080); ;
 
-            gameStateManager = new GameStateManager(new ContentWrapper(Content), spriteBatch);
+            gameStateManager = new GameStateManager(new ContentWrapper(Content), spriteBatch, new ApplicationSettings());
             gameStateManager.Add(new MainMenuState());
             IsMouseVisible = true;
         }

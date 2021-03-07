@@ -11,6 +11,7 @@ using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.DataStructure.Geometrics;
+using Tank.DataStructure.Settings;
 using Tank.EntityComponentSystem.Manager;
 using Tank.Events.PhysicBased;
 using Tank.Events.TerrainEvents;
@@ -83,9 +84,9 @@ namespace Tank.GameStates.States
         }
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
         {
-            base.Initialize(contentWrapper, spriteBatch);
+            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             ticksToFire = 2000;
             bulletSpawnLocation = new Vector2(200, 200);
             engine = new GameEngine(new EventManager(), new EntityManager(), contentWrapper);
