@@ -40,6 +40,10 @@ namespace Tank.Music
             }
 
             Playlist playlist = playlistLoader.GetData(name);
+            if (playlist == null)
+            {
+                return;
+            }
 
             foreach(string songname in playlist.GetSongs())
             {

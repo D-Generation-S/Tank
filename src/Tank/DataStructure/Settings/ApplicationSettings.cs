@@ -22,7 +22,7 @@
         {
             MasterVolume = 1f;
             musicVolume = 1f;
-            effectVolume = 1f;
+            effectVolume = 0.5f;
         }
     }
 }

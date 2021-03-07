@@ -27,7 +27,17 @@ namespace Tank.GameStates.States
         /// <summary>
         /// The volume selection
         /// </summary>
-        private SelectBox volumeSelection;
+        private SelectBox masterVolumeSelection;
+
+        /// <summary>
+        /// The music volume selection
+        /// </summary>
+        private SelectBox musicVolumeSelection;
+        
+        /// <summary>
+        /// The effect volume selection
+        /// </summary>
+        private SelectBox effectVolumeSelection;
 
         /// <summary>
         /// Create a new instance of this class
@@ -50,6 +60,7 @@ namespace Tank.GameStates.States
             base.SetActive();
             IFactory<Button> buttonFactory = new ButtonFactory(baseFont, guiSprite, spriteBatch, 100, Vector2.Zero, buttonClick, buttonHover);
             IFactory<Checkbox> checkboxFactory = new CheckboxFactory(baseFont, guiSprite, spriteBatch, 100, Vector2.Zero, buttonClick, buttonHover);
+            IFactory<SelectBox> selectionFactory = new SelectionBoxFactory(baseFont, guiSprite, spriteBatch, 100, Vector2.Zero, buttonClick, buttonHover);
             Button backButton = buttonFactory.GetNewObject();
             backButton.SetText("Back");
             backButton.SetCommand(closeSettingsCommand);
@@ -58,19 +69,20 @@ namespace Tank.GameStates.States
             checkbox.SetText("Fullscreen (Not working placeholder)");
             checkbox.Name = "CB_Fullscreen";
 
-            volumeSelection = new SelectBox(Vector2.Zero, 100, guiSprite, spriteBatch);
-            volumeSelection.SetFont(baseFont);
-            volumeSelection.SetClickEffect(buttonClick);
-            volumeSelection.SetHoverEffect(buttonHover);
-            volumeSelection.SetMouseWrapper(mouseWrapper);
+            masterVolumeSelection = selectionFactory.GetNewObject();
+            musicVolumeSelection = selectionFactory.GetNewObject();
+            effectVolumeSelection = selectionFactory.GetNewObject();
+
             List<SelectionDataSet> data = new List<SelectionDataSet>();
             for (int i = 0; i < 11; i++)
             {
                 int numberOfChars = i + 1;
                 string name = new string('0', numberOfChars);
-                data.Add(new SelectionDataSet(name, i));
+                data.Add(new SelectionDataSet(name, (float)i / 10f));
             }
-            volumeSelection.SetData(data, data.Count - 1);
+            int index = data.FindIndex(item => item.GetData<float>() == settings.MusicVolume);
+            index = index == -1 ? data.Count - 1 : index;
+            musicVolumeSelection.SetData(data, index);
 
             VerticalStackPanel stackPanel = new VerticalStackPanel(
                 new Vector2(0, 0),
@@ -80,7 +92,9 @@ namespace Tank.GameStates.States
                 );
             stackPanel.SetMouseWrapper(mouseWrapper);
             stackPanel.AddElement(checkbox);
-            stackPanel.AddElement(volumeSelection);
+            stackPanel.AddElement(masterVolumeSelection);
+            stackPanel.AddElement(musicVolumeSelection);
+            stackPanel.AddElement(effectVolumeSelection);
             stackPanel.AddElement(backButton);
             elementToDraw = stackPanel;
         }
@@ -89,10 +103,10 @@ namespace Tank.GameStates.States
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (volumeSelection.Changed)
+            if (musicVolumeSelection.Changed)
             {
-                int data = volumeSelection.GetData().GetData<int>();
-                settings.MusicVolume = (float)data / 10f;
+                float data = musicVolumeSelection.GetData().GetData<float>();
+                settings.MusicVolume = data;
                 MediaPlayer.Volume = settings.MusicVolume;
             }
         }

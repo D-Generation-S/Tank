@@ -10,6 +10,8 @@ using Tank.Adapter;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
+using Tank.DataManagement;
+using Tank.DataManagement.Loader;
 using Tank.DataStructure.Geometrics;
 using Tank.DataStructure.Settings;
 using Tank.EntityComponentSystem.Manager;
@@ -22,6 +24,7 @@ using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Interfaces.MapGenerators;
 using Tank.Map.Generators;
+using Tank.Music;
 using Tank.Randomizer;
 using Tank.Systems;
 using Tank.Wrapper;
@@ -126,12 +129,15 @@ namespace Tank.GameStates.States
             engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, screenWidth, screenHeight), gameSettings.Gravity, gameSettings.Wind));
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new DamageSystem());
-            engine.AddSystem(new SoundEffectSystem());
+            engine.AddSystem(new SoundEffectSystem(settings));
             engine.AddSystem(new RenderSystem(
                  spriteBatch,
                  defaultShader
              ));
             engine.AddSystem(new GameLogicSystem(gameSettings.PlayerCount, mapToUse));
+
+            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader()));
+            engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", settings));
         }
 
         private void AddEntites()
