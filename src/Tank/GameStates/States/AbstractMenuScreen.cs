@@ -62,12 +62,12 @@ namespace Tank.GameStates.States
         /// <summary>
         /// The last timespan for the played music
         /// </summary>
-        private TimeSpan lastMusicStamp;
+        //private TimeSpan lastMusicStamp;
 
         /// <summary>
         /// The last played song
         /// </summary>
-        private Song lastPlayedSong;
+        //private Song lastPlayedSong;
 
         /// <summary>
         /// Create a new instance of this class
@@ -136,18 +136,18 @@ namespace Tank.GameStates.States
             base.Restore();
             MediaPlayer.Volume = settings.MusicVolume;
             UpdateUiEffects(settings.EffectVolume);
-            if (lastPlayedSong == null)
+            if (settings.LastPlayedSong == null || MediaPlayer.State == MediaState.Playing)
             {
                 return;
             }
-            //MediaPlayer.Play(lastPlayedSong, lastMusicStamp);
+            MediaPlayer.Play(settings.LastPlayedSong, settings.LastTimeSpan);
         }
 
         /// <inheritdoc/>
         public override void Suspend()
         {
             base.Suspend();
-            lastMusicStamp = MediaPlayer.PlayPosition;
+            settings.LastTimeSpan = MediaPlayer.PlayPosition;
             MediaPlayer.Stop();
         }
 
@@ -184,8 +184,8 @@ namespace Tank.GameStates.States
         {
             if (MediaPlayer.State == MediaState.Stopped)
             {
-                lastPlayedSong = musicManager.GetNextSong();
-                MediaPlayer.Play(lastPlayedSong);
+                settings.LastPlayedSong = musicManager.GetNextSong();
+                MediaPlayer.Play(settings.LastPlayedSong);
             }
             if (elementToDraw == null)
             {

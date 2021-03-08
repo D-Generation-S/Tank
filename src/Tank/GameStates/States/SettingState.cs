@@ -127,7 +127,7 @@ namespace Tank.GameStates.States
             saveButton.SetText("Save");
 
             VerticalStackPanel stackPanel = new VerticalStackPanel(
-                new Vector2(0, 0),
+                new Vector2(viewportAdapter.Center.X, 0),
                 TankGame.PublicViewportAdapter.VirtualWidth,
                 16,
                 true
