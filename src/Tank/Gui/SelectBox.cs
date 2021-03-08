@@ -139,6 +139,7 @@ namespace Tank.Gui
             base.SetPosition(position);
         }
 
+        /// <inheritdoc/>
         public override void SetEffectVolume(float volume)
         {
             leftButton.SetEffectVolume(volume);
@@ -215,6 +216,7 @@ namespace Tank.Gui
             rightButton.Draw(gameTime);
         }
 
+        /// <inheritdoc/>
         protected override void DrawText()
         {
             if (font == null)

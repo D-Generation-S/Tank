@@ -109,6 +109,9 @@ namespace Tank.Gui
                 );
         }
 
+        /// <summary>
+        /// Draw the text on the background
+        /// </summary>
         protected virtual void DrawText()
         {
             if (font == null)
@@ -120,6 +123,11 @@ namespace Tank.Gui
             spriteBatch.DrawString(font, text, textPosition, Color.Black);
         }
 
+        /// <summary>
+        /// Get the horizontal position of the text
+        /// </summary>
+        /// <param name="textToUse">The text to find the middle for</param>
+        /// <returns>The correct position</returns>
         protected virtual Vector2 GetHorizontalTextMiddle(string textToUse)
         {
             Vector2 startPosition = Position;
@@ -134,6 +142,12 @@ namespace Tank.Gui
             return startPosition;
         }
 
+        /// <summary>
+        /// Center the text vertical
+        /// </summary>
+        /// <param name="startPosition">The start position</param>
+        /// <param name="text">The text to center</param>
+        /// <returns>The correct y position</returns>
         protected virtual Vector2 CenterTextVertical(Vector2 startPosition, string text)
         {
             Vector2 textSize = GetTextLenght(text);
