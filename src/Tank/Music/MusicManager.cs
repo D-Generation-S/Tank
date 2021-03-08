@@ -8,20 +8,51 @@ using Tank.Wrapper;
 
 namespace Tank.Music
 {
+    /// <summary>
+    /// The music manager class to get the songs from the playlist
+    /// </summary>
     class MusicManager
     {
+        /// <summary>
+        /// Is there a playlist loaded right now
+        /// </summary>
         public bool PlaylistLoaded => songs.Count > 0;
+
+        /// <summary>
+        /// Get the name of the playlist
+        /// </summary>
         public string PlaylistName { get; private set; }
 
+        /// <summary>
+        /// The content wrapper to use
+        /// </summary>
         private readonly ContentWrapper contentWrapper;
+
+        /// <summary>
+        /// The playlist loader to use
+        /// </summary>
         private readonly DataManager<Playlist> playlistLoader;
         
+        /// <summary>
+        /// A list with all the songs
+        /// </summary>
         private readonly List<Song> songs;
 
+        /// <summary>
+        /// The current mixed playlist to use
+        /// </summary>
         protected Stack<Song> currentMixedPlaylist;
+
+        /// <summary>
+        /// The randommizer to use
+        /// </summary>
         private readonly IRandomizer randomizer;
 
-
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="contentWrapper">The content wrapper to use</param>
+        /// <param name="playlistLoader">The playlist loader to use</param>
         public MusicManager(ContentWrapper contentWrapper, DataManager<Playlist> playlistLoader)
         {
             this.contentWrapper = contentWrapper;
@@ -32,6 +63,10 @@ namespace Tank.Music
             songs = new List<Song>();
         }
 
+        /// <summary>
+        /// Load a new playlist
+        /// </summary>
+        /// <param name="name">The name of the playlist</param>
         public void LoadPlaylist(string name)
         {
             if (playlistLoader == null)
@@ -60,6 +95,9 @@ namespace Tank.Music
             PlaylistName = name;
         }
 
+        /// <summary>
+        /// Create the song list
+        /// </summary>
         protected void CreateSongList()
         {
             int count = songs.Count;
@@ -79,6 +117,10 @@ namespace Tank.Music
             }
         }
 
+        /// <summary>
+        /// Get the next song for playing
+        /// </summary>
+        /// <returns>The next song or null</returns>
         public Song GetNextSong()
         {
             if (currentMixedPlaylist.Count == 0)

@@ -151,12 +151,10 @@ namespace Tank.GameStates
         {
             if (!StateAvailable)
             {
-                //StateAvailable = false;
                 return;
             }
             IState currentState = stateStack.Peek();
             currentState.Draw(gameTime);
-            //StateAvailable = true;
         }
 
         /// <inheritdoc/>
@@ -164,14 +162,13 @@ namespace Tank.GameStates
         {
             if (!StateAvailable)
             {
-                //StateAvailable = false;
                 return;
             }
             IState currentState = stateStack.Peek();
             currentState.Update(gameTime);
-            //StateAvailable = true;
         }
 
+        /// <inheritdoc/>
         public void Restore()
         {
             if (!isSuspended || !StateAvailable)
@@ -182,6 +179,7 @@ namespace Tank.GameStates
             stateStack.Peek().Restore();
         }
 
+        /// <inheritdoc/>
         public void Suspend()
         {
             if (isSuspended || !StateAvailable)

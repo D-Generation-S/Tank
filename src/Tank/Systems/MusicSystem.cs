@@ -1,20 +1,42 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Tank.DataStructure.Settings;
 using Tank.Music;
 
 namespace Tank.Systems
 {
+    /// <summary>
+    /// A system to play music in the game
+    /// </summary>
     class MusicSystem : AbstractSystem
     {
+        /// <summary>
+        /// The music manager to use
+        /// </summary>
         private readonly MusicManager musicManager;
+
+        /// <summary>
+        /// The application settings
+        /// </summary>
         private readonly ApplicationSettings applicationSettings;
+
+        /// <summary>
+        /// The current track time
+        /// </summary>
         private TimeSpan trackTime;
+
+        /// <summary>
+        /// The current track to play
+        /// </summary>
         private Song currentTrack;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="musicManager">The music manager to use</param>
+        /// <param name="playlist">The playlist to load</param>
+        /// <param name="applicationSettings">The application settings</param>
         public MusicSystem(MusicManager musicManager, string playlist, ApplicationSettings applicationSettings)
         {
             musicManager.LoadPlaylist(playlist);
@@ -23,6 +45,7 @@ namespace Tank.Systems
             MediaPlayer.Volume = applicationSettings.MusicVolume;
         }
 
+        /// <inheritdoc/>
         public override void Restore()
         {
             base.Restore();
@@ -35,6 +58,7 @@ namespace Tank.Systems
 
         }
 
+        /// <inheritdoc/>
         public override void Suspend()
         {
             base.Suspend();
@@ -42,6 +66,7 @@ namespace Tank.Systems
             MediaPlayer.Stop();
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

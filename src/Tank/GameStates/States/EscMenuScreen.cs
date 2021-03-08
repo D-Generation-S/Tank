@@ -75,12 +75,6 @@ namespace Tank.GameStates.States
             UpdateUiEffects(settings.EffectVolume);
         }
 
-        public override void Restore()
-        {
-            base.Restore();
-            UpdateUiEffects(settings.EffectVolume);
-        }
-
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {

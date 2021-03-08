@@ -1,17 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using Tank.Commands;
 using Tank.Commands.GameManager;
-using Tank.DataManagement;
-using Tank.DataManagement.Loader;
-using Tank.DataStructure;
 using Tank.DataStructure.Settings;
-using Tank.DataStructure.Spritesheet;
 using Tank.Factories;
 using Tank.Factories.Gui;
 using Tank.GameStates.Data;
@@ -88,12 +79,6 @@ namespace Tank.GameStates.States
 
             elementToDraw = verticalStackPanel;
 
-            UpdateUiEffects(settings.EffectVolume);
-        }
-
-        public override void Restore()
-        {
-            base.Restore();
             UpdateUiEffects(settings.EffectVolume);
         }
     }

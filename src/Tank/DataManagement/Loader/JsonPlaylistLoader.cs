@@ -5,6 +5,9 @@ using Tank.Music;
 
 namespace Tank.DataManagement.Loader
 {
+    /// <summary>
+    /// Class to load a playlist from a json
+    /// </summary>
     class JsonPlaylistLoader : AbstractDataLoader<Playlist>
     {
         /// <summary>
@@ -12,11 +15,15 @@ namespace Tank.DataManagement.Loader
         /// </summary>
         private string basePath;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public JsonPlaylistLoader()
         {
             basePath = GetGameDataFolder();
         }
 
+        /// <inheritdoc/>
         public override Playlist LoadData(string fileName)
         {
             string realFileName = fileName + ".json";
@@ -43,6 +50,7 @@ namespace Tank.DataManagement.Loader
             return returnData;
         }
 
+        /// <inheritdoc/>
         protected override string GetGameDataFolder()
         {
             return Path.Combine(base.GetGameDataFolder(), "Playlists");

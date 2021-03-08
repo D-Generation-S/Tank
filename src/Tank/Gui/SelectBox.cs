@@ -79,6 +79,7 @@ namespace Tank.Gui
             this.textOffset = Vector2.UnitY * textOffset;
         }
 
+        /// <inheritdoc/>
         public override void SetText(string text)
         {
             base.SetText(text);

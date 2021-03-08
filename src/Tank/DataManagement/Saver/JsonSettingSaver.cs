@@ -5,8 +5,12 @@ using Tank.DataStructure.Settings;
 
 namespace Tank.DataManagement.Saver
 {
+    /// <summary>
+    /// Save the application settings as json
+    /// </summary>
     class JsonSettingSaver : IDataSaver<ApplicationSettings>
     {
+        /// <inheritdoc/>
         public bool SaveData(ApplicationSettings dataToSave, string fileName)
         {
             string directoryName = GetSettingFolder();

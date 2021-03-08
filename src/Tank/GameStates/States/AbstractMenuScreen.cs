@@ -60,16 +60,6 @@ namespace Tank.GameStates.States
         protected MusicManager musicManager;
 
         /// <summary>
-        /// The last timespan for the played music
-        /// </summary>
-        //private TimeSpan lastMusicStamp;
-
-        /// <summary>
-        /// The last played song
-        /// </summary>
-        //private Song lastPlayedSong;
-
-        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         public AbstractMenuScreen()

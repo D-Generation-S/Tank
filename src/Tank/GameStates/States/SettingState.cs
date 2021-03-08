@@ -275,6 +275,10 @@ namespace Tank.GameStates.States
             }
         }
 
+        /// <summary>
+        /// Find the executeable file for restarting
+        /// </summary>
+        /// <returns>The path to the executable</returns>
         private string FindExecuteable()
         {
             string applicationAssembly = Assembly.GetEntryAssembly().Location;
