@@ -75,6 +75,12 @@ namespace Tank.Gui
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
+            DrawBackground();
+            DrawText();
+        }
+
+        protected virtual void DrawBackground()
+        {
             spriteBatch.Draw(
                 textureToShow.CompleteImage,
                 new Rectangle((int)Position.X, (int)Position.Y, imageSize.X, imageSize.Y),
@@ -101,19 +107,37 @@ namespace Tank.Gui
                 currentRightSource,
                 Color.White
                 );
+        }
 
+        protected virtual void DrawText()
+        {
             if (font == null)
             {
                 return;
             }
-            Vector2 textPosition = Position;
-            textPosition.X += imageSize.X;
-            Vector2 textSize = GetTextLenght(text, font);
-            textPosition += Vector2.UnitY * textSize.Y;
-            float middleSize = imageSize.X * middlePartCount;
-            textPosition.X += middleSize / 2;
-            textPosition -= Vector2.UnitX * textSize.X / 2;
+            Vector2 textPosition = GetHorizontalTextMiddle(text);
+            textPosition = CenterTextVertical(textPosition, text);
             spriteBatch.DrawString(font, text, textPosition, Color.Black);
+        }
+
+        protected virtual Vector2 GetHorizontalTextMiddle(string textToUse)
+        {
+            Vector2 startPosition = Position;
+
+            Vector2 textSize = GetTextLenght(textToUse);
+            float middleSize = imageSize.X * middlePartCount;
+
+            startPosition += Vector2.UnitX * imageSize.X;
+            startPosition += Vector2.UnitX * (middleSize / 2);
+            startPosition -= Vector2.UnitX * (textSize.X / 2);
+
+            return startPosition;
+        }
+
+        protected virtual Vector2 CenterTextVertical(Vector2 startPosition, string text)
+        {
+            Vector2 textSize = GetTextLenght(text);
+            return startPosition + Vector2.UnitY * textSize.Y;
         }
     }
 }

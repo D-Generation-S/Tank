@@ -120,14 +120,14 @@ namespace Tank.Gui
                     && !collider.Contains(mouseWrapper.GetPosition(lastMouseState.Position)) 
                     && hoverSoundInstance.State != SoundState.Playing)
                 {
-                    hoverSound.Play();
+                    hoverSound.Play(effectVolume, 0, 0);
                 }
 
                 if (mouseState.LeftButton == ButtonState.Pressed && lastMouseState.LeftButton == ButtonState.Released && !waitForSound)
                 {
                     if (clickSound != null && clickSoundInstance.State != SoundState.Playing)
                     {
-                        clickSound.Play();
+                        clickSound.Play(effectVolume, 0, 0);
                         waitForSound = true;
                         return;
                     }

@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using System;
+using System.Diagnostics;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Settings;
@@ -58,6 +60,16 @@ namespace Tank.GameStates.States
         protected MusicManager musicManager;
 
         /// <summary>
+        /// The last timespan for the played music
+        /// </summary>
+        private TimeSpan lastMusicStamp;
+
+        /// <summary>
+        /// The last played song
+        /// </summary>
+        private Song lastPlayedSong;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         public AbstractMenuScreen()
@@ -82,10 +94,15 @@ namespace Tank.GameStates.States
             
         }
 
-        public AbstractMenuScreen(IDataLoader<SpriteSheet> dataLoader, MusicManager manager)
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="dataLoader">The data loader to use</param>
+        /// <param name="musicManager">The music manager to use</param>
+        public AbstractMenuScreen(IDataLoader<SpriteSheet> dataLoader, MusicManager musicManager)
         {
             this.dataLoader = dataLoader;
-            this.musicManager = manager;
+            this.musicManager = musicManager;
         }
 
         /// <inheritdoc/>
@@ -113,10 +130,53 @@ namespace Tank.GameStates.States
             }
         }
 
+        /// <inheritdoc/>
         public override void Restore()
         {
             base.Restore();
             MediaPlayer.Volume = settings.MusicVolume;
+            UpdateUiEffects(settings.EffectVolume);
+            if (lastPlayedSong == null)
+            {
+                return;
+            }
+            //MediaPlayer.Play(lastPlayedSong, lastMusicStamp);
+        }
+
+        /// <inheritdoc/>
+        public override void Suspend()
+        {
+            base.Suspend();
+            lastMusicStamp = MediaPlayer.PlayPosition;
+            MediaPlayer.Stop();
+        }
+
+        /// <summary>
+        /// Update the ui effectss
+        /// </summary>
+        /// <param name="newVolume">The new volume to use</param>
+        protected void UpdateUiEffects(float newVolume)
+        {
+            UpdateUiEffects(elementToDraw, newVolume);
+        }
+
+        /// <summary>
+        /// Update the ui effectss
+        /// </summary>
+        /// <param name="guiElement">The gui element to update the effect volume</param>
+        /// <param name="newVolume">The new volume to use</param>
+        protected void UpdateUiEffects(IGuiElement guiElement, float newVolume)
+        {
+            if (guiElement is Panel panel)
+            {
+                panel.Container.ForEach(item =>
+                {
+                    if (item is VisibleUiElement visibleUiElement)
+                    {
+                        visibleUiElement.SetEffectVolume(newVolume);
+                    }
+                });
+            }
         }
 
         /// <inheritdoc/>
@@ -124,8 +184,8 @@ namespace Tank.GameStates.States
         {
             if (MediaPlayer.State == MediaState.Stopped)
             {
-                Song song = musicManager.GetNextSong();
-                MediaPlayer.Play(song);
+                lastPlayedSong = musicManager.GetNextSong();
+                MediaPlayer.Play(lastPlayedSong);
             }
             if (elementToDraw == null)
             {
@@ -152,7 +212,6 @@ namespace Tank.GameStates.States
                 GetScaleMatrix()
                 );
             elementToDraw.Draw(gameTime);
-            
             spriteBatch.End();
         }
     }

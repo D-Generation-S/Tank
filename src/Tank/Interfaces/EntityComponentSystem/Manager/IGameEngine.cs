@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Tank.GameStates;
 using Tank.Wrapper;
 
 namespace Tank.Interfaces.EntityComponentSystem.Manager
@@ -6,7 +7,7 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
     /// <summary>
     /// This interface represents the game engine itself
     /// </summary>
-    interface IGameEngine : IClearable
+    interface IGameEngine : IClearable, IRestoreable
     {
         /// <summary>
         /// The event manager to use in the game engine
@@ -69,15 +70,5 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <returns>The number of active systems</returns>
         int GetSystemCount();
-
-        /// <summary>
-        /// The engine got suspended
-        /// </summary>
-        void Suspend();
-
-        /// <summary>
-        /// Restore this engine from sleet
-        /// </summary>
-        void Restore();
     }
 }

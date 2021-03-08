@@ -70,6 +70,15 @@ namespace Tank.GameStates.States
             verticalStackPanel.AddElement(back);
 
             elementToDraw = verticalStackPanel;
+
+
+            UpdateUiEffects(settings.EffectVolume);
+        }
+
+        public override void Restore()
+        {
+            base.Restore();
+            UpdateUiEffects(settings.EffectVolume);
         }
 
         /// <inheritdoc/>

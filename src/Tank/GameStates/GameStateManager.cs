@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using Tank.Adapter;
 using Tank.DataStructure.Settings;
 using Tank.GameStates.States;
 using Tank.Wrapper;
@@ -11,7 +10,7 @@ namespace Tank.GameStates
     /// <summary>
     /// Manager to manage the game state
     /// </summary>
-    class GameStateManager : IDrawable, IUpdateable
+    class GameStateManager : IDrawable, IUpdateable, IRestoreable
     {
         /// <summary>
         /// Stack to use for all the game states
@@ -34,14 +33,14 @@ namespace Tank.GameStates
         private readonly ApplicationSettings applicationSettings;
 
         /// <summary>
-        /// The viewport adapter to use
+        /// Is the state manager suspended
         /// </summary>
-        private IViewportAdapter viewportAdapter => TankGame.PublicViewportAdapter;
+        protected bool isSuspended;
 
         /// <summary>
         /// Is there a game state available
         /// </summary>
-        public bool StateAvailable { get; private set; }
+        public bool StateAvailable => stateStack.Count > 0;
 
         /// <summary>
         /// Create a new instance of this class
@@ -55,6 +54,7 @@ namespace Tank.GameStates
             this.contentWrapper = contentWrapper;
             this.spriteBatch = spriteBatch;
             this.applicationSettings = applicationSettings;
+            isSuspended = false;
         }
 
         /// <summary>
@@ -74,9 +74,24 @@ namespace Tank.GameStates
         /// <returns>True if adding was successful</returns>
         public bool Add(IState state)
         {
+            return Add(state, true);
+        }
+
+        /// <summary>
+        /// Add a new state on top of the current one
+        /// </summary>
+        /// <param name="state">The state to add</param>
+        /// <param name="shouldSuspend">Should the state be suspended</param>
+        /// <returns>True if adding was successful</returns>
+        public bool Add(IState state, bool shouldSuspend)
+        {
             if (stateStack.Contains(state))
             {
                 return false;
+            }
+            if (state.Initialized)
+            {
+                state.Restore();
             }
             if (!state.Initialized)
             {
@@ -85,7 +100,7 @@ namespace Tank.GameStates
                 state.LoadContent();
                 state.SetActive();
             }
-            if (stateStack.Count > 0 )
+            if (shouldSuspend && StateAvailable)
             {
                 stateStack.Peek().Suspend();
             }
@@ -134,27 +149,48 @@ namespace Tank.GameStates
         /// <inheritdoc/>
         public void Draw(GameTime gameTime)
         {
-            if (stateStack.Count == 0)
+            if (!StateAvailable)
             {
-                StateAvailable = false;
+                //StateAvailable = false;
                 return;
             }
             IState currentState = stateStack.Peek();
             currentState.Draw(gameTime);
-            StateAvailable = true;
+            //StateAvailable = true;
         }
 
         /// <inheritdoc/>
         public void Update(GameTime gameTime)
         {
-            if (stateStack.Count == 0)
+            if (!StateAvailable)
             {
-                StateAvailable = false;
+                //StateAvailable = false;
                 return;
             }
             IState currentState = stateStack.Peek();
             currentState.Update(gameTime);
-            StateAvailable = true;
+            //StateAvailable = true;
+        }
+
+        public void Restore()
+        {
+            if (!isSuspended || !StateAvailable)
+            {
+                return;
+            }
+            isSuspended = false;
+            stateStack.Peek().Restore();
+        }
+
+        public void Suspend()
+        {
+            if (isSuspended || !StateAvailable)
+            {
+                return;
+            }
+
+            isSuspended = true;
+            stateStack.Peek().Suspend();
         }
     }
 }

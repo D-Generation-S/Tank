@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Tank.GameStates;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.Interfaces.EntityComponentSystem
@@ -6,7 +7,7 @@ namespace Tank.Interfaces.EntityComponentSystem
     /// <summary>
     /// This interface describes a systems which can be added to the entity manager
     /// </summary>
-    interface ISystem : IEventReceiver
+    interface ISystem : IEventReceiver, IRestoreable
     {
         /// <summary>
         /// The system id
@@ -36,15 +37,5 @@ namespace Tank.Interfaces.EntityComponentSystem
         /// </summary>
         /// <param name="gameTime">The current GameTime</param>
         void Draw(GameTime gameTime);
-
-        /// <summary>
-        /// Suspend this system
-        /// </summary>
-        void Suspend();
-
-        /// <summary>
-        /// Restore this system
-        /// </summary>
-        void Restore();
     }
 }

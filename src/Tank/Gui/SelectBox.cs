@@ -31,6 +31,21 @@ namespace Tank.Gui
         private SelectionData data;
 
         /// <summary>
+        /// The currentSelectionText
+        /// </summary>
+        private string selectionText;
+
+        /// <summary>
+        /// Was there s specific text set?
+        /// </summary>
+        private bool textSet;
+
+        /// <summary>
+        /// Some specific text offset
+        /// </summary>
+        private Vector2 textOffset;
+
+        /// <summary>
         /// Has the content be changed
         /// </summary>
         public bool Changed { get; private set; }
@@ -44,6 +59,7 @@ namespace Tank.Gui
         /// <param name="spriteBatch">The spritebatch to use</param>
         public SelectBox(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch) : base(position, width, textureToShow, spriteBatch)
         {
+            textOffset = Vector2.Zero;
         }
 
         /// <inheritdoc/>
@@ -52,6 +68,21 @@ namespace Tank.Gui
             leftButton.SetFont(font);
             rightButton.SetFont(font);
             base.SetFont(font);
+        }
+
+        /// <summary>
+        /// Set a  specific y-axis text offset
+        /// </summary>
+        /// <param name="textOffset">The text offset to use</param>
+        public virtual void SetTextOffset(float textOffset)
+        {
+            this.textOffset = Vector2.UnitY * textOffset;
+        }
+
+        public override void SetText(string text)
+        {
+            base.SetText(text);
+            textSet = true;
         }
 
         /// <summary>
@@ -71,8 +102,17 @@ namespace Tank.Gui
         public void SetData(List<SelectionDataSet> data, int start)
         {
             this.data = new SelectionData(data);
-            this.data.setCurrentDataset(start);
-            text = this.data.GetCurrentDataSet().DisplayText;
+            SetCurrentDataSet(start);
+        }
+
+        /// <summary>
+        /// Set the current data set
+        /// </summary>
+        /// <param name="start">The data set to set</param>
+        public void SetCurrentDataSet(int start)
+        {
+            data.setCurrentDataset(start);
+            selectionText = data.GetCurrentDataSet().DisplayText;
         }
 
         /// <summary>
@@ -97,6 +137,12 @@ namespace Tank.Gui
             rightButtonPosition.X += Size.X;
             rightButton.SetPosition(rightButtonPosition);
             base.SetPosition(position);
+        }
+
+        public override void SetEffectVolume(float volume)
+        {
+            leftButton.SetEffectVolume(volume);
+            rightButton.SetEffectVolume(volume);
         }
 
         /// <inheritdoc/>
@@ -153,7 +199,12 @@ namespace Tank.Gui
                 Changed = true;
             }
 
-            text = data.GetCurrentDataSet().DisplayText;
+            if (data == null)
+            {
+                return;
+            }
+            selectionText = data.GetCurrentDataSet().DisplayText;
+
         }
 
         /// <inheritdoc/>
@@ -162,6 +213,31 @@ namespace Tank.Gui
             leftButton.Draw(gameTime);
             base.Draw(gameTime);
             rightButton.Draw(gameTime);
+        }
+
+        protected override void DrawText()
+        {
+            if (font == null)
+            {
+                return;
+            }
+            string upperText = text;
+            string lowerText = selectionText;
+            if (!textSet)
+            {
+                text = selectionText;
+                base.DrawText();
+                return;
+            }
+            Vector2 upperTextPosition = GetHorizontalTextMiddle(upperText);
+            Vector2 lowerTextPosition = GetHorizontalTextMiddle(lowerText);
+            lowerTextPosition += (Vector2.UnitY * imageSize.Y) - (Vector2.UnitY * GetTextLenght(lowerText).Y);
+
+            upperTextPosition += textOffset;
+            lowerTextPosition -= textOffset;
+
+            spriteBatch.DrawString(font, upperText, upperTextPosition, Color.Black);
+            spriteBatch.DrawString(font, lowerText, lowerTextPosition, Color.Black);
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Tank.Commands;
 using Tank.Commands.GameManager;
@@ -58,7 +59,7 @@ namespace Tank.GameStates.States
                                             0.5f,
                                             new SystemRandomizer()),
                                         settings);
-            openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState(musicManager));
+            openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState(musicManager), false);
             startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
         }
 
@@ -80,15 +81,20 @@ namespace Tank.GameStates.States
             startGameButton.SetCommand(startGameCommand);
 
             VerticalStackPanel verticalStackPanel = new VerticalStackPanel(new Vector2(0, 0), viewportAdapter.VirtualViewport.Width / 6, 15, true);
-
             verticalStackPanel.AddElement(startGameButton);
             verticalStackPanel.AddElement(openSettings);
             verticalStackPanel.AddElement(exitButton);
             verticalStackPanel.SetMouseWrapper(mouseWrapper);
 
             elementToDraw = verticalStackPanel;
+
+            UpdateUiEffects(settings.EffectVolume);
         }
 
-
+        public override void Restore()
+        {
+            base.Restore();
+            UpdateUiEffects(settings.EffectVolume);
+        }
     }
 }

@@ -64,6 +64,11 @@ namespace Tank.Gui
         protected SoundEffectInstance hoverSoundInstance;
 
         /// <summary>
+        /// The effect volume to use
+        /// </summary>
+        protected float effectVolume;
+
+        /// <summary>
         /// Create a new instance
         /// </summary>
         /// <param name="position">The position to place</param>
@@ -75,6 +80,7 @@ namespace Tank.Gui
             this.textureToShow = textureToShow;
             this.spriteBatch = spriteBatch;
             text = string.Empty;
+            effectVolume = 1.0f;
 
             SetupTextures();
             Setup();
@@ -102,7 +108,19 @@ namespace Tank.Gui
         /// <inheritdoc/>
         protected abstract void UpdateCollider();
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Set the effect volume
+        /// </summary>
+        /// <param name="volume">The volume to set</param>
+        public virtual void SetEffectVolume(float volume)
+        {
+            effectVolume = volume;
+        }
+
+        /// <summary>
+        /// Set the click effect
+        /// </summary>
+        /// <param name="clickSound">The click sound</param>
         public virtual void SetClickEffect(SoundEffect clickSound)
         {
             if (clickSound == null)
@@ -113,7 +131,10 @@ namespace Tank.Gui
             clickSoundInstance = clickSound.CreateInstance();
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Set the hover effect
+        /// </summary>
+        /// <param name="hoverSound">The hover sound</param>
         public virtual void SetHoverEffect(SoundEffect hoverSound)
         {
             if (hoverSound == null)
@@ -135,6 +156,16 @@ namespace Tank.Gui
         public virtual void SetFont(SpriteFont font)
         {
             this.font = font;
+        }
+
+        /// <summary>
+        /// Convert the text to pixel lenght
+        /// </summary>
+        /// <param name="text">The text to check</param>
+        /// <returns>The size of the text</returns>
+        protected Vector2 GetTextLenght(string text)
+        {
+            return GetTextLenght(text, font);
         }
 
         /// <summary>

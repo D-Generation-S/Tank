@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Tank.Adapter;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Tank.DataStructure.Settings;
 using Tank.Wrapper;
 
@@ -9,7 +7,7 @@ namespace Tank.GameStates.States
     /// <summary>
     /// Interface for the current game state
     /// </summary>
-    interface IState : IUpdateable, IDrawable
+    interface IState : IUpdateable, IDrawable, IRestoreable
     {
         /// <summary>
         /// Is this game state already initialize
@@ -39,16 +37,6 @@ namespace Tank.GameStates.States
         /// Set this state to active, this is called right before the state goes live
         /// </summary>
         void SetActive();
-
-        /// <summary>
-        /// Restore this state
-        /// </summary>
-        void Restore();
-
-        /// <summary>
-        /// Suspend this state
-        /// </summary>
-        void Suspend();
 
         /// <summary>
         /// State is getting deleted

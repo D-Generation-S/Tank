@@ -39,7 +39,8 @@ namespace Tank.Factories.Gui
         /// <inheritdoc/>
         public override SelectBox GetNewObject()
         {
-            SelectBox returnBox = new SelectBox(Vector2.Zero, 100, spriteSheet, spriteBatch);
+            SelectBox returnBox = new SelectBox(Vector2.Zero, width, spriteSheet, spriteBatch);
+            returnBox.SetTextOffset(10);
             returnBox.SetFont(font);
             returnBox.SetClickEffect(clickSound);
             returnBox.SetHoverEffect(hoverSound);
