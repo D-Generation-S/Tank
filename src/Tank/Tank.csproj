@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -10,6 +10,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <Target Name="PrecompileScript" BeforeTargets="BeforeBuild">
+    <Exec Command='powershell -File "..\..\buildScripts\fontInstall.ps1"' />
+  </Target>
   <ItemGroup>
     <None Remove="Assets\Images\Effects\Explosion132x32-Sheet.png" />
     <None Remove="Assets\Images\Entities\BasicMunitionSprite.png" />
