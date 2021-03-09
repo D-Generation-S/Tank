@@ -11,27 +11,27 @@ namespace Tank.Components.Rendering
         /// <summary>
         /// Public access to the texture
         /// </summary>
-        public Texture2D Texture { get; set; }
+        public Texture2D Texture;
 
         /// <summary>
         /// public access to the draw position
         /// </summary>
-        public Rectangle Destination { get; set; }
+        public Rectangle Destination;
 
         /// <summary>
         /// Single texture size
         /// </summary>
-        public Rectangle SingleTextureSize { get; set; }
+        public Rectangle SingleTextureSize;
 
         /// <summary>
         /// Public access to the draw position in the sprite
         /// </summary>
-        public Rectangle Source { get; set; }
+        public Rectangle Source;
 
         /// <summary>
         /// Draw sprite to the middle
         /// </summary>
-        public bool DrawMiddle { get; set; }
+        public bool DrawMiddle;
 
         public override void Init()
         {

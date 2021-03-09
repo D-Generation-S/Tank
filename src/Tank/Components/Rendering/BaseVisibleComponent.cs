@@ -11,7 +11,7 @@ namespace Tank.Components.Rendering
         /// <summary>
         /// The draw color for the visible
         /// </summary>
-        public Color Color { get; set; }
+        public Color Color;
 
         /// <summary>
         /// The effect to use

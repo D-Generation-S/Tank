@@ -54,12 +54,17 @@ namespace Tank.Code.Entities.Map
         public int Width => image.Width;
 
         /// <summary>
+        /// The highest position
+        /// </summary>
+        public float HighestPosition { get; }
+
+        /// <summary>
         /// Create a new instance for this class
         /// </summary>
         /// <param name="image">The image to use for this map</param>
         /// <param name="collissionMap">The collision map to use for the map</param>
-        public DefaultMap(Texture2D image, HashSet<Color> nonSolidColors)
-            : this(image, nonSolidColors, 0)
+        public DefaultMap(Texture2D image, HashSet<Color> nonSolidColors, float highestPosition)
+            : this(image, nonSolidColors, highestPosition, 0)
         {
         }
 
@@ -69,7 +74,7 @@ namespace Tank.Code.Entities.Map
         /// <param name="image">The image to use for this map</param>
         /// <param name="collissionMap">The collision map to use for the map</param>
         /// <param name="seed">The seed used to create the map</param>
-        public DefaultMap(Texture2D image, HashSet<Color> nonSolidColors, int seed)
+        public DefaultMap(Texture2D image, HashSet<Color> nonSolidColors, float highestPosition, int seed)
         {
             this.image = image;
             Color[] tempData = new Color[image.Width * image.Height];
@@ -79,6 +84,7 @@ namespace Tank.Code.Entities.Map
 
             this.nonSolidColors = nonSolidColors;
             this.Seed = seed;
+            this.HighestPosition = highestPosition;
         }
 
         /// <summary>

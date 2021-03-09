@@ -150,9 +150,11 @@ namespace Tank.Map.Generators
             Texture2D texture = new Texture2D(graphicsDevice, size.X, size.Y);
             texture.Name = "GeneratedMap";
 
-            IMap returnMap = new DefaultMap(texture, nonSolidColors, seed);
+            
 
             float[] points = GeneratePoints(size, new Random(seed));
+            float highestPoint = GetHighestPoint(points);
+            IMap returnMap = new DefaultMap(texture, nonSolidColors, highestPoint, seed);
 
             for (int x = 0; x < points.Length - 1; x++)
             {
@@ -194,6 +196,26 @@ namespace Tank.Map.Generators
                 }
             }
             map.ApplyChanges();
+        }
+
+        /// <summary>
+        /// Get the highest point
+        /// </summary>
+        /// <param name="points">All the points</param>
+        /// <returns>The highest point</returns>
+        private float GetHighestPoint(float[] points)
+        {
+            float highestPoint = float.MaxValue;
+            for (int i = 0; i < points.Length; i++)
+            {
+                float currentPoint = points[i];
+                if (currentPoint < highestPoint)
+                {
+                    highestPoint = currentPoint;
+                }
+
+            }
+            return highestPoint;
         }
 
         /// <summary>

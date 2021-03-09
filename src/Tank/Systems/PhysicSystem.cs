@@ -164,11 +164,6 @@ namespace Tank.Systems
                 if (!moveComponent.ApplyPhysic)
                 {
                     placeComponent.Position += moveComponent.Velocity;
-                    if (!map.Map.IsPointOnMap(placeComponent.Position))
-                    {
-                        FireEvent(new RemoveEntityEvent(entityId));
-                        break;
-                    }
                     continue;
                 }
 

@@ -239,7 +239,7 @@ namespace Tank.Systems
             {
                 spriteBatch.Begin(
                     SpriteSortMode.Immediate,
-                    BlendState.AlphaBlend,
+                    BlendState.NonPremultiplied,
                     null,
                     null,
                     null,
@@ -255,7 +255,7 @@ namespace Tank.Systems
                 spriteBatch.End();
                 spriteBatch.Begin(
                     SpriteSortMode.Immediate,
-                    BlendState.AlphaBlend,
+                    BlendState.NonPremultiplied,
                     null,
                     null,
                     null,
