@@ -203,10 +203,5 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <returns>The number of component</returns>
         int GetUsedComponentCount();
-
-        /// <summary>
-        /// Optimize the components
-        /// </summary>
-        void OptimizeComponents();
     }
 }
