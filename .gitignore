@@ -354,4 +354,4 @@ MigrationBackup/
 
 
 #Specific files
-src\Tank\Assets\Fonts\VT323*.ttf
+src/Tank/Assets/Fonts/VT323*.ttf
