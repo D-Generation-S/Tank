@@ -1,15 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Tank.Commands;
 using Tank.Commands.GameManager;
-using Tank.DataManagement;
-using Tank.DataManagement.Loader;
-using Tank.DataStructure;
-using Tank.DataStructure.Spritesheet;
+using Tank.DataStructure.Settings;
 using Tank.Factories;
 using Tank.Factories.Gui;
 using Tank.GameStates.Data;
@@ -42,9 +35,9 @@ namespace Tank.GameStates.States
         private ICommand openSettingCommand;
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
         {
-            base.Initialize(contentWrapper, spriteBatch);
+            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             closeGameCommand = new CloseGameCommand(gameStateManager);
             GameSettings settings = new GameSettings(0.098f, 0.3f, 4, int.MinValue, "MoistContinentalSpritesheet");
 #if DEBUG
@@ -57,7 +50,7 @@ namespace Tank.GameStates.States
                                             0.5f,
                                             new SystemRandomizer()),
                                         settings);
-            openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState());
+            openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState(musicManager), false);
             startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
         }
 
@@ -79,15 +72,14 @@ namespace Tank.GameStates.States
             startGameButton.SetCommand(startGameCommand);
 
             VerticalStackPanel verticalStackPanel = new VerticalStackPanel(new Vector2(0, 0), viewportAdapter.VirtualViewport.Width / 6, 15, true);
-
             verticalStackPanel.AddElement(startGameButton);
             verticalStackPanel.AddElement(openSettings);
             verticalStackPanel.AddElement(exitButton);
             verticalStackPanel.SetMouseWrapper(mouseWrapper);
 
             elementToDraw = verticalStackPanel;
+
+            UpdateUiEffects(settings.EffectVolume);
         }
-
-
     }
 }

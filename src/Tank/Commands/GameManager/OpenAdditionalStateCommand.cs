@@ -14,13 +14,31 @@ namespace Tank.Commands.GameManager
         protected readonly IState stateToOpen;
 
         /// <summary>
+        /// Suspend any acitve game state
+        /// </summary>
+        private readonly bool suspendExistingState;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         /// <param name="gameStateManager">The game state manager to use</param>
         /// <param name="stateToOpen">The state to open</param>
-        public OpenAdditionalStateCommand(GameStateManager gameStateManager, IState stateToOpen) : base(gameStateManager)
+        public OpenAdditionalStateCommand(GameStateManager gameStateManager, IState stateToOpen)
+            : this(gameStateManager, stateToOpen, true)
         {
             this.stateToOpen = stateToOpen;
+        }
+
+
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="gameStateManager">The game state manager to use</param>
+        /// <param name="stateToOpen">The state to open</param>
+        public OpenAdditionalStateCommand(GameStateManager gameStateManager, IState stateToOpen, bool suspendExistingState) : base(gameStateManager)
+        {
+            this.stateToOpen = stateToOpen;
+            this.suspendExistingState = suspendExistingState;
         }
 
         /// <inheritdoc/>
@@ -36,7 +54,7 @@ namespace Tank.Commands.GameManager
             {
                 return;
             }
-            gameStateManager.Add(stateToOpen);
+            gameStateManager.Add(stateToOpen, suspendExistingState);
         }
     }
 }

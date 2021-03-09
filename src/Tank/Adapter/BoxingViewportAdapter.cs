@@ -24,13 +24,24 @@ namespace Tank.Adapter
         private readonly int verticalBleed;
 
         /// <summary>
+        /// Is in fullscreen
+        /// </summary>
+        private readonly bool isFullscreen;
+
+        /// <summary>
+        /// Fullscreen offset
+        /// </summary>
+        private int yOffset;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         /// <param name="window">The window the game is running in</param>
         /// <param name="graphicsDevice">The current graphic device</param>
+        /// <param name="isFullscreen">Is the application on fullscreen</param>
         /// <param name="virtualWidth">The virtual width to use</param>
         /// <param name="virtualHeight">The virtual height to use</param>
-        public BoxingViewportAdapter(GameWindow window, GraphicsDevice graphicsDevice, int virtualWidth, int virtualHeight) : this(window, graphicsDevice, virtualWidth, virtualHeight, 0, 0)
+        public BoxingViewportAdapter(GameWindow window, GraphicsDevice graphicsDevice, bool isFullscreen, int virtualWidth, int virtualHeight) : this(window, graphicsDevice, isFullscreen, virtualWidth, virtualHeight, 0, 0)
         {
         }
 
@@ -39,16 +50,20 @@ namespace Tank.Adapter
         /// </summary>
         /// <param name="window">The window the game is running in</param>
         /// <param name="graphicsDevice">The current graphic device</param>
+        /// /// <param name="isFullscreen">Is the application on fullscreen</param>
         /// <param name="virtualWidth">The virtual width to use</param>
         /// <param name="virtualHeight">The virtual height to use</param>
         /// <param name="horizontalBleed">The horizontal bleed</param>
         /// <param name="verticalBleed">The vertical bleed</param>
-        public BoxingViewportAdapter(GameWindow window, GraphicsDevice graphicsDevice, int virtualWidth, int virtualHeight, int horizontalBleed, int verticalBleed) : base(graphicsDevice, virtualWidth, virtualHeight)
+        public BoxingViewportAdapter(GameWindow window, GraphicsDevice graphicsDevice, bool isFullscreen, int virtualWidth, int virtualHeight, int horizontalBleed, int verticalBleed) : base(graphicsDevice, virtualWidth, virtualHeight)
         {
             this.window = window;
             window.ClientSizeChanged += (sender, data) => OnClienteSizeChanged();
             this.horizontalBleed = horizontalBleed;
             this.verticalBleed = verticalBleed;
+            yOffset = 0;
+            this.isFullscreen = isFullscreen;
+
             RecalculateBox();
         }
 
@@ -66,6 +81,10 @@ namespace Tank.Adapter
         /// </summary>
         private void RecalculateBox()
         {
+            if (isFullscreen)
+            {
+                yOffset = window.Position.Y;
+            }
             Rectangle clientBounds = window.ClientBounds;
 
             float worldScaleX = (float)clientBounds.Width / VirtualWidth;
@@ -90,6 +109,7 @@ namespace Tank.Adapter
         public override Vector2 GetVectorPointOnScreen(Vector2 point)
         {
             Viewport viewport = graphicsDevice.Viewport;
+            point += Vector2.UnitY * yOffset;
             return base.GetVectorPointOnScreen(new Vector2(point.X - viewport.X, point.Y - viewport.Y));
         }
 

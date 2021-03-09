@@ -206,3 +206,27 @@
 /processorParam:Quality=Best
 /build:../Assets/Sound/Effects/UiHover.wav;Sound/Effects/UiHover.wav
 
+#begin ../Assets/Sound/Music/BattleMusic1.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Music/BattleMusic1.wav;Sound/Music/BattleMusic1.wav
+
+#begin ../Assets/Sound/Music/DarkTheme.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Music/DarkTheme.wav;Sound/Music/DarkTheme.wav
+
+#begin ../Assets/Sound/Music/MainTheme.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Music/MainTheme.wav;Sound/Music/MainTheme.wav
+
+#begin ../Assets/Sound/Music/MainTheme2.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:../Assets/Sound/Music/MainTheme2.wav;Sound/Music/MainTheme2.wav
+

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using Tank.Components;
+using Tank.DataStructure.Settings;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -16,12 +17,18 @@ namespace Tank.Systems
         private readonly Random random;
 
         /// <summary>
+        /// The application settings to use
+        /// </summary>
+        private readonly ApplicationSettings applicationSettings;
+
+        /// <summary>
         /// Create a new instance of this system
         /// </summary>
-        public SoundEffectSystem() : base()
+        public SoundEffectSystem(ApplicationSettings applicationSettings) : base()
         {
             validators.Add(new SoundEffectValidator());
             random = new Random();
+            this.applicationSettings = applicationSettings;
         }
 
         /// <summary>
@@ -48,7 +55,7 @@ namespace Tank.Systems
                 {
                     return;
                 }
-                soundEffect.SoundEffect.Play(1f, pitch, 0f);
+                soundEffect.SoundEffect.Play(applicationSettings.EffectVolume, pitch, 0f);
                 entityManager.RemoveComponents(entityId, soundEffect);
             }
         }
