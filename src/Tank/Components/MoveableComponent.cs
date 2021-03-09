@@ -28,9 +28,9 @@ namespace Tank.Components
         public bool PhysicRotate { get; set; }
 
         /// <summary>
-        /// Public access if the entity is on the ground
+        /// Should physic be pplied to this entity
         /// </summary>
-        public bool OnGround { get; set; }
+        public bool ApplyPhysic { get; set; }
 
         /// <summary>
         /// Create a new instance of this class
@@ -44,7 +44,7 @@ namespace Tank.Components
         public override void Init()
         {
             Mass = 1;
-            OnGround = false;
+            ApplyPhysic = false;
             PhysicRotate = false;
             Velocity = Vector2.Zero;
             Acceleration = Vector2.Zero;

@@ -84,8 +84,10 @@ namespace Tank.Builders
 
             MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
             moveable.Velocity = Vector2.Zero;
+            moveable.ApplyPhysic = true;
             moveable.PhysicRotate = true;
             moveable.Mass = 7;
+            
 
             VisibleComponent visuals = entityManager.CreateComponent<VisibleComponent>();
             visuals.Texture = texture;

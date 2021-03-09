@@ -6,7 +6,7 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
     /// <summary>
     /// This interface describes an entity manager
     /// </summary>
-    interface IEntityManager
+    interface IEntityManager : IClearable
     {
         /// <summary>
         /// Initialize the manager with the event manager so it can register to events
@@ -185,11 +185,6 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <param name="entityId">The entity id to remove the components from</param>
         void RemoveComponents(uint entityId);
-
-        /// <summary>
-        /// This method will clear the whole manager and reset it
-        /// </summary>
-        void Clear();
 
         /// <summary>
         /// Get the total number of entities

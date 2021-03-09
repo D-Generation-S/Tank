@@ -83,6 +83,7 @@ namespace Tank.Builders
             visibleComponent.DrawMiddle = true;
             MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
             moveable.Mass = 15;
+            moveable.ApplyPhysic = true;
             ColliderComponent collider = entityManager.CreateComponent<ColliderComponent>();
             collider.Collider = colliderDestination;
 

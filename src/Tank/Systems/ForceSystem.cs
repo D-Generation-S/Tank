@@ -67,6 +67,10 @@ namespace Tank.Systems
         {
             base.Update(gameTime);
 
+            if (watchedEntities.Count == 0)
+            {
+                return;
+            }
             quadTree.Clear();
             List<uint> allTargets = entityManager.GetEntitiesWithComponent<MoveableComponent>();
             for (int i = 0; i < allTargets.Count; i++)
@@ -77,7 +81,6 @@ namespace Tank.Systems
                 quadTree.Insert(quadTreeData);
                 activeDataContainer.Add(quadTreeData);
             }
-
 
             foreach (uint entityId in watchedEntities)
             {

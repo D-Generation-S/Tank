@@ -156,9 +156,25 @@ namespace Tank.Systems
                 MoveableComponent moveComponent = entityManager.GetComponent<MoveableComponent>(entityId);
                 ColliderComponent colliderComponent = entityManager.GetComponent<ColliderComponent>(entityId);
 
-                if (placeComponent == null || moveComponent == null || colliderComponent == null)
+                if (placeComponent == null || moveComponent == null)
                 {
+                    break;
+                }
+
+                if (!moveComponent.ApplyPhysic)
+                {
+                    placeComponent.Position += moveComponent.Velocity;
+                    if (!map.Map.IsPointOnMap(placeComponent.Position))
+                    {
+                        FireEvent(new RemoveEntityEvent(entityId));
+                        break;
+                    }
                     continue;
+                }
+
+                if (colliderComponent == null)
+                {
+                    break;
                 }
 
                 ApplyForce(moveComponent, gravityForce, false);
