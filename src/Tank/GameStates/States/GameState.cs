@@ -245,10 +245,6 @@ namespace Tank.GameStates.States
                 return;
             }
 
-            if (debugOn)
-            {
-                fps = (float)Math.Round(1 / gameTime.ElapsedGameTime.TotalSeconds);
-            }
             if (ticksToFire > 0)
             {
                 ticksToFire--;
@@ -367,6 +363,10 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
+            if (debugOn)
+            {
+                fps = (float)Math.Round(1 / gameTime.ElapsedGameTime.TotalSeconds);
+            }
             engine.Draw(gameTime);
         }
 
