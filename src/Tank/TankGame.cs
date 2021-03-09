@@ -28,7 +28,7 @@ namespace Tank
         public TankGame()
         {
             graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = "Assets";
         }
 
         protected override void Initialize()

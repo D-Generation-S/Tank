@@ -11,7 +11,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <Target Name="PrecompileScript" BeforeTargets="BeforeBuild">
-    <Exec Command='powershell -File "..\..\buildScripts\fontInstall.ps1"' />
+    <Exec Command="powershell -File &quot;..\..\buildScripts\fontInstall.ps1&quot;" />
   </Target>
   <ItemGroup>
     <None Remove="Assets\Images\Effects\Explosion132x32-Sheet.png" />
@@ -40,7 +40,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
+    <MonoGameContentReference Include="Assets\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
     <None Update="GameData\Playlists\IngameMusic.json">
