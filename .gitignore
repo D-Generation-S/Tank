@@ -351,3 +351,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+
+#Specific files
+src\Tank\Assets\Fonts\VT323*.ttf
