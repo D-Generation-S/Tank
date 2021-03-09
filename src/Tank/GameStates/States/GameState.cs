@@ -130,6 +130,7 @@ namespace Tank.GameStates.States
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new DamageSystem());
             engine.AddSystem(new SoundEffectSystem(settings));
+            engine.AddSystem(new FadeInFadeOutSystem());
             engine.AddSystem(new RenderSystem(
                  spriteBatch,
                  defaultShader
@@ -234,6 +235,21 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
+            if (Keyboard.GetState().IsKeyDown(Keys.F6))
+            {
+                CloudBuilder cloudBuilder = new CloudBuilder(
+                    contentWrapper.Load<Texture2D>("Images/Entities/Cloud2"),
+                    new List<Rectangle>() { new Rectangle(0, 0, 32, 32) },
+                    randomizer,
+                    new Rectangle(0, 0, mapToUse.Width, (int)mapToUse.HighestPosition - 50));
+                cloudBuilder.Init(engine);
+                uint cloudId = engine.EntityManager.CreateEntity();
+                foreach (IComponent component in cloudBuilder.BuildGameComponents(null))
+                {
+                    engine.EntityManager.AddComponent(cloudId, component);
+                }
+            }
+
             if (Keyboard.GetState().IsKeyUp(Keys.Escape))
             {
                 newState = false;
