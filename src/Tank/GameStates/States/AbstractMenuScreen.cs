@@ -68,6 +68,10 @@ namespace Tank.GameStates.States
 
         }
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="manager">The music manager to use</param>
         public AbstractMenuScreen(MusicManager manager)
             : this(new JsonTextureLoader(), manager)
         {
