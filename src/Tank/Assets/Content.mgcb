@@ -56,7 +56,7 @@
 /processorParam:TextureFormat=Color
 /build:Images/Entities/BasicTank.png
 
-#begin Images/Entities/Cloud1.png
+#begin Images/Entities/CloudSpritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -66,19 +66,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Images/Entities/Cloud1.png
-
-#begin Images/Entities/Cloud2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Images/Entities/Cloud2.png
+/build:Images/Entities/CloudSpritesheet.png
 
 #begin Images/Entities/Pixel.png
 /importer:TextureImporter

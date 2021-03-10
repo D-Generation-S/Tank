@@ -10,6 +10,7 @@ using Tank.Adapter;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
+using Tank.Components.Tags;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Geometrics;
@@ -42,12 +43,11 @@ namespace Tank.GameStates.States
         private KeyboardState previousState;
         private MouseState previousMouseState;
 
-        private RandomExplosionFactory randomExplosionFactory;
+        private RandomEntityBuilderFactory randomExplosionFactory;
+        private RandomEntityBuilderFactory randomCloudFactory;
 
         private BaseBulletBuilder bulletBuilder;
         private MapDebriBuilder debriBuilder;
-
-        private List<IGameObjectBuilder> explosionBuilders;
 
         private List<Rectangle> projectiveAnimationFrames;
         private List<Rectangle> explosionAnimationFrames;
@@ -57,8 +57,9 @@ namespace Tank.GameStates.States
 
         Vector2 bulletSpawnLocation;
 
-        Texture2D bulletTestExplosion;
-        Texture2D bulletTest;
+        private Texture2D bulletTestExplosion;
+        private Texture2D bulletTest;
+        private Texture2D clouds;
         private Texture2D pixelTexture;
         private SpriteFont gameFont;
 
@@ -114,7 +115,6 @@ namespace Tank.GameStates.States
                             new Rectangle(32, 64, 32, 32),
                         };
 
-            explosionBuilders = new List<IGameObjectBuilder>();
             explosionSounds = new List<SoundEffect>();
         }
 
@@ -133,7 +133,8 @@ namespace Tank.GameStates.States
             engine.AddSystem(new FadeInFadeOutSystem());
             engine.AddSystem(new RenderSystem(
                  spriteBatch,
-                 defaultShader
+                 defaultShader//,
+                 //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
             engine.AddSystem(new GameLogicSystem(gameSettings.PlayerCount, mapToUse));
 
@@ -168,12 +169,14 @@ namespace Tank.GameStates.States
             bulletTestExplosion = contentWrapper.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
             bulletTest = contentWrapper.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
             pixelTexture = contentWrapper.Load<Texture2D>("Images/Entities/Pixel");
+            clouds = contentWrapper.Load<Texture2D>("Images/Entities/CloudSpritesheet");
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion1"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion2"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion3"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion4"));
             defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
             gameFont = contentWrapper.Load<SpriteFont>("gameFont");
+            
         }
 
         /// <inheritdoc/>
@@ -184,12 +187,23 @@ namespace Tank.GameStates.States
             RandomSoundFactory soundFactory = new RandomSoundFactory(explosionSounds, randomizer);
             IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(bulletTestExplosion, explosionAnimationFrames, soundFactory);
             explosionBuilder.Init(engine);
+            List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
             explosionBuilders.Add(explosionBuilder);
-            randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);
+            randomExplosionFactory = new RandomEntityBuilderFactory(explosionBuilders, randomizer);
             bulletBuilder = new BaseBulletBuilder(projectiveAnimationFrames, bulletTest, randomExplosionFactory);
             bulletBuilder.Init(engine);
             debriBuilder = new MapDebriBuilder(pixelTexture);
             debriBuilder.Init(engine);
+
+            List<IGameObjectBuilder> cloudBuilders = new List<IGameObjectBuilder>();
+            Rectangle cloudSpawnArea = new Rectangle(-50, 0, mapToUse.Width, (int)mapToUse.HighestPosition - 50);
+            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 0, 32, 32) }, randomizer, cloudSpawnArea));
+            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 32, 32, 32) }, randomizer, cloudSpawnArea));
+            foreach(IGameObjectBuilder builder in cloudBuilders)
+            {
+                builder.Init(engine);
+            }
+            randomCloudFactory = new RandomEntityBuilderFactory(cloudBuilders, randomizer);
 
             AddEngineSystems();
             AddEntites();
@@ -235,16 +249,10 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.F6))
+            if (engine.EntityManager.GetEntitiesWithComponent<CloudTag>().Count < 100)
             {
-                CloudBuilder cloudBuilder = new CloudBuilder(
-                    contentWrapper.Load<Texture2D>("Images/Entities/Cloud2"),
-                    new List<Rectangle>() { new Rectangle(0, 0, 32, 32) },
-                    randomizer,
-                    new Rectangle(0, 0, mapToUse.Width, (int)mapToUse.HighestPosition - 50));
-                cloudBuilder.Init(engine);
                 uint cloudId = engine.EntityManager.CreateEntity();
-                foreach (IComponent component in cloudBuilder.BuildGameComponents(null))
+                foreach (IComponent component in randomCloudFactory.GetNewObject())
                 {
                     engine.EntityManager.AddComponent(cloudId, component);
                 }

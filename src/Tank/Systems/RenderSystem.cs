@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Tank.Adapter;
 using Tank.Components;
@@ -50,11 +51,7 @@ namespace Tank.Systems
         /// Rendertarget to use
         /// </summary>
         private RenderTarget2D postProcessingRenderTarget;
-
-        /// <summary>
-        /// The color to copy over for new draw cycle
-        /// </summary>
-        private readonly Color[] targetContent;
+        
 
         /// <summary>
         /// All the post processing effects
@@ -109,7 +106,6 @@ namespace Tank.Systems
             this.postProcessing = postProcessing;
             gameRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
             postProcessingRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
-            targetContent = new Color[postProcessingRenderTarget.Width * postProcessingRenderTarget.Height];
             drawStart = true;
         }
 
@@ -150,9 +146,10 @@ namespace Tank.Systems
             }
             spriteBatch.End();
 
-            graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
+            //graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
             for (int i = 0; i < postProcessing.Count; i++)
             {
+                graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
                 spriteBatch.Begin(
                     SpriteSortMode.Immediate,
                     BlendState.AlphaBlend,
@@ -165,9 +162,9 @@ namespace Tank.Systems
 
                 spriteBatch.Draw(gameRenderTarget, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.White);
                 spriteBatch.End();
-                postProcessingRenderTarget.GetData<Color>(targetContent);
-                gameRenderTarget.SetData<Color>(targetContent);
+                CopyRenderTarget(postProcessingRenderTarget, gameRenderTarget);
             }
+            
             graphicsDevice.SetRenderTarget(null);
             viewportAdapter.Reset();
             graphicsDevice.Clear(Color.Black);
@@ -189,6 +186,22 @@ namespace Tank.Systems
 
             spriteBatch.End();
             drawLocked = false;
+        }
+
+        private void CopyRenderTarget(RenderTarget2D source, RenderTarget2D renderTarget)
+        {
+            graphicsDevice.SetRenderTarget(renderTarget);
+            spriteBatch.Begin();
+            spriteBatch.Draw(
+                source,
+                new Rectangle(0, 0, viewport.Width, viewport.Height),
+                Color.White
+                );
+            spriteBatch.End();
+            return;
+            Color[] targetContent = new Color[source.Width * source.Height];
+            source.GetData<Color>(targetContent);
+            renderTarget.SetData<Color>(targetContent);
         }
 
         private void RenderEntities(int i)

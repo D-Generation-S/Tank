@@ -43,6 +43,11 @@ namespace Tank.Systems
         private Rectangle screenBound;
 
         /// <summary>
+        /// The extended screenBound
+        /// </summary>
+        private Rectangle extendedScreenBounds;
+
+        /// <summary>
         /// The gravity applied by the physic system
         /// </summary>
         private Vector2 gravityForce;
@@ -85,6 +90,11 @@ namespace Tank.Systems
             gravityForce = new Vector2(0, gravity);
             windForce = new Vector2(wind, 0);
             this.screenBound = screenBound;
+            extendedScreenBounds = screenBound;
+            extendedScreenBounds.X -= screenBound.Width / 4;
+            extendedScreenBounds.Y -= screenBound.Height / 4;
+            extendedScreenBounds.Width += screenBound.Width / 2;
+            extendedScreenBounds.Height += screenBound.Height / 2;
 
             validators.Add(new PhysicEntityValidator());
             validators.Add(new MapValidator());
@@ -164,12 +174,17 @@ namespace Tank.Systems
                 if (!moveComponent.ApplyPhysic)
                 {
                     placeComponent.Position += moveComponent.Velocity;
+                    if (!extendedScreenBounds.Contains(placeComponent.Position))
+                    {
+                        FireEvent(new RemoveEntityEvent(entityId));
+                        return;
+                    }
                     continue;
                 }
 
                 if (colliderComponent == null)
                 {
-                    break;
+                    return;
                 }
 
                 ApplyForce(moveComponent, gravityForce, false);

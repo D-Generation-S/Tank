@@ -56,8 +56,12 @@ namespace Tank.Builders
             fadeComponent.TicksToLive = randomizer.GetNewIntNumber(120, 300);
             fadeComponent.TargetOpacity = randomizer.GetNewIntNumber(120, 170);
 
+            MoveableOnlyTag moveableOnlyTag = entityManager.CreateComponent<MoveableOnlyTag>();
+            CloudTag cloudTag = entityManager.CreateComponent<CloudTag>();
+
             returnList.Add(visibleComponent);
-            returnList.Add(new MoveableOnlyTag());
+            returnList.Add(moveableOnlyTag);
+            returnList.Add(cloudTag);
             returnList.Add(animationComponent);
             returnList.Add(placeableComponent);
             returnList.Add(moveableComponent);
