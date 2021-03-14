@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Tank.Components;
 using Tank.DataStructure;
+using Tank.Events;
 using Tank.Events.EntityBased;
 using Tank.Events.PhysicBased;
 using Tank.Interfaces.EntityComponentSystem.Manager;
@@ -176,7 +177,9 @@ namespace Tank.Systems
                     placeComponent.Position += moveComponent.Velocity;
                     if (!extendedScreenBounds.Contains(placeComponent.Position))
                     {
-                        FireEvent(new RemoveEntityEvent(entityId));
+                        RemoveEntityEvent removeEntityEvent = CreateEvent<RemoveEntityEvent>();
+                        removeEntityEvent.EntityId = entityId;
+                        FireEvent(removeEntityEvent);
                         return;
                     }
                     continue;
@@ -226,7 +229,10 @@ namespace Tank.Systems
                                 {
                                     if (map.Map.IsPixelSolid(cast[i]))
                                     {
-                                        FireEvent(new MapCollisionEvent(entityId, cast[i].GetVector2()));
+                                        MapCollisionEvent mapCollisionEvent = CreateEvent<MapCollisionEvent>();
+                                        mapCollisionEvent.EntityId = entityId;
+                                        mapCollisionEvent.Position = cast[i].GetVector2();
+                                        FireEvent(mapCollisionEvent);
                                         break;
                                     }
                                 }
@@ -240,7 +246,10 @@ namespace Tank.Systems
                                 frontPosition *= -1;
                             }
                             frontPosition += bottomCenter;
-                            FireEvent(new MapCollisionEvent(entityId, frontPosition));
+                            MapCollisionEvent mapPositionCollisionEvent = CreateEvent<MapCollisionEvent>();
+                            mapPositionCollisionEvent.EntityId = entityId;
+                            mapPositionCollisionEvent.Position = frontPosition;
+                            FireEvent(mapPositionCollisionEvent);
                             return;
                         }
 
@@ -265,14 +274,16 @@ namespace Tank.Systems
 
                 if (!map.Map.IsPointOnMap(placeComponent.Position))
                 {
-                    FireEvent(new RemoveEntityEvent(entityId));
+                    RemoveEntityEvent removeEntityEvent = CreateEvent<RemoveEntityEvent>();
+                    removeEntityEvent.EntityId = entityId;
+                    FireEvent(removeEntityEvent);
                 }
                 moveComponent.Acceleration *= 0;
             }
         }
 
         /// <inheritdoc/>
-        public override void EventNotification(object sender, EventArgs eventArgs)
+        public override void EventNotification(object sender, IGameEvent eventArgs)
         {
             base.EventNotification(sender, eventArgs);
             if (eventArgs is ApplyForceEvent forceEvent)

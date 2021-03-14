@@ -63,7 +63,10 @@ namespace Tank.Systems
 
                 if (fadeComponent.TicksToLive <= 0 && visibleComponent.Color.A <= fadeComponent.StartOpacity)
                 {
-                    FireEvent(new RemoveEntityEvent(entityId));
+
+                    RemoveEntityEvent removeEntityEvent = CreateEvent<RemoveEntityEvent>();
+                    removeEntityEvent.EntityId = entityId;
+                    FireEvent(removeEntityEvent);
                     break;
                 }
 

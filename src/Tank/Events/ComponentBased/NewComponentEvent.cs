@@ -5,12 +5,5 @@
     /// </summary>
     class NewComponentEvent : EntityBasedEvent
     {
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        /// <param name="entityId">The id of the entity where a component was added to</param>
-        public NewComponentEvent(uint entityId) : base(entityId)
-        {
-        }
     }
 }

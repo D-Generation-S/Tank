@@ -1,8 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Tank.Components;
 using Tank.DataStructure.Geometrics;
+using Tank.Events;
 using Tank.Events.EntityBased;
 using Tank.Events.PhysicBased;
 using Tank.Events.TerrainEvents;
@@ -34,7 +33,7 @@ namespace Tank.Systems
         }
 
         /// <inheritdoc/>
-        public override void EventNotification(object sender, EventArgs eventArgs)
+        public override void EventNotification(object sender, IGameEvent eventArgs)
         {
             base.EventNotification(sender, eventArgs);
             if (eventArgs is MapCollisionEvent)
@@ -46,8 +45,9 @@ namespace Tank.Systems
                 {
                     return;
                 }
-
-                FireEvent(new RemoveEntityEvent(collisionEvent.EntityId));
+                RemoveEntityEvent removeEntityEvent = eventManager.CreateEvent<RemoveEntityEvent>();
+                removeEntityEvent.EntityId = collisionEvent.EntityId;
+                FireEvent(removeEntityEvent);
                 Effect(collisionEvent, damageComponent);
                 DamageTerrain(damageComponent, collisionEvent);
             }
@@ -66,8 +66,9 @@ namespace Tank.Systems
             }
             Circle damageArea = damageComponent.DamageArea;
             damageArea.Center = collisionEvent.Position;
-
-            FireEvent(new DamageTerrainEvent(damageArea));
+            DamageTerrainEvent damageTerrainEvent = CreateEvent<DamageTerrainEvent>();
+            damageTerrainEvent.DamageArea = damageArea;
+            FireEvent(damageTerrainEvent);
         }
 
         /// <summary>
@@ -89,7 +90,9 @@ namespace Tank.Systems
                     placeable.Position = collisionEvent.Position;
                 }
             }
-            FireEvent(new AddEntityEvent(components));
+            AddEntityEvent addEntiyEvent = CreateEvent<AddEntityEvent>();
+            addEntiyEvent.Components = components;
+            FireEvent(addEntiyEvent);
         }
     }
 }

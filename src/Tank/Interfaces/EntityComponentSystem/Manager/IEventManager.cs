@@ -1,4 +1,5 @@
 ﻿using System;
+using Tank.Events;
 
 namespace Tank.Interfaces.EntityComponentSystem.Manager
 {
@@ -8,12 +9,19 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
     interface IEventManager : IClearable
     {
         /// <summary>
+        /// Create a event of a given type
+        /// </summary>
+        /// <typeparam name="T">The type of the event</typeparam>
+        /// <returns>An instance of the requested event</returns>
+        T CreateEvent<T>() where T : IGameEvent;
+
+        /// <summary>
         /// This method will fire an event for the whole system
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        void FireEvent<T>(object sender, T args) where T : EventArgs;
+        void FireEvent<T>(object sender, T args) where T : IGameEvent;
 
         /// <summary>
         /// This method will allow you to add an new listner to the event manager

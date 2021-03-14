@@ -75,6 +75,8 @@ namespace Tank.GameStates.States
 
         private bool newState;
 
+        private readonly int cloudsToSpawn;
+
         private float fps;
 
         public GameState(IMap mapToUse, GameSettings gameSettings)
@@ -85,6 +87,7 @@ namespace Tank.GameStates.States
             randomizer.Initzialize(100);
             debugOn = gameSettings.IsDebug;
             debugIdGenerated = false;
+            cloudsToSpawn = 4500;
         }
 
         /// <inheritdoc/>
@@ -122,7 +125,6 @@ namespace Tank.GameStates.States
         {
             int screenWidth = viewportAdapter.VirtualWidth;
             int screenHeight = viewportAdapter.VirtualHeight;
-
             engine.AddSystem(new BindingSystem());
             engine.AddSystem(new MapSculptingSystem());
             engine.AddSystem(new ForceSystem(new VectorRectangle(0, 0, screenWidth, screenHeight)));
@@ -197,9 +199,10 @@ namespace Tank.GameStates.States
 
             List<IGameObjectBuilder> cloudBuilders = new List<IGameObjectBuilder>();
             Rectangle cloudSpawnArea = new Rectangle(-50, 0, mapToUse.Width, (int)mapToUse.HighestPosition - 50);
-            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 0, 32, 32) }, randomizer, cloudSpawnArea));
-            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 32, 32, 32) }, randomizer, cloudSpawnArea));
-            foreach(IGameObjectBuilder builder in cloudBuilders)
+            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 0, 32, 16) }, randomizer, cloudSpawnArea));
+            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(32, 0, 32, 16) }, randomizer, cloudSpawnArea));
+            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 16, 64, 32) }, randomizer, cloudSpawnArea));
+            foreach (IGameObjectBuilder builder in cloudBuilders)
             {
                 builder.Init(engine);
             }
@@ -249,13 +252,19 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            if (engine.EntityManager.GetEntitiesWithComponent<CloudTag>().Count < 100)
+            int cloudCounter = engine.EntityManager.GetEntitiesWithComponent<CloudTag>().Count;
+            if (cloudCounter < cloudsToSpawn || Keyboard.GetState().IsKeyDown(Keys.F6))
             {
-                uint cloudId = engine.EntityManager.CreateEntity();
-                foreach (IComponent component in randomCloudFactory.GetNewObject())
+                int leftClouds = cloudsToSpawn - cloudCounter;
+                for (int i = 0; i < leftClouds; i++)
                 {
-                    engine.EntityManager.AddComponent(cloudId, component);
+                    uint cloudId = engine.EntityManager.CreateEntity();
+                    foreach (IComponent component in randomCloudFactory.GetNewObject())
+                    {
+                        engine.EntityManager.AddComponent(cloudId, component);
+                    }
                 }
+
             }
 
             if (Keyboard.GetState().IsKeyUp(Keys.Escape))
@@ -355,8 +364,13 @@ namespace Tank.GameStates.States
 
                         };
                         engine.EntityManager.AddComponent(exposion, damage);
-                        engine.EventManager.FireEvent<DamageTerrainEvent>(this, new DamageTerrainEvent(circle));
-                        engine.EventManager.FireEvent<MapCollisionEvent>(this, new MapCollisionEvent(exposion, circle.Center));
+                        DamageTerrainEvent damageTerrainEvent = engine.EventManager.CreateEvent<DamageTerrainEvent>();
+                        damageTerrainEvent.DamageArea = circle;
+                        engine.EventManager.FireEvent<DamageTerrainEvent>(this, damageTerrainEvent);
+                        MapCollisionEvent mapCollisionEvent = engine.EventManager.CreateEvent<MapCollisionEvent>();
+                        mapCollisionEvent.EntityId = exposion;
+                        mapCollisionEvent.Position = circle.Center;
+                        engine.EventManager.FireEvent<MapCollisionEvent>(this, mapCollisionEvent);
                     }
                 }
             }

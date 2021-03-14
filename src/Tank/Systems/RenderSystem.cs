@@ -8,6 +8,7 @@ using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.DataStructure;
 using Tank.Enums;
+using Tank.Events;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -198,10 +199,6 @@ namespace Tank.Systems
                 Color.White
                 );
             spriteBatch.End();
-            return;
-            Color[] targetContent = new Color[source.Width * source.Height];
-            source.GetData<Color>(targetContent);
-            renderTarget.SetData<Color>(targetContent);
         }
 
         private void RenderEntities(int i)

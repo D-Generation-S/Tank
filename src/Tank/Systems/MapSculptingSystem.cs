@@ -4,6 +4,7 @@ using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataStructure.Geometrics;
+using Tank.Events;
 using Tank.Events.PhysicBased;
 using Tank.Events.TerrainEvents;
 using Tank.Interfaces.EntityComponentSystem.Manager;
@@ -48,7 +49,7 @@ namespace Tank.Systems
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="eventArgs">The arguments from the event</param>
-        public override void EventNotification(object sender, EventArgs eventArgs)
+        public override void EventNotification(object sender, IGameEvent eventArgs)
         {
             base.EventNotification(sender, eventArgs);
             if (map == null)
@@ -106,23 +107,6 @@ namespace Tank.Systems
 
                 entityManager.RemoveEntity(entityId);
             }
-        }
-
-        private Vector2 FindLowestPoint(Vector2 start)
-        {
-            Vector2 startCopy = Vector2.One * start;
-            startCopy.Y -= 5;
-            for (int i = 0; i < 20; i++)
-            {
-                int position = (int)start.Y + i;
-                if (map.Map.IsPixelSolid((int)start.X, position))
-                {
-                    start.Y = position;
-                    return start;
-                }
-            }
-
-            return start;
         }
 
         /// <inheritdoc/>

@@ -77,6 +77,10 @@ namespace Tank.Systems
             {
                 uint entityId = allTargets[i];
                 PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(entityId);
+                if (placeable == null)
+                {
+                    return;
+                }
                 QuadTreeData quadTreeData = GetDataContainer(placeable.Position, entityId);
                 quadTree.Insert(quadTreeData);
                 activeDataContainer.Add(quadTreeData);
@@ -109,7 +113,6 @@ namespace Tank.Systems
                 return;
             }
             VectorRectangle searchArea = new VectorRectangle(origin.Position, force.ForceDiameter * 2);
-            int count = 0;
             foreach (QuadTreeData data in quadTree.Query(searchArea))
             {
                 uint targetId = data.GetData<uint>();
@@ -140,8 +143,10 @@ namespace Tank.Systems
                 {
                     entityManager.RemoveComponents(entityId, force.Type);
                 }
-
-                FireEvent(new ApplyForceEvent(targetId, forceToApply));
+                ApplyForceEvent forceEvent = CreateEvent<ApplyForceEvent>();
+                forceEvent.EntityId = targetId;
+                forceEvent.Force = forceToApply;
+                FireEvent(forceEvent);
             }
         }
 

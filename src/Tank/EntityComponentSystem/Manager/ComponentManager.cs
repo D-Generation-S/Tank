@@ -40,7 +40,7 @@ namespace Tank.EntityComponentSystem.Manager
         {
             componentStorages = new List<ComponentStorage>();
             usedComponents = new List<IComponent>();
-            maxComponentsToKeep = 200;
+            maxComponentsToKeep = 250000;
         }
 
         /// <inheritdoc/>
@@ -159,13 +159,26 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public void RemoveComponents(uint entityId, Type componentType)
         {
+            RemoveComponents(entityId, componentType, true);
+        }
+
+        
+        private void RemoveComponents(uint entityId, Type componentType, bool informSystem)
+        {
             ComponentStorage storage = GetComponentStorage(componentType);
+            List<IComponent> componentsToRemove = new List<IComponent>();
             foreach (IComponent removeComponent in storage.GetComponents(entityId))
             {
                 AddRemovedComponent(removeComponent);
-                storage.Remove(removeComponent);
+                componentsToRemove.Add(removeComponent);
             }
-            eventManager.FireEvent(this, new ComponentRemovedEvent(entityId));
+            componentsToRemove.ForEach(data => storage.Remove(entityId, data));
+            if (informSystem)
+            {
+                ComponentRemovedEvent componentRemovedEvent = eventManager.CreateEvent<ComponentRemovedEvent>();
+                componentRemovedEvent.EntityId = entityId;
+                eventManager.FireEvent(this, componentRemovedEvent);
+            }
         }
 
         /// <inheritdoc/>
@@ -173,8 +186,11 @@ namespace Tank.EntityComponentSystem.Manager
         {
             foreach(ComponentStorage storage in componentStorages)
             {
-                RemoveComponents(entityId, storage.Type);
+                RemoveComponents(entityId, storage.Type, false);
             }
+            ComponentRemovedEvent componentRemovedEvent = eventManager.CreateEvent<ComponentRemovedEvent>();
+            componentRemovedEvent.EntityId = entityId;
+            eventManager.FireEvent(this, componentRemovedEvent);
         }
 
         /// <inheritdoc/>

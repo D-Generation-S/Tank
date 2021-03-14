@@ -22,7 +22,7 @@ namespace Tank.Events.ComponentBased
         /// </summary>
         /// <param name="entityId">The id of the entity to remove</param>
         /// <param name="componentType">The component type to remove</param>
-        public RemoveComponentEvent(uint entityId, Type componentType) : base(entityId)
+        public RemoveComponentEvent(Type componentType)
         {
             this.componentType = componentType;
         }

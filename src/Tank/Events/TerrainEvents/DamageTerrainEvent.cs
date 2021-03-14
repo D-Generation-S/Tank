@@ -6,20 +6,23 @@ namespace Tank.Events.TerrainEvents
     /// <summary>
     /// This class is an event telling the system there should be some terrain damage
     /// </summary>
-    class DamageTerrainEvent : EventArgs
+    class DamageTerrainEvent : IGameEvent
     {
         /// <summary>
         /// Readonly access to the area where the damage should be applied to
         /// </summary>
-        public Circle DamageArea { get; }
+        public Circle DamageArea;
 
-        /// <summary>
-        /// Create a new instance of this event
-        /// </summary>
-        /// <param name="damageArea"></param>
-        public DamageTerrainEvent(Circle damageArea)
+        public Type Type { get; }
+
+        public DamageTerrainEvent()
         {
-            this.DamageArea = damageArea;
+            Type = this.GetType();
+        }
+
+        public void Init()
+        {
+            DamageArea = null;            
         }
     }
 }

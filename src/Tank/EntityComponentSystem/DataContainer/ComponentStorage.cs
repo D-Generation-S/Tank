@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tank.Events.ComponentBased;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
@@ -16,15 +17,12 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// </summary>
         public Type Type { get; private set; }
 
-        /// <summary>
-        /// The stored components
-        /// </summary>
-        private readonly List<IComponent> components;
+        private readonly Dictionary<uint, List<IComponent>> componentDictonary;
 
         /// <summary>
         /// The number of components
         /// </summary>
-        public int ComponentCount => components.Count;
+        public int ComponentCount => componentDictonary.Count;
 
         /// <summary>
         /// The event manager to use
@@ -40,7 +38,7 @@ namespace Tank.EntityComponentSystem.DataContainer
         {
             Type = type;
             this.eventManager = eventManager;
-            components = new List<IComponent>();
+            componentDictonary = new Dictionary<uint, List<IComponent>>();
         }
 
         /// <summary>
@@ -56,8 +54,30 @@ namespace Tank.EntityComponentSystem.DataContainer
                 return false;
             }
             component.SetEntityId(entityId);
-            components.Add(component);
+            if (componentDictonary.ContainsKey(entityId))
+            {
+                componentDictonary[entityId].Add(component);
+                return true;
+            }
+            componentDictonary.Add(entityId, new List<IComponent>() { component });
             return true;
+        }
+
+        /// <summary>
+        /// Remove a specific entity
+        /// </summary>
+        /// <param name="component">The component to remove</param>
+        public void Remove(uint entityId, IComponent component)
+        {
+            if (!componentDictonary.ContainsKey(entityId))
+            {
+                return;
+            }
+            componentDictonary[entityId].Remove(component);
+            if (componentDictonary[entityId].Count == 0)
+            {
+                componentDictonary.Remove(entityId);
+            }
         }
 
         /// <summary>
@@ -67,7 +87,7 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <returns>True if the entity do have the component</returns>
         public bool HasComponent(uint entityId)
         {
-            return GetComponent(entityId) != null;
+            return componentDictonary.ContainsKey(entityId) && componentDictonary[entityId].Count > 0;
         }
 
         /// <summary>
@@ -77,10 +97,12 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <returns>True if component was found</returns>
         public IComponent GetComponent(uint entityId)
         {
-            return components.Find(component =>
+            if (!componentDictonary.ContainsKey(entityId))
             {
-                return component != null && component.EntityId == entityId;
-            });
+                return default;
+            }
+            List<IComponent> components = componentDictonary[entityId];
+            return components.FirstOrDefault();
         }
 
         /// <summary>
@@ -90,10 +112,11 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <returns>All the components of the entity</returns>
         public List<IComponent> GetComponents(uint entityId)
         {
-            return components.FindAll((componentToCheck) =>
+            if (!componentDictonary.ContainsKey(entityId))
             {
-                return componentToCheck != null && componentToCheck.EntityId == entityId;
-            });
+                return new List<IComponent>();
+            }
+            return componentDictonary[entityId];
         }
 
         /// <summary>
@@ -105,10 +128,13 @@ namespace Tank.EntityComponentSystem.DataContainer
         public bool MoveComponents(uint targetEntityId, IComponent componentToMove)
         {
             // Not sure if this method is really required here!
-            eventManager.FireEvent(this, new ComponentRemovedEvent(componentToMove.EntityId));
+            ComponentRemovedEvent componentRemovedEvent = eventManager.CreateEvent<ComponentRemovedEvent>();
+            componentRemovedEvent.EntityId = componentToMove.EntityId;
+            eventManager.FireEvent(this, componentRemovedEvent);
             componentToMove.SetEntityId(targetEntityId);
-            eventManager.FireEvent(this, new NewComponentEvent(targetEntityId));
-
+            NewComponentEvent newComponentEvent = eventManager.CreateEvent<NewComponentEvent>();
+            newComponentEvent.EntityId = componentToMove.EntityId;
+            eventManager.FireEvent(this, newComponentEvent);
             return true;
         }
 
@@ -118,31 +144,13 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <returns>A list with all entites</returns>
         public List<uint> GetEntitesWithComponent()
         {
-            List<uint> returnEntites = new List<uint>();
-            foreach(IComponent component in components)
-            {
-                if (returnEntites.Contains(component.EntityId))
-                {
-                    continue;
-                }
-                returnEntites.Add(component.EntityId);
-            }
-            return returnEntites;
-        }
-
-        /// <summary>
-        /// Remove a specific entity
-        /// </summary>
-        /// <param name="component">The component to remove</param>
-        public void Remove(IComponent component)
-        {
-            components.Remove(component);
+            return componentDictonary.Keys.ToList();
         }
 
         /// <inheritdoc/>
         public void Clear()
         {
-            components.Clear();
+            componentDictonary.Clear();
         }
     }
 }

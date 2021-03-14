@@ -5,25 +5,27 @@ namespace Tank.Events
     /// <summary>
     /// This class is a base class to defined entity based events
     /// </summary>
-    class EntityBasedEvent : EventArgs
+    class EntityBasedEvent : IGameEvent
     {
-        /// <summary>
-        /// The id of the entity the event is related to
-        /// </summary>
-        private readonly uint entityId;
-
         /// <summary>
         /// Readonly access to the id of the entity the events is related to
         /// </summary>
-        public uint EntityId => entityId;
+        public uint EntityId;
+
+        public Type Type{ get; }
 
         /// <summary>
         /// Construct a new instance of this class
         /// </summary>
         /// <param name="entityId">The id of the entity the event belongs to</param>
-        public EntityBasedEvent(uint entityId)
+        public EntityBasedEvent()
         {
-            this.entityId = entityId;
+            Type = this.GetType();
+        }
+
+        public virtual void Init()
+        {
+            EntityId = 0;
         }
     }
 }

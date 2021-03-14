@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Tank.Events;
 using Tank.Events.ComponentBased;
 using Tank.Events.EntityBased;
 using Tank.Interfaces.EntityComponentSystem;
@@ -79,7 +80,9 @@ namespace Tank.EntityComponentSystem.Manager
                 entities.Add(idToReturn);
                 if (notifySystems)
                 {
-                    eventManager.FireEvent(this, new NewEntityEvent(idToReturn));
+                    NewEntityEvent newEntityEvent = eventManager.CreateEvent<NewEntityEvent>();
+                    newEntityEvent.EntityId = idToReturn;
+                    eventManager.FireEvent(this, newEntityEvent);
                 }
 
                 return idToReturn;
@@ -88,7 +91,9 @@ namespace Tank.EntityComponentSystem.Manager
             nextId++;
             entities.Add(idToReturn); if (notifySystems)
             {
-                eventManager.FireEvent(this, new NewEntityEvent(idToReturn));
+                NewEntityEvent newEntityEvent = eventManager.CreateEvent<NewEntityEvent>();
+                newEntityEvent.EntityId = idToReturn;
+                eventManager.FireEvent(this, newEntityEvent);
             }
             return idToReturn;
         }
@@ -121,7 +126,9 @@ namespace Tank.EntityComponentSystem.Manager
             }
             if (informSystems)
             {
-                eventManager.FireEvent(this, new NewComponentEvent(entityId));
+                NewComponentEvent newComponentEvent = eventManager.CreateEvent<NewComponentEvent>();
+                newComponentEvent.EntityId = entityId;
+                eventManager.FireEvent(this, newComponentEvent);
             }
             return returnValue;
         }
@@ -225,12 +232,14 @@ namespace Tank.EntityComponentSystem.Manager
         {
             RemoveComponents(entityId);
             entities.Remove(entityId);
-            eventManager.FireEvent(this, new EntityRemovedEvent(entityId));
+            EntityRemovedEvent entityRemovedEvent = eventManager.CreateEvent<EntityRemovedEvent>();
+            entityRemovedEvent.EntityId = entityId;
+            eventManager.FireEvent(this, entityRemovedEvent);
             removedEntities.Enqueue(entityId);
         }
 
         /// <inheritdoc/>
-        public void EventNotification(object sender, EventArgs eventArgs)
+        public void EventNotification(object sender, IGameEvent eventArgs)
         {
             if (eventArgs is AddEntityEvent)
             {
@@ -240,8 +249,9 @@ namespace Tank.EntityComponentSystem.Manager
                 {
                     AddComponent(entityId, gameComponent, false);
                 }
-
-                eventManager.FireEvent(this, new NewComponentEvent(entityId));
+                NewComponentEvent newComponentEvent = eventManager.CreateEvent<NewComponentEvent>();
+                newComponentEvent.EntityId = entityId;
+                eventManager.FireEvent(this, newComponentEvent);
 
                 return;
             }

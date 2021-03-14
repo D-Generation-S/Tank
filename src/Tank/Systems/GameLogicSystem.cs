@@ -98,8 +98,10 @@ namespace Tank.Systems
                     animationFrames
                  );
                 tankObjectBuilder.Init(entityManager);
-                AddEntityEvent tankEntity = new AddEntityEvent(tankObjectBuilder.BuildGameComponents());
-                eventManager.FireEvent(this, tankEntity);
+
+                AddEntityEvent addEnttiyEvent = CreateEvent<AddEntityEvent>();
+                addEnttiyEvent.Components = tankObjectBuilder.BuildGameComponents();
+                FireEvent(addEnttiyEvent);
             }
             arrowEntity = entityManager.CreateEntity(false);
             entityManager.CreateComponent<PlaceableComponent>(arrowEntity);

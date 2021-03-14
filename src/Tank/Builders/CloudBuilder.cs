@@ -18,6 +18,7 @@ namespace Tank.Builders
         private readonly List<Rectangle> animationFrames;
         private readonly IRandomizer randomizer;
         private readonly Rectangle spawnArea;
+        private Rectangle destination;
 
         public CloudBuilder(Texture2D texture, List<Rectangle> animationFrames, IRandomizer randomizer, Rectangle spawnArea)
         {
@@ -25,6 +26,7 @@ namespace Tank.Builders
             this.animationFrames = animationFrames;
             this.randomizer = randomizer;
             this.spawnArea = spawnArea;
+            destination = new Rectangle(0, 0, animationFrames[0].Width, animationFrames[0].Height);
         }
 
         /// <inheritdoc>/>
@@ -42,9 +44,9 @@ namespace Tank.Builders
             moveableComponent.Velocity = Vector2.UnitX * randomizer.GetNewNumber(0.5f, 2);
             VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
             visibleComponent.Texture = texture;
-            visibleComponent.Destination = animationFrames[0];
+            visibleComponent.Destination = destination;
             visibleComponent.Source = animationFrames[0];
-            visibleComponent.SingleTextureSize = animationFrames[0];
+            visibleComponent.SingleTextureSize = destination;
             visibleComponent.DrawMiddle = true;
             visibleComponent.Color.A = 0;
             AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>();
@@ -52,7 +54,7 @@ namespace Tank.Builders
             animationComponent.Name = "Idle";
             animationComponent.Loop = true;
             animationComponent.SpriteSources = animationFrames;
-            FadeComponent fadeComponent = new FadeComponent();
+            FadeComponent fadeComponent = entityManager.CreateComponent<FadeComponent>();
             fadeComponent.TicksToLive = randomizer.GetNewIntNumber(120, 300);
             fadeComponent.TargetOpacity = randomizer.GetNewIntNumber(120, 170);
 
