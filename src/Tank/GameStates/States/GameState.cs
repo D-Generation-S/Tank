@@ -5,8 +5,6 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Tank.Adapter;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
@@ -87,7 +85,7 @@ namespace Tank.GameStates.States
             randomizer.Initzialize(100);
             debugOn = gameSettings.IsDebug;
             debugIdGenerated = false;
-            cloudsToSpawn = 4500;
+            cloudsToSpawn = 250;
         }
 
         /// <inheritdoc/>
