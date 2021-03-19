@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 using Tank.Components;
+using Tank.Components.GameObject;
+using Tank.Components.Tags;
 using Tank.DataStructure.Geometrics;
 using Tank.Events;
 using Tank.Events.EntityBased;
@@ -50,8 +54,11 @@ namespace Tank.Systems
                 FireEvent(removeEntityEvent);
                 Effect(collisionEvent, damageComponent);
                 DamageTerrain(damageComponent, collisionEvent);
+                DamageGameObjects(damageComponent, collisionEvent);
             }
         }
+
+       
 
         /// <summary>
         /// This method will fire an event if terrain should be damaged
@@ -93,6 +100,43 @@ namespace Tank.Systems
             AddEntityEvent addEntiyEvent = CreateEvent<AddEntityEvent>();
             addEntiyEvent.Components = components;
             FireEvent(addEntiyEvent);
+        }
+
+        private void DamageGameObjects(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
+        {
+            List<uint> objects = entityManager.GetEntitiesWithComponent<GameObjectTag>();
+            foreach (uint gameObject in objects)
+            {
+                PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(gameObject);
+                GameObjectData gameObjectData = entityManager.GetComponent<GameObjectData>(gameObject);
+
+                if (placeableComponent == null || gameObjectData == null || !damageComponent.DamageArea.IsInInCircle(placeableComponent.Position))
+                {
+                    continue;
+                }
+
+                float armor = gameObjectData.Properties.ContainsKey("Armor") ? gameObjectData.Properties["Armor"] : 0;
+                float damageToTake = damageComponent.CenterDamageValue;
+                Vector2 centerDistance = damageComponent.DamageArea.Center - placeableComponent.Position;
+                float damangeReduction = (float)damageComponent.CenterDamageValue * (centerDistance.Length() / (float)damageComponent.DamageArea.Radius);
+                damageToTake = damageComponent.CenterDamageValue - damangeReduction;
+                float reflectedDamage = damageComponent.CenterDamageValue * armor / 100;
+                damageToTake -= reflectedDamage;
+                if (damageToTake < 0 || !gameObjectData.Properties.ContainsKey("Health"))
+                {
+                    continue;
+                }
+
+                gameObjectData.Properties["Health"] -= damageToTake;
+                gameObjectData.DataChanged = true;
+                if (gameObjectData.Properties["Health"] <= 0)
+                {
+                    RemoveEntityEvent removeEntityEvent = eventManager.CreateEvent<RemoveEntityEvent>();
+                    removeEntityEvent.EntityId = gameObjectData.EntityId;
+                    FireEvent(removeEntityEvent);
+                }
+
+            }
         }
     }
 }

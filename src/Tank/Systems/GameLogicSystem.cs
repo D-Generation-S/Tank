@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
+using Tank.Enums;
+using Tank.Events;
 using Tank.Events.ComponentBased;
+using Tank.Events.EntityBased;
 using Tank.GameStates.Data;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Validator;
@@ -33,6 +36,11 @@ namespace Tank.Systems
         private int currentPlayerIndex;
 
         /// <summary>
+        /// The current player id
+        /// </summary>
+        private uint currentPlayerId;
+
+        /// <summary>
         /// The arrow entity to bind
         /// </summary>
         private uint arrowEntity;
@@ -41,7 +49,16 @@ namespace Tank.Systems
         /// The order of the players
         /// </summary>
         private readonly int[] playerOrder;
+
+        /// <summary>
+        /// The current game settings
+        /// </summary>
         private readonly GameSettings settings;
+
+        /// <summary>
+        /// The current game state
+        /// </summary>
+        private GameStatesEnum currentGameStateEnum;
 
         /// <summary>
         /// Create a new instance of this system
@@ -53,20 +70,17 @@ namespace Tank.Systems
             setup = true;
             currentPlayerIndex = 0;
             this.settings = settings;
+            currentGameStateEnum = GameStatesEnum.Unknown;
         }
 
         /// <<inheritdoc/>
         public override void Initialize(IGameEngine gameEngine)
         {
             base.Initialize(gameEngine);
+            eventManager.SubscribeEvent(this, typeof(RemoveEntityEvent));
 
             arrowEntity = entityManager.CreateEntity(false);
             entityManager.CreateComponent<PlaceableComponent>(arrowEntity);
-            VisibleComponent arrowVisible = entityManager.CreateComponent<VisibleComponent>(arrowEntity);
-            arrowVisible.Texture = contentManager.Load<Texture2D>("Images/Entities/SelectionArrow");
-            arrowVisible.Destination = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
-            arrowVisible.Source = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
-            arrowVisible.DrawMiddle = true;
 
             AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>(arrowEntity);
             animationComponent.FrameSeconds = 0.25f;
@@ -81,6 +95,13 @@ namespace Tank.Systems
                 new Rectangle(0, 32, 32, 32),
                 new Rectangle(32, 32, 32, 32)
             };
+
+
+            VisibleComponent arrowVisible = entityManager.CreateComponent<VisibleComponent>(arrowEntity);
+            arrowVisible.Texture = contentManager.Load<Texture2D>("Images/Entities/SelectionArrow");
+            arrowVisible.DrawMiddle = true;
+            arrowVisible.Destination = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
+            arrowVisible.Source = animationComponent.SpriteSources[0];
 
             ComponentChangedEvent componentChangedEvent = eventManager.CreateEvent<ComponentChangedEvent>();
             componentChangedEvent.EntityId = arrowEntity;
@@ -103,6 +124,18 @@ namespace Tank.Systems
             }
         }
 
+        public override void EventNotification(object sender, IGameEvent eventArgs)
+        {
+            base.EventNotification(sender, eventArgs);
+            if (eventArgs is RemoveEntityEvent entityToRemove)
+            {
+                if (watchedEntities.Contains(entityToRemove.EntityId))
+                {
+                    SetNextPlayer();
+                }
+            }
+        }
+
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
@@ -119,9 +152,11 @@ namespace Tank.Systems
 
             setup = false;
 
-            if (watchedEntities.Count == 0)
+            if (watchedEntities.Count <= 1)
             {
-
+                // Points who did won and other important stuff should be added to the event
+                GameOverEvent gameOverEvent = eventManager.CreateEvent<GameOverEvent>();
+                FireEvent(gameOverEvent);
                 //Game is over!
                 return;
             }
@@ -129,14 +164,57 @@ namespace Tank.Systems
             if (!activePlayer)
             {
                 activePlayer = true;
-                entityManager.AddComponent(watchedEntities[currentPlayerIndex], new ActiveGameObjectTag());
-                entityManager.AddComponent(watchedEntities[currentPlayerIndex], new BindComponent()
+                currentPlayerId = watchedEntities[currentPlayerIndex];
+                entityManager.AddComponent(currentPlayerId, new ActiveGameObjectTag());
+                entityManager.AddComponent(arrowEntity, new BindComponent()
                 {
-                    BoundEntityId = arrowEntity,
+                    DeleteIfParentGone = false,
+                    BoundEntityId = currentPlayerId,
                     Offset = new Vector2(0f, -60f),
+                    Source = true,
                     PositionBound = true
                 });
+                FireGameStateChange(GameStatesEnum.RoundStart);
+                return;
             }
+
+            if (currentGameStateEnum == GameStatesEnum.RoundStart)
+            {
+                FireGameStateChange(GameStatesEnum.RoundRunning);
+            }
+
+            if (activePlayer && !watchedEntities.Contains(currentPlayerId))
+            {
+                SetNextPlayer();
+            }
+        }
+
+        private void SetNextPlayer()
+        {
+            currentPlayerIndex++;
+            if (currentPlayerIndex > watchedEntities.Count - 1)
+            {
+                currentPlayerIndex = 0;
+            }
+
+            FireGameStateChange(GameStatesEnum.RoundEnd);
+            uint oldPlayerId = currentPlayerId;
+            currentPlayerId = watchedEntities[currentPlayerIndex];
+
+            ActiveGameObjectTag activeGameObjectTag = entityManager.GetComponent<ActiveGameObjectTag>(oldPlayerId);
+            BindComponent bindComponent = entityManager.GetComponent<BindComponent>(arrowEntity);
+            activeGameObjectTag = activeGameObjectTag ?? entityManager.CreateComponent<ActiveGameObjectTag>(currentPlayerId);
+            bindComponent.BoundEntityId = currentPlayerId;
+            FireGameStateChange(GameStatesEnum.RoundStart);
+        }
+
+        private void FireGameStateChange(GameStatesEnum gameStateEnum)
+        {
+            currentGameStateEnum = gameStateEnum;
+            GameStateChangedEvent stateChanged = eventManager.CreateEvent<GameStateChangedEvent>();
+            stateChanged.GameStateEnum = gameStateEnum;
+            stateChanged.EntityId = currentPlayerId;
+            FireEvent(stateChanged);
         }
 
     }

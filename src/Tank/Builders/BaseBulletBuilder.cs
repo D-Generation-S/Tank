@@ -111,7 +111,7 @@ namespace Tank.Builders
 
             DamageComponent damage = entityManager.CreateComponent<DamageComponent>();
             damage.DamageTerrain = true;
-            damage.CenterDamageValue = 1;
+            damage.CenterDamageValue = 50;
             damage.DamageArea = damageArea;
             damage.EffectFactory = explosionFactory;
 

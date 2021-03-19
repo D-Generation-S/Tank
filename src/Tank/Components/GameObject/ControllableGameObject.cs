@@ -1,4 +1,4 @@
-﻿namespace Tank.Components
+﻿namespace Tank.Components.GameObject
 {
     /// <summary>
     /// This class will make a game object controllable

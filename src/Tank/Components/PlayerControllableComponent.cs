@@ -1,4 +1,5 @@
-﻿using Tank.Interfaces.GameObjectControlling;
+﻿using Tank.Components.GameObject;
+using Tank.Interfaces.GameObjectControlling;
 
 namespace Tank.Components
 {

@@ -14,6 +14,7 @@ using Tank.DataManagement.Loader;
 using Tank.DataStructure.Geometrics;
 using Tank.DataStructure.Settings;
 using Tank.EntityComponentSystem.Manager;
+using Tank.Events;
 using Tank.Events.PhysicBased;
 using Tank.Events.TerrainEvents;
 using Tank.Factories;
@@ -34,8 +35,10 @@ namespace Tank.GameStates.States
     /// The game state class
     /// Since this is not done just yet the summary blocks are missing right now
     /// </summary>
-    class GameState : BaseAbstractState
+    class GameState : BaseAbstractState, IEventReceiver
     {
+        private IState gameOverState;
+
         private int ticksToFire;
 
         private KeyboardState previousState;
@@ -51,7 +54,6 @@ namespace Tank.GameStates.States
         private List<Rectangle> explosionAnimationFrames;
 
         private List<SoundEffect> explosionSounds;
-        private Effect defaultShader;
 
         Vector2 bulletSpawnLocation;
 
@@ -118,6 +120,7 @@ namespace Tank.GameStates.States
                         };
 
             explosionSounds = new List<SoundEffect>();
+            engine.EventManager.SubscribeEvent(this, typeof(GameOverEvent));
         }
 
         private void AddEngineSystems()
@@ -157,7 +160,7 @@ namespace Tank.GameStates.States
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion2"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion3"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion4"));
-            defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
+            //defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
             gameFont = contentWrapper.Load<SpriteFont>("gameFont");
             
         }
@@ -233,6 +236,11 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
+            if (gameOverState != null)
+            {
+                gameStateManager.Replace(gameOverState);
+            }
+
             int cloudCounter = engine.EntityManager.GetEntitiesWithComponent<CloudTag>().Count;
             if (cloudCounter < cloudsToSpawn || Keyboard.GetState().IsKeyDown(Keys.F6))
             {
@@ -392,6 +400,18 @@ namespace Tank.GameStates.States
         public override void Destruct()
         {
             engine.Clear();
+            if (MediaPlayer.State == MediaState.Playing)
+            {
+                MediaPlayer.Stop();
+            }
+        }
+
+        public void EventNotification(object sender, IGameEvent eventArgs)
+        {
+            if (eventArgs is GameOverEvent overEvent)
+            {
+                gameOverState = new MainMenuState();
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tank.Components;
+using Tank.Components.GameObject;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataStructure;
@@ -79,6 +80,12 @@ namespace Tank.Builders
         protected List<IComponent> CreateComponents(Vector2 startPosition)
         {
             List<IComponent> returnComponents = new List<IComponent>();
+            GameObjectData gameObjectData = entityManager.CreateComponent<GameObjectData>();
+            gameObjectData.Properties.Add("Health", 100f);
+            gameObjectData.Properties.Add("MaxHealth", gameObjectData.Properties["Health"]);
+            gameObjectData.Properties.Add("Armor", 10f);
+            gameObjectData.Properties.Add("Accuracy", 1f);
+            gameObjectData.DataChanged = true;
             PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
             placeableComponent.Position = startPosition + new Vector2(spriteSheet.Width, spriteSheet.Height) * -1;
             VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
@@ -99,6 +106,7 @@ namespace Tank.Builders
             GameObjectTag gameObjectTag = entityManager.CreateComponent<GameObjectTag>();
 
             returnComponents.Add(placeableComponent);
+            returnComponents.Add(gameObjectData);
             returnComponents.Add(visibleComponent);
             returnComponents.Add(moveable);
             returnComponents.Add(collider);

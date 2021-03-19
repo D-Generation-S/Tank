@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tank.Builders;
 using Tank.Components;
+using Tank.Components.GameObject;
 using Tank.Components.Rendering;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
@@ -162,6 +163,7 @@ namespace Tank.GameStates.States
                  defaultShader//,
                  //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
+            engine.AddSystem(new TextAttributeDisplaySystem());
             engine.AddSystem(new GameLogicSystem(gameSettings));
 
             MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader()));
@@ -211,8 +213,32 @@ namespace Tank.GameStates.States
                 bindComponent.Offset -= Vector2.UnitX * (gameFont.MeasureString(currentPlayer.PlayerName) / 2);
                 bindComponent.Source = true;
                 bindComponent.BoundEntityId = playerTank;
+                bindComponent.DeleteIfParentGone = true;
+
 
                 engine.EntityManager.AddComponent(playerName, bindComponent, true);
+
+                uint playerLife = engine.EntityManager.CreateEntity();
+                PlaceableComponent playerLifePlacement = engine.EntityManager.CreateComponent<PlaceableComponent>(playerLife);
+                AttributeDisplayComponent attributeDisplayComponent = engine.EntityManager.CreateComponent<AttributeDisplayComponent>(playerLife);
+                attributeDisplayComponent.AttributeToDisplay = "Health";
+                attributeDisplayComponent.MaxAttributeName = "MaxHealth";
+                VisibleTextComponent playerLifeText = engine.EntityManager.CreateComponent<VisibleTextComponent>(playerLife);
+                playerLifeText.ShaderEffect = defaultShader;
+                playerLifeText.Text = string.Empty;
+                playerLifeText.Font = gameFont;
+                playerLifeText.Color = Color.Black;
+                BindComponent playerLifeBin = engine.EntityManager.CreateComponent<BindComponent>();
+                playerLifeBin.PositionBound = true;
+                playerLifeBin.Offset = Vector2.UnitY * 20;
+                playerLifeBin.Source = true;
+                playerLifeBin.BoundEntityId = playerTank;
+                playerLifeBin.DeleteIfParentGone = true;
+
+                engine.EntityManager.AddComponent(playerLife, playerLifeBin, true);
+
+
+
             }
         }
 
