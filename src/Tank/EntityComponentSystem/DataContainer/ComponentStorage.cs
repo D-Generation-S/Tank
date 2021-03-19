@@ -17,6 +17,9 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// </summary>
         public Type Type { get; private set; }
 
+        /// <summary>
+        /// Dictionary with all the components of a single type
+        /// </summary>
         private readonly Dictionary<uint, List<IComponent>> componentDictonary;
 
         /// <summary>

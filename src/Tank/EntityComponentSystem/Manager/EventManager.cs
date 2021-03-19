@@ -55,6 +55,10 @@ namespace Tank.EntityComponentSystem.Manager
             StoreEvent(args);
         }
 
+        /// <summary>
+        /// Store a given event in the pool
+        /// </summary>
+        /// <param name="gameEvent">The game event to store</param>
         private void StoreEvent(IGameEvent gameEvent)
         {
             if (usedEvents.Count >= maxEventsToStore)

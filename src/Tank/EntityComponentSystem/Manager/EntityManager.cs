@@ -58,7 +58,7 @@ namespace Tank.EntityComponentSystem.Manager
         public void Initialize(IEventManager eventManager)
         {
             this.eventManager = eventManager;
-            this.componentManager.Initialize(eventManager);
+            componentManager.Initialize(eventManager);
             eventManager.SubscribeEvent(this, typeof(RemoveEntityEvent));
             eventManager.SubscribeEvent(this, typeof(RemoveComponentEvent));
             eventManager.SubscribeEvent(this, typeof(AddEntityEvent));
