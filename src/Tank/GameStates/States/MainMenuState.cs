@@ -82,9 +82,9 @@ namespace Tank.GameStates.States
             UpdateUiEffects(settings.EffectVolume);
         }
 
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            //startGameCommand.Execute();
             base.Update(gameTime);
         }
     }

@@ -136,7 +136,8 @@ namespace Tank.Systems
             graphicsDevice.SetRenderTarget(gameRenderTarget);
             for (int i = 0; i < containersToRender.Count; i++)
             {
-                RenderEntities(i);
+                RenderEntities(containersToRender[i]);
+                usedContainers.Push(containersToRender[i]);
             }
             containersToRender.Clear();
             if (drawStart)
@@ -188,6 +189,11 @@ namespace Tank.Systems
             drawLocked = false;
         }
 
+        /// <summary>
+        /// Copy the render target
+        /// </summary>
+        /// <param name="source">The source of the render target</param>
+        /// <param name="renderTarget">The target to render to</param>
         private void CopyRenderTarget(RenderTarget2D source, RenderTarget2D renderTarget)
         {
             graphicsDevice.SetRenderTarget(renderTarget);
@@ -200,9 +206,12 @@ namespace Tank.Systems
             spriteBatch.End();
         }
 
-        private void RenderEntities(int i)
+        /// <summary>
+        /// Render a given entity
+        /// </summary>
+        /// <param name="currentContainer">The current container to render</param>
+        private void RenderEntities(RenderContainer currentContainer)
         {
-            RenderContainer currentContainer = containersToRender[i];
             BeginDraw(currentContainer.ShaderEffect);
             switch (currentContainer.RenderType)
             {
@@ -234,7 +243,6 @@ namespace Tank.Systems
                 default:
                     break;
             }
-            usedContainers.Push(currentContainer);
         }
 
         /// <summary>

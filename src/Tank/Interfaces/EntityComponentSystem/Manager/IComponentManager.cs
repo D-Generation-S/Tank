@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Tank.Interfaces.EntityComponentSystem.Manager
 {
+    /// <summary>
+    /// Interface for an component manager
+    /// </summary>
     interface IComponentManager : IClearable
     {
         /// <summary>

@@ -12,6 +12,7 @@ namespace Tank.Events.TerrainEvents
         /// </summary>
         public Circle DamageArea;
 
+        /// <inheritdoc/>
         public override void Init()
         {
             DamageArea = null;            
