@@ -21,6 +21,9 @@ namespace Tank.EntityComponentSystem.Manager
         /// </summary>
         private readonly List<IGameEvent> usedEvents;
 
+        /// <summary>
+        /// The number of events to store in the pool
+        /// </summary>
         private int maxEventsToStore;
 
         /// <summary>
@@ -111,6 +114,7 @@ namespace Tank.EntityComponentSystem.Manager
             eventReceivers.Clear();
         }
 
+        /// <inheritdoc/>
         public T CreateEvent<T>() where T : IGameEvent
         {
             Type type = typeof(T);
