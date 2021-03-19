@@ -30,6 +30,11 @@ namespace Tank.Interfaces.MapGenerators
         Texture2D Image { get; }
 
         /// <summary>
+        /// The heighest position on the map
+        /// </summary>
+        float HighestPosition { get; }
+
+        /// <summary>
         /// The collision data for this map
         /// </summary>
         //FlattenArray<bool> CollissionMap { get; }

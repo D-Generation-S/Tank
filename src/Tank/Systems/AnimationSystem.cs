@@ -42,8 +42,9 @@ namespace Tank.Systems
                     {
                         if (!animation.Loop)
                         {
-                            FireEvent(new RemoveEntityEvent(entityId));
-
+                            RemoveEntityEvent removeEntityEvent = eventManager.CreateEvent<RemoveEntityEvent>();
+                            removeEntityEvent.EntityId = entityId;
+                            FireEvent(removeEntityEvent);
                             continue;
                         }
                         animation.CurrentIndex = 0;

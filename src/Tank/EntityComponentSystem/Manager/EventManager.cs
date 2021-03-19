@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Tank.EntityComponentSystem.DataContainer;
+using Tank.Events;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 
 namespace Tank.EntityComponentSystem.Manager
@@ -16,20 +17,31 @@ namespace Tank.EntityComponentSystem.Manager
         private readonly List<RecieverContainer> eventReceivers;
 
         /// <summary>
+        /// A list with all the used events
+        /// </summary>
+        private readonly List<IGameEvent> usedEvents;
+
+        /// <summary>
+        /// The number of events to store in the pool
+        /// </summary>
+        private int maxEventsToStore;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         public EventManager()
         {
             eventReceivers = new List<RecieverContainer>();
+            usedEvents = new List<IGameEvent>();
+            maxEventsToStore = 100;
         }
 
         /// <inheritdoc/>
-        public void FireEvent<T>(object sender, T args) where T : EventArgs
+        public void FireEvent<T>(object sender, T args) where T : IGameEvent
         {
-            Type type = typeof(T);
             RecieverContainer matchingContainer = eventReceivers.Find((container) =>
             {
-                return container.NotificationType == type;
+                return container.NotificationType == args.Type;
             });
             if (matchingContainer == null)
             {
@@ -43,6 +55,20 @@ namespace Tank.EntityComponentSystem.Manager
                 }
                 receiver.EventNotification(sender, args);
             }
+            StoreEvent(args);
+        }
+
+        /// <summary>
+        /// Store a given event in the pool
+        /// </summary>
+        /// <param name="gameEvent">The game event to store</param>
+        private void StoreEvent(IGameEvent gameEvent)
+        {
+            if (usedEvents.Count >= maxEventsToStore)
+            {
+                usedEvents.RemoveAt(0);
+            }
+            usedEvents.Add(gameEvent);
         }
 
         /// <inheritdoc/>
@@ -86,6 +112,19 @@ namespace Tank.EntityComponentSystem.Manager
         public void Clear()
         {
             eventReceivers.Clear();
+        }
+
+        /// <inheritdoc/>
+        public T CreateEvent<T>() where T : IGameEvent
+        {
+            Type type = typeof(T);
+            T returnEvent = (T)usedEvents.Find(eventData => eventData.Type == type);
+            if (returnEvent != null)
+            {
+                usedEvents.Remove(returnEvent);
+                returnEvent.Init();
+            }
+            return returnEvent == null ? (T)Activator.CreateInstance(type) : returnEvent;
         }
     }
 }

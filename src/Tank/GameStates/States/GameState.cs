@@ -5,11 +5,10 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Tank.Adapter;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
+using Tank.Components.Tags;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Geometrics;
@@ -42,12 +41,11 @@ namespace Tank.GameStates.States
         private KeyboardState previousState;
         private MouseState previousMouseState;
 
-        private RandomExplosionFactory randomExplosionFactory;
+        private RandomEntityBuilderFactory randomExplosionFactory;
+        private RandomEntityBuilderFactory randomCloudFactory;
 
         private BaseBulletBuilder bulletBuilder;
         private MapDebriBuilder debriBuilder;
-
-        private List<IGameObjectBuilder> explosionBuilders;
 
         private List<Rectangle> projectiveAnimationFrames;
         private List<Rectangle> explosionAnimationFrames;
@@ -57,8 +55,9 @@ namespace Tank.GameStates.States
 
         Vector2 bulletSpawnLocation;
 
-        Texture2D bulletTestExplosion;
-        Texture2D bulletTest;
+        private Texture2D bulletTestExplosion;
+        private Texture2D bulletTest;
+        private Texture2D clouds;
         private Texture2D pixelTexture;
         private SpriteFont gameFont;
 
@@ -74,6 +73,8 @@ namespace Tank.GameStates.States
 
         private bool newState;
 
+        private readonly int cloudsToSpawn;
+
         private float fps;
 
         public GameState(IMap mapToUse, GameSettings gameSettings)
@@ -84,6 +85,7 @@ namespace Tank.GameStates.States
             randomizer.Initzialize(100);
             debugOn = gameSettings.IsDebug;
             debugIdGenerated = false;
+            cloudsToSpawn = 250;
         }
 
         /// <inheritdoc/>
@@ -114,7 +116,6 @@ namespace Tank.GameStates.States
                             new Rectangle(32, 64, 32, 32),
                         };
 
-            explosionBuilders = new List<IGameObjectBuilder>();
             explosionSounds = new List<SoundEffect>();
         }
 
@@ -122,7 +123,6 @@ namespace Tank.GameStates.States
         {
             int screenWidth = viewportAdapter.VirtualWidth;
             int screenHeight = viewportAdapter.VirtualHeight;
-
             engine.AddSystem(new BindingSystem());
             engine.AddSystem(new MapSculptingSystem());
             engine.AddSystem(new ForceSystem(new VectorRectangle(0, 0, screenWidth, screenHeight)));
@@ -130,9 +130,11 @@ namespace Tank.GameStates.States
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new DamageSystem());
             engine.AddSystem(new SoundEffectSystem(settings));
+            engine.AddSystem(new FadeInFadeOutSystem());
             engine.AddSystem(new RenderSystem(
                  spriteBatch,
-                 defaultShader
+                 defaultShader//,
+                 //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
             engine.AddSystem(new GameLogicSystem(gameSettings.PlayerCount, mapToUse));
 
@@ -167,12 +169,14 @@ namespace Tank.GameStates.States
             bulletTestExplosion = contentWrapper.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
             bulletTest = contentWrapper.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
             pixelTexture = contentWrapper.Load<Texture2D>("Images/Entities/Pixel");
+            clouds = contentWrapper.Load<Texture2D>("Images/Entities/CloudSpritesheet");
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion1"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion2"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion3"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion4"));
             defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
             gameFont = contentWrapper.Load<SpriteFont>("gameFont");
+            
         }
 
         /// <inheritdoc/>
@@ -183,12 +187,24 @@ namespace Tank.GameStates.States
             RandomSoundFactory soundFactory = new RandomSoundFactory(explosionSounds, randomizer);
             IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(bulletTestExplosion, explosionAnimationFrames, soundFactory);
             explosionBuilder.Init(engine);
+            List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
             explosionBuilders.Add(explosionBuilder);
-            randomExplosionFactory = new RandomExplosionFactory(explosionBuilders, randomizer);
+            randomExplosionFactory = new RandomEntityBuilderFactory(explosionBuilders, randomizer);
             bulletBuilder = new BaseBulletBuilder(projectiveAnimationFrames, bulletTest, randomExplosionFactory);
             bulletBuilder.Init(engine);
             debriBuilder = new MapDebriBuilder(pixelTexture);
             debriBuilder.Init(engine);
+
+            List<IGameObjectBuilder> cloudBuilders = new List<IGameObjectBuilder>();
+            Rectangle cloudSpawnArea = new Rectangle(-50, 0, mapToUse.Width, (int)mapToUse.HighestPosition - 50);
+            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 0, 32, 16) }, randomizer, cloudSpawnArea));
+            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(32, 0, 32, 16) }, randomizer, cloudSpawnArea));
+            cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 16, 64, 32) }, randomizer, cloudSpawnArea));
+            foreach (IGameObjectBuilder builder in cloudBuilders)
+            {
+                builder.Init(engine);
+            }
+            randomCloudFactory = new RandomEntityBuilderFactory(cloudBuilders, randomizer);
 
             AddEngineSystems();
             AddEntites();
@@ -234,6 +250,21 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
+            int cloudCounter = engine.EntityManager.GetEntitiesWithComponent<CloudTag>().Count;
+            if (cloudCounter < cloudsToSpawn || Keyboard.GetState().IsKeyDown(Keys.F6))
+            {
+                int leftClouds = cloudsToSpawn - cloudCounter;
+                for (int i = 0; i < leftClouds; i++)
+                {
+                    uint cloudId = engine.EntityManager.CreateEntity();
+                    foreach (IComponent component in randomCloudFactory.GetNewObject())
+                    {
+                        engine.EntityManager.AddComponent(cloudId, component);
+                    }
+                }
+
+            }
+
             if (Keyboard.GetState().IsKeyUp(Keys.Escape))
             {
                 newState = false;
@@ -245,10 +276,6 @@ namespace Tank.GameStates.States
                 return;
             }
 
-            if (debugOn)
-            {
-                fps = (float)Math.Round(1 / gameTime.ElapsedGameTime.TotalSeconds);
-            }
             if (ticksToFire > 0)
             {
                 ticksToFire--;
@@ -335,8 +362,13 @@ namespace Tank.GameStates.States
 
                         };
                         engine.EntityManager.AddComponent(exposion, damage);
-                        engine.EventManager.FireEvent<DamageTerrainEvent>(this, new DamageTerrainEvent(circle));
-                        engine.EventManager.FireEvent<MapCollisionEvent>(this, new MapCollisionEvent(exposion, circle.Center));
+                        DamageTerrainEvent damageTerrainEvent = engine.EventManager.CreateEvent<DamageTerrainEvent>();
+                        damageTerrainEvent.DamageArea = circle;
+                        engine.EventManager.FireEvent<DamageTerrainEvent>(this, damageTerrainEvent);
+                        MapCollisionEvent mapCollisionEvent = engine.EventManager.CreateEvent<MapCollisionEvent>();
+                        mapCollisionEvent.EntityId = exposion;
+                        mapCollisionEvent.Position = circle.Center;
+                        engine.EventManager.FireEvent<MapCollisionEvent>(this, mapCollisionEvent);
                     }
                 }
             }
@@ -367,6 +399,10 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
+            if (debugOn)
+            {
+                fps = (float)Math.Round(1 / gameTime.ElapsedGameTime.TotalSeconds);
+            }
             engine.Draw(gameTime);
         }
 

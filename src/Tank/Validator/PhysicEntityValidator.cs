@@ -1,4 +1,5 @@
 ﻿using Tank.Components;
+using Tank.Components.Tags;
 using Tank.EntityComponentSystem.Validator;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 
@@ -13,7 +14,7 @@ namespace Tank.Validator
         public bool IsValidEntity(uint entityId, IEntityManager entityManager)
         {
             bool valid = entityManager.HasComponent(entityId, typeof(PlaceableComponent));
-            valid &= entityManager.HasComponent(entityId, typeof(ColliderComponent));
+            valid &= entityManager.HasComponent(entityId, typeof(ColliderComponent)) || entityManager.HasComponent(entityId, typeof(MoveableOnlyTag));
             valid &= entityManager.HasComponent(entityId, typeof(MoveableComponent));
             return valid;
         }

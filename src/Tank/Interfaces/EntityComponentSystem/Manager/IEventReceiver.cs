@@ -1,4 +1,5 @@
 ﻿using System;
+using Tank.Events;
 
 namespace Tank.Interfaces.EntityComponentSystem.Manager
 {
@@ -11,6 +12,6 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// This method is called if the reciver should be informed that an event got triggered.
         /// </summary>
         /// <param name="eventArgs">The arguments of the fired event</param>
-        void EventNotification(object sender, EventArgs eventArgs);
+        void EventNotification(object sender, IGameEvent eventArgs);
     }
 }

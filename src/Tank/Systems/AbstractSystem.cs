@@ -98,8 +98,7 @@ namespace Tank.Systems
 
             eventManager.SubscribeEvent(this, typeof(NewEntityEvent));
             eventManager.SubscribeEvent(this, typeof(EntityRemovedEvent));
-            eventManager.SubscribeEvent(this, typeof(NewComponentEvent));
-            eventManager.SubscribeEvent(this, typeof(ComponentRemovedEvent));
+            eventManager.SubscribeEvent(this, typeof(ComponentChangedEvent));
         }
 
         /// <summary>
@@ -107,7 +106,7 @@ namespace Tank.Systems
         /// </summary>
         /// <typeparam name="T">The class of the event to fire</typeparam>
         /// <param name="args">The arguments of the event to fire</param>
-        protected void FireEvent<T>(T args) where T : EventArgs
+        protected void FireEvent<T>(T args) where T : IGameEvent
         {
             eventManager.FireEvent(this, args);
         }
@@ -117,7 +116,7 @@ namespace Tank.Systems
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="eventArgs">The arguments from the event</param>
-        public virtual void EventNotification(object sender, EventArgs eventArgs)
+        public virtual void EventNotification(object sender, IGameEvent eventArgs)
         {
             NewEntityAdded(eventArgs);
             EntityRemoved(eventArgs);
@@ -127,19 +126,13 @@ namespace Tank.Systems
         /// This method will add new entites to the watch list if valid for this system
         /// </summary>
         /// <param name="eventArgs">The event args from the event</param>
-        protected virtual void NewEntityAdded(EventArgs eventArgs)
+        protected virtual void NewEntityAdded(IGameEvent eventArgs)
         {
-            if (eventArgs is EntityBasedEvent)
+            if (eventArgs is EntityBasedEvent entityBasedEvent)
             {
-                EntityBasedEvent entityBasedEvent = (EntityBasedEvent)eventArgs;
-                if (eventArgs is NewEntityEvent)
+                if (eventArgs is NewEntityEvent || eventArgs is ComponentChangedEvent)
                 {
                     AddEntity(entityBasedEvent.EntityId);
-                    return;
-                }
-                if (eventArgs is NewComponentEvent)
-                {
-                    ComponentAdded(entityBasedEvent.EntityId);
                     return;
                 }
             }
@@ -149,7 +142,7 @@ namespace Tank.Systems
         /// This method will remove entites from the watch list
         /// </summary>
         /// <param name="eventArgs">The arguments from the event</param>
-        protected virtual void EntityRemoved(EventArgs eventArgs)
+        protected virtual void EntityRemoved(IGameEvent eventArgs)
         {
             if (eventArgs is EntityBasedEvent)
             {
@@ -160,7 +153,7 @@ namespace Tank.Systems
                     return;
                 }
 
-                if (eventArgs is ComponentRemovedEvent)
+                if (eventArgs is ComponentChangedEvent)
                 {
                     ComponentRemoved(entityBasedEvent.EntityId);
                 }
@@ -204,6 +197,16 @@ namespace Tank.Systems
                 }
                 newEntities.Add(entityId);
             }
+        }
+
+        /// <summary>
+        /// Create a new event class
+        /// </summary>
+        /// <typeparam name="T">The type of the event</typeparam>
+        /// <returns>A event class to use</returns>
+        protected T CreateEvent<T>() where T : IGameEvent
+        {
+            return eventManager.CreateEvent<T>();
         }
 
         /// <summary>
@@ -257,7 +260,9 @@ namespace Tank.Systems
             }
             foreach (uint entityId in entitiesToRemove)
             {
-                FireEvent(new RemoveEntityEvent(entityId));
+                RemoveEntityEvent removeEntityEvent = eventManager.CreateEvent<RemoveEntityEvent>();
+                removeEntityEvent.EntityId = entityId;
+                FireEvent(removeEntityEvent);
             }
         }
 

@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Tank.Adapter;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.DataStructure;
 using Tank.Enums;
+using Tank.Events;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -50,11 +52,6 @@ namespace Tank.Systems
         /// Rendertarget to use
         /// </summary>
         private RenderTarget2D postProcessingRenderTarget;
-
-        /// <summary>
-        /// The color to copy over for new draw cycle
-        /// </summary>
-        private readonly Color[] targetContent;
 
         /// <summary>
         /// All the post processing effects
@@ -109,7 +106,6 @@ namespace Tank.Systems
             this.postProcessing = postProcessing;
             gameRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
             postProcessingRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
-            targetContent = new Color[postProcessingRenderTarget.Width * postProcessingRenderTarget.Height];
             drawStart = true;
         }
 
@@ -140,7 +136,8 @@ namespace Tank.Systems
             graphicsDevice.SetRenderTarget(gameRenderTarget);
             for (int i = 0; i < containersToRender.Count; i++)
             {
-                RenderEntities(i);
+                RenderEntities(containersToRender[i]);
+                usedContainers.Push(containersToRender[i]);
             }
             containersToRender.Clear();
             if (drawStart)
@@ -150,9 +147,10 @@ namespace Tank.Systems
             }
             spriteBatch.End();
 
-            graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
+            //graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
             for (int i = 0; i < postProcessing.Count; i++)
             {
+                graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
                 spriteBatch.Begin(
                     SpriteSortMode.Immediate,
                     BlendState.AlphaBlend,
@@ -165,9 +163,9 @@ namespace Tank.Systems
 
                 spriteBatch.Draw(gameRenderTarget, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.White);
                 spriteBatch.End();
-                postProcessingRenderTarget.GetData<Color>(targetContent);
-                gameRenderTarget.SetData<Color>(targetContent);
+                CopyRenderTarget(postProcessingRenderTarget, gameRenderTarget);
             }
+            
             graphicsDevice.SetRenderTarget(null);
             viewportAdapter.Reset();
             graphicsDevice.Clear(Color.Black);
@@ -191,9 +189,29 @@ namespace Tank.Systems
             drawLocked = false;
         }
 
-        private void RenderEntities(int i)
+        /// <summary>
+        /// Copy the render target
+        /// </summary>
+        /// <param name="source">The source of the render target</param>
+        /// <param name="renderTarget">The target to render to</param>
+        private void CopyRenderTarget(RenderTarget2D source, RenderTarget2D renderTarget)
         {
-            RenderContainer currentContainer = containersToRender[i];
+            graphicsDevice.SetRenderTarget(renderTarget);
+            spriteBatch.Begin();
+            spriteBatch.Draw(
+                source,
+                new Rectangle(0, 0, viewport.Width, viewport.Height),
+                Color.White
+                );
+            spriteBatch.End();
+        }
+
+        /// <summary>
+        /// Render a given entity
+        /// </summary>
+        /// <param name="currentContainer">The current container to render</param>
+        private void RenderEntities(RenderContainer currentContainer)
+        {
             BeginDraw(currentContainer.ShaderEffect);
             switch (currentContainer.RenderType)
             {
@@ -225,7 +243,6 @@ namespace Tank.Systems
                 default:
                     break;
             }
-            usedContainers.Push(currentContainer);
         }
 
         /// <summary>
@@ -239,7 +256,7 @@ namespace Tank.Systems
             {
                 spriteBatch.Begin(
                     SpriteSortMode.Immediate,
-                    BlendState.AlphaBlend,
+                    BlendState.NonPremultiplied,
                     null,
                     null,
                     null,
@@ -255,7 +272,7 @@ namespace Tank.Systems
                 spriteBatch.End();
                 spriteBatch.Begin(
                     SpriteSortMode.Immediate,
-                    BlendState.AlphaBlend,
+                    BlendState.NonPremultiplied,
                     null,
                     null,
                     null,

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Tank.Components;
 using Tank.DataStructure;
+using Tank.Events;
 using Tank.Events.EntityBased;
 using Tank.Events.PhysicBased;
 using Tank.Interfaces.EntityComponentSystem.Manager;
@@ -41,6 +42,11 @@ namespace Tank.Systems
         /// The screen rectangle, entites leaving the area will be removed
         /// </summary>
         private Rectangle screenBound;
+
+        /// <summary>
+        /// The extended screenBound
+        /// </summary>
+        private Rectangle extendedScreenBounds;
 
         /// <summary>
         /// The gravity applied by the physic system
@@ -85,6 +91,11 @@ namespace Tank.Systems
             gravityForce = new Vector2(0, gravity);
             windForce = new Vector2(wind, 0);
             this.screenBound = screenBound;
+            extendedScreenBounds = screenBound;
+            extendedScreenBounds.X -= screenBound.Width / 4;
+            extendedScreenBounds.Y -= screenBound.Height / 4;
+            extendedScreenBounds.Width += screenBound.Width / 2;
+            extendedScreenBounds.Height += screenBound.Height / 2;
 
             validators.Add(new PhysicEntityValidator());
             validators.Add(new MapValidator());
@@ -156,9 +167,27 @@ namespace Tank.Systems
                 MoveableComponent moveComponent = entityManager.GetComponent<MoveableComponent>(entityId);
                 ColliderComponent colliderComponent = entityManager.GetComponent<ColliderComponent>(entityId);
 
-                if (placeComponent == null || moveComponent == null || colliderComponent == null)
+                if (placeComponent == null || moveComponent == null)
                 {
+                    break;
+                }
+
+                if (!moveComponent.ApplyPhysic)
+                {
+                    placeComponent.Position += moveComponent.Velocity;
+                    if (!extendedScreenBounds.Contains(placeComponent.Position))
+                    {
+                        RemoveEntityEvent removeEntityEvent = CreateEvent<RemoveEntityEvent>();
+                        removeEntityEvent.EntityId = entityId;
+                        FireEvent(removeEntityEvent);
+                        return;
+                    }
                     continue;
+                }
+
+                if (colliderComponent == null)
+                {
+                    return;
                 }
 
                 ApplyForce(moveComponent, gravityForce, false);
@@ -200,7 +229,10 @@ namespace Tank.Systems
                                 {
                                     if (map.Map.IsPixelSolid(cast[i]))
                                     {
-                                        FireEvent(new MapCollisionEvent(entityId, cast[i].GetVector2()));
+                                        MapCollisionEvent mapCollisionEvent = CreateEvent<MapCollisionEvent>();
+                                        mapCollisionEvent.EntityId = entityId;
+                                        mapCollisionEvent.Position = cast[i].GetVector2();
+                                        FireEvent(mapCollisionEvent);
                                         break;
                                     }
                                 }
@@ -214,7 +246,10 @@ namespace Tank.Systems
                                 frontPosition *= -1;
                             }
                             frontPosition += bottomCenter;
-                            FireEvent(new MapCollisionEvent(entityId, frontPosition));
+                            MapCollisionEvent mapPositionCollisionEvent = CreateEvent<MapCollisionEvent>();
+                            mapPositionCollisionEvent.EntityId = entityId;
+                            mapPositionCollisionEvent.Position = frontPosition;
+                            FireEvent(mapPositionCollisionEvent);
                             return;
                         }
 
@@ -239,14 +274,16 @@ namespace Tank.Systems
 
                 if (!map.Map.IsPointOnMap(placeComponent.Position))
                 {
-                    FireEvent(new RemoveEntityEvent(entityId));
+                    RemoveEntityEvent removeEntityEvent = CreateEvent<RemoveEntityEvent>();
+                    removeEntityEvent.EntityId = entityId;
+                    FireEvent(removeEntityEvent);
                 }
                 moveComponent.Acceleration *= 0;
             }
         }
 
         /// <inheritdoc/>
-        public override void EventNotification(object sender, EventArgs eventArgs)
+        public override void EventNotification(object sender, IGameEvent eventArgs)
         {
             base.EventNotification(sender, eventArgs);
             if (eventArgs is ApplyForceEvent forceEvent)

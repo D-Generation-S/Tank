@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Tank.Interfaces.EntityComponentSystem;
 
 namespace Tank.Events.EntityBased
@@ -7,25 +6,18 @@ namespace Tank.Events.EntityBased
     /// <summary>
     /// This class can be used to add a new entity to the manager
     /// </summary>
-    class AddEntityEvent : EventArgs
+    class AddEntityEvent : BaseEvent
     {
-        /// <summary>
-        /// A list with all the components which should be added
-        /// </summary>
-        private readonly List<IComponent> components;
 
         /// <summary>
         /// Readonly acces to the components which should be added to the entity
         /// </summary>
-        public List<IComponent> Components => components;
+        public List<IComponent> Components;
 
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        /// <param name="components">All the components to add to the entity</param>
-        public AddEntityEvent(List<IComponent> components)
+        /// <inheritdoc/>
+        public override void Init()
         {
-            this.components = components;
+            Components.Clear();
         }
     }
 }
