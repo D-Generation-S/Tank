@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using Tank.Builders;
 using Tank.Commands;
 using Tank.Commands.GameManager;
 using Tank.DataStructure.Settings;
@@ -39,7 +41,19 @@ namespace Tank.GameStates.States
         {
             base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             closeGameCommand = new CloseGameCommand(gameStateManager);
-            GameSettings settings = new GameSettings(0.098f, 0.3f, 4, int.MinValue, "MoistContinentalSpritesheet");
+            List<Player> players = new List<Player>();
+            List<Rectangle> animationFrames = new List<Rectangle>();
+            animationFrames.Add(new Rectangle(0, 0, 32, 32));
+            for (int i = 0; i < 4; i++)
+            {
+                TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
+                    contentWrapper.Load<Texture2D>("Images/Entities/BasicTank"),
+                    animationFrames
+                 );
+
+                players.Add(new Player("Player " + (i + 1), tankObjectBuilder));
+            }
+            GameSettings settings = new GameSettings(0.098f, 0.3f, players, int.MinValue, "MoistContinentalSpritesheet");
 #if DEBUG
             settings.SetDebug();
 #endif
@@ -58,7 +72,7 @@ namespace Tank.GameStates.States
         public override void SetActive()
         {
             base.SetActive();
-            IFactory<Button> buttonFactory = new ButtonFactory(baseFont, guiSprite, spriteBatch, 100, Vector2.Zero, buttonClick, buttonHover);
+            IFactory<Button> buttonFactory = new ButtonFactory(baseFont, guiSprite, spriteBatch, 120, Vector2.Zero, buttonClick, buttonHover);
             Button exitButton = buttonFactory.GetNewObject();
             exitButton.SetText("Exit game");
             exitButton.SetCommand(closeGameCommand);

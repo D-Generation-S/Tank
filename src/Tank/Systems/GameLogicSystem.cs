@@ -133,7 +133,7 @@ namespace Tank.Systems
                 entityManager.AddComponent(watchedEntities[currentPlayerIndex], new BindComponent()
                 {
                     BoundEntityId = arrowEntity,
-                    Offset = new Vector2(0f, -35f),
+                    Offset = new Vector2(0f, -60f),
                     PositionBound = true
                 });
             }

@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tank.Builders;
+using Tank.Components;
+using Tank.Components.Rendering;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure;
@@ -63,6 +65,11 @@ namespace Tank.GameStates.States
         private Effect defaultShader;
 
         /// <summary>
+        /// The game font to use
+        /// </summary>
+        private SpriteFont gameFont;
+
+        /// <summary>
         /// The map to use
         /// </summary>
         private IMap map;
@@ -108,6 +115,8 @@ namespace Tank.GameStates.States
         public override void LoadContent()
         {
             spritesheetToUse = spriteSetManager.GetData(gameSettings.SpriteSetName);
+            defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
+            gameFont = contentWrapper.Load<SpriteFont>("gameFont");
         }
 
         /// <inheritdoc/>
@@ -167,6 +176,7 @@ namespace Tank.GameStates.States
             int playerSpace = map.Width / (int)(gameSettings.PlayerCount + 1);
             for (int i = 0; i < gameSettings.PlayerCount; i++)
             {
+                Player currentPlayer = gameSettings.Players[i];
                 int offset = i + 1;
                 List<Rectangle> animationFrames = new List<Rectangle>();
                 animationFrames.Add(new Rectangle(0, 0, 32, 32));
@@ -182,17 +192,27 @@ namespace Tank.GameStates.States
                         break;
                     }
                 }
+                currentPlayer.TankBuilder.Init(engine.EntityManager);
 
-                TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
-                    playerStartPosition,
-                    contentWrapper.Load<Texture2D>("Images/Entities/BasicTank"),
-                    animationFrames
-                 );
-                tankObjectBuilder.Init(engine.EntityManager);
+                uint playerTank = engine.EntityManager.CreateEntity();
+                currentPlayer.TankBuilder.BuildGameComponents(playerStartPosition).ForEach(component => engine.EntityManager.AddComponent(playerTank, component, true));
 
-                AddEntityEvent addEnttiyEvent = engine.EventManager.CreateEvent<AddEntityEvent>();
-                addEnttiyEvent.Components = tankObjectBuilder.BuildGameComponents();
-                engine.EventManager.FireEvent(this, addEnttiyEvent);
+                AddEntityEvent addTankEvent = engine.EventManager.CreateEvent<AddEntityEvent>();
+
+                uint playerName = engine.EntityManager.CreateEntity();
+                PlaceableComponent placeableComponent = engine.EntityManager.CreateComponent<PlaceableComponent>(playerName);
+                VisibleTextComponent textComponent = engine.EntityManager.CreateComponent<VisibleTextComponent>(playerName);
+                textComponent.ShaderEffect = defaultShader;
+                textComponent.Text = currentPlayer.PlayerName;
+                textComponent.Font = gameFont;
+                BindComponent bindComponent = engine.EntityManager.CreateComponent<BindComponent>();
+                bindComponent.PositionBound = true;
+                bindComponent.Offset = Vector2.UnitY * -35;
+                bindComponent.Offset -= Vector2.UnitX * (gameFont.MeasureString(currentPlayer.PlayerName) / 2);
+                bindComponent.Source = true;
+                bindComponent.BoundEntityId = playerTank;
+
+                engine.EntityManager.AddComponent(playerName, bindComponent, true);
             }
         }
 

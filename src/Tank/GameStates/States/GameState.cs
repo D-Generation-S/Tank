@@ -236,6 +236,7 @@ namespace Tank.GameStates.States
             int cloudCounter = engine.EntityManager.GetEntitiesWithComponent<CloudTag>().Count;
             if (cloudCounter < cloudsToSpawn || Keyboard.GetState().IsKeyDown(Keys.F6))
             {
+                /**
                 int leftClouds = cloudsToSpawn - cloudCounter;
                 for (int i = 0; i < leftClouds; i++)
                 {
@@ -245,6 +246,7 @@ namespace Tank.GameStates.States
                         engine.EntityManager.AddComponent(cloudId, component);
                     }
                 }
+                **/
             }
 
             if (Keyboard.GetState().IsKeyUp(Keys.Escape))
@@ -262,7 +264,7 @@ namespace Tank.GameStates.States
             {
                 ticksToFire--;
             }
-            if (ticksToFire > 0 || Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
+            if (Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
             {
                 /**
                 uint debriId = engine.EntityManager.CreateEntity(false);

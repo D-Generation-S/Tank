@@ -5,6 +5,7 @@ using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataStructure;
+using Tank.GameStates.Data;
 using Tank.Interfaces.EntityComponentSystem;
 
 namespace Tank.Builders
@@ -14,10 +15,6 @@ namespace Tank.Builders
     /// </summary>
     class TankObjectBuilder : BaseBuilder
     {
-        /// <summary>
-        /// The start position of the tank
-        /// </summary>
-        private readonly Vector2 startPosition;
 
         /// <summary>
         /// The spritesheet to use
@@ -40,8 +37,8 @@ namespace Tank.Builders
         /// </summary>
         /// <param name="spriteSheet"></param>
         /// <param name="animationFrames"></param>
-        public TankObjectBuilder(Vector2 startPosition, Texture2D spriteSheet, List<Rectangle> animationFrames)
-            : this(startPosition, spriteSheet, animationFrames, null)
+        public TankObjectBuilder(Texture2D spriteSheet, List<Rectangle> animationFrames)
+            : this(spriteSheet, animationFrames, null)
         {
         }
 
@@ -50,9 +47,8 @@ namespace Tank.Builders
         /// </summary>
         /// <param name="spriteSheet"></param>
         /// <param name="animationFrames"></param>
-        public TankObjectBuilder(Vector2 startPosition, Texture2D spriteSheet, List<Rectangle> animationFrames, Effect effect)
+        public TankObjectBuilder(Texture2D spriteSheet, List<Rectangle> animationFrames, Effect effect)
         {
-            this.startPosition = startPosition;
             this.spriteSheet = spriteSheet;
             this.animationFrames = animationFrames;
             this.effect = effect;
@@ -67,11 +63,22 @@ namespace Tank.Builders
         /// <returns></returns>
         public override List<IComponent> BuildGameComponents(object parameter)
         {
-            List<IComponent> returnComponents = new List<IComponent>();
             if (entityManager == null)
             {
-                return returnComponents;
+                return new List<IComponent>();
             }
+
+            if (parameter is Vector2 startPosition)
+            {
+                return CreateComponents(startPosition);
+            }
+
+            return new List<IComponent>();
+        }
+
+        protected List<IComponent> CreateComponents(Vector2 startPosition)
+        {
+            List<IComponent> returnComponents = new List<IComponent>();
             PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
             placeableComponent.Position = startPosition + new Vector2(spriteSheet.Width, spriteSheet.Height) * -1;
             VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();

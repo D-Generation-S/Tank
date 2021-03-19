@@ -151,7 +151,7 @@ namespace Tank.Gui
         protected virtual Vector2 CenterTextVertical(Vector2 startPosition, string text)
         {
             Vector2 textSize = GetTextLenght(text);
-            return startPosition + Vector2.UnitY * textSize.Y;
+            return startPosition + Vector2.UnitY * (textSize.Y / 2);
         }
     }
 }
