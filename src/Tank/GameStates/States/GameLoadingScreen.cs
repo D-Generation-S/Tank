@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Threading.Tasks;
-using Tank.Adapter;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure;

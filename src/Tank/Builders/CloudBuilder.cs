@@ -1,17 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataStructure.Spritesheet;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.Randomizer;
 
 namespace Tank.Builders
 {
+    /// <summary>
+    /// A class to build the clouds for the game
+    /// </summary>
     class CloudBuilder : BaseBuilder
     {
         private readonly Texture2D texture;

@@ -1,7 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Events.EntityBased;
@@ -10,10 +7,11 @@ using Tank.Validator;
 
 namespace Tank.Systems
 {
+    /// <summary>
+    /// This system will handle the fade in and fade out of objects
+    /// </summary>
     class FadeInFadeOutSystem : AbstractSystem
     {
-        private bool gotRestored;
-
         /// <summary>
         /// The time left over from the last physic calculation
         /// </summary>
@@ -29,23 +27,22 @@ namespace Tank.Systems
         /// </summary>
         private readonly float fixedDeltaTime;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public FadeInFadeOutSystem()
         {
-            gotRestored = false;
             fixedDeltaTime = 16;
         }
 
+        /// <inheritdoc/>
         public override void Initialize(IGameEngine gameEngine)
         {
             base.Initialize(gameEngine);
             validators.Add(new FadeableValidator());
         }
 
-        public override void Restore()
-        {
-            gotRestored = true;
-        }
-
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             float deltaTime = gameTime.TotalGameTime.Milliseconds - previousTime;
@@ -89,6 +86,11 @@ namespace Tank.Systems
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Fade in the object
+        /// </summary>
+        /// <param name="visibleComponent">The visible component to use</param>
+        /// <param name="fadeComponent">The face component to use</param>
         private void FadeIn(VisibleComponent visibleComponent, FadeComponent fadeComponent)
         {
             fadeComponent.RealOpacityChange += fadeComponent.OpacityChange; if (fadeComponent.RealOpacityChange > 1)
@@ -101,6 +103,11 @@ namespace Tank.Systems
             }
         }
 
+        /// <summary>
+        /// Fade out the object
+        /// </summary>
+        /// <param name="visibleComponent">The visible component to use</param>
+        /// <param name="fadeComponent">The fade component to use</param>
         private void FadeOut(VisibleComponent visibleComponent, FadeComponent fadeComponent)
         {
             fadeComponent.RealOpacityChange += fadeComponent.OpacityChange;

@@ -52,7 +52,6 @@ namespace Tank.Systems
         /// Rendertarget to use
         /// </summary>
         private RenderTarget2D postProcessingRenderTarget;
-        
 
         /// <summary>
         /// All the post processing effects
