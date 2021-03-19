@@ -131,11 +131,11 @@ namespace Tank.EntityComponentSystem.DataContainer
         public bool MoveComponents(uint targetEntityId, IComponent componentToMove)
         {
             // Not sure if this method is really required here!
-            ComponentRemovedEvent componentRemovedEvent = eventManager.CreateEvent<ComponentRemovedEvent>();
+            ComponentChangedEvent componentRemovedEvent = eventManager.CreateEvent<ComponentChangedEvent>();
             componentRemovedEvent.EntityId = componentToMove.EntityId;
             eventManager.FireEvent(this, componentRemovedEvent);
             componentToMove.SetEntityId(targetEntityId);
-            NewComponentEvent newComponentEvent = eventManager.CreateEvent<NewComponentEvent>();
+            ComponentChangedEvent newComponentEvent = eventManager.CreateEvent<ComponentChangedEvent>();
             newComponentEvent.EntityId = componentToMove.EntityId;
             eventManager.FireEvent(this, newComponentEvent);
             return true;

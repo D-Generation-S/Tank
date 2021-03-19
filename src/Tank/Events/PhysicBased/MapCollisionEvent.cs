@@ -12,6 +12,7 @@ namespace Tank.Events.PhysicBased
         /// </summary>
         public Vector2 Position;
 
+        /// <inheritdoc/>
         public override void Init()
         {
             base.Init();

@@ -98,8 +98,7 @@ namespace Tank.Systems
 
             eventManager.SubscribeEvent(this, typeof(NewEntityEvent));
             eventManager.SubscribeEvent(this, typeof(EntityRemovedEvent));
-            eventManager.SubscribeEvent(this, typeof(NewComponentEvent));
-            eventManager.SubscribeEvent(this, typeof(ComponentRemovedEvent));
+            eventManager.SubscribeEvent(this, typeof(ComponentChangedEvent));
         }
 
         /// <summary>
@@ -129,17 +128,11 @@ namespace Tank.Systems
         /// <param name="eventArgs">The event args from the event</param>
         protected virtual void NewEntityAdded(IGameEvent eventArgs)
         {
-            if (eventArgs is EntityBasedEvent)
+            if (eventArgs is EntityBasedEvent entityBasedEvent)
             {
-                EntityBasedEvent entityBasedEvent = (EntityBasedEvent)eventArgs;
-                if (eventArgs is NewEntityEvent)
+                if (eventArgs is NewEntityEvent || eventArgs is ComponentChangedEvent)
                 {
                     AddEntity(entityBasedEvent.EntityId);
-                    return;
-                }
-                if (eventArgs is NewComponentEvent)
-                {
-                    ComponentAdded(entityBasedEvent.EntityId);
                     return;
                 }
             }
@@ -160,7 +153,7 @@ namespace Tank.Systems
                     return;
                 }
 
-                if (eventArgs is ComponentRemovedEvent)
+                if (eventArgs is ComponentChangedEvent)
                 {
                     ComponentRemoved(entityBasedEvent.EntityId);
                 }

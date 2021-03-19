@@ -126,7 +126,7 @@ namespace Tank.EntityComponentSystem.Manager
             }
             if (informSystems)
             {
-                NewComponentEvent newComponentEvent = eventManager.CreateEvent<NewComponentEvent>();
+                ComponentChangedEvent newComponentEvent = eventManager.CreateEvent<ComponentChangedEvent>();
                 newComponentEvent.EntityId = entityId;
                 eventManager.FireEvent(this, newComponentEvent);
             }
@@ -241,15 +241,14 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public void EventNotification(object sender, IGameEvent eventArgs)
         {
-            if (eventArgs is AddEntityEvent)
+            if (eventArgs is AddEntityEvent addEntityEvent)
             {
                 uint entityId = CreateEntity(false);
-                AddEntityEvent addEntityEvent = (AddEntityEvent)eventArgs;
                 foreach (IComponent gameComponent in addEntityEvent.Components)
                 {
                     AddComponent(entityId, gameComponent, false);
                 }
-                NewComponentEvent newComponentEvent = eventManager.CreateEvent<NewComponentEvent>();
+                ComponentChangedEvent newComponentEvent = eventManager.CreateEvent<ComponentChangedEvent>();
                 newComponentEvent.EntityId = entityId;
                 eventManager.FireEvent(this, newComponentEvent);
 

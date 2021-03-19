@@ -3,7 +3,7 @@
     /// <summary>
     /// This event will tell you that a component was remove from an entity
     /// </summary>
-    class ComponentRemovedEvent : EntityBasedEvent
+    class ComponentChangedEvent : EntityBasedEvent
     {
     }
 }

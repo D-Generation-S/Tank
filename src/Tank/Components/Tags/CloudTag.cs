@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tank.Components.Tags
+﻿namespace Tank.Components.Tags
 {
+    /// <summary>
+    /// Tag class to mark an object as cloud
+    /// </summary>
     class CloudTag : BaseTag
     {
     }

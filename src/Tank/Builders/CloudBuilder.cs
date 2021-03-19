@@ -14,12 +14,38 @@ namespace Tank.Builders
     /// </summary>
     class CloudBuilder : BaseBuilder
     {
+        /// <summary>
+        /// The texture to use as a base
+        /// </summary>
         private readonly Texture2D texture;
+
+        /// <summary>
+        /// The animation frames
+        /// </summary>
         private readonly List<Rectangle> animationFrames;
+
+        /// <summary>
+        /// The randomizer to use
+        /// </summary>
         private readonly IRandomizer randomizer;
+
+        /// <summary>
+        /// The area to spawn the clouds in
+        /// </summary>
         private readonly Rectangle spawnArea;
+
+        /// <summary>
+        /// The destination of the cloud to start drawing
+        /// </summary>
         private Rectangle destination;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="texture">The texture to use</param>
+        /// <param name="animationFrames">The animation frames</param>
+        /// <param name="randomizer">The randomizer to use</param>
+        /// <param name="spawnArea">The spawn area to use</param>
         public CloudBuilder(Texture2D texture, List<Rectangle> animationFrames, IRandomizer randomizer, Rectangle spawnArea)
         {
             this.texture = texture;

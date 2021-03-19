@@ -163,6 +163,12 @@ namespace Tank.EntityComponentSystem.Manager
         }
 
         
+        /// <summary>
+        /// Remove a component type from an entity
+        /// </summary>
+        /// <param name="entityId">The entity id to remove the components from</param>
+        /// <param name="componentType">The type of component to remove</param>
+        /// <param name="informSystem">Should we send an event to inform every subscriber</param>
         private void RemoveComponents(uint entityId, Type componentType, bool informSystem)
         {
             ComponentStorage storage = GetComponentStorage(componentType);
@@ -175,7 +181,7 @@ namespace Tank.EntityComponentSystem.Manager
             componentsToRemove.ForEach(data => storage.Remove(entityId, data));
             if (informSystem)
             {
-                ComponentRemovedEvent componentRemovedEvent = eventManager.CreateEvent<ComponentRemovedEvent>();
+                ComponentChangedEvent componentRemovedEvent = eventManager.CreateEvent<ComponentChangedEvent>();
                 componentRemovedEvent.EntityId = entityId;
                 eventManager.FireEvent(this, componentRemovedEvent);
             }
@@ -188,7 +194,7 @@ namespace Tank.EntityComponentSystem.Manager
             {
                 RemoveComponents(entityId, storage.Type, false);
             }
-            ComponentRemovedEvent componentRemovedEvent = eventManager.CreateEvent<ComponentRemovedEvent>();
+            ComponentChangedEvent componentRemovedEvent = eventManager.CreateEvent<ComponentChangedEvent>();
             componentRemovedEvent.EntityId = entityId;
             eventManager.FireEvent(this, componentRemovedEvent);
         }
