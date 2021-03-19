@@ -2,15 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataStructure;
-using Tank.Events.EntityBased;
+using Tank.Events.ComponentBased;
+using Tank.GameStates.Data;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.Interfaces.MapGenerators;
-using Tank.Utils;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -20,16 +17,6 @@ namespace Tank.Systems
     /// </summary>
     class GameLogicSystem : AbstractSystem
     {
-        /// <summary>
-        /// The players to spawn
-        /// </summary>
-        private readonly uint playerCount;
-
-        /// <summary>
-        /// The map width
-        /// </summary>
-        private readonly IMap map;
-
         /// <summary>
         /// Is the system in setup mode
         /// </summary>
@@ -54,18 +41,18 @@ namespace Tank.Systems
         /// The order of the players
         /// </summary>
         private readonly int[] playerOrder;
+        private readonly GameSettings settings;
 
         /// <summary>
         /// Create a new instance of this system
         /// </summary>
-        public GameLogicSystem(uint playerCount, IMap map) : base()
+        public GameLogicSystem(GameSettings settings) : base()
         {
             validators.Add(new PlayerObjectValidator());
-            playerOrder = new int[playerCount];
-            this.playerCount = playerCount;
+            playerOrder = new int[settings.PlayerCount];
             setup = true;
             currentPlayerIndex = 0;
-            this.map = map;
+            this.settings = settings;
         }
 
         /// <<inheritdoc/>
@@ -73,43 +60,31 @@ namespace Tank.Systems
         {
             base.Initialize(gameEngine);
 
-            int playerSpace = map.Width / (int)(playerCount + 1);
-            for (int i = 0; i < playerCount; i++)
-            {
-                int offset = i + 1;
-                List<Rectangle> animationFrames = new List<Rectangle>();
-                animationFrames.Add(new Rectangle(0, 0, 32, 32));
-                Vector2 playerStartPosition = new Vector2(playerSpace * offset, 0);
-                Raycast raycast = new Raycast(playerStartPosition, Vector2.UnitY, map.Height - 1);
-                Position[] positions = raycast.GetPositions();
-                for (int pIndex = positions.Length - 1; pIndex > 0; pIndex--)
-                {
-                    Position position = positions[pIndex];
-                    if (!map.IsPixelSolid(position))
-                    {
-                        playerStartPosition += Vector2.UnitY * position.Y;
-                        break;
-                    }
-                }
-
-                TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
-                    playerStartPosition,
-                    contentManager.Load<Texture2D>("Images/Entities/BasicTank"),
-                    animationFrames
-                 );
-                tankObjectBuilder.Init(entityManager);
-
-                AddEntityEvent addEnttiyEvent = CreateEvent<AddEntityEvent>();
-                addEnttiyEvent.Components = tankObjectBuilder.BuildGameComponents();
-                FireEvent(addEnttiyEvent);
-            }
             arrowEntity = entityManager.CreateEntity(false);
             entityManager.CreateComponent<PlaceableComponent>(arrowEntity);
             VisibleComponent arrowVisible = entityManager.CreateComponent<VisibleComponent>(arrowEntity);
-            arrowVisible.Texture = contentManager.Load<Texture2D>("Images/Entities/BasicTank");
+            arrowVisible.Texture = contentManager.Load<Texture2D>("Images/Entities/SelectionArrow");
             arrowVisible.Destination = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
             arrowVisible.Source = new Rectangle(0, 0, arrowVisible.Texture.Width, arrowVisible.Texture.Height);
             arrowVisible.DrawMiddle = true;
+
+            AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>(arrowEntity);
+            animationComponent.FrameSeconds = 0.25f;
+            animationComponent.Active = true;
+            animationComponent.Name = "Idle";
+            animationComponent.Loop = true;
+            animationComponent.PingPong = true;
+            animationComponent.SpriteSources = new List<Rectangle>()
+            {
+                new Rectangle(0, 0, 32, 32),
+                new Rectangle(32, 0, 32, 32),
+                new Rectangle(0, 32, 32, 32),
+                new Rectangle(32, 32, 32, 32)
+            };
+
+            ComponentChangedEvent componentChangedEvent = eventManager.CreateEvent<ComponentChangedEvent>();
+            componentChangedEvent.EntityId = arrowEntity;
+            FireEvent(componentChangedEvent);
         }
 
         /// <summary>
@@ -135,7 +110,7 @@ namespace Tank.Systems
 
             if (setup)
             {
-                if (watchedEntities.Count != playerCount)
+                if (watchedEntities.Count != this.settings.PlayerCount)
                 {
                     return;
                 }
@@ -146,6 +121,7 @@ namespace Tank.Systems
 
             if (watchedEntities.Count == 0)
             {
+
                 //Game is over!
                 return;
             }
@@ -159,7 +135,7 @@ namespace Tank.Systems
                     BoundEntityId = arrowEntity,
                     Offset = new Vector2(0f, -35f),
                     PositionBound = true
-                }); ;
+                });
             }
         }
 

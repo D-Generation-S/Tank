@@ -1,14 +1,23 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Tank.Builders;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure;
+using Tank.DataStructure.Geometrics;
 using Tank.DataStructure.Settings;
 using Tank.DataStructure.Spritesheet;
+using Tank.EntityComponentSystem.Manager;
+using Tank.Events.EntityBased;
 using Tank.GameStates.Data;
+using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Interfaces.MapGenerators;
 using Tank.Map.Textureizer;
+using Tank.Music;
+using Tank.Systems;
+using Tank.Utils;
 using Tank.Wrapper;
 
 namespace Tank.GameStates.States
@@ -49,9 +58,19 @@ namespace Tank.GameStates.States
         private bool loadingComplete;
 
         /// <summary>
+        /// The default shader to use
+        /// </summary>
+        private Effect defaultShader;
+
+        /// <summary>
         /// The map to use
         /// </summary>
         private IMap map;
+
+        /// <summary>
+        /// The game engine to use
+        /// </summary>
+        private IGameEngine engine;
 
         /// <summary>
         /// Create a new instance of this class
@@ -106,8 +125,75 @@ namespace Tank.GameStates.States
             mapCreatingTask.ContinueWith((antecedent) =>
             {
                 map = antecedent.Result;
+                CreateEngine();
+                SpawnPlayers();
                 loadingComplete = true;
             });
+        }
+
+        /// <summary>
+        /// Create the engine ready to use
+        /// </summary>
+        private void CreateEngine()
+        {
+            engine = new GameEngine(new EventManager(), new EntityManager(), contentWrapper);
+
+            int screenWidth = viewportAdapter.VirtualWidth;
+            int screenHeight = viewportAdapter.VirtualHeight;
+            engine.AddSystem(new BindingSystem());
+            engine.AddSystem(new MapSculptingSystem());
+            engine.AddSystem(new ForceSystem(new VectorRectangle(0, 0, screenWidth, screenHeight)));
+            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, screenWidth, screenHeight), gameSettings.Gravity, gameSettings.Wind));
+            engine.AddSystem(new AnimationSystem());
+            engine.AddSystem(new DamageSystem());
+            engine.AddSystem(new SoundEffectSystem(settings));
+            engine.AddSystem(new FadeInFadeOutSystem());
+            engine.AddSystem(new RenderSystem(
+                 spriteBatch,
+                 defaultShader//,
+                 //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
+             ));
+            engine.AddSystem(new GameLogicSystem(gameSettings));
+
+            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader()));
+            engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", settings));
+        }
+
+        /// <summary>
+        /// Spawn in all the players
+        /// </summary>
+        private void SpawnPlayers()
+        {
+            int playerSpace = map.Width / (int)(gameSettings.PlayerCount + 1);
+            for (int i = 0; i < gameSettings.PlayerCount; i++)
+            {
+                int offset = i + 1;
+                List<Rectangle> animationFrames = new List<Rectangle>();
+                animationFrames.Add(new Rectangle(0, 0, 32, 32));
+                Vector2 playerStartPosition = new Vector2(playerSpace * offset, 0);
+                Raycast raycast = new Raycast(playerStartPosition, Vector2.UnitY, map.Height - 1);
+                Position[] positions = raycast.GetPositions();
+                for (int pIndex = positions.Length - 1; pIndex > 0; pIndex--)
+                {
+                    Position position = positions[pIndex];
+                    if (!map.IsPixelSolid(position))
+                    {
+                        playerStartPosition += Vector2.UnitY * position.Y;
+                        break;
+                    }
+                }
+
+                TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
+                    playerStartPosition,
+                    contentWrapper.Load<Texture2D>("Images/Entities/BasicTank"),
+                    animationFrames
+                 );
+                tankObjectBuilder.Init(engine.EntityManager);
+
+                AddEntityEvent addEnttiyEvent = engine.EventManager.CreateEvent<AddEntityEvent>();
+                addEnttiyEvent.Components = tankObjectBuilder.BuildGameComponents();
+                engine.EventManager.FireEvent(this, addEnttiyEvent);
+            }
         }
 
         /// <inheritdoc/>
@@ -115,7 +201,7 @@ namespace Tank.GameStates.States
         {
             if (loadingComplete)
             {
-                IState gameState = new GameState(map, gameSettings);
+                IState gameState = new GameState(map, engine, gameSettings);
                 gameStateManager.Replace(gameState);
             }
         }

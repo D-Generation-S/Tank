@@ -77,10 +77,11 @@ namespace Tank.GameStates.States
 
         private float fps;
 
-        public GameState(IMap mapToUse, GameSettings gameSettings)
+        public GameState(IMap mapToUse, IGameEngine gameEngine, GameSettings gameSettings)
         {
             this.mapToUse = mapToUse;
             this.gameSettings = gameSettings;
+            this.engine = gameEngine;
             randomizer = new SystemRandomizer();
             randomizer.Initzialize(100);
             debugOn = gameSettings.IsDebug;
@@ -94,7 +95,7 @@ namespace Tank.GameStates.States
             base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             ticksToFire = 2000;
             bulletSpawnLocation = new Vector2(200, 200);
-            engine = new GameEngine(new EventManager(), new EntityManager(), contentWrapper);
+            //engine = new GameEngine(new EventManager(), new EntityManager(), contentWrapper);
             explosionAnimationFrames = new List<Rectangle>() {
                         new Rectangle(0, 0, 32, 32),
                         new Rectangle(32, 0, 32, 32),
@@ -121,25 +122,7 @@ namespace Tank.GameStates.States
 
         private void AddEngineSystems()
         {
-            int screenWidth = viewportAdapter.VirtualWidth;
-            int screenHeight = viewportAdapter.VirtualHeight;
-            engine.AddSystem(new BindingSystem());
-            engine.AddSystem(new MapSculptingSystem());
-            engine.AddSystem(new ForceSystem(new VectorRectangle(0, 0, screenWidth, screenHeight)));
-            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, screenWidth, screenHeight), gameSettings.Gravity, gameSettings.Wind));
-            engine.AddSystem(new AnimationSystem());
-            engine.AddSystem(new DamageSystem());
-            engine.AddSystem(new SoundEffectSystem(settings));
-            engine.AddSystem(new FadeInFadeOutSystem());
-            engine.AddSystem(new RenderSystem(
-                 spriteBatch,
-                 defaultShader//,
-                 //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
-             ));
-            engine.AddSystem(new GameLogicSystem(gameSettings.PlayerCount, mapToUse));
 
-            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader()));
-            engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", settings));
         }
 
         private void AddEntites()
@@ -262,7 +245,6 @@ namespace Tank.GameStates.States
                         engine.EntityManager.AddComponent(cloudId, component);
                     }
                 }
-
             }
 
             if (Keyboard.GetState().IsKeyUp(Keys.Escape))
@@ -294,8 +276,6 @@ namespace Tank.GameStates.States
                     }
                 }
                 **/
-
-
                 uint projectileId = engine.EntityManager.CreateEntity(false);
                 foreach (IComponent component in bulletBuilder.BuildGameComponents())
                 {
