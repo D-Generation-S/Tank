@@ -114,10 +114,6 @@ namespace Tank.Systems
         /// </summary>
         private bool takeScreenshot => screenshotPath != string.Empty && screenshotPath != null;
 
-        /// <summary>
-        /// Texture to use for debugging
-        /// </summary>
-        private Texture2D debugTexture;
 
         /// <summary>
         /// Create a new instance for the renderer
@@ -156,11 +152,6 @@ namespace Tank.Systems
             DefaultFolderUtils folderUtils = new DefaultFolderUtils();
             screenshotBasePath = folderUtils.GetGameFolder();
             screenshotBasePath = Path.Combine(screenshotBasePath, "Screenshots");
-
-            Color[] debugTextureColor = new Color[1];
-            debugTextureColor[0] = Color.White;
-            debugTexture = new Texture2D(graphicsDevice, 1, 1);
-            debugTexture.SetData(debugTextureColor);
 
         }
 
@@ -354,7 +345,6 @@ namespace Tank.Systems
                 default:
                     break;
             }
-            spriteBatch.Draw(debugTexture, new Rectangle((int)currentContainer.Position.X - 8, (int)currentContainer.Position.Y - 8, 16,16), null, Color.Violet);
         }
 
         /// <summary>
