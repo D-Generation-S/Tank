@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tank.Events;
 using Tank.Events.ComponentBased;
 using Tank.Events.EntityBased;
@@ -167,6 +168,12 @@ namespace Tank.EntityComponentSystem.Manager
         public List<IComponent> GetComponents(uint entityId, IComponent component)
         {
             return GetComponents(entityId, component.Type);
+        }
+
+        /// <inheritdoc/>
+        public List<T> GetComponents<T>() where T : IComponent
+        {
+            return componentManager.GetComponents(typeof(T)).Cast<T>().ToList();
         }
 
         /// <inheritdoc/>

@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Tank.DataStructure.Settings;
+using Tank.Utils;
 
 namespace Tank.DataManagement.Loader
 {
@@ -9,7 +10,17 @@ namespace Tank.DataManagement.Loader
     /// Class to load the application setting container
     /// </summary>
     class JsonSettingLoader : AbstractDataLoader<ApplicationSettings>
-    {
+    {        
+        /// <summary>
+        /// Utility to get default folders
+       /// </summary>
+        private DefaultFolderUtils folderUtils;
+
+        public JsonSettingLoader()
+        {
+            folderUtils = new DefaultFolderUtils();
+        }
+
         /// <inheritdoc/>
         public override ApplicationSettings LoadData(string fileName)
         {
@@ -48,8 +59,7 @@ namespace Tank.DataManagement.Loader
         /// <returns>The path to the setting folder</returns>
         public string GetSettingFolder()
         {
-            string returnFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(returnFolder, TankGame.GameName);
+            return Path.Combine(folderUtils.GetApplicationFolder(), TankGame.GameName);
 
         }
     }

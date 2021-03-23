@@ -1,14 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Tank.Adapter;
+using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
+using Tank.Components.Tags;
 using Tank.DataStructure;
 using Tank.Enums;
 using Tank.Events;
+using Tank.Events.EntityBased;
+using Tank.Events.StateEvents;
+using Tank.Interfaces.Builders;
+using Tank.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem.Manager;
+using Tank.Utils;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -22,6 +32,12 @@ namespace Tank.Systems
         /// The spritebatch instance to use
         /// </summary>
         private readonly SpriteBatch spriteBatch;
+        private readonly SpriteFont fontToUse;
+
+        /// <summary>
+        /// Builder to use for showing that a screenshot was taken
+        /// </summary>
+        private readonly IGameObjectBuilder textBuilder;
 
         /// <summary>
         /// All the already used containers to prevent gc
@@ -54,6 +70,11 @@ namespace Tank.Systems
         private RenderTarget2D postProcessingRenderTarget;
 
         /// <summary>
+        /// The screenshot render target
+        /// </summary>
+        private RenderTarget2D screenshotRenderTarget;
+
+        /// <summary>
         /// All the post processing effects
         /// </summary>
         private readonly List<Effect> postProcessing;
@@ -79,11 +100,31 @@ namespace Tank.Systems
         private bool drawStart;
 
         /// <summary>
+        /// The base path for screenshots
+        /// </summary>
+        private string screenshotBasePath;
+
+        /// <summary>
+        /// The path to save a screenshot it
+        /// </summary>
+        private string screenshotPath;
+
+        /// <summary>
+        /// Should we take a screenshot in the current draw
+        /// </summary>
+        private bool takeScreenshot => screenshotPath != string.Empty && screenshotPath != null;
+
+        /// <summary>
+        /// Texture to use for debugging
+        /// </summary>
+        private Texture2D debugTexture;
+
+        /// <summary>
         /// Create a new instance for the renderer
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public RenderSystem(SpriteBatch spriteBatch, Effect defaultEffect)
-            : this(spriteBatch, defaultEffect, new List<Effect>() { defaultEffect })
+        public RenderSystem(SpriteBatch spriteBatch, SpriteFont fontToUse, Effect defaultEffect)
+            : this(spriteBatch, fontToUse, defaultEffect, new List<Effect>() { defaultEffect })
         {
         }
 
@@ -93,11 +134,14 @@ namespace Tank.Systems
         /// <param name="spriteBatch"></param>
         public RenderSystem(
             SpriteBatch spriteBatch,
+            SpriteFont fontToUse,
             Effect defaultEffect,
             List<Effect> postProcessing
             ) : base()
         {
             this.spriteBatch = spriteBatch;
+            this.fontToUse = fontToUse;
+            textBuilder = new FadeOutTextBuilder(fontToUse);
             validators.Add(new RenderableEntityValidator());
 
             usedContainers = new Stack<RenderContainer>();
@@ -106,7 +150,71 @@ namespace Tank.Systems
             this.postProcessing = postProcessing;
             gameRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
             postProcessingRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
+            screenshotRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
+
             drawStart = true;
+            DefaultFolderUtils folderUtils = new DefaultFolderUtils();
+            screenshotBasePath = folderUtils.GetGameFolder();
+            screenshotBasePath = Path.Combine(screenshotBasePath, "Screenshots");
+
+            Color[] debugTextureColor = new Color[1];
+            debugTextureColor[0] = Color.White;
+            debugTexture = new Texture2D(graphicsDevice, 1, 1);
+            debugTexture.SetData(debugTextureColor);
+
+        }
+
+        public override void Initialize(IGameEngine gameEngine)
+        {
+            base.Initialize(gameEngine);
+            eventManager.SubscribeEvent(this, typeof(TakeScreenshotEvent));
+
+            textBuilder.Init(entityManager);
+        }
+
+        public override void EventNotification(object sender, IGameEvent eventArgs)
+        {
+            base.EventNotification(sender, eventArgs);
+            if (eventArgs is TakeScreenshotEvent)
+            {
+                if (!Directory.Exists(screenshotBasePath))
+                {
+                    Directory.CreateDirectory(screenshotBasePath);
+                }
+
+                CopyRenderTarget(postProcessing.Count == 0 ? gameRenderTarget : postProcessingRenderTarget, screenshotRenderTarget);
+                Task.Run(() => TakeScreenshot(screenshotRenderTarget, screenshotPath));
+                screenshotPath = string.Empty;
+
+                screenshotPath = Path.Combine(screenshotBasePath, DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_GameScreenshot.png");
+                AddEntityEvent newEntityEvent = eventManager.CreateEvent<AddEntityEvent>();
+                string text = "Took screenshot: " + screenshotPath;
+                List<IComponent> components = textBuilder.BuildGameComponents(text);
+                PlaceableComponent placeableComponent = (PlaceableComponent)components.Find(component => component.Type == typeof(PlaceableComponent));
+
+                List<uint> messageEntities = entityManager.GetEntitiesWithComponent<MessageTag>();
+                Vector2 textSize = fontToUse.MeasureString(text);
+
+                Vector2 realPosition = Vector2.UnitY * (screenshotRenderTarget.Height);
+                realPosition += Vector2.UnitX * textSize.X;
+                realPosition -= textSize;
+                realPosition -= Vector2.UnitY * (textSize.Y * messageEntities.Count);
+                placeableComponent.Position = realPosition;
+
+                newEntityEvent.Components = components;
+                FireEvent(newEntityEvent);
+
+
+            }
+        }
+
+        private async Task<bool> TakeScreenshot(RenderTarget2D renderTarget, string path)
+        {
+            using (StreamWriter writer = new StreamWriter(screenshotPath))
+            {
+                renderTarget.SaveAsPng(writer.BaseStream, renderTarget.Width, renderTarget.Height);
+            }
+            return true;
         }
 
         /// <inheritdoc/>
@@ -132,7 +240,7 @@ namespace Tank.Systems
                 CollectText(placeableComponent, textComponent);
             }
 
-            containersToRender = containersToRender.OrderBy(container => container.ShaderEffect).ThenBy(container => container.Name).ToList();
+            containersToRender = containersToRender.OrderBy(container => container.RenderType).ThenBy(container => container.ShaderEffect).ThenBy(container => container.Name).ToList();
             graphicsDevice.SetRenderTarget(gameRenderTarget);
             for (int i = 0; i < containersToRender.Count; i++)
             {
@@ -147,7 +255,6 @@ namespace Tank.Systems
             }
             spriteBatch.End();
 
-            //graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
             for (int i = 0; i < postProcessing.Count; i++)
             {
                 graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
@@ -169,6 +276,7 @@ namespace Tank.Systems
             graphicsDevice.SetRenderTarget(null);
             viewportAdapter.Reset();
             graphicsDevice.Clear(Color.Black);
+
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -186,6 +294,8 @@ namespace Tank.Systems
                 );
 
             spriteBatch.End();
+
+
             drawLocked = false;
         }
 
@@ -215,6 +325,7 @@ namespace Tank.Systems
             BeginDraw(currentContainer.ShaderEffect);
             switch (currentContainer.RenderType)
             {
+                
                 case RenderTypeEnum.Texture:
                     spriteBatch.Draw(
                       currentContainer.TextureToDraw,
@@ -243,6 +354,7 @@ namespace Tank.Systems
                 default:
                     break;
             }
+            spriteBatch.Draw(debugTexture, new Rectangle((int)currentContainer.Position.X - 8, (int)currentContainer.Position.Y - 8, 16,16), null, Color.Violet);
         }
 
         /// <summary>

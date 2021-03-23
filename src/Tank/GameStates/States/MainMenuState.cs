@@ -5,6 +5,7 @@ using Tank.Builders;
 using Tank.Commands;
 using Tank.Commands.GameManager;
 using Tank.DataStructure.Settings;
+using Tank.Enums;
 using Tank.Factories;
 using Tank.Factories.Gui;
 using Tank.GameStates.Data;
@@ -51,9 +52,18 @@ namespace Tank.GameStates.States
                     animationFrames
                  );
 
-                players.Add(new Player("Player " + (i + 1), tankObjectBuilder));
+                players.Add(
+                    new Player(
+                        "Player " + (i + 1),
+                        i,
+                        ControlTypeEnum.Keyboard,
+                        i,
+                        PlayerTypeEnum.Player,
+                        tankObjectBuilder
+                        )
+                    );
             }
-            GameSettings settings = new GameSettings(0.098f, 0.3f, players, int.MinValue, "MoistContinentalSpritesheet");
+            GameSettings settings = new GameSettings(0.098f, 0f, players, int.MinValue, "MoistContinentalSpritesheet");
 #if DEBUG
             settings.SetDebug();
 #endif

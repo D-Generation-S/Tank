@@ -9,6 +9,7 @@ using Tank.Enums;
 using Tank.Events;
 using Tank.Events.ComponentBased;
 using Tank.Events.EntityBased;
+using Tank.Events.StateEvents;
 using Tank.GameStates.Data;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Validator;
@@ -65,7 +66,7 @@ namespace Tank.Systems
         /// </summary>
         public GameLogicSystem(GameSettings settings) : base()
         {
-            validators.Add(new PlayerObjectValidator());
+            validators.Add(new GameObjectValidator());
             playerOrder = new int[settings.PlayerCount];
             setup = true;
             currentPlayerIndex = 0;
@@ -157,7 +158,6 @@ namespace Tank.Systems
                 // Points who did won and other important stuff should be added to the event
                 GameOverEvent gameOverEvent = eventManager.CreateEvent<GameOverEvent>();
                 FireEvent(gameOverEvent);
-                //Game is over!
                 return;
             }
 
@@ -165,15 +165,16 @@ namespace Tank.Systems
             {
                 activePlayer = true;
                 currentPlayerId = watchedEntities[currentPlayerIndex];
-                entityManager.AddComponent(currentPlayerId, new ActiveGameObjectTag());
-                entityManager.AddComponent(arrowEntity, new BindComponent()
-                {
-                    DeleteIfParentGone = false,
-                    BoundEntityId = currentPlayerId,
-                    Offset = new Vector2(0f, -60f),
-                    Source = true,
-                    PositionBound = true
-                });
+                entityManager.CreateComponent<ActiveGameObjectTag>(currentPlayerId);
+                entityManager.CreateComponent<CanPerformActionTag>(currentPlayerId);
+                BindComponent bindComponent = entityManager.CreateComponent<BindComponent>();
+                bindComponent.DeleteIfParentGone = false;
+                bindComponent.BoundEntityId = currentPlayerId;
+                bindComponent.Offset = Vector2.UnitY * -60;
+                bindComponent.Source = true;
+                bindComponent.PositionBound = true;
+
+                entityManager.AddComponent(arrowEntity, bindComponent, true);
                 FireGameStateChange(GameStatesEnum.RoundStart);
                 return;
             }
@@ -183,7 +184,9 @@ namespace Tank.Systems
                 FireGameStateChange(GameStatesEnum.RoundRunning);
             }
 
-            if (activePlayer && !watchedEntities.Contains(currentPlayerId))
+            if ((activePlayer && !watchedEntities.Contains(currentPlayerId))
+                || (entityManager.GetEntitiesWithComponent<CanPerformActionTag>().Count == 0
+                && entityManager.GetEntitiesWithComponent<RoundBlockingTag>().Count == 0))
             {
                 SetNextPlayer();
             }
@@ -201,9 +204,11 @@ namespace Tank.Systems
             uint oldPlayerId = currentPlayerId;
             currentPlayerId = watchedEntities[currentPlayerIndex];
 
-            ActiveGameObjectTag activeGameObjectTag = entityManager.GetComponent<ActiveGameObjectTag>(oldPlayerId);
             BindComponent bindComponent = entityManager.GetComponent<BindComponent>(arrowEntity);
-            activeGameObjectTag = activeGameObjectTag ?? entityManager.CreateComponent<ActiveGameObjectTag>(currentPlayerId);
+            entityManager.RemoveComponents(oldPlayerId, typeof(ActiveGameObjectTag));
+            entityManager.CreateComponent<ActiveGameObjectTag>(currentPlayerId);
+            entityManager.CreateComponent<CanPerformActionTag>(currentPlayerId);
+
             bindComponent.BoundEntityId = currentPlayerId;
             FireGameStateChange(GameStatesEnum.RoundStart);
         }

@@ -1,10 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tank.Builders;
 using Tank.Components;
+using Tank.Components.DataLookup;
 using Tank.Components.GameObject;
+using Tank.Components.Input;
 using Tank.Components.Rendering;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
@@ -14,11 +17,16 @@ using Tank.DataStructure.Settings;
 using Tank.DataStructure.Spritesheet;
 using Tank.EntityComponentSystem.Manager;
 using Tank.Events.EntityBased;
+using Tank.Factories;
 using Tank.GameStates.Data;
+using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Interfaces.MapGenerators;
+using Tank.Interfaces.Randomizer;
 using Tank.Map.Textureizer;
 using Tank.Music;
+using Tank.Randomizer;
+using Tank.Register;
 using Tank.Systems;
 using Tank.Utils;
 using Tank.Wrapper;
@@ -80,6 +88,13 @@ namespace Tank.GameStates.States
         /// </summary>
         private IGameEngine engine;
 
+        private List<SoundEffect> explosionSounds;
+        private Texture2D standardShellExplosion;
+        private Texture2D standardShellTexture;
+
+        private List<Rectangle> standardShellAnimation;
+        private List<Rectangle> standardShellExplosionAnimation;
+
         /// <summary>
         /// Create a new instance of this class
         /// </summary>
@@ -101,6 +116,9 @@ namespace Tank.GameStates.States
             this.mapGenerator = mapGenerator;
             this.gameSettings = gameSettings;
             this.dataLoader = dataLoader;
+            explosionSounds = new List<SoundEffect>();
+            standardShellAnimation = new List<Rectangle>();
+            standardShellExplosionAnimation = new List<Rectangle>();
             loadingComplete = false;
         }
 
@@ -110,6 +128,27 @@ namespace Tank.GameStates.States
         {
             base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             spriteSetManager = new DataManager<SpriteSheet>(contentWrapper, dataLoader);
+
+            standardShellExplosionAnimation = new List<Rectangle>() {
+                        new Rectangle(0, 0, 32, 32),
+                        new Rectangle(32, 0, 32, 32),
+                        new Rectangle(64, 0, 32, 32),
+                        new Rectangle(0, 32, 32, 32),
+                        new Rectangle(32, 32, 32, 32),
+                        new Rectangle(64, 32, 32, 32),
+                        new Rectangle(0, 64, 32, 32),
+                        new Rectangle(32, 64, 32, 32),
+                    };
+            standardShellAnimation = new List<Rectangle>() {
+                            new Rectangle(0, 0, 32, 32),
+                            new Rectangle(32, 0, 32, 32),
+                            new Rectangle(64, 0, 32, 32),
+                            new Rectangle(0, 32, 32, 32),
+                            new Rectangle(32, 32, 32, 32),
+                            new Rectangle(64, 32, 32, 32),
+                            new Rectangle(0, 64, 32, 32),
+                            new Rectangle(32, 64, 32, 32),
+                        };
         }
 
         /// <inheritdoc/>
@@ -118,6 +157,14 @@ namespace Tank.GameStates.States
             spritesheetToUse = spriteSetManager.GetData(gameSettings.SpriteSetName);
             defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
             gameFont = contentWrapper.Load<SpriteFont>("gameFont");
+
+            standardShellExplosion = contentWrapper.Load<Texture2D>("Images/Effects/Explosion132x32-Sheet");
+            standardShellTexture = contentWrapper.Load<Texture2D>("Images/Entities/BasicMunitionSprite");
+
+            explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion1"));
+            explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion2"));
+            explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion3"));
+            explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion4"));
         }
 
         /// <inheritdoc/>
@@ -148,9 +195,12 @@ namespace Tank.GameStates.States
         {
             engine = new GameEngine(new EventManager(), new EntityManager(), contentWrapper);
 
+            Register<IGameObjectBuilder> register = CreateProjectileRegister();
             int screenWidth = viewportAdapter.VirtualWidth;
             int screenHeight = viewportAdapter.VirtualHeight;
             engine.AddSystem(new BindingSystem());
+            engine.AddSystem(new KeyboardInputSystem(register));
+            engine.AddSystem(new ProjectileSpawnSystem(register));
             engine.AddSystem(new MapSculptingSystem());
             engine.AddSystem(new ForceSystem(new VectorRectangle(0, 0, screenWidth, screenHeight)));
             engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, screenWidth, screenHeight), gameSettings.Gravity, gameSettings.Wind));
@@ -160,6 +210,7 @@ namespace Tank.GameStates.States
             engine.AddSystem(new FadeInFadeOutSystem());
             engine.AddSystem(new RenderSystem(
                  spriteBatch,
+                 gameFont,
                  defaultShader//,
                  //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
@@ -168,6 +219,48 @@ namespace Tank.GameStates.States
 
             MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader()));
             engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", settings));
+        }
+
+        private Register<IGameObjectBuilder> CreateProjectileRegister()
+        {
+            IRandomizer randomizer = new SystemRandomizer();
+            Register<IGameObjectBuilder> register =  new Register<IGameObjectBuilder>();
+            RegisterProjectile("SimpleExplosive", BaseProjectile(randomizer), register);
+            register.SealDictionary();
+
+            return register;
+        }
+
+        private void RegisterProjectile(string name, IGameObjectBuilder builder, Register<IGameObjectBuilder> register)
+        {
+            RegisterProjectile(name, 1, builder, register);
+        }
+
+        private void RegisterProjectile(string name, int fireAmount, IGameObjectBuilder builder, Register<IGameObjectBuilder> register)
+        {
+            register.Add(name, builder);
+            ProjectileDataComponent projectileDataComponent = engine.EntityManager.CreateComponent<ProjectileDataComponent>();
+            projectileDataComponent.Name = name;
+            projectileDataComponent.Position = register.GetPosition(name);
+            projectileDataComponent.Amount = fireAmount;
+            projectileDataComponent.TicksUntilSpawn = 1;
+
+            engine.EntityManager.AddComponent(engine.EntityManager.CreateEntity(), projectileDataComponent);
+        }
+
+        private IGameObjectBuilder BaseProjectile(IRandomizer randomizer)
+        {
+            RandomSoundFactory soundFactory = new RandomSoundFactory(explosionSounds, randomizer);
+            IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(standardShellExplosion, standardShellExplosionAnimation, soundFactory);
+            explosionBuilder.Init(engine);
+
+            BaseBulletBuilder bulletBuilder = new BaseBulletBuilder(standardShellAnimation, standardShellTexture, new ComponentFactory(explosionBuilder));
+            bulletBuilder.Init(engine);
+
+            return bulletBuilder;
+
+            //RandomEntityBuilderFactory randomExplosionFactory = new RandomEntityBuilderFactory(explosionBuilders, randomizer);
+            //bulletBuilder
         }
 
         /// <summary>
@@ -197,7 +290,25 @@ namespace Tank.GameStates.States
                 currentPlayer.TankBuilder.Init(engine.EntityManager);
 
                 uint playerTank = engine.EntityManager.CreateEntity();
+
+                switch (currentPlayer.ControlType)
+                {
+                    case Enums.ControlTypeEnum.Keyboard:
+                        engine.EntityManager.CreateComponent<KeyboardControllerComponent>(playerTank);
+                        break;
+                    case Enums.ControlTypeEnum.Controller:
+                        //engine.EntityManager.CreateComponent<KeyboardControllerComponent>(playerTank);
+                        break;
+                    default:
+                        break;
+                }
+
                 currentPlayer.TankBuilder.BuildGameComponents(playerStartPosition).ForEach(component => engine.EntityManager.AddComponent(playerTank, component, true));
+                ControllableGameObject controllableGameObject = engine.EntityManager.GetComponent<ControllableGameObject>(playerTank);
+                if (controllableGameObject != null)
+                {
+                    controllableGameObject.Team = currentPlayer.Team;
+                }
 
                 AddEntityEvent addTankEvent = engine.EventManager.CreateEvent<AddEntityEvent>();
 
@@ -207,6 +318,7 @@ namespace Tank.GameStates.States
                 textComponent.ShaderEffect = defaultShader;
                 textComponent.Text = currentPlayer.PlayerName;
                 textComponent.Font = gameFont;
+
                 BindComponent bindComponent = engine.EntityManager.CreateComponent<BindComponent>();
                 bindComponent.PositionBound = true;
                 bindComponent.Offset = Vector2.UnitY * -35;
@@ -236,9 +348,6 @@ namespace Tank.GameStates.States
                 playerLifeBin.DeleteIfParentGone = true;
 
                 engine.EntityManager.AddComponent(playerLife, playerLifeBin, true);
-
-
-
             }
         }
 

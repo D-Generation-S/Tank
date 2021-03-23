@@ -5,8 +5,6 @@ using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataStructure;
-using Tank.GameStates.Data;
 using Tank.Interfaces.EntityComponentSystem;
 
 namespace Tank.Builders
@@ -101,8 +99,8 @@ namespace Tank.Builders
             ColliderComponent collider = entityManager.CreateComponent<ColliderComponent>();
             collider.Collider = colliderDestination;
 
-            PlayerControllableComponent controllableComponent = entityManager.CreateComponent<PlayerControllableComponent>();
-            controllableComponent.Controller = new StaticKeyboardControls();
+            //PlayerControllableComponent controllableComponent = entityManager.CreateComponent<PlayerControllableComponent>();
+            //controllableComponent.Controller = new StaticKeyboardControls();
             GameObjectTag gameObjectTag = entityManager.CreateComponent<GameObjectTag>();
 
             returnComponents.Add(placeableComponent);
@@ -110,8 +108,10 @@ namespace Tank.Builders
             returnComponents.Add(visibleComponent);
             returnComponents.Add(moveable);
             returnComponents.Add(collider);
-            returnComponents.Add(controllableComponent);
+            //returnComponents.Add(controllableComponent);
             returnComponents.Add(gameObjectTag);
+            returnComponents.Add(entityManager.CreateComponent<PlayerControlledTag>());
+            returnComponents.Add(entityManager.CreateComponent<ControllableGameObject>());
 
             return returnComponents;
         }

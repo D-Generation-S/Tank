@@ -45,6 +45,13 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         List<IComponent> GetComponents(uint entityId);
 
         /// <summary>
+        /// Get all the components of a given type
+        /// </summary>
+        /// <typeparam name="T">The type of component to get</typeparam>
+        /// <returns>A list with all the components</returns>
+        List<IComponent> GetComponents(Type componentType);
+
+        /// <summary>
         /// This method will return you all the components from an entity based on an component
         /// </summary>
         /// <param name="entityId">All the components from the given entity id</param>

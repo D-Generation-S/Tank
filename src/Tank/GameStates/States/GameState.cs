@@ -9,13 +9,11 @@ using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataManagement;
-using Tank.DataManagement.Loader;
 using Tank.DataStructure.Geometrics;
 using Tank.DataStructure.Settings;
-using Tank.EntityComponentSystem.Manager;
 using Tank.Events;
 using Tank.Events.PhysicBased;
+using Tank.Events.StateEvents;
 using Tank.Events.TerrainEvents;
 using Tank.Factories;
 using Tank.GameStates.Data;
@@ -24,9 +22,7 @@ using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Interfaces.MapGenerators;
 using Tank.Map.Generators;
-using Tank.Music;
 using Tank.Randomizer;
-using Tank.Systems;
 using Tank.Wrapper;
 
 namespace Tank.GameStates.States
@@ -73,7 +69,7 @@ namespace Tank.GameStates.States
         private bool debugOn;
         private bool debugIdGenerated;
 
-        private bool newState;
+        private bool openMenu;
 
         private readonly int cloudsToSpawn;
 
@@ -89,6 +85,7 @@ namespace Tank.GameStates.States
             debugOn = gameSettings.IsDebug;
             debugIdGenerated = false;
             cloudsToSpawn = 250;
+            openMenu = false;
         }
 
         /// <inheritdoc/>
@@ -121,11 +118,7 @@ namespace Tank.GameStates.States
 
             explosionSounds = new List<SoundEffect>();
             engine.EventManager.SubscribeEvent(this, typeof(GameOverEvent));
-        }
-
-        private void AddEngineSystems()
-        {
-
+            engine.EventManager.SubscribeEvent(this, typeof(OpenMenuEvent));
         }
 
         private void AddEntites()
@@ -192,7 +185,6 @@ namespace Tank.GameStates.States
             }
             randomCloudFactory = new RandomEntityBuilderFactory(cloudBuilders, randomizer);
 
-            AddEngineSystems();
             AddEntites();
         }
 
@@ -221,19 +213,6 @@ namespace Tank.GameStates.States
         }
 
         /// <inheritdoc/>
-        public override void Suspend()
-        {
-            engine.Suspend();
-        }
-
-        /// <inheritdoc/>
-        public override void Restore()
-        {
-            newState = true;
-            engine.Restore();
-        }
-
-        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             if (gameOverState != null)
@@ -255,17 +234,6 @@ namespace Tank.GameStates.States
                     }
                 }
                 **/
-            }
-
-            if (Keyboard.GetState().IsKeyUp(Keys.Escape))
-            {
-                newState = false;
-            }
-            if (!newState && Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                engine.Update(gameTime);
-                gameStateManager.Add(new EscMenuScreen());
-                return;
             }
 
             if (ticksToFire > 0)
@@ -384,6 +352,11 @@ namespace Tank.GameStates.States
             engine.Update(gameTime);
             previousState = Keyboard.GetState();
             previousMouseState = Mouse.GetState();
+            if (openMenu)
+            {
+                openMenu = false;
+                gameStateManager.Add(new EscMenuScreen());
+            }
         }
 
         /// <inheritdoc/>
@@ -408,9 +381,14 @@ namespace Tank.GameStates.States
 
         public void EventNotification(object sender, IGameEvent eventArgs)
         {
-            if (eventArgs is GameOverEvent overEvent)
+            if (eventArgs is GameOverEvent)
             {
                 gameOverState = new MainMenuState();
+            }
+
+            if (eventArgs is OpenMenuEvent)
+            {
+                openMenu = true;
             }
         }
     }

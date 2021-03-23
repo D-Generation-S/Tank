@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Tank.Events
+namespace Tank.Events.StateEvents
 {
     class GameOverEvent : BaseEvent
     {
-        public GameOverEvent()
-        {
-
-        }
     }
 }

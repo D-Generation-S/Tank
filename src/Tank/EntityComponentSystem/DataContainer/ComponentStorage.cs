@@ -33,6 +33,11 @@ namespace Tank.EntityComponentSystem.DataContainer
         private readonly IEventManager eventManager;
 
         /// <summary>
+        /// A list to reuse, must be cleared
+        /// </summary>
+        private readonly List<IComponent> reuseableList;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         /// <param name="type"></param>
@@ -42,6 +47,7 @@ namespace Tank.EntityComponentSystem.DataContainer
             Type = type;
             this.eventManager = eventManager;
             componentDictonary = new Dictionary<uint, List<IComponent>>();
+            reuseableList = new List<IComponent>();
         }
 
         /// <summary>
@@ -117,9 +123,24 @@ namespace Tank.EntityComponentSystem.DataContainer
         {
             if (!componentDictonary.ContainsKey(entityId))
             {
-                return new List<IComponent>();
+                reuseableList.Clear();
+                return reuseableList;
             }
             return componentDictonary[entityId];
+        }
+
+        /// <summary>
+        /// This method will return you all the components in this container
+        /// </summary>
+        /// <returns></returns>
+        public List<IComponent> GetComponents()
+        {
+            reuseableList.Clear();
+            foreach(uint id in componentDictonary.Keys)
+            {
+                reuseableList.AddRange(GetComponents(id));
+            }
+            return reuseableList;
         }
 
         /// <summary>
