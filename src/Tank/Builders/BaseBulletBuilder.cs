@@ -51,6 +51,11 @@ namespace Tank.Builders
         private readonly string name;
 
         /// <summary>
+        /// The rotation center to use
+        /// </summary>
+        private readonly Vector2 rotationCenter;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         /// <param name="animationFrames">The aniamations frames</param>
@@ -69,6 +74,7 @@ namespace Tank.Builders
             this.explosionFactory = explosionFactory;
             damageArea = new Circle(0, 0, 16);
             name = "Idle";
+            rotationCenter = new Vector2(source.Width / 2, source.Height / 2);
         }
 
         /// <inheritdoc/>
@@ -94,7 +100,8 @@ namespace Tank.Builders
             visuals.Source = source;
             visuals.Destination = collider;
             visuals.SingleTextureSize = collider;
-            visuals.DrawMiddle = true;
+            //visuals.DrawMiddle = true;
+            visuals.RotationCenter = rotationCenter;
             MapColliderTag colliderTag = entityManager.CreateComponent<MapColliderTag>();
 
             AnimationComponent animation = entityManager.CreateComponent<AnimationComponent>();

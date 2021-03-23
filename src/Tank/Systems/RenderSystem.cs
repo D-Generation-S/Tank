@@ -324,7 +324,7 @@ namespace Tank.Systems
                       currentContainer.Source,
                       currentContainer.Color,
                       currentContainer.Rotation,
-                      Vector2.Zero,
+                      currentContainer.Origin,
                       currentContainer.Effect,
                       currentContainer.LayerDepth
                     );
@@ -336,7 +336,7 @@ namespace Tank.Systems
                         currentContainer.Position,
                         currentContainer.Color,
                         currentContainer.Rotation,
-                        Vector2.Zero,
+                        currentContainer.Origin,
                         currentContainer.Scale,
                         currentContainer.Effect,
                         currentContainer.LayerDepth
@@ -408,6 +408,7 @@ namespace Tank.Systems
                 destination.Y -= height / 2;
             }
             visibleComponent.Destination = destination;
+            //placeableComponent.Rotation += 0.01f;
 
             RenderContainer renderContainer = GetRenderContainer();
             renderContainer.RenderType = RenderTypeEnum.Texture;
@@ -416,6 +417,7 @@ namespace Tank.Systems
             renderContainer.Source = visibleComponent.Source;
             renderContainer.Color = visibleComponent.Color;
             renderContainer.Rotation = placeableComponent.Rotation;
+            renderContainer.Origin = visibleComponent.RotationCenter;
             renderContainer.Effect = visibleComponent.Effect;
             renderContainer.LayerDepth = visibleComponent.LayerDepth;
             renderContainer.ShaderEffect = visibleComponent.ShaderEffect;
@@ -441,6 +443,7 @@ namespace Tank.Systems
             renderContainer.Position = placeableComponent.Position;
             renderContainer.Color = textComponent.Color;
             renderContainer.Rotation = placeableComponent.Rotation;
+            renderContainer.Origin = textComponent.RotationCenter;
             renderContainer.Scale = textComponent.Scale;
             renderContainer.Effect = textComponent.Effect;
             renderContainer.LayerDepth = textComponent.LayerDepth;

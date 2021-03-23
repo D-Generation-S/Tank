@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Tags;
@@ -100,8 +99,6 @@ namespace Tank.Systems
                 AddEntityEvent addEntityEvent = eventManager.CreateEvent<AddEntityEvent>();
                 addEntityEvent.Components = components;
                 FireEvent(addEntityEvent);
-
-                //Vector2 projectileSpawnLocation = 
 
                 spawnComponent.Amount -= 1;
 

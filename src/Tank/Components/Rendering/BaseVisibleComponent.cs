@@ -29,6 +29,11 @@ namespace Tank.Components.Rendering
         public float LayerDepth;
 
         /// <summary>
+        /// The center of rotiation
+        /// </summary>
+        public Vector2 RotationCenter;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         public BaseVisibleComponent()
@@ -43,6 +48,7 @@ namespace Tank.Components.Rendering
             LayerDepth = 1f;
             Effect = SpriteEffects.None;
             ShaderEffect = null;
+            RotationCenter = Vector2.Zero;
         }
     }
 }

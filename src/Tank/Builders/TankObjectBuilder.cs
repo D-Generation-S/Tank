@@ -24,12 +24,21 @@ namespace Tank.Builders
         /// The animation frames
         /// </summary>
         private readonly List<Rectangle> animationFrames;
+
+        /// <summary>
+        /// The collidert destination
+        /// </summary>
         private readonly Rectangle colliderDestination;
 
         /// <summary>
         /// The shader effect to use
         /// </summary>
         private readonly Effect effect;
+
+        /// <summary>
+        /// The center or rotation
+        /// </summary>
+        private Vector2 RotationCenter;
 
         /// <summary>
         /// Create a new instance of this class to spawn game objects
@@ -54,6 +63,7 @@ namespace Tank.Builders
             int textureWidth = animationFrames[0].Width;
             int textureHeight = animationFrames[0].Height;
             colliderDestination = new Rectangle(-textureWidth / 2, -textureHeight / 2, textureWidth, textureHeight);
+            RotationCenter = new Vector2(textureWidth / 2, textureHeight / 2);
         }
 
         /// <summary>
@@ -92,7 +102,7 @@ namespace Tank.Builders
             visibleComponent.Destination = animationFrames[0];
             visibleComponent.Texture = spriteSheet;
             visibleComponent.ShaderEffect = effect;
-            visibleComponent.DrawMiddle = true;
+            visibleComponent.RotationCenter = RotationCenter;
             MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
             moveable.Mass = 15;
             moveable.ApplyPhysic = true;

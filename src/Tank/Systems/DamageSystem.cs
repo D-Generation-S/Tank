@@ -118,7 +118,7 @@ namespace Tank.Systems
                 float armor = gameObjectData.Properties.ContainsKey("Armor") ? gameObjectData.Properties["Armor"] : 0;
                 float damageToTake = damageComponent.CenterDamageValue;
                 Vector2 centerDistance = damageComponent.DamageArea.Center - placeableComponent.Position;
-                float damangeReduction = (float)damageComponent.CenterDamageValue * (centerDistance.Length() / (float)damageComponent.DamageArea.Radius);
+                float damangeReduction = (float)damageComponent.CenterDamageValue * (centerDistance.Length() / (float)damageComponent.DamageArea.Diameter);
                 damageToTake = damageComponent.CenterDamageValue - damangeReduction;
                 float reflectedDamage = damageComponent.CenterDamageValue * armor / 100;
                 damageToTake -= reflectedDamage;
