@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Tank.Components;
 using Tank.Components.Forces;
 using Tank.Components.Rendering;
 using Tank.Factories;
 using Tank.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.Randomizer;
 
 namespace Tank.Builders
 {
@@ -29,6 +31,11 @@ namespace Tank.Builders
         /// The list with all the animations frames to use
         /// </summary>
         private readonly List<Rectangle> animationFrames;
+
+        /// <summary>
+        /// Randomizer to use for rotation
+        /// </summary>
+        private readonly IRandomizer randomizer;
 
         /// <summary>
         /// The position to use
@@ -57,9 +64,10 @@ namespace Tank.Builders
         /// <param name="animationFrames">All the animation frames available in the sprite sheet</param>
         public BaseExplosionBuilder(
             Texture2D spriteSheet,
-            List<Rectangle> animationFrames
+            List<Rectangle> animationFrames,
+            IRandomizer randomizer
             )
-            : this(spriteSheet, animationFrames, null)
+            : this(spriteSheet, animationFrames, randomizer, null)
         {
         }
 
@@ -71,11 +79,13 @@ namespace Tank.Builders
         public BaseExplosionBuilder(
             Texture2D spriteSheet,
             List<Rectangle> animationFrames,
+            IRandomizer randomizer,
             IFactory<SoundEffect> soundFactory
             )
         {
             this.spriteSheet = spriteSheet;
             this.animationFrames = animationFrames;
+            this.randomizer = randomizer;
             this.soundFactory = soundFactory;
             position = new Vector2(-(animationFrames[0].Width / 2), -(animationFrames[0].Height / 2));
             name = "Idle";
@@ -94,14 +104,21 @@ namespace Tank.Builders
             {
                 return returnComponents;
             }
-            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
+
+            float rotation = randomizer.GetNewNumber(0, 360);
+
+            
             VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
             visibleComponent.Texture = spriteSheet;
             visibleComponent.Source = animationFrames[0];
             visibleComponent.Destination = animationFrames[0];
             visibleComponent.SingleTextureSize = animationFrames[0];
             visibleComponent.RotationCenter = rotationCenter;
+
+            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
             placeableComponent.Position = position;
+            placeableComponent.Rotation = MathHelper.ToRadians(rotation);
+
             AnimationComponent animation = entityManager.CreateComponent<AnimationComponent>();
             animation.FrameSeconds = 0.03f;
             animation.SpriteSources = animationFrames;

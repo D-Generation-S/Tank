@@ -164,7 +164,7 @@ namespace Tank.GameStates.States
             base.SetActive();
             MediaPlayer.Stop();
             RandomSoundFactory soundFactory = new RandomSoundFactory(explosionSounds, randomizer);
-            IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(bulletTestExplosion, explosionAnimationFrames, soundFactory);
+            IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(bulletTestExplosion, explosionAnimationFrames, randomizer, soundFactory);
             explosionBuilder.Init(engine);
             List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
             explosionBuilders.Add(explosionBuilder);

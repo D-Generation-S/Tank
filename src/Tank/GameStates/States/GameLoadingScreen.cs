@@ -251,7 +251,7 @@ namespace Tank.GameStates.States
         private IGameObjectBuilder BaseProjectile(IRandomizer randomizer)
         {
             RandomSoundFactory soundFactory = new RandomSoundFactory(explosionSounds, randomizer);
-            IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(standardShellExplosion, standardShellExplosionAnimation, soundFactory);
+            IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(standardShellExplosion, standardShellExplosionAnimation, randomizer, soundFactory);
             explosionBuilder.Init(engine);
 
             BaseBulletBuilder bulletBuilder = new BaseBulletBuilder(standardShellAnimation, standardShellTexture, new ComponentFactory(explosionBuilder));
