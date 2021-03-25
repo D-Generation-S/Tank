@@ -305,23 +305,21 @@ namespace Tank.GameStates.States
                     {
                         PlaceableComponent placeableComponent = (PlaceableComponent)component;
                         placeableComponent.Position = mouseWrapper.GetMouseVectorPosition();
-                        placeableComponent.Position -= new Vector2(32 / 2, 32 / 2);
                         circle = new Circle(mouseWrapper.GetMouseVectorPosition(), 16);
                     }
                     engine.EntityManager.AddComponent(exposion, component);
                     if (circle != null)
                     {
-                        DamageComponent damage = new DamageComponent()
-                        {
-                            DamagingDone = false,
-                            CenterDamageValue = 100,
-                            DamageArea = circle,
-                            EffectFactory = randomExplosionFactory
-
-                        };
+                        DamageComponent damage = engine.EntityManager.CreateComponent<DamageComponent>();
+                        damage.DamagingDone = false;
+                        damage.CenterDamageValue = 100;
+                        damage.DamageArea = circle;
+                        damage.EffectFactory = randomExplosionFactory;
                         engine.EntityManager.AddComponent(exposion, damage);
+
                         DamageTerrainEvent damageTerrainEvent = engine.EventManager.CreateEvent<DamageTerrainEvent>();
                         damageTerrainEvent.DamageArea = circle;
+
                         engine.EventManager.FireEvent<DamageTerrainEvent>(this, damageTerrainEvent);
                         MapCollisionEvent mapCollisionEvent = engine.EventManager.CreateEvent<MapCollisionEvent>();
                         mapCollisionEvent.EntityId = exposion;

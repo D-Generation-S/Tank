@@ -185,15 +185,13 @@ namespace Tank.Systems
         /// <param name="entityId">The id of the entity which got added</param>
         protected virtual void AddEntity(uint entityId)
         {
-            if (EntityIsRelevant(entityId))
+            if (!watchedEntities.Contains(entityId) 
+                && !newEntities.Contains(entityId) 
+                && EntityIsRelevant(entityId))
             {
                 if (entitiesToRemove.Contains(entityId))
                 {
                     entitiesToRemove.Remove(entityId);
-                }
-                if (watchedEntities.Contains(entityId) || newEntities.Contains(entityId))
-                {
-                    return;
                 }
                 newEntities.Add(entityId);
             }
@@ -246,7 +244,7 @@ namespace Tank.Systems
         /// <param name="entityId"></param>
         protected virtual void RemoveEntity(uint entityId)
         {
-            if (!entitiesToRemove.Contains(entityId))
+            if (!entitiesToRemove.Contains(entityId) && watchedEntities.Contains(entityId))
             {
                 entitiesToRemove.Add(entityId);
             }
@@ -280,6 +278,10 @@ namespace Tank.Systems
 
             for (int i = entitiesToRemove.Count - 1; i >= 0; i--)
             {
+                if (!watchedEntities.Contains(entitiesToRemove[i]))
+                {
+                    continue;
+                }
                 watchedEntities.Remove(entitiesToRemove[i]);
                 entitiesToRemove.RemoveAt(i);
             }

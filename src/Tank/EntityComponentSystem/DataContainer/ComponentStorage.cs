@@ -20,12 +20,12 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <summary>
         /// Dictionary with all the components of a single type
         /// </summary>
-        private readonly Dictionary<uint, List<IComponent>> componentDictonary;
+        private readonly Dictionary<uint, List<IComponent>> componentDictionary;
 
         /// <summary>
         /// The number of components
         /// </summary>
-        public int ComponentCount => componentDictonary.Count;
+        public int ComponentCount => componentDictionary.Count;
 
         /// <summary>
         /// The event manager to use
@@ -46,7 +46,7 @@ namespace Tank.EntityComponentSystem.DataContainer
         {
             Type = type;
             this.eventManager = eventManager;
-            componentDictonary = new Dictionary<uint, List<IComponent>>();
+            componentDictionary = new Dictionary<uint, List<IComponent>>();
             reuseableList = new List<IComponent>();
         }
 
@@ -63,12 +63,12 @@ namespace Tank.EntityComponentSystem.DataContainer
                 return false;
             }
             component.SetEntityId(entityId);
-            if (componentDictonary.ContainsKey(entityId))
+            if (componentDictionary.ContainsKey(entityId))
             {
-                componentDictonary[entityId].Add(component);
+                componentDictionary[entityId].Add(component);
                 return true;
             }
-            componentDictonary.Add(entityId, new List<IComponent>() { component });
+            componentDictionary.Add(entityId, new List<IComponent>() { component });
             return true;
         }
 
@@ -78,14 +78,14 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <param name="component">The component to remove</param>
         public void Remove(uint entityId, IComponent component)
         {
-            if (!componentDictonary.ContainsKey(entityId))
+            if (!componentDictionary.ContainsKey(entityId))
             {
                 return;
             }
-            componentDictonary[entityId].Remove(component);
-            if (componentDictonary[entityId].Count == 0)
+            componentDictionary[entityId].Remove(component);
+            if (componentDictionary[entityId].Count == 0)
             {
-                componentDictonary.Remove(entityId);
+                componentDictionary.Remove(entityId);
             }
         }
 
@@ -96,7 +96,7 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <returns>True if the entity do have the component</returns>
         public bool HasComponent(uint entityId)
         {
-            return componentDictonary.ContainsKey(entityId) && componentDictonary[entityId].Count > 0;
+            return componentDictionary.ContainsKey(entityId) && componentDictionary[entityId].Count > 0;
         }
 
         /// <summary>
@@ -106,11 +106,11 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <returns>True if component was found</returns>
         public IComponent GetComponent(uint entityId)
         {
-            if (!componentDictonary.ContainsKey(entityId))
+            if (!componentDictionary.ContainsKey(entityId))
             {
                 return default;
             }
-            List<IComponent> components = componentDictonary[entityId];
+            List<IComponent> components = componentDictionary[entityId];
             return components.FirstOrDefault();
         }
 
@@ -121,12 +121,12 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <returns>All the components of the entity</returns>
         public List<IComponent> GetComponents(uint entityId)
         {
-            if (!componentDictonary.ContainsKey(entityId))
+            if (!componentDictionary.ContainsKey(entityId))
             {
                 reuseableList.Clear();
                 return reuseableList;
             }
-            return componentDictonary[entityId];
+            return componentDictionary[entityId];
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace Tank.EntityComponentSystem.DataContainer
         public List<IComponent> GetComponents()
         {
             reuseableList.Clear();
-            foreach(uint id in componentDictonary.Keys)
+            foreach(uint id in componentDictionary.Keys)
             {
                 reuseableList.AddRange(GetComponents(id));
             }
@@ -168,13 +168,13 @@ namespace Tank.EntityComponentSystem.DataContainer
         /// <returns>A list with all entites</returns>
         public List<uint> GetEntitesWithComponent()
         {
-            return componentDictonary.Keys.ToList();
+            return componentDictionary.Keys.ToList();
         }
 
         /// <inheritdoc/>
         public void Clear()
         {
-            componentDictonary.Clear();
+            componentDictionary.Clear();
         }
     }
 }

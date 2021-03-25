@@ -1,0 +1,38 @@
+﻿{
+  "TextureName": "Images/Entities/HealthBar",
+  "DistanceBetweenImages": 0,
+  "SingleImageSize": {
+    "X": 128,
+    "Y": 32
+  },
+  "Patterns": [
+    {
+      "Name": "bFrame1",
+      "Position": {
+        "X": 0,
+        "Y": 0
+      }
+    },
+    {
+      "Name": "bFrame2",
+      "Position": {
+        "X": 1,
+        "Y": 0
+      }
+    },
+    {
+      "Name": "fFrame1",
+      "Position": {
+        "X": 0,
+        "Y": 1
+      }
+    },
+    {
+      "Name": "fFrame2",
+      "Position": {
+        "X": 1,
+        "Y": 1
+      }
+    }
+  ]
+}

@@ -57,7 +57,7 @@ namespace Tank.GameStates.States
                         "Player " + (i + 1),
                         i,
                         ControlTypeEnum.Keyboard,
-                        i,
+                        i % 2,
                         PlayerTypeEnum.Player,
                         tankObjectBuilder
                         )
@@ -109,7 +109,7 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.Update(gameTime);startGameCommand.Execute();
         }
     }
 }

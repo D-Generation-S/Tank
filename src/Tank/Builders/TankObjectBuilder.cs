@@ -122,6 +122,7 @@ namespace Tank.Builders
             returnComponents.Add(gameObjectTag);
             returnComponents.Add(entityManager.CreateComponent<PlayerControlledTag>());
             returnComponents.Add(entityManager.CreateComponent<ControllableGameObject>());
+            returnComponents.Add(entityManager.CreateComponent<TankObjectTag>());
 
             return returnComponents;
         }

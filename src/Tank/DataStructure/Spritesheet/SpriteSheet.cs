@@ -114,7 +114,7 @@ namespace Tank.DataStructure.Spritesheet
         /// </summary>
         /// <param name="name">The name of the pattern</param>
         /// <returns>The usable rectangle</returns>
-        public Rectangle GetAreaFromPatternName(string name)
+        public Rectangle GetAreaFromPattern(string name)
         {
             SpriteSheetPattern pattern = patterns.Find(pattern => pattern.Name == name);
             return GetAreaFromPattern(pattern);

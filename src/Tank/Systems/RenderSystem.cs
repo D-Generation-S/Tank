@@ -231,7 +231,10 @@ namespace Tank.Systems
                 CollectText(placeableComponent, textComponent);
             }
 
-            containersToRender = containersToRender.OrderBy(container => container.RenderType).ThenBy(container => container.ShaderEffect).ThenBy(container => container.Name).ToList();
+            containersToRender = containersToRender.OrderBy(container => container.RenderType)
+                                                   .ThenBy(container => container.ShaderEffect)
+                                                   .ThenBy(container => container.Name)
+                                                   .ThenBy(container => container.LayerDepth).ToList();
             graphicsDevice.SetRenderTarget(gameRenderTarget);
             for (int i = 0; i < containersToRender.Count; i++)
             {
@@ -326,7 +329,7 @@ namespace Tank.Systems
                       currentContainer.Rotation,
                       currentContainer.Origin,
                       currentContainer.Effect,
-                      currentContainer.LayerDepth
+                      0
                     );
                     break;
                 case RenderTypeEnum.Text:
@@ -339,7 +342,7 @@ namespace Tank.Systems
                         currentContainer.Origin,
                         currentContainer.Scale,
                         currentContainer.Effect,
-                        currentContainer.LayerDepth
+                        0
                     );
                     break;
                 default:
@@ -408,9 +411,9 @@ namespace Tank.Systems
                 destination.Y -= height / 2;
             }
             visibleComponent.Destination = destination;
-            //placeableComponent.Rotation += 0.01f;
 
             RenderContainer renderContainer = GetRenderContainer();
+            renderContainer.Name = visibleComponent.Texture.Name;
             renderContainer.RenderType = RenderTypeEnum.Texture;
             renderContainer.TextureToDraw = visibleComponent.Texture;
             renderContainer.Destination =  visibleComponent.Destination;
@@ -419,9 +422,9 @@ namespace Tank.Systems
             renderContainer.Rotation = placeableComponent.Rotation;
             renderContainer.Origin = visibleComponent.RotationCenter;
             renderContainer.Effect = visibleComponent.Effect;
-            renderContainer.LayerDepth = visibleComponent.LayerDepth;
             renderContainer.ShaderEffect = visibleComponent.ShaderEffect;
-            renderContainer.Name = visibleComponent.Texture.Name;
+            renderContainer.LayerDepth = visibleComponent.LayerDepth;
+            
             containersToRender.Add(renderContainer);
         }
 

@@ -27,7 +27,6 @@ namespace Tank.EntityComponentSystem.Manager
         /// </summary>
         private readonly List<IComponent> usedComponents;
 
-
         /// <summary>
         /// The maximum amount of components to keep
         /// </summary>

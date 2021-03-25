@@ -20,6 +20,7 @@ using Tank.Events.EntityBased;
 using Tank.Factories;
 using Tank.GameStates.Data;
 using Tank.Interfaces.Builders;
+using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Interfaces.MapGenerators;
 using Tank.Interfaces.Randomizer;
@@ -88,12 +89,22 @@ namespace Tank.GameStates.States
         /// </summary>
         private IGameEngine engine;
 
+        /// <summary>
+        /// The underlaying entity manager
+        /// </summary>
+        private IEntityManager entityManager => engine.EntityManager;
+
         private List<SoundEffect> explosionSounds;
         private Texture2D standardShellExplosion;
         private Texture2D standardShellTexture;
 
         private List<Rectangle> standardShellAnimation;
         private List<Rectangle> standardShellExplosionAnimation;
+
+        /// <summary>
+        /// The sprite sheet to use for the heathbar
+        /// </summary>
+        private SpriteSheet healthBarSprite;
 
         /// <summary>
         /// Create a new instance of this class
@@ -155,6 +166,7 @@ namespace Tank.GameStates.States
         public override void LoadContent()
         {
             spritesheetToUse = spriteSetManager.GetData(gameSettings.SpriteSetName);
+            healthBarSprite = spriteSetManager.GetData("HealthBarSheet");
             defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
             gameFont = contentWrapper.Load<SpriteFont>("gameFont");
 
@@ -214,7 +226,7 @@ namespace Tank.GameStates.States
                  defaultShader//,
                  //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
-            engine.AddSystem(new TextAttributeDisplaySystem());
+            engine.AddSystem(new AnimationAttributeDisplaySystem());
             engine.AddSystem(new GameLogicSystem(gameSettings));
 
             MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader()));
@@ -239,13 +251,13 @@ namespace Tank.GameStates.States
         private void RegisterProjectile(string name, int fireAmount, IGameObjectBuilder builder, Register<IGameObjectBuilder> register)
         {
             register.Add(name, builder);
-            ProjectileDataComponent projectileDataComponent = engine.EntityManager.CreateComponent<ProjectileDataComponent>();
+            ProjectileDataComponent projectileDataComponent = entityManager.CreateComponent<ProjectileDataComponent>();
             projectileDataComponent.Name = name;
             projectileDataComponent.Position = register.GetPosition(name);
             projectileDataComponent.Amount = fireAmount;
             projectileDataComponent.TicksUntilSpawn = 1;
 
-            engine.EntityManager.AddComponent(engine.EntityManager.CreateEntity(), projectileDataComponent);
+            entityManager.AddComponent(engine.EntityManager.CreateEntity(), projectileDataComponent);
         }
 
         private IGameObjectBuilder BaseProjectile(IRandomizer randomizer)
@@ -294,7 +306,7 @@ namespace Tank.GameStates.States
                 switch (currentPlayer.ControlType)
                 {
                     case Enums.ControlTypeEnum.Keyboard:
-                        engine.EntityManager.CreateComponent<KeyboardControllerComponent>(playerTank);
+                        entityManager.CreateComponent<KeyboardControllerComponent>(playerTank);
                         break;
                     case Enums.ControlTypeEnum.Controller:
                         //engine.EntityManager.CreateComponent<KeyboardControllerComponent>(playerTank);
@@ -303,8 +315,8 @@ namespace Tank.GameStates.States
                         break;
                 }
 
-                currentPlayer.TankBuilder.BuildGameComponents(playerStartPosition).ForEach(component => engine.EntityManager.AddComponent(playerTank, component, true));
-                ControllableGameObject controllableGameObject = engine.EntityManager.GetComponent<ControllableGameObject>(playerTank);
+                currentPlayer.TankBuilder.BuildGameComponents(playerStartPosition).ForEach(component => entityManager.AddComponent(playerTank, component, true));
+                ControllableGameObject controllableGameObject = entityManager.GetComponent<ControllableGameObject>(playerTank);
                 if (controllableGameObject != null)
                 {
                     controllableGameObject.Team = currentPlayer.Team;
@@ -312,43 +324,142 @@ namespace Tank.GameStates.States
 
                 AddEntityEvent addTankEvent = engine.EventManager.CreateEvent<AddEntityEvent>();
 
-                uint playerName = engine.EntityManager.CreateEntity();
-                PlaceableComponent placeableComponent = engine.EntityManager.CreateComponent<PlaceableComponent>(playerName);
-                VisibleTextComponent textComponent = engine.EntityManager.CreateComponent<VisibleTextComponent>(playerName);
-                textComponent.ShaderEffect = defaultShader;
-                textComponent.Text = currentPlayer.PlayerName;
-                textComponent.Font = gameFont;
+                AddPlayerBoundText(-60, currentPlayer.PlayerName, playerTank);
+                AddPlayerBoundText(-35, "Team: " + (currentPlayer.Team + 1), playerTank);
+                AddEntityEvent addHealthBarBackgroundEvent = engine.EventManager.CreateEvent<AddEntityEvent>();
+                addHealthBarBackgroundEvent.Components = AddPlayerHealthBarBackground(20, playerTank);
+                engine.EventManager.FireEvent(this, addHealthBarBackgroundEvent);
 
-                BindComponent bindComponent = engine.EntityManager.CreateComponent<BindComponent>();
-                bindComponent.PositionBound = true;
-                bindComponent.Offset = Vector2.UnitY * -35;
-                bindComponent.Offset -= Vector2.UnitX * (gameFont.MeasureString(currentPlayer.PlayerName) / 2);
-                bindComponent.Source = true;
+                AddEntityEvent addHealthBarForegroundEvent = engine.EventManager.CreateEvent<AddEntityEvent>();
+                addHealthBarForegroundEvent.Components = AddPlayerHealthBarForeground(20, playerTank);
+                engine.EventManager.FireEvent(this, addHealthBarForegroundEvent);
+
+                //uint playerLife =  AddPlayerBoundText(20, "Health", playerTank, Color.Black);
+
+                //AttributeDisplayComponent attributeDisplayComponent = entityManager.CreateComponent<AttributeDisplayComponent>();
+                //attributeDisplayComponent.AttributeToDisplay = "Health";
+                //attributeDisplayComponent.MaxAttributeName = "MaxHealth";
+
+                //entityManager.AddComponent(playerLife, attributeDisplayComponent, true);
+
+                uint statistic = entityManager.CreateEntity();
+                PlayerStatisticComponent playerStatisticComponent = entityManager.CreateComponent<PlayerStatisticComponent>(statistic);
+                playerStatisticComponent.Name = currentPlayer.PlayerName;
+                playerStatisticComponent.Team = currentPlayer.Team;
+
+                BindComponent bindComponent = entityManager.CreateComponent<BindComponent>();
                 bindComponent.BoundEntityId = playerTank;
-                bindComponent.DeleteIfParentGone = true;
-
-
-                engine.EntityManager.AddComponent(playerName, bindComponent, true);
-
-                uint playerLife = engine.EntityManager.CreateEntity();
-                PlaceableComponent playerLifePlacement = engine.EntityManager.CreateComponent<PlaceableComponent>(playerLife);
-                AttributeDisplayComponent attributeDisplayComponent = engine.EntityManager.CreateComponent<AttributeDisplayComponent>(playerLife);
-                attributeDisplayComponent.AttributeToDisplay = "Health";
-                attributeDisplayComponent.MaxAttributeName = "MaxHealth";
-                VisibleTextComponent playerLifeText = engine.EntityManager.CreateComponent<VisibleTextComponent>(playerLife);
-                playerLifeText.ShaderEffect = defaultShader;
-                playerLifeText.Text = string.Empty;
-                playerLifeText.Font = gameFont;
-                playerLifeText.Color = Color.Black;
-                BindComponent playerLifeBin = engine.EntityManager.CreateComponent<BindComponent>();
-                playerLifeBin.PositionBound = true;
-                playerLifeBin.Offset = Vector2.UnitY * 20;
-                playerLifeBin.Source = true;
-                playerLifeBin.BoundEntityId = playerTank;
-                playerLifeBin.DeleteIfParentGone = true;
-
-                engine.EntityManager.AddComponent(playerLife, playerLifeBin, true);
+                entityManager.AddComponent(statistic, bindComponent, true);
             }
+        }
+
+        private uint AddPlayerBoundText(int yOffset, string text, uint targetEntity)
+        {
+            return AddPlayerBoundText(yOffset, text, targetEntity, Color.White);
+        }
+
+        private uint AddPlayerBoundText(int yOffset, string text, uint targetEntity, Color color)
+        {
+            uint newText = entityManager.CreateEntity();
+            entityManager.CreateComponent<PlaceableComponent>(newText);
+            VisibleTextComponent textComponent = entityManager.CreateComponent<VisibleTextComponent>(newText);
+            textComponent.ShaderEffect = defaultShader;
+            textComponent.Text = text;
+            textComponent.Color = color;
+            textComponent.Font = gameFont;
+
+            BindComponent bindingComponent = entityManager.CreateComponent<BindComponent>();
+            bindingComponent.PositionBound = true;
+            bindingComponent.Offset = Vector2.UnitY * yOffset;
+            bindingComponent.Offset -= Vector2.UnitX * (gameFont.MeasureString(text) / 2);
+            bindingComponent.Source = true;
+            bindingComponent.BoundEntityId = targetEntity;
+            bindingComponent.DeleteIfParentGone = true;
+
+            entityManager.AddComponent(newText, bindingComponent, true);
+            return newText;
+        }
+
+        private List<IComponent> AddPlayerHealthBarBackground(int yOffset, uint targetEntity)
+        {
+            List<IComponent> components = new List<IComponent>();
+            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
+            placeableComponent.Position = Vector2.Zero;
+
+            VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
+            visibleComponent.Texture = healthBarSprite.CompleteImage;
+            Rectangle backgroundFrame1 = healthBarSprite.GetAreaFromPattern("bFrame1");
+            visibleComponent.Destination = backgroundFrame1;
+            visibleComponent.Source = backgroundFrame1;
+            visibleComponent.SingleTextureSize = backgroundFrame1;
+            visibleComponent.LayerDepth = 0;
+
+            AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>();
+            animationComponent.FrameSeconds = .25f;
+            animationComponent.Loop = true;
+            animationComponent.SpriteSources = new List<Rectangle>()
+            {
+                backgroundFrame1,
+                healthBarSprite.GetAreaFromPattern("bFrame2")
+            };
+
+            BindComponent bindingComponent = entityManager.CreateComponent<BindComponent>();
+            bindingComponent.PositionBound = true;
+            bindingComponent.Offset = Vector2.UnitY * yOffset;
+            bindingComponent.Offset -= Vector2.UnitX * backgroundFrame1.Width / 2;
+            bindingComponent.Source = true;
+            bindingComponent.BoundEntityId = targetEntity;
+            bindingComponent.DeleteIfParentGone = true;
+
+            components.Add(placeableComponent);
+            components.Add(visibleComponent);
+            components.Add(animationComponent);
+            components.Add(bindingComponent);
+            return components;
+        }
+
+        private List<IComponent> AddPlayerHealthBarForeground(int yOffset, uint targetEntity)
+        {
+            List<IComponent> components = new List<IComponent>();
+            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
+            placeableComponent.Position = Vector2.Zero;
+
+            VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
+            visibleComponent.Texture = healthBarSprite.CompleteImage;
+            Rectangle backgroundFrame1 = healthBarSprite.GetAreaFromPattern("fFrame1");
+            visibleComponent.Destination = backgroundFrame1;
+            visibleComponent.Source = backgroundFrame1;
+            visibleComponent.SingleTextureSize = backgroundFrame1;
+            visibleComponent.LayerDepth = 1;
+
+
+            AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>();
+            animationComponent.FrameSeconds = .25f;
+            animationComponent.Loop = true;
+            animationComponent.SpriteSources = new List<Rectangle>()
+            {
+                backgroundFrame1,
+                healthBarSprite.GetAreaFromPattern("fFrame2")
+            };
+
+            BindComponent bindingComponent = entityManager.CreateComponent<BindComponent>();
+            bindingComponent.PositionBound = true;
+            bindingComponent.Offset = Vector2.UnitY * yOffset;
+            bindingComponent.Offset -= Vector2.UnitX * backgroundFrame1.Width / 2;
+            bindingComponent.Source = true;
+            bindingComponent.BoundEntityId = targetEntity;
+            bindingComponent.DeleteIfParentGone = true;
+
+            AttributeDisplayComponent attributeDisplayComponent = entityManager.CreateComponent<AttributeDisplayComponent>();
+            attributeDisplayComponent.AttributeToDisplay = "Health";
+            attributeDisplayComponent.MaxAttributeName = "MaxHealth";
+
+            components.Add(placeableComponent);
+            components.Add(visibleComponent);
+            components.Add(animationComponent);
+            components.Add(bindingComponent);
+            components.Add(attributeDisplayComponent);
+            return components;
         }
 
         /// <inheritdoc/>

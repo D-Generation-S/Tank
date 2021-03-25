@@ -39,6 +39,10 @@ namespace Tank.EntityComponentSystem.Manager
         /// </summary>
         private IEventManager eventManager;
 
+        /// <summary>
+        /// The stack with all entities to remove
+        /// </summary>
+        private Stack<uint> removeStack;
 
         /// <summary>
         /// Create a new instance of the entity manager
@@ -50,6 +54,7 @@ namespace Tank.EntityComponentSystem.Manager
             componentManager = new ComponentManager();
             removedEntities = new Queue<uint>();
             nextId = uint.MinValue;
+            removeStack = new Stack<uint>();
         }
 
         /// <summary>
@@ -237,12 +242,8 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public void RemoveEntity(uint entityId)
         {
-            RemoveComponents(entityId);
-            entities.Remove(entityId);
-            EntityRemovedEvent entityRemovedEvent = eventManager.CreateEvent<EntityRemovedEvent>();
-            entityRemovedEvent.EntityId = entityId;
-            eventManager.FireEvent(this, entityRemovedEvent);
-            removedEntities.Enqueue(entityId);
+            removeStack.Push(entityId);
+            return;
         }
 
         /// <inheritdoc/>
@@ -316,6 +317,22 @@ namespace Tank.EntityComponentSystem.Manager
             removedEntities.Clear();
             componentManager.Clear();
             nextId = 0;
+        }
+
+        public void LateUpdate()
+        {
+            while (removeStack.Count > 0)
+            {
+                uint entityId  = removeStack.Pop();
+                RemoveComponents(entityId);
+                entities.Remove(entityId);
+                EntityRemovedEvent entityRemovedEvent = eventManager.CreateEvent<EntityRemovedEvent>();
+                entityRemovedEvent.EntityId = entityId;
+                eventManager.FireEvent(this, entityRemovedEvent);
+                removedEntities.Enqueue(entityId);
+            }
+            
+
         }
     }
 }

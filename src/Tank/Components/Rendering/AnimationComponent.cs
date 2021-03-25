@@ -53,6 +53,7 @@ namespace Tank.Components.Rendering
         /// </summary>
         public List<Rectangle> SpriteSources { get; set; }
 
+        /// <inheritdoc/>
         public override void Init()
         {
             Name = string.Empty;

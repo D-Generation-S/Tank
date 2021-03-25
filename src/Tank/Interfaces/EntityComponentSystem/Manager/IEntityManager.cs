@@ -210,5 +210,10 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <returns>The number of component</returns>
         int GetUsedComponentCount();
+
+        /// <summary>
+        /// This method must be called latest, it will ensure that after a frame everything gets cleared
+        /// </summary>
+        void LateUpdate();
     }
 }

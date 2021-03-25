@@ -92,13 +92,13 @@ namespace Tank.Gui
         protected override void SetupTextures()
         {
             imageSize = textureToShow.GetPatternImageSize("buttonLeft");
-            leftButtonSource = textureToShow.GetAreaFromPatternName("ButtonLeft");
-            middleButtonSource = textureToShow.GetAreaFromPatternName("ButtonMiddle");
-            rightButtonSource = textureToShow.GetAreaFromPatternName("ButtonRight");
+            leftButtonSource = textureToShow.GetAreaFromPattern("ButtonLeft");
+            middleButtonSource = textureToShow.GetAreaFromPattern("ButtonMiddle");
+            rightButtonSource = textureToShow.GetAreaFromPattern("ButtonRight");
 
-            leftActiveButtonSource = textureToShow.GetAreaFromPatternName("ButtonActiveLeft");
-            middleActiveButtonSource = textureToShow.GetAreaFromPatternName("ButtonActiveMiddle");
-            rightActiveButtonSource = textureToShow.GetAreaFromPatternName("ButtonActiveRight");
+            leftActiveButtonSource = textureToShow.GetAreaFromPattern("ButtonActiveLeft");
+            middleActiveButtonSource = textureToShow.GetAreaFromPattern("ButtonActiveMiddle");
+            rightActiveButtonSource = textureToShow.GetAreaFromPattern("ButtonActiveRight");
         }
 
         /// <inheritdoc/>

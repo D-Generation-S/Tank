@@ -94,6 +94,9 @@ namespace Tank.Systems
                 if (spawnComponent.UseParentEntity)
                 {
                     components.Add(entityManager.CreateComponent<RoundBlockingTag>());
+                    BindComponent parent = entityManager.CreateComponent<BindComponent>();
+                    parent.BoundEntityId = spawnComponent.ParentEntity;
+                    components.Add(parent);
                 }
 
                 AddEntityEvent addEntityEvent = eventManager.CreateEvent<AddEntityEvent>();

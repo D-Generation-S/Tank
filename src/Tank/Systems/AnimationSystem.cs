@@ -62,8 +62,14 @@ namespace Tank.Systems
                         animation.CurrentIndex = 1;
                         animation.ForwardDirection = true;
                     }
-                    visibleComponent.Source = animation.SpriteSources[animation.CurrentIndex];
-                }
+                    Rectangle spriteSource = animation.SpriteSources[animation.CurrentIndex];
+                    spriteSource.Width -= visibleComponent.CutoffRight;
+                    Rectangle destination = visibleComponent.Destination;
+                    destination.Width = visibleComponent.SingleTextureSize.Width - visibleComponent.CutoffRight;
+                    
+                    visibleComponent.Destination = destination;
+                    visibleComponent.Source = spriteSource;
+                } 
             }
             updateLocked = false;
         }

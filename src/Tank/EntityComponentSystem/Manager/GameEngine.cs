@@ -106,6 +106,8 @@ namespace Tank.EntityComponentSystem.Manager
             {
                 system.Update(gameTime);
             }
+
+            EntityManager.LateUpdate();
         }
 
         /// <inheritdoc/>

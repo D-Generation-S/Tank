@@ -80,10 +80,10 @@ namespace Tank.Gui
         protected override void SetupTextures()
         {
             imageSize = textureToShow.GetPatternImageSize("CheckboxUnchecked");
-            uncheckedSource = textureToShow.GetAreaFromPatternName("CheckboxUnchecked");
-            uncheckedHoverSource = textureToShow.GetAreaFromPatternName("CheckboxHoverUnchecked");
-            checkedSource = textureToShow.GetAreaFromPatternName("CheckboxChecked");
-            checkedHoverSource = textureToShow.GetAreaFromPatternName("CheckboxHoverChecked");
+            uncheckedSource = textureToShow.GetAreaFromPattern("CheckboxUnchecked");
+            uncheckedHoverSource = textureToShow.GetAreaFromPattern("CheckboxHoverUnchecked");
+            checkedSource = textureToShow.GetAreaFromPattern("CheckboxChecked");
+            checkedHoverSource = textureToShow.GetAreaFromPattern("CheckboxHoverChecked");
 
             sourceToDraw = uncheckedSource;
         }

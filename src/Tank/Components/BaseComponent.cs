@@ -17,9 +17,6 @@ namespace Tank.Components
         /// <inheritdoc/>
         public Type Type { get; }
 
-        /// <inheritdoc/>
-        public int Priority { get; protected set; }
-
         /// <summary>
         /// Create a new instance of this class
         /// </summary>
@@ -27,7 +24,6 @@ namespace Tank.Components
         {
             AllowMultiple = false;
             Type = GetType();
-            Priority = 0;
             Init();
         }
 

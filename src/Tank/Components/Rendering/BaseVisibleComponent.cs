@@ -33,21 +33,13 @@ namespace Tank.Components.Rendering
         /// </summary>
         public Vector2 RotationCenter;
 
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        public BaseVisibleComponent()
-        {
-            Priority = 500;
-        }
-
         /// <inheritdoc/>
         public override void Init()
         {
             Color = Color.White;
-            LayerDepth = 1f;
             Effect = SpriteEffects.None;
             ShaderEffect = null;
+            LayerDepth = 0f;
             RotationCenter = Vector2.Zero;
         }
     }

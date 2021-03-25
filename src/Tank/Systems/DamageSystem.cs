@@ -40,21 +40,22 @@ namespace Tank.Systems
         public override void EventNotification(object sender, IGameEvent eventArgs)
         {
             base.EventNotification(sender, eventArgs);
-            if (eventArgs is MapCollisionEvent)
+            if (eventArgs is MapCollisionEvent collisionEvent)
             {
-                MapCollisionEvent collisionEvent = (MapCollisionEvent)eventArgs;
                 DamageComponent damageComponent = entityManager.GetComponent<DamageComponent>(collisionEvent.EntityId);
 
                 if (damageComponent == null)
                 {
                     return;
                 }
-                RemoveEntityEvent removeEntityEvent = eventManager.CreateEvent<RemoveEntityEvent>();
-                removeEntityEvent.EntityId = collisionEvent.EntityId;
-                FireEvent(removeEntityEvent);
+
                 Effect(collisionEvent, damageComponent);
                 DamageTerrain(damageComponent, collisionEvent);
                 DamageGameObjects(damageComponent, collisionEvent);
+
+                RemoveEntityEvent removeEntityEvent = eventManager.CreateEvent<RemoveEntityEvent>();
+                removeEntityEvent.EntityId = collisionEvent.EntityId;
+                FireEvent(removeEntityEvent);
             }
         }
 
@@ -105,6 +106,22 @@ namespace Tank.Systems
         private void DamageGameObjects(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
         {
             List<uint> objects = entityManager.GetEntitiesWithComponent<GameObjectTag>();
+
+            BindComponent projectileBindComponent = entityManager.GetComponent<BindComponent>(collisionEvent.EntityId);
+            PlayerStatisticComponent playerStatisticComponent = null;
+            if (projectileBindComponent != null)
+            {
+                foreach (uint entityId in entityManager.GetEntitiesWithComponent<PlayerStatisticComponent>())
+                {
+                    BindComponent playerBindComponent = entityManager.GetComponent<BindComponent>(entityId);
+                    if (playerBindComponent.BoundEntityId == projectileBindComponent.BoundEntityId)
+                    {
+                        playerStatisticComponent = entityManager.GetComponent<PlayerStatisticComponent>(entityId);
+                        break;
+                    }
+                }
+            }
+
             foreach (uint gameObject in objects)
             {
                 PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(gameObject);
@@ -129,8 +146,21 @@ namespace Tank.Systems
 
                 gameObjectData.Properties["Health"] -= damageToTake;
                 gameObjectData.DataChanged = true;
+                if (playerStatisticComponent != null && projectileBindComponent != null)
+                {
+                    int pointsToAdd = (int)damageToTake;
+                    if (projectileBindComponent.BoundEntityId == gameObjectData.EntityId)
+                    {
+                        pointsToAdd *= -1;
+                    }
+                    playerStatisticComponent.Points += pointsToAdd;
+                }
                 if (gameObjectData.Properties["Health"] <= 0)
                 {
+                    if (playerStatisticComponent != null)
+                    {
+                        playerStatisticComponent.Kills++;
+                    }
                     RemoveEntityEvent removeEntityEvent = eventManager.CreateEvent<RemoveEntityEvent>();
                     removeEntityEvent.EntityId = gameObjectData.EntityId;
                     FireEvent(removeEntityEvent);
