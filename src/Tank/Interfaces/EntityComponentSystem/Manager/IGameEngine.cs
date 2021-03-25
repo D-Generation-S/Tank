@@ -70,5 +70,11 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <returns>The number of active systems</returns>
         int GetSystemCount();
+
+        /// <summary>
+        /// Get a debug string for all the watched entites per system
+        /// </summary>
+        /// <returns>The entity count per system</returns>
+        string GetSystemWatchedEntites();
     }
 }

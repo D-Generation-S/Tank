@@ -345,6 +345,7 @@ namespace Tank.GameStates.States
                     entityCounterText.Text += "\nComponents: " + engine.GetComponentCount();
                     entityCounterText.Text += "\nUsed Components: " + engine.GetUsedComponentCount();
                     entityCounterText.Text += "\nSystems: " + engine.GetSystemCount();
+                    entityCounterText.Text += engine.GetSystemWatchedEntites();
                 }
             }
             engine.Update(gameTime);

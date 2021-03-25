@@ -16,6 +16,8 @@ namespace Tank.Systems
     /// </summary>
     abstract class AbstractSystem : ISystem
     {
+        /// <inheritdoc/>
+        public int WatchedEntitiesCount => watchedEntities.Count;
 
         /// <inheritdoc/>
         public uint SystemId { get; private set; }
@@ -264,18 +266,9 @@ namespace Tank.Systems
             }
         }
 
-        /// <summary>
-        /// This method is the update method of the game.
-        /// It will remove all the entites from the watched entites if present in the remove list
-        /// </summary>
-        /// <param name="gameTime">The gametime from monogame</param>
-        public virtual void Update(GameTime gameTime)
+        /// <inheritdoc/>
+        public void PreUpdate()
         {
-            if (updateLocked || drawLocked)
-            {
-                return;
-            }
-
             for (int i = entitiesToRemove.Count - 1; i >= 0; i--)
             {
                 if (!watchedEntities.Contains(entitiesToRemove[i]))
@@ -291,6 +284,24 @@ namespace Tank.Systems
                 watchedEntities.Add(newEntities[i]);
                 newEntities.RemoveAt(i);
             }
+        }
+
+        /// <summary>
+        /// This method is the update method of the game.
+        /// It will remove all the entites from the watched entites if present in the remove list
+        /// </summary>
+        /// <param name="gameTime">The gametime from monogame</param>
+        public virtual void Update(GameTime gameTime)
+        {
+            if (updateLocked || drawLocked)
+            {
+                return;
+            }
+        }
+
+        /// <inheritdoc/>
+        public virtual void LateUpdate()
+        {
         }
 
 
