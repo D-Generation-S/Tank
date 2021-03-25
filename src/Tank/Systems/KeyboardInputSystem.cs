@@ -53,6 +53,7 @@ namespace Tank.Systems
 
                 KeyboardControllerComponent keyboardController = entityManager.GetComponent<KeyboardControllerComponent>(entityId);
                 ControllableGameObject controllableGameObject = entityManager.GetComponent<ControllableGameObject>(entityId);
+                GameObjectData gameObjectData = entityManager.GetComponent<GameObjectData>(entityId);
                 if (keyboardController == null || controllableGameObject == null)
                 {
                     return;
@@ -100,7 +101,7 @@ namespace Tank.Systems
                     {
                         controllableGameObject.Strength = ControlStaticValues.MAX_STRENGHT;
                     }
-                    Debug.WriteLine(entityId + " Strenght up");
+                    UpdateGameObjectData(gameObjectData, "Strength", controllableGameObject.Strength);
                 }
 
                 if (keyboardState.IsKeyDown(keyboardController.DecreaseStrengh))
@@ -110,7 +111,7 @@ namespace Tank.Systems
                     {
                         controllableGameObject.Strength = ControlStaticValues.MIN_STRENGHT;
                     }
-                    Debug.WriteLine(entityId + " Strenght down");
+                    UpdateGameObjectData(gameObjectData, "Strength", controllableGameObject.Strength);
                 }
 
                 if (previousState.IsKeyUp(keyboardController.NextProjectile) && keyboardState.IsKeyDown(keyboardController.NextProjectile))
@@ -180,6 +181,21 @@ namespace Tank.Systems
                 }
 
                 previousState = keyboardState;
+            }
+        }
+
+        /// <summary>
+        /// Udpate the game object data
+        /// </summary>
+        /// <param name="gameObjectData">The game object to update</param>
+        /// <param name="fieldName">The field name to update</param>
+        /// <param name="newValue">The new value to use</param>
+        private void UpdateGameObjectData(GameObjectData gameObjectData, string fieldName, float newValue)
+        {
+            if (gameObjectData.Properties.ContainsKey(fieldName))
+            {
+                gameObjectData.Properties[fieldName] = newValue;
+                gameObjectData.DataChanged = true;
             }
         }
     }

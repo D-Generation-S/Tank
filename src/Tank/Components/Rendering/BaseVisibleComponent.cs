@@ -9,6 +9,11 @@ namespace Tank.Components.Rendering
     internal abstract class BaseVisibleComponent : BaseComponent
     {
         /// <summary>
+        /// Is this texture hidden right now
+        /// </summary>
+        public bool Hidden;
+
+        /// <summary>
         /// The draw color for the visible
         /// </summary>
         public Color Color;
@@ -36,6 +41,7 @@ namespace Tank.Components.Rendering
         /// <inheritdoc/>
         public override void Init()
         {
+            Hidden = false;
             Color = Color.White;
             Effect = SpriteEffects.None;
             ShaderEffect = null;

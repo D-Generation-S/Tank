@@ -199,6 +199,12 @@ namespace Tank.Systems
             }
         }
 
+        /// <summary>
+        /// Create a screenshot async
+        /// </summary>
+        /// <param name="renderTarget">The rendertarget to save the screenshot from</param>
+        /// <param name="path">The path to save to</param>
+        /// <returns>true after saving was done</returns>
         private async Task<bool> TakeScreenshot(RenderTarget2D renderTarget, string path)
         {
             using (StreamWriter writer = new StreamWriter(screenshotPath))
@@ -395,7 +401,7 @@ namespace Tank.Systems
         /// <param name="visibleComponent">The visible component</param>
         private void CollectTextures(PlaceableComponent placeableComponent, VisibleComponent visibleComponent)
         {
-            if (visibleComponent == null || visibleComponent.Texture == null)
+            if (visibleComponent == null || visibleComponent.Hidden || visibleComponent.Texture == null)
             {
                 return;
             }
@@ -435,7 +441,7 @@ namespace Tank.Systems
         /// <param name="textComponent">The text component</param>
         private void CollectText(PlaceableComponent placeableComponent, VisibleTextComponent textComponent)
         {
-            if (textComponent == null || textComponent.Font == null)
+            if (textComponent == null || textComponent.Hidden || textComponent.Font == null)
             {
                 return;
             }

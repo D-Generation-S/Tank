@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Rendering;
@@ -11,9 +9,18 @@ namespace Tank.Systems
 {
     internal class AnimationAttributeDisplaySystem : AbstractSystem
     {
+        /// <summary>
+        /// A list with all the updated data entities
+        /// </summary>
+        private readonly List<uint> updatedEntites;
+
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public AnimationAttributeDisplaySystem() : base()
         {
             validators.Add(new AnimationAttributeDisplayValidator());
+            updatedEntites = new List<uint>();
         }
 
         public override void Update(GameTime gameTime)
@@ -51,8 +58,27 @@ namespace Tank.Systems
                 int cutoff = visibleComponent.SingleTextureSize.Width - leftWidth;
 
                 visibleComponent.CutoffRight = cutoff;
-                data.DataChanged = false;
+                if (!updatedEntites.Contains(bindComponent.BoundEntityId))
+                {
+                    updatedEntites.Add(bindComponent.BoundEntityId);
+                }
             }
+        }
+
+        /// <inheritdoc/>
+        public override void LateUpdate()
+        {
+            base.LateUpdate();
+            foreach(uint updatedEntity in updatedEntites)
+            {
+                GameObjectData data = entityManager.GetComponent<GameObjectData>(updatedEntity);
+                if (data != null)
+                {
+                    data.DataChanged = false;
+                }
+            }
+
+            updatedEntites.Clear();
         }
     }
 }

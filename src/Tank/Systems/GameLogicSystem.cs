@@ -187,6 +187,23 @@ namespace Tank.Systems
                 currentPlayerId = watchedEntities[currentPlayerIndex];
                 entityManager.CreateComponent<ActiveGameObjectTag>(currentPlayerId);
                 entityManager.CreateComponent<CanPerformActionTag>(currentPlayerId);
+                foreach (uint roundDependingEntity in entityManager.GetEntitiesWithComponent<RoundDependingTag>())
+                {
+                    BindComponent elementBinding = entityManager.GetComponent<BindComponent>(roundDependingEntity);
+                    if (elementBinding == null)
+                    {
+                        continue;
+                    }
+                    if (elementBinding.BoundEntityId == currentPlayerId)
+                    {
+                        VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(roundDependingEntity);
+                        if (visibleComponent == null)
+                        {
+                            continue;
+                        }
+                        visibleComponent.Hidden = false;
+                    }
+                }
                 BindComponent bindComponent = entityManager.CreateComponent<BindComponent>();
                 bindComponent.DeleteIfParentGone = false;
                 bindComponent.BoundEntityId = currentPlayerId;
@@ -252,6 +269,35 @@ namespace Tank.Systems
             entityManager.CreateComponent<CanPerformActionTag>(currentPlayerId);
 
             bindComponent.BoundEntityId = currentPlayerId;
+
+            foreach (uint roundDependingEntity in entityManager.GetEntitiesWithComponent<RoundDependingTag>())
+            {
+                if (!entityManager.HasComponent<BindComponent>(roundDependingEntity))
+                {
+                    continue;
+                }
+                BindComponent binding = entityManager.GetComponent<BindComponent>(roundDependingEntity);
+                if (binding.BoundEntityId != currentPlayerId && binding.BoundEntityId != oldPlayerId)
+                {
+                    continue;
+                }
+
+                VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(roundDependingEntity);
+                bool hidden = true;
+                if (binding.BoundEntityId == currentPlayerId)
+                {
+                    hidden = false;
+                }
+                if (binding.BoundEntityId == oldPlayerId)
+                {
+                    hidden = true;
+                }
+                if (visibleComponent != null)
+                {
+                    visibleComponent.Hidden = hidden;
+                }
+            }
+
             FireGameStateChange(GameStatesEnum.RoundStart);
         }
 

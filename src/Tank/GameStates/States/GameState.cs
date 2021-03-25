@@ -191,18 +191,13 @@ namespace Tank.GameStates.States
         private void GenerateDebugEntity()
         {
             entityCounter = engine.EntityManager.CreateEntity(false);
-            engine.EntityManager.AddComponent(entityCounter, new PlaceableComponent()
-            {
-                Position = Vector2.Zero
-            });
+            PlaceableComponent placeableComponent = engine.EntityManager.CreateComponent<PlaceableComponent>();
+            placeableComponent.Position = Vector2.Zero;
+            VisibleTextComponent VisibleTextComponent = engine.EntityManager.CreateComponent<VisibleTextComponent>();
+            VisibleTextComponent.Font = gameFont;
 
-            engine.EntityManager.AddComponent(entityCounter, new VisibleTextComponent()
-            {
-                Text = "",
-                Color = Color.White,
-                Font = gameFont,
-                Scale = 1f
-            });
+            engine.EntityManager.AddComponent(entityCounter, placeableComponent);
+            engine.EntityManager.AddComponent(entityCounter, VisibleTextComponent, true);
             debugIdGenerated = true;
         }
 
