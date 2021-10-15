@@ -220,27 +220,14 @@ namespace Tank.Systems
             drawLocked = true;
             drawStart = true;
 
-            foreach (uint entityId in watchedEntities)
-            {
-                if (entitiesToRemove.Contains(entityId))
-                {
-                    continue;
-                }
-                PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
-                VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
-                VisibleTextComponent textComponent = entityManager.GetComponent<VisibleTextComponent>(entityId);
-                if (placeableComponent == null)
-                {
-                    continue;
-                }
-                CollectTextures(placeableComponent, visibleComponent);
-                CollectText(placeableComponent, textComponent);
-            }
-
-            containersToRender = containersToRender.OrderBy(container => container.RenderType)
-                                                   .ThenBy(container => container.ShaderEffect)
-                                                   .ThenBy(container => container.Name)
-                                                   .ThenBy(container => container.LayerDepth).ToList();
+            containersToRender = watchedEntities.Where(entityId => !entitiesToRemove.Contains(entityId))
+                                                .Select(entityId => ConvertToRenderContainer(entityId))
+                                                .Where(container => container != null)
+                                                .OrderBy(container => container.RenderType)
+                                                .ThenBy(container => container.ShaderEffect)
+                                                .ThenBy(container => container.Name)
+                                                .ThenBy(container => container.LayerDepth)
+                                                .ToList();
             graphicsDevice.SetRenderTarget(gameRenderTarget);
             for (int i = 0; i < containersToRender.Count; i++)
             {
@@ -395,17 +382,66 @@ namespace Tank.Systems
         }
 
         /// <summary>
-        /// Render all the textures
+        /// Convert entity id to render container
+        /// </summary>
+        /// <param name="entityId">The entity id to convert</param>
+        /// <returns>A useable render container</returns>
+        private RenderContainer ConvertToRenderContainer(uint entityId)
+        {
+            PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
+            VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
+            VisibleTextComponent textComponent = entityManager.GetComponent<VisibleTextComponent>(entityId);
+            if (placeableComponent == null)
+            {
+                return null;
+            }
+
+            if (visibleComponent != null && !visibleComponent.Hidden && visibleComponent.Texture != null)
+            {
+                return CreateTextureRenderContainer(placeableComponent, visibleComponent);
+            }
+
+            if (textComponent != null && !textComponent.Hidden && textComponent.Font != null)
+            {
+                return CreateTextRenderContainer(placeableComponent, textComponent);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Create a text render container
+        /// </summary>
+        /// <param name="placeableComponent">The placeable container to use</param>
+        /// <param name="textComponent">The text container to use</param>
+        /// <returns>The render container</returns>
+        private RenderContainer CreateTextRenderContainer(PlaceableComponent placeableComponent, VisibleTextComponent textComponent)
+        {
+            RenderContainer renderContainer = GetRenderContainer();
+            renderContainer.RenderType = RenderTypeEnum.Text;
+            renderContainer.Text = textComponent.Text;
+            renderContainer.Font = textComponent.Font;
+            renderContainer.Position = placeableComponent.Position;
+            renderContainer.Color = textComponent.Color;
+            renderContainer.Rotation = placeableComponent.Rotation;
+            renderContainer.Origin = textComponent.RotationCenter;
+            renderContainer.Scale = textComponent.Scale;
+            renderContainer.Effect = textComponent.Effect;
+            renderContainer.LayerDepth = textComponent.LayerDepth;
+            renderContainer.Name = string.Empty;
+            renderContainer.ShaderEffect = textComponent.ShaderEffect;
+
+            return renderContainer;
+        }
+
+        /// <summary>
+        /// Create texture render container
         /// </summary>
         /// <param name="placeableComponent">The placeable component</param>
         /// <param name="visibleComponent">The visible component</param>
-        private void CollectTextures(PlaceableComponent placeableComponent, VisibleComponent visibleComponent)
+        /// <returns>The ready to use render container</returns>
+        private RenderContainer CreateTextureRenderContainer(PlaceableComponent placeableComponent, VisibleComponent visibleComponent)
         {
-            if (visibleComponent == null || visibleComponent.Hidden || visibleComponent.Texture == null)
-            {
-                return;
-            }
-
             Rectangle destination = visibleComponent.Destination;
             destination.X = (int)placeableComponent.Position.X;
             destination.Y = (int)placeableComponent.Position.Y;
@@ -422,7 +458,7 @@ namespace Tank.Systems
             renderContainer.Name = visibleComponent.Texture.Name;
             renderContainer.RenderType = RenderTypeEnum.Texture;
             renderContainer.TextureToDraw = visibleComponent.Texture;
-            renderContainer.Destination =  visibleComponent.Destination;
+            renderContainer.Destination = visibleComponent.Destination;
             renderContainer.Source = visibleComponent.Source;
             renderContainer.Color = visibleComponent.Color;
             renderContainer.Rotation = placeableComponent.Rotation;
@@ -430,36 +466,8 @@ namespace Tank.Systems
             renderContainer.Effect = visibleComponent.Effect;
             renderContainer.ShaderEffect = visibleComponent.ShaderEffect;
             renderContainer.LayerDepth = visibleComponent.LayerDepth;
-            
-            containersToRender.Add(renderContainer);
-        }
 
-        /// <summary>
-        /// Render text data
-        /// </summary>
-        /// <param name="placeableComponent">The placeable component</param>
-        /// <param name="textComponent">The text component</param>
-        private void CollectText(PlaceableComponent placeableComponent, VisibleTextComponent textComponent)
-        {
-            if (textComponent == null || textComponent.Hidden || textComponent.Font == null)
-            {
-                return;
-            }
-            RenderContainer renderContainer = GetRenderContainer();
-            renderContainer.RenderType = RenderTypeEnum.Text;
-            renderContainer.Text = textComponent.Text;
-            renderContainer.Font = textComponent.Font;
-            renderContainer.Position = placeableComponent.Position;
-            renderContainer.Color = textComponent.Color;
-            renderContainer.Rotation = placeableComponent.Rotation;
-            renderContainer.Origin = textComponent.RotationCenter;
-            renderContainer.Scale = textComponent.Scale;
-            renderContainer.Effect = textComponent.Effect;
-            renderContainer.LayerDepth = textComponent.LayerDepth;
-            renderContainer.Name = string.Empty;
-            renderContainer.ShaderEffect = textComponent.ShaderEffect;
-
-            containersToRender.Add(renderContainer);
+            return renderContainer;
         }
 
         /// <summary>
