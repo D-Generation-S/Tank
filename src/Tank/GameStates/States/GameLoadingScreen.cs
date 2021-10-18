@@ -218,6 +218,7 @@ namespace Tank.GameStates.States
             );
             mapCreatingTask.ContinueWith((component) =>
             {
+                //@TODO: Add the map again ... :D
                 //map = antecedent.Result;
                 CreateEngine();
                 SpawnPlayers();
