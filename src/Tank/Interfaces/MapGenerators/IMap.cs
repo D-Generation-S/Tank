@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Tank.DataStructure;
 
 namespace Tank.Interfaces.MapGenerators
@@ -7,6 +8,7 @@ namespace Tank.Interfaces.MapGenerators
     /// <summary>
     /// This interface represents a map object
     /// </summary>
+    [Obsolete]
     interface IMap
     {
         /// <summary>

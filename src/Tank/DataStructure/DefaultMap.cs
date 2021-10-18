@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Tank.DataStructure;
 using Tank.Interfaces.MapGenerators;
@@ -9,6 +10,7 @@ namespace Tank.Code.Entities.Map
     /// <summary>
     /// This class represents a default map
     /// </summary>
+    [Obsolete]
     class DefaultMap : IMap
     {
         /// <summary>

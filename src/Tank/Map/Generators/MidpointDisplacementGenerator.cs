@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tank.Code.Entities.Map;
+using Tank.Components;
 using Tank.DataStructure;
 using Tank.Interfaces.MapGenerators;
 using Tank.Interfaces.Randomizer;
@@ -34,7 +35,7 @@ namespace Tank.Map.Generators
         /// The randomizer instance to use
         /// </summary>
         private readonly IRandomizer randomizer;
-        private readonly HashSet<Color> nonSolidColors;
+        private readonly HashSet<Color> notSolidColors;
 
         /// <summary>
         /// The default color to create the map
@@ -96,8 +97,8 @@ namespace Tank.Map.Generators
             this.displace = displace;
             this.roughness = roughness;
             this.randomizer = randomizer;
-            nonSolidColors = new HashSet<Color>();
-            nonSolidColors.Add(Color.Transparent);
+            notSolidColors = new HashSet<Color>();
+            notSolidColors.Add(Color.Transparent);
 
             mapColor = Color.Black;
         }
@@ -116,7 +117,7 @@ namespace Tank.Map.Generators
         /// </summary>
         /// <param name="size">The size of the map</param>
         /// <returns>A ready to use instance of the map</returns>
-        public IMap GenerateNewMap(Position size)
+        public MapComponent GenerateNewMap(Position size)
         {
             return GenerateNewMap(size, null);
         }
@@ -127,7 +128,7 @@ namespace Tank.Map.Generators
         /// <param name="size">The size of the map</param>
         /// <param name="mapTexturizer">The texturizer to use for the map</param>
         /// <returns>A ready to use instance of the map</returns>
-        public IMap GenerateNewMap(Position size, IMapTexturizer mapTexturizer)
+        public MapComponent GenerateNewMap(Position size, IMapTexturizer mapTexturizer)
         {
             return GenerateNewMap(size, mapTexturizer, int.MinValue);
         }
@@ -139,7 +140,7 @@ namespace Tank.Map.Generators
         /// <param name="mapTexturizer">The texturizer to use for the map</param>
         /// /// <param name="seed">The seed to use to generate the map</param>
         /// <returns>A ready to use instance of the map</returns>
-        public IMap GenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed)
+        public MapComponent GenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed)
         {
             seed = seed == int.MinValue ? DateTime.Now.Millisecond : seed;
             if (randomizer != null)
@@ -154,19 +155,27 @@ namespace Tank.Map.Generators
 
             float[] points = GeneratePoints(size, new Random(seed));
             float highestPoint = GetHighestPoint(points);
-            IMap returnMap = new DefaultMap(texture, nonSolidColors, highestPoint, seed);
+            MapComponent returnMap = new MapComponent()
+            {
+                ImageData = new FlattenArray<Color>(texture.Width * texture.Height, texture.Width),
+                NotSolidColors = notSolidColors,
+                HighestPoint = highestPoint,
+                Seed = seed
+            };
+            //IMap returnMap = new DefaultMap(texture, nonSolidColors, highestPoint, seed);
 
             for (int x = 0; x < points.Length - 1; x++)
             {
-                returnMap.ChangePixel(x, (int)Math.Round(points[x], 0), mapColor, true);
+                returnMap.ImageData.SetValue(x, (int)Math.Round(points[x], 0), mapColor);
             }
-            returnMap.ApplyChanges();
+            //returnMap.ApplyChanges();
 
             FillMap(returnMap);
 
             if (mapTexturizer != null)
             {
-                mapTexturizer.TexturizeMap(returnMap, mapColor);
+                //@TODO: Rework texturizer!
+                //mapTexturizer.TexturizeMap(returnMap, mapColor);
             }
 
             return returnMap;
@@ -176,14 +185,14 @@ namespace Tank.Map.Generators
         /// Fill the map so that it is solid
         /// </summary>
         /// <param name="map">The map to fill</param>
-        private void FillMap(IMap map)
+        private void FillMap(MapComponent map)
         {
             for (int x = 0; x < map.Width; x++)
             {
                 bool writeMode = false;
                 for (int y = 0; y < map.Height; y++)
                 {
-                    Color pixel = map.GetPixel(x, y);
+                    Color pixel = map.ImageData.GetValue(x, y);
                     if (pixel == mapColor)
                     {
                         writeMode = true;
@@ -191,11 +200,10 @@ namespace Tank.Map.Generators
 
                     if (writeMode)
                     {
-                        map.ChangePixel(x, y, mapColor);
+                        map.ImageData.SetValue(x, y, mapColor);
                     }
                 }
             }
-            map.ApplyChanges();
         }
 
         /// <summary>
@@ -278,11 +286,9 @@ namespace Tank.Map.Generators
         /// </summary>
         /// <param name="size">The size of the map</param>
         /// <returns>An async task which can be watched</returns>
-        public async Task<IMap> AsyncGenerateNewMap(Position size)
+        public async Task<MapComponent> AsyncGenerateNewMap(Position size)
         {
-            IMap returnMap = await Task.Run(() => GenerateNewMap(size, null, int.MinValue));
-
-            return returnMap;
+            return await Task.Run(() => GenerateNewMap(size, null, int.MinValue));
         }
 
         /// <summary>
@@ -291,11 +297,9 @@ namespace Tank.Map.Generators
         /// <param name="size">The size of the map</param>
         /// <param name="mapTexturizer">The texturizer to use</param>
         /// <returns>An async task which can be watched</returns>
-        public async Task<IMap> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer)
+        public async Task<MapComponent> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer)
         {
-            IMap returnMap = await Task.Run(() => GenerateNewMap(size, mapTexturizer, int.MinValue));
-
-            return returnMap;
+            return await Task.Run(() => GenerateNewMap(size, mapTexturizer, int.MinValue));
         }
 
         /// <summary>
@@ -305,11 +309,9 @@ namespace Tank.Map.Generators
         /// <param name="mapTexturizer">The texturizer to use</param>
         /// <param name="seed">The seed to use</param>
         /// <returns>An async task which can be watched</returns>
-        public async Task<IMap> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed)
+        public async Task<MapComponent> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed)
         {
-            IMap returnMap = await Task.Run(() => GenerateNewMap(size, mapTexturizer, seed));
-
-            return returnMap;
+            return await Task.Run(() => GenerateNewMap(size, mapTexturizer, seed));
         }
     }
 }

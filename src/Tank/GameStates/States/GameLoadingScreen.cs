@@ -208,7 +208,7 @@ namespace Tank.GameStates.States
         public override void SetActive()
         {
             base.SetActive();
-            Task<IMap> mapCreatingTask = mapGenerator.AsyncGenerateNewMap(
+            Task<MapComponent> mapCreatingTask = mapGenerator.AsyncGenerateNewMap(
                 new Position(
                     viewportAdapter.VirtualWidth,
                     viewportAdapter.VirtualHeight
@@ -216,11 +216,12 @@ namespace Tank.GameStates.States
                 new DefaultTextureizer(spritesheetToUse),
                 gameSettings.MapSeed
             );
-            mapCreatingTask.ContinueWith((antecedent) =>
+            mapCreatingTask.ContinueWith((component) =>
             {
-                map = antecedent.Result;
+                //map = antecedent.Result;
                 CreateEngine();
                 SpawnPlayers();
+
                 loadingComplete = true;
             });
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Threading.Tasks;
+using Tank.Components;
 using Tank.DataStructure;
 
 namespace Tank.Interfaces.MapGenerators
@@ -22,7 +23,7 @@ namespace Tank.Interfaces.MapGenerators
         /// </summary>
         /// <param name="size">The size of the map</param>
         /// <returns></returns>
-        IMap GenerateNewMap(Position size);
+        MapComponent GenerateNewMap(Position size);
 
         /// <summary>
         /// This will generate you a new map to use
@@ -30,7 +31,7 @@ namespace Tank.Interfaces.MapGenerators
         /// <param name="size">The size of the map</param>
         /// <param name="mapTexturizer">The instance to use to texturize the map</param>
         /// <returns></returns>
-        IMap GenerateNewMap(Position size, IMapTexturizer mapTexturizer);
+        MapComponent GenerateNewMap(Position size, IMapTexturizer mapTexturizer);
 
         /// <summary>
         /// This will generate you a new map to use
@@ -39,14 +40,14 @@ namespace Tank.Interfaces.MapGenerators
         /// <param name="mapTexturizer">The instance to use to texturize the map</param>
         /// <param name="seed">The seed to use</param>
         /// <returns></returns>
-        IMap GenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed);
+        MapComponent GenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed);
 
         /// <summary>
         /// This will async generate you a new map to use
         /// </summary>
         /// <param name="size">The size of the map</param>
         /// <returns></returns>
-        Task<IMap> AsyncGenerateNewMap(Position size);
+        Task<MapComponent> AsyncGenerateNewMap(Position size);
 
         /// <summary>
         /// This will async generate you a new map to use
@@ -54,7 +55,7 @@ namespace Tank.Interfaces.MapGenerators
         /// <param name="size">The size of the map</param>
         /// <param name="mapTexturizer">The texturizer to use</param>
         /// <returns></returns>
-        Task<IMap> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer);
+        Task<MapComponent> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer);
 
         /// <summary>
         /// This will async generate you a new map to use
@@ -63,6 +64,6 @@ namespace Tank.Interfaces.MapGenerators
         /// <param name="mapTexturizer">The texturizer to use</param>
         /// <param name="seed">The seed of the map</param>
         /// <returns></returns>
-        Task<IMap> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed);
+        Task<MapComponent> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed);
     }
 }
