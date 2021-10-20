@@ -148,8 +148,8 @@ namespace Tank.Map.Generators
                 randomizer.Initzialize(seed);
             }
 
-            Texture2D texture = new Texture2D(graphicsDevice, size.X, size.Y);
-            texture.Name = "GeneratedMap";
+            //Texture2D texture = new Texture2D(graphicsDevice, size.X, size.Y);
+            //texture.Name = "GeneratedMap";
 
             
 
@@ -157,10 +157,12 @@ namespace Tank.Map.Generators
             float highestPoint = GetHighestPoint(points);
             MapComponent returnMap = new MapComponent()
             {
-                ImageData = new FlattenArray<Color>(texture.Width * texture.Height, texture.Width),
+                ImageData = new FlattenArray<Color>(size.X, size.Y, () => new Color()),
                 NotSolidColors = notSolidColors,
                 HighestPoint = highestPoint,
-                Seed = seed
+                Seed = seed,
+                Width = size.X,
+                Height = size.Y
             };
             //IMap returnMap = new DefaultMap(texture, nonSolidColors, highestPoint, seed);
 

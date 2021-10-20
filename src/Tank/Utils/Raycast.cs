@@ -71,6 +71,7 @@ namespace Tank.Utils
         /// All the points between origin and magnitude on direction
         /// </summary>
         /// <returns>A list with points</returns>
+        [Obsolete("Please use the GetPoints method instead")]
         public Position[] GetPositions()
         {
             List<Position> positions = new List<Position>();
@@ -79,6 +80,19 @@ namespace Tank.Utils
             for (int step = 0; step < steps; step++)
             {
                 positions.Add(new Position(startPosition));
+                startPosition += direction;
+            }
+            return positions.ToArray();
+        }
+
+        public Point[] GetPoints()
+        {
+            List<Point> positions = new List<Point>();
+            Vector2 startPosition = origin;
+            int steps = (int)Math.Round(magnitude) + 1;
+            for (int step = 0; step < steps; step++)
+            {
+                positions.Add(new Point((int)startPosition.X, (int)startPosition.Y));
                 startPosition += direction;
             }
             return positions.ToArray();

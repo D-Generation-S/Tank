@@ -221,14 +221,21 @@ namespace Tank.GameStates.States
                 //@TODO: Add the map again ... :D
                 //map = antecedent.Result;
                 CreateEngine();
-                SpawnPlayers();
+
+                uint entity = engine.EntityManager.CreateEntity();
+                engine.EntityManager.AddComponent(entity, component.Result);
+                VisibleComponent mapRenderer = engine.EntityManager.CreateComponent<VisibleComponent>(entity);
+                mapRenderer.SingleTextureSize = new Rectangle(0,0, component.Result.Width, component.Result.Height);
+                mapRenderer.Texture = new Texture2D(TankGame.PublicGraphicsDevice, component.Result.Width, component.Result.Height);
+                mapRenderer.Texture.Name = "GeneratedMap";
+                SpawnPlayers(component.Result);
 
                 loadingComplete = true;
             });
         }
 
         /// <summary>
-        /// Create the engine ready to use
+        /// Create the engine ready to use6
         /// </summary>
         private void CreateEngine()
         {
@@ -304,7 +311,7 @@ namespace Tank.GameStates.States
         /// <summary>
         /// Spawn in all the players
         /// </summary>
-        private void SpawnPlayers()
+        private void SpawnPlayers(MapComponent map)
         {
             int playerSpace = map.Width / (int)(gameSettings.PlayerCount + 1);
             for (int i = 0; i < gameSettings.PlayerCount; i++)
@@ -315,14 +322,14 @@ namespace Tank.GameStates.States
                 animationFrames.Add(new Rectangle(0, 0, 32, 32));
                 Vector2 playerStartPosition = new Vector2(playerSpace * offset, 0);
                 Raycast raycast = new Raycast(playerStartPosition, Vector2.UnitY, map.Height - 1);
-                Position[] positions = raycast.GetPositions();
+                Point[] positions = raycast.GetPoints();
                 for (int pIndex = positions.Length - 1; pIndex > 0; pIndex--)
                 {
-                    Position position = positions[pIndex];
-                    if (!map.IsPixelSolid(position))
+                    Point position = positions[pIndex];
+                    if (map.ImageData.IsInArray(position))
                     {
-                        playerStartPosition += Vector2.UnitY * position.Y;
-                        break;
+                        Color color = map.ImageData.GetValue(position);
+                        playerStartPosition += map.NotSolidColors.Contains(color) ? Vector2.Zero : Vector2.UnitY * position.Y;
                     }
                 }
                 currentPlayer.TankBuilder.Init(engine.EntityManager);
