@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
@@ -60,7 +61,7 @@ namespace Tank.GameStates.States
         private SpriteFont gameFont;
 
         IGameEngine engine;
-        private readonly IMap mapToUse;
+        //private readonly IMap mapToUse;
         private readonly GameSettings gameSettings;
         private readonly SystemRandomizer randomizer;
         
@@ -75,9 +76,9 @@ namespace Tank.GameStates.States
 
         private float fps;
 
-        public GameState(IMap mapToUse, IGameEngine gameEngine, GameSettings gameSettings)
+        public GameState(IGameEngine gameEngine, GameSettings gameSettings)
         {
-            this.mapToUse = mapToUse;
+            //this.mapToUse = mapToUse;
             this.gameSettings = gameSettings;
             this.engine = gameEngine;
             randomizer = new SystemRandomizer();
@@ -128,7 +129,7 @@ namespace Tank.GameStates.States
             {
                 Position = new Vector2(0, 0)
             });
-
+            /**
             engine.EntityManager.AddComponent(mapId, new VisibleComponent()
             {
                 Texture = mapToUse.Image,
@@ -139,7 +140,8 @@ namespace Tank.GameStates.States
             {
                 Map = mapToUse
             };
-            engine.EntityManager.AddComponent(mapId, mapComponent);
+            **/
+            //engine.EntityManager.AddComponent(mapId, mapComponent);
         }
 
         /// <inheritdoc/>
@@ -175,7 +177,16 @@ namespace Tank.GameStates.States
             debriBuilder.Init(engine);
 
             List<IGameObjectBuilder> cloudBuilders = new List<IGameObjectBuilder>();
-            Rectangle cloudSpawnArea = new Rectangle(-50, 0, mapToUse.Width, (int)mapToUse.HighestPosition - 50);
+            MapComponent map = engine.EntityManager.GetEntitiesWithComponent<MapComponent>()
+                                                   .Select(id => engine.EntityManager.GetComponent<MapComponent>(id))
+                                                   .FirstOrDefault();
+            if (map == null)
+            {
+                gameOverState = new MainMenuState();
+                return;
+            }
+
+            Rectangle cloudSpawnArea = new Rectangle(-50, 0, map.Width, (int)map.HighestPoint - 50);
             cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 0, 32, 16) }, randomizer, cloudSpawnArea));
             cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(32, 0, 32, 16) }, randomizer, cloudSpawnArea));
             cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 16, 64, 32) }, randomizer, cloudSpawnArea));

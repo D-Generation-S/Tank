@@ -85,6 +85,10 @@ namespace Tank.Utils
             return positions.ToArray();
         }
 
+        /// <summary>
+        /// All the points between origin and magnitude on direction
+        /// </summary>
+        /// <returns>A list with points</returns>
         public Point[] GetPoints()
         {
             List<Point> positions = new List<Point>();

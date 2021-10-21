@@ -584,7 +584,7 @@ namespace Tank.GameStates.States
         {
             if (loadingComplete)
             {
-                IState gameState = new GameState(map, engine, gameSettings);
+                IState gameState = new GameState(engine, gameSettings);
                 gameStateManager.Replace(gameState);
             }
         }
