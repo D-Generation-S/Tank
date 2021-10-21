@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Linq;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
@@ -15,13 +16,13 @@ namespace Tank.Systems
     /// <summary>
     /// This system will damage the terrain if an event is catched
     /// </summary>
-    class MapSculptingSystem : AbstractSystem
+    class MapSystem : AbstractSystem
     {
-        private MapComponent map;
+        //private MapComponent map;
         /// <summary>
         /// Create an new intance of this class
         /// </summary>
-        public MapSculptingSystem() : base()
+        public MapSystem() : base()
         {
             validators.Add(new MapValidator());
         }
@@ -38,10 +39,12 @@ namespace Tank.Systems
         protected override void AddEntity(uint entityId)
         {
             base.AddEntity(entityId);
+            /**
             if (entityManager.HasComponent(entityId, typeof(MapComponent)))
             {
                 map = entityManager.GetComponent<MapComponent>(entityId);
             }
+            **/
         }
 
         /// <summary>
@@ -52,6 +55,7 @@ namespace Tank.Systems
         public override void EventNotification(object sender, IGameEvent eventArgs)
         {
             base.EventNotification(sender, eventArgs);
+            MapComponent map = GetMapComponent();
             if (map == null)
             {
                 return;
@@ -66,9 +70,9 @@ namespace Tank.Systems
                 {
                     for (int y = (int)start.Y; y < (int)end.Y; y++)
                     {
-                        if (damageCircle.IsInInCircle(x, y) && x >= 0 && x < map.Map.Width)
+                        if (damageCircle.IsInInCircle(x, y) && x >= 0 && x < map.Width)
                         {
-                            map.Map.ChangePixel(x, y, Color.Transparent, false);
+                            map.ChangedImageData.SetValue(x, y, Color.Transparent);
                         }
                     }
                 }
@@ -109,15 +113,39 @@ namespace Tank.Systems
             }
         }
 
+        /// <summary>
+        /// Get the map component
+        /// </summary>
+        /// <returns>Get the map component if present</returns>
+        private MapComponent GetMapComponent()
+        {
+            return entityManager.GetEntitiesWithComponent<MapComponent>()
+                                .Select(id => entityManager.GetComponent<MapComponent>(id))
+                                .FirstOrDefault();
+        }
+
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (map == null || map.Map == null)
+            MapComponent map = GetMapComponent();
+            if (map == null || !map.RenderRequired)
             {
                 return;
             }
-            map.Map.ApplyChanges();
+            map.ImageData = map.ChangedImageData;
+            
+            VisibleComponent visible = entityManager.GetEntitiesWithComponent<MapComponent>()
+                                                    .Select(id => entityManager.GetComponent<VisibleComponent>(id))
+                                                    .FirstOrDefault();
+            if (visible == null)
+            {
+                return;
+            }
+
+            map.RenderRequired = false;
+            visible.Texture.SetData<Color>(map.ChangedImageData.Array);
+
         }
     }
 }

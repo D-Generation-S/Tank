@@ -8,6 +8,7 @@ using Tank.Events;
 using Tank.Events.EntityBased;
 using Tank.Events.PhysicBased;
 using Tank.Interfaces.EntityComponentSystem.Manager;
+using Tank.Interfaces.MapGenerators;
 using Tank.Utils;
 using Tank.Validator;
 
@@ -197,20 +198,20 @@ namespace Tank.Systems
                 bottomCenter = new Vector2(colliderComponent.Collider.Center.X, colliderComponent.Collider.Bottom - 2);
                 bottomCenter += oldPosition;
                 Raycast raycast = new Raycast(bottomCenter, moveComponent.Velocity, moveComponent.Velocity.Length());
-                Position[] rayPath = raycast.GetPositions();
+                Point[] rayPath = raycast.GetPoints();
                 for (int y = 0; y < rayPath.Length; y++)
                 {
-                    Position currentPosition = rayPath[y];
-                    if (map.Map.IsPixelSolid(currentPosition))
+                    Point currentPosition = rayPath[y];
+                    if (IsPixelSolid(map, currentPosition))
                     {
                         Vector2 xForce = Vector2.UnitX;
                         xForce *= moveComponent.Velocity.X;
                         Raycast horizontalRaycast = new Raycast(bottomCenter, xForce, xForce.Length());
-                        Position[] horizontalRay = horizontalRaycast.GetPositions();
+                        Point[] horizontalRay = horizontalRaycast.GetPoints();
                         for (int x = 0; x < horizontalRay.Length; x++)
                         {
-                            Position currentXPosition = rayPath[x];
-                            if (map.Map.IsPixelSolid(currentXPosition))
+                            Point currentXPosition = rayPath[x];
+                            if (IsPixelSolid(map, currentXPosition))
                             {
                                 xForce *= -1;
                                 ApplyForce(moveComponent, windForce * -1);
@@ -253,7 +254,7 @@ namespace Tank.Systems
                             return;
                         }
 
-                        Vector2 normalForce = GetNormalForce(moveComponent, bottomCenter, currentPosition.GetVector2());
+                        Vector2 normalForce = GetNormalForce(moveComponent, bottomCenter, currentPosition.ToVector2());
                         ApplyForce(moveComponent, normalForce, false);
                         ApplyForce(moveComponent, gravityForce * -1, false);
                         break;
@@ -272,7 +273,7 @@ namespace Tank.Systems
                     );
                 }
 
-                if (!map.Map.IsPointOnMap(placeComponent.Position))
+                if (!map.ImageData.IsInArray(placeComponent.Position))
                 {
                     RemoveEntityEvent removeEntityEvent = CreateEvent<RemoveEntityEvent>();
                     removeEntityEvent.EntityId = entityId;
@@ -282,10 +283,15 @@ namespace Tank.Systems
             }
         }
 
-        /// <inheritdoc/>
-        public override void EventNotification(object sender, IGameEvent eventArgs)
-        {
-            base.EventNotification(sender, eventArgs);
+        private bool IsPixelSolid(MapComponent map, Point currentPosition)
+{
+            return map.ImageData.IsInArray(currentPosition) && !map.NotSolidColors.Contains(map.ImageData.GetValue(currentPosition));
+        }
+
+/// <inheritdoc/>
+public override void EventNotification(object sender, IGameEvent eventArgs)
+{
+base.EventNotification(sender, eventArgs);
             if (eventArgs is ApplyForceEvent forceEvent)
             {
                 if (watchedEntities.Contains(forceEvent.EntityId))

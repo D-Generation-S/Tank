@@ -171,6 +171,11 @@ namespace Tank.DataStructure
             return IsInArray(point.X, point.Y);
         }
 
+        public bool IsInArray(Vector2 point)
+        {
+            return IsInArray((int)point.X, (int)point.Y);
+        }
+
         /// <summary>
         /// Check if a point is part of the array
         /// </summary>

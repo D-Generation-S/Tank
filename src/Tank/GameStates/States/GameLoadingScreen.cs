@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Tank.Builders;
 using Tank.Components;
@@ -79,11 +80,6 @@ namespace Tank.GameStates.States
         /// The game font to use
         /// </summary>
         private SpriteFont gameFont;
-
-        /// <summary>
-        /// The map to use
-        /// </summary>
-        private IMap map;
 
         /// <summary>
         /// The game engine to use
@@ -223,11 +219,20 @@ namespace Tank.GameStates.States
                 CreateEngine();
 
                 uint entity = engine.EntityManager.CreateEntity();
-                engine.EntityManager.AddComponent(entity, component.Result);
+                MapComponent map = component.Result;
+                map.RenderRequired = true;
+                map.ChangedImageData = component.Result.ImageData;
+                
                 VisibleComponent mapRenderer = engine.EntityManager.CreateComponent<VisibleComponent>(entity);
                 mapRenderer.SingleTextureSize = new Rectangle(0,0, component.Result.Width, component.Result.Height);
                 mapRenderer.Texture = new Texture2D(TankGame.PublicGraphicsDevice, component.Result.Width, component.Result.Height);
                 mapRenderer.Texture.Name = "GeneratedMap";
+                mapRenderer.Source = new Rectangle(0, 0, map.Width, map.Height);
+                mapRenderer.Destination = new Rectangle(0, 0, map.Width, map.Height);
+
+                PlaceableComponent positionComponent = engine.EntityManager.CreateComponent<PlaceableComponent>(entity);
+                positionComponent.Position = Vector2.Zero;
+                engine.EntityManager.AddComponent(entity, map);
                 SpawnPlayers(component.Result);
 
                 loadingComplete = true;
@@ -253,7 +258,7 @@ namespace Tank.GameStates.States
             engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, screenWidth, screenHeight), gameSettings.Gravity, gameSettings.Wind));
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new DamageSystem());
-            engine.AddSystem(new MapSculptingSystem());
+            engine.AddSystem(new MapSystem());
             engine.AddSystem(new SoundEffectSystem(settings));
             engine.AddSystem(new AnimationAttributeDisplaySystem());
             engine.AddSystem(new FadeInFadeOutSystem());
@@ -582,7 +587,8 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            if (loadingComplete)
+            engine?.Update(gameTime);
+            if (loadingComplete && entityManager.GetEntitiesWithComponent<MapComponent>().Select(id => entityManager.GetComponent<MapComponent>(id)).All(component => !component.RenderRequired))
             {
                 IState gameState = new GameState(engine, gameSettings);
                 gameStateManager.Replace(gameState);

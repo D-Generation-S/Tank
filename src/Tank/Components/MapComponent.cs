@@ -48,6 +48,11 @@ namespace Tank.Components
         public FlattenArray<Color> ChangedImageData;
 
         /// <summary>
+        /// Is a new rendering required
+        /// </summary>
+        public bool RenderRequired;
+
+        /// <summary>
         /// All the not solid colors of the map
         /// </summary>
         public HashSet<Color> NotSolidColors;
@@ -63,6 +68,7 @@ namespace Tank.Components
             ImageData = null;
             ChangedImageData = null;
             NotSolidColors = new HashSet<Color>();
+            RenderRequired = false;
         }
     }
 }

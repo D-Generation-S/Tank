@@ -158,6 +158,7 @@ namespace Tank.Map.Generators
             MapComponent returnMap = new MapComponent()
             {
                 ImageData = new FlattenArray<Color>(size.X, size.Y, () => new Color()),
+                ChangedImageData = new FlattenArray<Color>(size.X, size.Y, () => new Color()),
                 NotSolidColors = notSolidColors,
                 HighestPoint = highestPoint,
                 Seed = seed,
