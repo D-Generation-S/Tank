@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Linq;
 using Tank.Components;
 using Tank.Components.Rendering;
@@ -73,6 +72,7 @@ namespace Tank.Systems
                         if (damageCircle.IsInInCircle(x, y) && x >= 0 && x < map.Width)
                         {
                             map.ChangedImageData.SetValue(x, y, Color.Transparent);
+                            map.RenderRequired = true;
                         }
                     }
                 }
