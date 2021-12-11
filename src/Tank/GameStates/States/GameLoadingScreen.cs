@@ -14,7 +14,6 @@ using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataManagement;
 using Tank.DataManagement.Loader;
-using Tank.DataStructure;
 using Tank.DataStructure.Geometrics;
 using Tank.DataStructure.Settings;
 using Tank.DataStructure.Spritesheet;
@@ -206,13 +205,10 @@ namespace Tank.GameStates.States
         {
             base.SetActive();
             Task<MapComponent> mapCreatingTask = mapGenerator.AsyncGenerateNewMap(
-                new Position(
-                    viewportAdapter.VirtualWidth,
-                    viewportAdapter.VirtualHeight
-                ),
-                new DefaultTextureizer(spritesheetToUse),
+                new Point(viewportAdapter.VirtualWidth, viewportAdapter.VirtualHeight),
+                new SimpleTexturizer(spritesheetToUse),
                 gameSettings.MapSeed
-            );
+            ); ;
             mapCreatingTask.ContinueWith((component) =>
             {
                 //@TODO: Add the map again ... :D

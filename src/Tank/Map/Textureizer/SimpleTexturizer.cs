@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using Tank.Components;
 using Tank.DataStructure;
 using Tank.DataStructure.Spritesheet;
 using Tank.Interfaces.MapGenerators;
@@ -10,7 +11,7 @@ namespace Tank.Map.Textureizer
     /// <summary>
     /// This class will texturize the map with one texture only
     /// </summary>
-    class DefaultTextureizer : IMapTexturizer
+    class SimpleTexturizer : IMapTexturizer
     {
         /// <summary>
         /// The spritesheet to use
@@ -46,11 +47,11 @@ namespace Tank.Map.Textureizer
         /// Create a new instance of the class
         /// </summary>
         /// <param name="backgroundTexture">The spritesheet to use</param>
-        public DefaultTextureizer(SpriteSheet backgroundTexture) : this(backgroundTexture, null)
+        public SimpleTexturizer(SpriteSheet backgroundTexture) : this(backgroundTexture, null)
         {
         }
 
-        public DefaultTextureizer(SpriteSheet backgroundTexture, SpriteSheet foregroundItems)
+        public SimpleTexturizer(SpriteSheet backgroundTexture, SpriteSheet foregroundItems)
         {
             spriteSheet = backgroundTexture;
             this.foregroundItems = foregroundItems;
@@ -61,7 +62,7 @@ namespace Tank.Map.Textureizer
         /// </summary>
         /// <param name="map">The map to texturize</param>
         /// <param name="generatorFillColor">The color the generator did use for drawing the map template</param>
-        public void TexturizeMap(IMap map, Color generatorFillColor)
+        public void TexturizeMap(MapComponent map, Color generatorFillColor)
         {
             TexturizeMap(map, generatorFillColor, null);
         }
@@ -72,7 +73,7 @@ namespace Tank.Map.Textureizer
         /// <param name="map">The map to texturize</param>
         /// <param name="generatorFillColor">The color the generator did use for drawing the map template</param>
         /// <param name="randomizer">The randomizer to use</param>
-        public void TexturizeMap(IMap map, Color generatorFillColor, IRandomizer randomizer)
+        public void TexturizeMap(MapComponent map, Color generatorFillColor, IRandomizer randomizer)
         {
             spriteYPosition = 0;
             spriteXPosition = 0;
@@ -81,7 +82,6 @@ namespace Tank.Map.Textureizer
             internalRandomizer = randomizer == null ? new Random(map.Seed) : null;
 
             FlattenArray<Color> colors = spriteSheet.GetColorByName("stone");
-            //FlattenArray<Color> colors = new FlattenArray<Color>(colorsToUse, spriteSheet.SingleImageSize.X);
 
             for (int x = 0; x < map.Width; x++)
             {
@@ -96,22 +96,16 @@ namespace Tank.Map.Textureizer
                         spriteYPosition = 0;
                     }
 
-                    if (map.GetPixel(x, y) == generatorFillColor)
+                    if (map.ImageData.GetValue(x, y) == generatorFillColor)
                     {
-                        map.ChangePixel(x, y, colors.GetValue(spriteXPosition, spriteYPosition));
+                        map.ImageData.SetValue(x, y, colors.GetValue(spriteXPosition, spriteYPosition));
                         spriteYPosition++;
                     }
                 }
                 spriteXPosition++;
                 spriteYPosition = 0;
             }
-
-            map.ApplyChanges();
-
-            return;
         }
-
-        //private float 
 
         /// <summary>
         /// Get a random number

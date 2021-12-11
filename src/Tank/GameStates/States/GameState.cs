@@ -21,7 +21,6 @@ using Tank.GameStates.Data;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.Interfaces.MapGenerators;
 using Tank.Map.Generators;
 using Tank.Randomizer;
 using Tank.Wrapper;
@@ -64,7 +63,7 @@ namespace Tank.GameStates.States
         //private readonly IMap mapToUse;
         private readonly GameSettings gameSettings;
         private readonly SystemRandomizer randomizer;
-        
+
         private uint mapId;
         private uint entityCounter;
         private bool debugOn;
@@ -157,7 +156,7 @@ namespace Tank.GameStates.States
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion4"));
             //defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
             gameFont = contentWrapper.Load<SpriteFont>("gameFont");
-            
+
         }
 
         /// <inheritdoc/>
@@ -292,7 +291,6 @@ namespace Tank.GameStates.States
             {
                 IState gameLoading = new GameLoadingScreen(
                     new MidpointDisplacementGenerator(
-                        TankGame.PublicGraphicsDevice,
                         viewportAdapter.VirtualWidth / 4,
                         0.5f,
                         new SystemRandomizer()

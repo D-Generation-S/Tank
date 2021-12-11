@@ -69,7 +69,6 @@ namespace Tank.GameStates.States
 #endif
             IState stateToReplace = new GameLoadingScreen(
                                         new MidpointDisplacementGenerator(
-                                            TankGame.PublicGraphicsDevice,
                                             viewportAdapter.VirtualWidth / 4,
                                             0.5f,
                                             new SystemRandomizer()),
@@ -109,7 +108,7 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);startGameCommand.Execute();
+            base.Update(gameTime); startGameCommand.Execute();
         }
     }
 }

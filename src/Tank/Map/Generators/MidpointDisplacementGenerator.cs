@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Tank.Code.Entities.Map;
 using Tank.Components;
 using Tank.DataStructure;
 using Tank.Interfaces.MapGenerators;
@@ -16,11 +15,6 @@ namespace Tank.Map.Generators
     /// </summary>
     class MidpointDisplacementGenerator : IMapGenerator
     {
-        /// <summary>
-        /// The graphic device to use for creating the texture
-        /// </summary>
-        private readonly GraphicsDevice graphicsDevice;
-
         /// <summary>
         /// The displacement for the map
         /// </summary>
@@ -35,6 +29,10 @@ namespace Tank.Map.Generators
         /// The randomizer instance to use
         /// </summary>
         private readonly IRandomizer randomizer;
+
+        /// <summary>
+        /// Hash set for all the non solid colors
+        /// </summary>
         private readonly HashSet<Color> notSolidColors;
 
         /// <summary>
@@ -51,8 +49,8 @@ namespace Tank.Map.Generators
         /// Create a new instance of this class
         /// </summary>
         /// <param name="graphicsDevice">The graphic device to use</param>
-        public MidpointDisplacementGenerator(GraphicsDevice graphicsDevice)
-            : this(graphicsDevice, 225)
+        public MidpointDisplacementGenerator()
+            : this(225)
         {
 
         }
@@ -62,8 +60,8 @@ namespace Tank.Map.Generators
         /// </summary>
         /// <param name="graphicsDevice">The graphic device to use</param>
         /// <param name="displace">The displace value to use</param>
-        public MidpointDisplacementGenerator(GraphicsDevice graphicsDevice, float displace)
-            : this(graphicsDevice, displace, 0.4f)
+        public MidpointDisplacementGenerator(float displace)
+            : this(displace, 0.4f)
         {
 
         }
@@ -74,8 +72,8 @@ namespace Tank.Map.Generators
         /// <param name="graphicsDevice">The graphic device to use</param>
         /// <param name="displace">The displace value to use</param>
         /// <param name="roughness">The roughness to use</param>
-        public MidpointDisplacementGenerator(GraphicsDevice graphicsDevice, float displace, float roughness)
-            : this(graphicsDevice, displace, roughness, null)
+        public MidpointDisplacementGenerator(float displace, float roughness)
+            : this(displace, roughness, null)
         {
         }
 
@@ -87,13 +85,11 @@ namespace Tank.Map.Generators
         /// <param name="roughness">The roughness to use</param>
         /// <param name="randomizer">The randomizer to use</param>
         public MidpointDisplacementGenerator(
-            GraphicsDevice graphicsDevice,
             float displace,
             float roughness,
             IRandomizer randomizer
         )
         {
-            this.graphicsDevice = graphicsDevice;
             this.displace = displace;
             this.roughness = roughness;
             this.randomizer = randomizer;
@@ -117,7 +113,7 @@ namespace Tank.Map.Generators
         /// </summary>
         /// <param name="size">The size of the map</param>
         /// <returns>A ready to use instance of the map</returns>
-        public MapComponent GenerateNewMap(Position size)
+        public MapComponent GenerateNewMap(Point size)
         {
             return GenerateNewMap(size, null);
         }
@@ -128,7 +124,7 @@ namespace Tank.Map.Generators
         /// <param name="size">The size of the map</param>
         /// <param name="mapTexturizer">The texturizer to use for the map</param>
         /// <returns>A ready to use instance of the map</returns>
-        public MapComponent GenerateNewMap(Position size, IMapTexturizer mapTexturizer)
+        public MapComponent GenerateNewMap(Point size, IMapTexturizer mapTexturizer)
         {
             return GenerateNewMap(size, mapTexturizer, int.MinValue);
         }
@@ -140,18 +136,13 @@ namespace Tank.Map.Generators
         /// <param name="mapTexturizer">The texturizer to use for the map</param>
         /// /// <param name="seed">The seed to use to generate the map</param>
         /// <returns>A ready to use instance of the map</returns>
-        public MapComponent GenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed)
+        public MapComponent GenerateNewMap(Point size, IMapTexturizer mapTexturizer, int seed)
         {
             seed = seed == int.MinValue ? DateTime.Now.Millisecond : seed;
             if (randomizer != null)
             {
                 randomizer.Initzialize(seed);
             }
-
-            //Texture2D texture = new Texture2D(graphicsDevice, size.X, size.Y);
-            //texture.Name = "GeneratedMap";
-
-            
 
             float[] points = GeneratePoints(size, new Random(seed));
             float highestPoint = GetHighestPoint(points);
@@ -165,20 +156,17 @@ namespace Tank.Map.Generators
                 Width = size.X,
                 Height = size.Y
             };
-            //IMap returnMap = new DefaultMap(texture, nonSolidColors, highestPoint, seed);
 
             for (int x = 0; x < points.Length - 1; x++)
             {
                 returnMap.ImageData.SetValue(x, (int)Math.Round(points[x], 0), mapColor);
             }
-            //returnMap.ApplyChanges();
 
             FillMap(returnMap);
 
             if (mapTexturizer != null)
             {
-                //@TODO: Rework texturizer!
-                //mapTexturizer.TexturizeMap(returnMap, mapColor);
+                mapTexturizer.TexturizeMap(returnMap, mapColor);
             }
 
             return returnMap;
@@ -210,23 +198,13 @@ namespace Tank.Map.Generators
         }
 
         /// <summary>
-        /// Get the highest point
+        /// Get the highest point, this is the smallest in the list since 0 is on top and max is on the bottom
         /// </summary>
         /// <param name="points">All the points</param>
         /// <returns>The highest point</returns>
         private float GetHighestPoint(float[] points)
         {
-            float highestPoint = float.MaxValue;
-            for (int i = 0; i < points.Length; i++)
-            {
-                float currentPoint = points[i];
-                if (currentPoint < highestPoint)
-                {
-                    highestPoint = currentPoint;
-                }
-
-            }
-            return highestPoint;
+            return points.Min();
         }
 
         /// <summary>
@@ -235,7 +213,7 @@ namespace Tank.Map.Generators
         /// <param name="size">The size of the map</param>
         /// <param name="internalRandomizer">The internal randomizer to use as fallback</param>
         /// <returns>An array with float values representing the y positions</returns>
-        private float[] GeneratePoints(Position size, Random internalRandomizer)
+        private float[] GeneratePoints(Point size, Random internalRandomizer)
         {
             float tempDisplace = displace;
             float power = size.X - 1;
@@ -289,7 +267,7 @@ namespace Tank.Map.Generators
         /// </summary>
         /// <param name="size">The size of the map</param>
         /// <returns>An async task which can be watched</returns>
-        public async Task<MapComponent> AsyncGenerateNewMap(Position size)
+        public async Task<MapComponent> AsyncGenerateNewMap(Point size)
         {
             return await Task.Run(() => GenerateNewMap(size, null, int.MinValue));
         }
@@ -300,7 +278,7 @@ namespace Tank.Map.Generators
         /// <param name="size">The size of the map</param>
         /// <param name="mapTexturizer">The texturizer to use</param>
         /// <returns>An async task which can be watched</returns>
-        public async Task<MapComponent> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer)
+        public async Task<MapComponent> AsyncGenerateNewMap(Point size, IMapTexturizer mapTexturizer)
         {
             return await Task.Run(() => GenerateNewMap(size, mapTexturizer, int.MinValue));
         }
@@ -312,7 +290,7 @@ namespace Tank.Map.Generators
         /// <param name="mapTexturizer">The texturizer to use</param>
         /// <param name="seed">The seed to use</param>
         /// <returns>An async task which can be watched</returns>
-        public async Task<MapComponent> AsyncGenerateNewMap(Position size, IMapTexturizer mapTexturizer, int seed)
+        public async Task<MapComponent> AsyncGenerateNewMap(Point size, IMapTexturizer mapTexturizer, int seed)
         {
             return await Task.Run(() => GenerateNewMap(size, mapTexturizer, seed));
         }
