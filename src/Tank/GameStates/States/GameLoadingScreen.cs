@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -132,7 +133,7 @@ namespace Tank.GameStates.States
         /// <param name="mapGenerator">The map generating algorihm to use</param>
         /// <param name="gameSettings">The game settings to use</param>
         public GameLoadingScreen(IMapGenerator mapGenerator, GameSettings gameSettings)
-            :this(mapGenerator, gameSettings, new JsonTextureLoader())
+            : this(mapGenerator, gameSettings, new JsonTextureLoader())
         {
         }
 
@@ -222,9 +223,9 @@ namespace Tank.GameStates.States
                 MapComponent map = component.Result;
                 map.RenderRequired = true;
                 map.ChangedImageData = component.Result.ImageData;
-                
+
                 VisibleComponent mapRenderer = engine.EntityManager.CreateComponent<VisibleComponent>(entity);
-                mapRenderer.SingleTextureSize = new Rectangle(0,0, component.Result.Width, component.Result.Height);
+                mapRenderer.SingleTextureSize = new Rectangle(0, 0, component.Result.Width, component.Result.Height);
                 mapRenderer.Texture = new Texture2D(TankGame.PublicGraphicsDevice, component.Result.Width, component.Result.Height);
                 mapRenderer.Texture.Name = "GeneratedMap";
                 mapRenderer.Source = new Rectangle(0, 0, map.Width, map.Height);
@@ -266,9 +267,8 @@ namespace Tank.GameStates.States
                  spriteBatch,
                  gameFont,
                  defaultShader//,
-                 //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
+                              //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
-            
 
             MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader()));
             engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", settings));
@@ -277,7 +277,7 @@ namespace Tank.GameStates.States
         private Register<IGameObjectBuilder> CreateProjectileRegister()
         {
             IRandomizer randomizer = new SystemRandomizer();
-            Register<IGameObjectBuilder> register =  new Register<IGameObjectBuilder>();
+            Register<IGameObjectBuilder> register = new Register<IGameObjectBuilder>();
             RegisterProjectile("SimpleExplosive", BaseProjectile(randomizer), register);
             register.SealDictionary();
 
@@ -323,20 +323,20 @@ namespace Tank.GameStates.States
             {
                 Player currentPlayer = gameSettings.Players[i];
                 int offset = i + 1;
-                List<Rectangle> animationFrames = new List<Rectangle>();
-                animationFrames.Add(new Rectangle(0, 0, 32, 32));
                 Vector2 playerStartPosition = new Vector2(playerSpace * offset, 0);
                 Raycast raycast = new Raycast(playerStartPosition, Vector2.UnitY, map.Height - 1);
                 Point[] positions = raycast.GetPoints();
-                for (int pIndex = positions.Length - 1; pIndex > 0; pIndex--)
-                {
-                    Point position = positions[pIndex];
-                    if (map.ImageData.IsInArray(position))
-                    {
-                        Color color = map.ImageData.GetValue(position);
-                        playerStartPosition += map.NotSolidColors.Contains(color) ? Vector2.Zero : Vector2.UnitY * position.Y;
-                    }
-                }
+                Point firstBockedYPos = Array.Find(positions, position =>
+                                        {
+                                            if (!map.ImageData.IsInArray(position))
+                                            {
+                                                return false;
+                                            }
+
+                                            Color color = map.ImageData.GetValue(position);
+                                            return !map.NotSolidColors.Contains(color);
+                                        });
+                playerStartPosition += Vector2.UnitY * firstBockedYPos.Y;
                 currentPlayer.TankBuilder.Init(engine.EntityManager);
 
                 uint playerTank = engine.EntityManager.CreateEntity();
@@ -431,7 +431,7 @@ namespace Tank.GameStates.States
             visibleComponent.Source = backgroundFrame1;
             visibleComponent.SingleTextureSize = backgroundFrame1;
             visibleComponent.LayerDepth = 0;
-           
+
 
             AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>();
             animationComponent.FrameSeconds = .25f;

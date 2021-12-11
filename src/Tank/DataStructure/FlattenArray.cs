@@ -44,7 +44,7 @@ namespace Tank.DataStructure
         public FlattenArray(int width, int height, Func<T> initialMethod)
         {
             array = new T[width * height];
-            for(int i = 0; i < array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 array[i] = initialMethod();
             }
@@ -183,7 +183,7 @@ namespace Tank.DataStructure
         /// <returns>True if the position is on the array</returns>
         public bool IsInArray(int targetPosition)
         {
-            return targetPosition >= array.Length || targetPosition < 0;
+            return targetPosition <= array.Length && targetPosition > 0;
         }
     }
 }
