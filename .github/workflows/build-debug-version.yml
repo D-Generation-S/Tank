@@ -51,8 +51,8 @@ jobs:
            body: This is the latest unstable build version, feel free to test it out
            draft: false
            prerelease: true
-       - name: Upload windows 32 zip
-         id: upload game data
+       - name: Upload game data
+         id: upload-game-data
          uses: actions/upload-release-asset@v1
          env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
