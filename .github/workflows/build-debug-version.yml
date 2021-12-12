@@ -39,7 +39,7 @@ jobs:
          with:
            path: releases
        - name: Read folder content
-         run: ls -la dist
+         run: ls -la releases
        - name: Create last unstable release
          id: create_release
          uses: actions/create-release@v1
