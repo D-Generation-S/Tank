@@ -1,0 +1,31 @@
+name: Latest unstable build
+
+on: 
+  push:
+    #branches:
+    #  - develop
+
+jobs:
+   checkGameBuild:
+     name: Create latest build artifact
+     runs-on: windows-latest
+     steps:
+       - name: Clone repository
+         uses: actions/checkout@v2
+       - name: Restore
+         run: dotnet restore
+         shell: powershell
+       - name: Build project Windows
+         run: dotnet publish -c Release -r win-x64 --self-contained true
+         shell: powershell
+       - name: Move successful build
+         run: |
+          mkdir artifact/
+          mv .\src\Tank\bin\Release\**\win-x64 artifact
+          mv ./src/Tank/bin/Release
+       - name: Upload artifact
+         uses: actions/upload-artifact@v2
+         with:
+          name: GameArtifact
+          path: |
+            artifact/
