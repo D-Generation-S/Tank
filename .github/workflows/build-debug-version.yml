@@ -21,8 +21,13 @@ jobs:
        - name: Move successful build
          run: |
           mkdir artifact/
-          mv .\src\Tank\bin\Release\**\win-x64 artifact
+          mv .\src\Tank\bin\Release\**\win-x64 artifact/LastStable
           mv ./src/Tank/bin/Release
+       - name: zip artifact   
+       - uses: papeloto/action-zip@v1
+        with:
+          files: artifact/LastStable/
+          dest: LastStable.zip
        - name: Upload artifact
          uses: actions/upload-artifact@v2
          with:
@@ -58,6 +63,6 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/GameArtifact.zip
+           asset_path: releases/LastStable.zip
            asset_name: Latest_GameArtifact.zip
            asset_content_type: application/zip
