@@ -1,14 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using Tank.Components;
-using Tank.DataStructure;
 using Tank.Events;
 using Tank.Events.EntityBased;
 using Tank.Events.PhysicBased;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.Interfaces.MapGenerators;
 using Tank.Utils;
 using Tank.Validator;
 
@@ -225,14 +221,18 @@ namespace Tank.Systems
                             if (colliderComponent.FireBelow)
                             {
                                 Raycast bottomCast = new Raycast(bottomCenter, Vector2.UnitY, 10);
-                                Position[] cast = bottomCast.GetPositions();
+                                Point[] cast = bottomCast.GetPoints();
                                 for (int i = 0; i < cast.Length; i++)
                                 {
-                                    if (map.Map.IsPixelSolid(cast[i]))
+                                    if (!map.ImageData.IsInArray(cast[i]))
+                                    {
+                                        continue;
+                                    }
+                                    if (map.NotSolidColors.Contains(map.ImageData.GetValue(cast[i])))
                                     {
                                         MapCollisionEvent mapCollisionEvent = CreateEvent<MapCollisionEvent>();
                                         mapCollisionEvent.EntityId = entityId;
-                                        mapCollisionEvent.Position = cast[i].GetVector2();
+                                        mapCollisionEvent.Position = cast[i].ToVector2();
                                         FireEvent(mapCollisionEvent);
                                         break;
                                     }
@@ -284,14 +284,14 @@ namespace Tank.Systems
         }
 
         private bool IsPixelSolid(MapComponent map, Point currentPosition)
-{
+        {
             return map.ImageData.IsInArray(currentPosition) && !map.NotSolidColors.Contains(map.ImageData.GetValue(currentPosition));
         }
 
-/// <inheritdoc/>
-public override void EventNotification(object sender, IGameEvent eventArgs)
-{
-base.EventNotification(sender, eventArgs);
+        /// <inheritdoc/>
+        public override void EventNotification(object sender, IGameEvent eventArgs)
+        {
+            base.EventNotification(sender, eventArgs);
             if (eventArgs is ApplyForceEvent forceEvent)
             {
                 if (watchedEntities.Contains(forceEvent.EntityId))

@@ -102,9 +102,13 @@ namespace Tank.Systems
                 {
                     for (int y = (int)start.Y; y < (int)end.Y; y++)
                     {
-                        if (!map.Map.IsPixelSolid(x, y) && x >= 0 && x < map.Map.Width)
+                        if (map.ImageData.IsInArray(x, y))
                         {
-                            map.Map.ChangePixel(x, y, visual.Color, false);
+                            if (!map.NotSolidColors.Contains(map.ImageData.GetValue(x, y)))
+                            {
+                                map.ChangedImageData.SetValue(x, y, visual.Color);
+                                map.RenderRequired = true;
+                            }
                         }
                     }
                 }
@@ -134,7 +138,7 @@ namespace Tank.Systems
                 return;
             }
             map.ImageData = map.ChangedImageData;
-            
+
             VisibleComponent visible = entityManager.GetEntitiesWithComponent<MapComponent>()
                                                     .Select(id => entityManager.GetComponent<VisibleComponent>(id))
                                                     .FirstOrDefault();

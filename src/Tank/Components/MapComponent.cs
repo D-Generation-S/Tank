@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using Tank.DataStructure;
-using Tank.Interfaces.MapGenerators;
 
 namespace Tank.Components
 {
@@ -11,12 +9,6 @@ namespace Tank.Components
     /// </summary>
     class MapComponent : BaseComponent
     {
-        /// <summary>
-        /// Public readonly access to the map instance
-        /// </summary>
-        [Obsolete]
-        public IMap Map { get; set; }
-
         /// <summary>
         /// The seed of the map
         /// </summary>
@@ -60,9 +52,8 @@ namespace Tank.Components
         /// <inheritdoc/>
         public override void Init()
         {
-            Map = null;
             Seed = 0;
-            Height = 0; 
+            Height = 0;
             Width = 0;
             HighestPoint = 0;
             ImageData = null;
