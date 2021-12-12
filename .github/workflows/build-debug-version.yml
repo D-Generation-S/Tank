@@ -24,8 +24,8 @@ jobs:
           mv .\src\Tank\bin\Release\**\win-x64 artifact/LastStable
           mv ./src/Tank/bin/Release
        - name: zip artifact   
-       - uses: papeloto/action-zip@v1
-        with:
+         uses: papeloto/action-zip@v1
+         with:
           files: artifact/LastStable/
           dest: LastStable.zip
        - name: Upload artifact
