@@ -12,7 +12,7 @@ jobs:
      steps:
        - name: Clone repository
          uses: actions/checkout@v2
-       - name: Restore
+       - name: Restore nuget packages
          run: dotnet restore
          shell: powershell
        - name: Build project Windows
