@@ -21,7 +21,7 @@ jobs:
        - name: Move successful build
          run: |
           mkdir artifact/
-          mv .\src\Tank\bin\Release\**\win-x64 artifact/LastStable
+          mv .\src\Tank\bin\Release\**\win-x64\publish artifact/LastStable
           mv ./src/Tank/bin/Release
        - name: Upload artifact
          uses: actions/upload-artifact@v2
