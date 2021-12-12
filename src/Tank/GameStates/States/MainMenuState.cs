@@ -1,8 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using Tank.Builders;
 using Tank.Commands;
 using Tank.Commands.GameManager;
 using Tank.DataStructure.Settings;
+using Tank.Enums;
 using Tank.Factories;
 using Tank.Factories.Gui;
 using Tank.GameStates.Data;
@@ -39,13 +42,33 @@ namespace Tank.GameStates.States
         {
             base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             closeGameCommand = new CloseGameCommand(gameStateManager);
-            GameSettings settings = new GameSettings(0.098f, 0.3f, 4, int.MinValue, "MoistContinentalSpritesheet");
+            List<Player> players = new List<Player>();
+            List<Rectangle> animationFrames = new List<Rectangle>();
+            animationFrames.Add(new Rectangle(0, 0, 32, 32));
+            for (int i = 0; i < 4; i++)
+            {
+                TankObjectBuilder tankObjectBuilder = new TankObjectBuilder(
+                    contentWrapper.Load<Texture2D>("Images/Entities/BasicTank"),
+                    animationFrames
+                 );
+
+                players.Add(
+                    new Player(
+                        "Player " + (i + 1),
+                        i,
+                        ControlTypeEnum.Keyboard,
+                        i % 2,
+                        PlayerTypeEnum.Player,
+                        tankObjectBuilder
+                        )
+                    );
+            }
+            GameSettings settings = new GameSettings(0.098f, 0f, players, int.MinValue, "MoistContinentalSpritesheet");
 #if DEBUG
             settings.SetDebug();
 #endif
             IState stateToReplace = new GameLoadingScreen(
                                         new MidpointDisplacementGenerator(
-                                            TankGame.PublicGraphicsDevice,
                                             viewportAdapter.VirtualWidth / 4,
                                             0.5f,
                                             new SystemRandomizer()),
@@ -58,7 +81,7 @@ namespace Tank.GameStates.States
         public override void SetActive()
         {
             base.SetActive();
-            IFactory<Button> buttonFactory = new ButtonFactory(baseFont, guiSprite, spriteBatch, 100, Vector2.Zero, buttonClick, buttonHover);
+            IFactory<Button> buttonFactory = new ButtonFactory(baseFont, guiSprite, spriteBatch, 120, Vector2.Zero, buttonClick, buttonHover);
             Button exitButton = buttonFactory.GetNewObject();
             exitButton.SetText("Exit game");
             exitButton.SetCommand(closeGameCommand);

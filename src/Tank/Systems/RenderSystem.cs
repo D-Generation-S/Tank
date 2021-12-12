@@ -1,14 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Tank.Adapter;
+using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
+using Tank.Components.Tags;
 using Tank.DataStructure;
 using Tank.Enums;
 using Tank.Events;
+using Tank.Events.EntityBased;
+using Tank.Events.StateEvents;
+using Tank.Interfaces.Builders;
+using Tank.Interfaces.EntityComponentSystem;
+using Tank.Interfaces.EntityComponentSystem.Manager;
+using Tank.Utils;
 using Tank.Validator;
 
 namespace Tank.Systems
@@ -22,6 +32,12 @@ namespace Tank.Systems
         /// The spritebatch instance to use
         /// </summary>
         private readonly SpriteBatch spriteBatch;
+        private readonly SpriteFont fontToUse;
+
+        /// <summary>
+        /// Builder to use for showing that a screenshot was taken
+        /// </summary>
+        private readonly IGameObjectBuilder textBuilder;
 
         /// <summary>
         /// All the already used containers to prevent gc
@@ -54,6 +70,11 @@ namespace Tank.Systems
         private RenderTarget2D postProcessingRenderTarget;
 
         /// <summary>
+        /// The screenshot render target
+        /// </summary>
+        private RenderTarget2D screenshotRenderTarget;
+
+        /// <summary>
         /// All the post processing effects
         /// </summary>
         private readonly List<Effect> postProcessing;
@@ -79,11 +100,27 @@ namespace Tank.Systems
         private bool drawStart;
 
         /// <summary>
+        /// The base path for screenshots
+        /// </summary>
+        private string screenshotBasePath;
+
+        /// <summary>
+        /// The path to save a screenshot it
+        /// </summary>
+        private string screenshotPath;
+
+        /// <summary>
+        /// Should we take a screenshot in the current draw
+        /// </summary>
+        private bool takeScreenshot => screenshotPath != string.Empty && screenshotPath != null;
+
+
+        /// <summary>
         /// Create a new instance for the renderer
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public RenderSystem(SpriteBatch spriteBatch, Effect defaultEffect)
-            : this(spriteBatch, defaultEffect, new List<Effect>() { defaultEffect })
+        public RenderSystem(SpriteBatch spriteBatch, SpriteFont fontToUse, Effect defaultEffect)
+            : this(spriteBatch, fontToUse, defaultEffect, new List<Effect>() { defaultEffect })
         {
         }
 
@@ -93,11 +130,14 @@ namespace Tank.Systems
         /// <param name="spriteBatch"></param>
         public RenderSystem(
             SpriteBatch spriteBatch,
+            SpriteFont fontToUse,
             Effect defaultEffect,
             List<Effect> postProcessing
             ) : base()
         {
             this.spriteBatch = spriteBatch;
+            this.fontToUse = fontToUse;
+            textBuilder = new FadeOutTextBuilder(fontToUse);
             validators.Add(new RenderableEntityValidator());
 
             usedContainers = new Stack<RenderContainer>();
@@ -106,7 +146,72 @@ namespace Tank.Systems
             this.postProcessing = postProcessing;
             gameRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
             postProcessingRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
+            screenshotRenderTarget = new RenderTarget2D(graphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
+
             drawStart = true;
+            DefaultFolderUtils folderUtils = new DefaultFolderUtils();
+            screenshotBasePath = folderUtils.GetGameFolder();
+            screenshotBasePath = Path.Combine(screenshotBasePath, "Screenshots");
+
+        }
+
+        public override void Initialize(IGameEngine gameEngine)
+        {
+            base.Initialize(gameEngine);
+            eventManager.SubscribeEvent(this, typeof(TakeScreenshotEvent));
+
+            textBuilder.Init(entityManager);
+        }
+
+        public override void EventNotification(object sender, IGameEvent eventArgs)
+        {
+            base.EventNotification(sender, eventArgs);
+            if (eventArgs is TakeScreenshotEvent)
+            {
+                if (!Directory.Exists(screenshotBasePath))
+                {
+                    Directory.CreateDirectory(screenshotBasePath);
+                }
+
+                CopyRenderTarget(postProcessing.Count == 0 ? gameRenderTarget : postProcessingRenderTarget, screenshotRenderTarget);
+                Task.Run(() => TakeScreenshot(screenshotRenderTarget, screenshotPath));
+                screenshotPath = string.Empty;
+
+                screenshotPath = Path.Combine(screenshotBasePath, DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_GameScreenshot.png");
+                AddEntityEvent newEntityEvent = eventManager.CreateEvent<AddEntityEvent>();
+                string text = "Took screenshot: " + screenshotPath;
+                List<IComponent> components = textBuilder.BuildGameComponents(text);
+                PlaceableComponent placeableComponent = (PlaceableComponent)components.Find(component => component.Type == typeof(PlaceableComponent));
+
+                List<uint> messageEntities = entityManager.GetEntitiesWithComponent<MessageTag>();
+                Vector2 textSize = fontToUse.MeasureString(text);
+
+                Vector2 realPosition = Vector2.UnitY * (screenshotRenderTarget.Height);
+                realPosition += Vector2.UnitX * textSize.X;
+                realPosition -= textSize;
+                realPosition -= Vector2.UnitY * (textSize.Y * messageEntities.Count);
+                placeableComponent.Position = realPosition;
+
+                newEntityEvent.Components = components;
+                FireEvent(newEntityEvent);
+
+
+            }
+        }
+
+        /// <summary>
+        /// Create a screenshot async
+        /// </summary>
+        /// <param name="renderTarget">The rendertarget to save the screenshot from</param>
+        /// <param name="path">The path to save to</param>
+        /// <returns>true after saving was done</returns>
+        private async Task<bool> TakeScreenshot(RenderTarget2D renderTarget, string path)
+        {
+            using (StreamWriter writer = new StreamWriter(screenshotPath))
+            {
+                renderTarget.SaveAsPng(writer.BaseStream, renderTarget.Width, renderTarget.Height);
+            }
+            return true;
         }
 
         /// <inheritdoc/>
@@ -115,24 +220,14 @@ namespace Tank.Systems
             drawLocked = true;
             drawStart = true;
 
-            foreach (uint entityId in watchedEntities)
-            {
-                if (entitiesToRemove.Contains(entityId))
-                {
-                    continue;
-                }
-                PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
-                VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
-                VisibleTextComponent textComponent = entityManager.GetComponent<VisibleTextComponent>(entityId);
-                if (placeableComponent == null)
-                {
-                    continue;
-                }
-                CollectTextures(placeableComponent, visibleComponent);
-                CollectText(placeableComponent, textComponent);
-            }
-
-            containersToRender = containersToRender.OrderBy(container => container.ShaderEffect).ThenBy(container => container.Name).ToList();
+            containersToRender = watchedEntities.Where(entityId => !entitiesToRemove.Contains(entityId))
+                                                .Select(entityId => ConvertToRenderContainer(entityId))
+                                                .Where(container => container != null)
+                                                .OrderBy(container => container.RenderType)
+                                                .ThenBy(container => container.ShaderEffect)
+                                                .ThenBy(container => container.Name)
+                                                .ThenBy(container => container.LayerDepth)
+                                                .ToList();
             graphicsDevice.SetRenderTarget(gameRenderTarget);
             for (int i = 0; i < containersToRender.Count; i++)
             {
@@ -147,7 +242,6 @@ namespace Tank.Systems
             }
             spriteBatch.End();
 
-            //graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
             for (int i = 0; i < postProcessing.Count; i++)
             {
                 graphicsDevice.SetRenderTarget(postProcessingRenderTarget);
@@ -169,6 +263,7 @@ namespace Tank.Systems
             graphicsDevice.SetRenderTarget(null);
             viewportAdapter.Reset();
             graphicsDevice.Clear(Color.Black);
+
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -186,6 +281,8 @@ namespace Tank.Systems
                 );
 
             spriteBatch.End();
+
+
             drawLocked = false;
         }
 
@@ -215,6 +312,7 @@ namespace Tank.Systems
             BeginDraw(currentContainer.ShaderEffect);
             switch (currentContainer.RenderType)
             {
+                
                 case RenderTypeEnum.Texture:
                     spriteBatch.Draw(
                       currentContainer.TextureToDraw,
@@ -222,9 +320,9 @@ namespace Tank.Systems
                       currentContainer.Source,
                       currentContainer.Color,
                       currentContainer.Rotation,
-                      Vector2.Zero,
+                      currentContainer.Origin,
                       currentContainer.Effect,
-                      currentContainer.LayerDepth
+                      0
                     );
                     break;
                 case RenderTypeEnum.Text:
@@ -234,10 +332,10 @@ namespace Tank.Systems
                         currentContainer.Position,
                         currentContainer.Color,
                         currentContainer.Rotation,
-                        Vector2.Zero,
+                        currentContainer.Origin,
                         currentContainer.Scale,
                         currentContainer.Effect,
-                        currentContainer.LayerDepth
+                        0
                     );
                     break;
                 default:
@@ -284,17 +382,66 @@ namespace Tank.Systems
         }
 
         /// <summary>
-        /// Render all the textures
+        /// Convert entity id to render container
+        /// </summary>
+        /// <param name="entityId">The entity id to convert</param>
+        /// <returns>A useable render container</returns>
+        private RenderContainer ConvertToRenderContainer(uint entityId)
+        {
+            PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
+            VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
+            VisibleTextComponent textComponent = entityManager.GetComponent<VisibleTextComponent>(entityId);
+            if (placeableComponent == null)
+            {
+                return null;
+            }
+
+            if (visibleComponent != null && !visibleComponent.Hidden && visibleComponent.Texture != null)
+            {
+                return CreateTextureRenderContainer(placeableComponent, visibleComponent);
+            }
+
+            if (textComponent != null && !textComponent.Hidden && textComponent.Font != null)
+            {
+                return CreateTextRenderContainer(placeableComponent, textComponent);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Create a text render container
+        /// </summary>
+        /// <param name="placeableComponent">The placeable container to use</param>
+        /// <param name="textComponent">The text container to use</param>
+        /// <returns>The render container</returns>
+        private RenderContainer CreateTextRenderContainer(PlaceableComponent placeableComponent, VisibleTextComponent textComponent)
+        {
+            RenderContainer renderContainer = GetRenderContainer();
+            renderContainer.RenderType = RenderTypeEnum.Text;
+            renderContainer.Text = textComponent.Text;
+            renderContainer.Font = textComponent.Font;
+            renderContainer.Position = placeableComponent.Position;
+            renderContainer.Color = textComponent.Color;
+            renderContainer.Rotation = placeableComponent.Rotation;
+            renderContainer.Origin = textComponent.RotationCenter;
+            renderContainer.Scale = textComponent.Scale;
+            renderContainer.Effect = textComponent.Effect;
+            renderContainer.LayerDepth = textComponent.LayerDepth;
+            renderContainer.Name = string.Empty;
+            renderContainer.ShaderEffect = textComponent.ShaderEffect;
+
+            return renderContainer;
+        }
+
+        /// <summary>
+        /// Create texture render container
         /// </summary>
         /// <param name="placeableComponent">The placeable component</param>
         /// <param name="visibleComponent">The visible component</param>
-        private void CollectTextures(PlaceableComponent placeableComponent, VisibleComponent visibleComponent)
+        /// <returns>The ready to use render container</returns>
+        private RenderContainer CreateTextureRenderContainer(PlaceableComponent placeableComponent, VisibleComponent visibleComponent)
         {
-            if (visibleComponent == null || visibleComponent.Texture == null)
-            {
-                return;
-            }
-
             Rectangle destination = visibleComponent.Destination;
             destination.X = (int)placeableComponent.Position.X;
             destination.Y = (int)placeableComponent.Position.Y;
@@ -308,44 +455,19 @@ namespace Tank.Systems
             visibleComponent.Destination = destination;
 
             RenderContainer renderContainer = GetRenderContainer();
+            renderContainer.Name = visibleComponent.Texture.Name;
             renderContainer.RenderType = RenderTypeEnum.Texture;
             renderContainer.TextureToDraw = visibleComponent.Texture;
-            renderContainer.Destination =  visibleComponent.Destination;
+            renderContainer.Destination = visibleComponent.Destination;
             renderContainer.Source = visibleComponent.Source;
             renderContainer.Color = visibleComponent.Color;
             renderContainer.Rotation = placeableComponent.Rotation;
+            renderContainer.Origin = visibleComponent.RotationCenter;
             renderContainer.Effect = visibleComponent.Effect;
-            renderContainer.LayerDepth = visibleComponent.LayerDepth;
             renderContainer.ShaderEffect = visibleComponent.ShaderEffect;
-            renderContainer.Name = visibleComponent.Texture.Name;
-            containersToRender.Add(renderContainer);
-        }
+            renderContainer.LayerDepth = visibleComponent.LayerDepth;
 
-        /// <summary>
-        /// Render text data
-        /// </summary>
-        /// <param name="placeableComponent">The placeable component</param>
-        /// <param name="textComponent">The text component</param>
-        private void CollectText(PlaceableComponent placeableComponent, VisibleTextComponent textComponent)
-        {
-            if (textComponent == null || textComponent.Font == null)
-            {
-                return;
-            }
-            RenderContainer renderContainer = GetRenderContainer();
-            renderContainer.RenderType = RenderTypeEnum.Text;
-            renderContainer.Text = textComponent.Text;
-            renderContainer.Font = textComponent.Font;
-            renderContainer.Position = placeableComponent.Position;
-            renderContainer.Color = textComponent.Color;
-            renderContainer.Rotation = placeableComponent.Rotation;
-            renderContainer.Scale = textComponent.Scale;
-            renderContainer.Effect = textComponent.Effect;
-            renderContainer.LayerDepth = textComponent.LayerDepth;
-            renderContainer.Name = string.Empty;
-            renderContainer.ShaderEffect = textComponent.ShaderEffect;
-
-            containersToRender.Add(renderContainer);
+            return renderContainer;
         }
 
         /// <summary>

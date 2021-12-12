@@ -18,11 +18,6 @@ namespace Tank.Interfaces.EntityComponentSystem
         Type Type { get; }
 
         /// <summary>
-        /// The priority for sorting for this component
-        /// </summary>
-        int Priority { get; }
-
-        /// <summary>
         /// Is it allowed to add mulitple instances from this component to an entity
         /// </summary>
         bool AllowMultiple { get; }

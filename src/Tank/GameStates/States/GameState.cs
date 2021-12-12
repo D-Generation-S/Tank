@@ -5,27 +5,24 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataManagement;
-using Tank.DataManagement.Loader;
 using Tank.DataStructure.Geometrics;
 using Tank.DataStructure.Settings;
-using Tank.EntityComponentSystem.Manager;
+using Tank.Events;
 using Tank.Events.PhysicBased;
+using Tank.Events.StateEvents;
 using Tank.Events.TerrainEvents;
 using Tank.Factories;
 using Tank.GameStates.Data;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
-using Tank.Interfaces.MapGenerators;
 using Tank.Map.Generators;
-using Tank.Music;
 using Tank.Randomizer;
-using Tank.Systems;
 using Tank.Wrapper;
 
 namespace Tank.GameStates.States
@@ -34,8 +31,10 @@ namespace Tank.GameStates.States
     /// The game state class
     /// Since this is not done just yet the summary blocks are missing right now
     /// </summary>
-    class GameState : BaseAbstractState
+    class GameState : BaseAbstractState, IEventReceiver
     {
+        private IState gameOverState;
+
         private int ticksToFire;
 
         private KeyboardState previousState;
@@ -51,7 +50,6 @@ namespace Tank.GameStates.States
         private List<Rectangle> explosionAnimationFrames;
 
         private List<SoundEffect> explosionSounds;
-        private Effect defaultShader;
 
         Vector2 bulletSpawnLocation;
 
@@ -62,30 +60,32 @@ namespace Tank.GameStates.States
         private SpriteFont gameFont;
 
         IGameEngine engine;
-        private readonly IMap mapToUse;
+        //private readonly IMap mapToUse;
         private readonly GameSettings gameSettings;
         private readonly SystemRandomizer randomizer;
-        
+
         private uint mapId;
         private uint entityCounter;
         private bool debugOn;
         private bool debugIdGenerated;
 
-        private bool newState;
+        private bool openMenu;
 
         private readonly int cloudsToSpawn;
 
         private float fps;
 
-        public GameState(IMap mapToUse, GameSettings gameSettings)
+        public GameState(IGameEngine gameEngine, GameSettings gameSettings)
         {
-            this.mapToUse = mapToUse;
+            //this.mapToUse = mapToUse;
             this.gameSettings = gameSettings;
+            this.engine = gameEngine;
             randomizer = new SystemRandomizer();
             randomizer.Initzialize(100);
             debugOn = gameSettings.IsDebug;
             debugIdGenerated = false;
             cloudsToSpawn = 250;
+            openMenu = false;
         }
 
         /// <inheritdoc/>
@@ -94,7 +94,7 @@ namespace Tank.GameStates.States
             base.Initialize(contentWrapper, spriteBatch, applicationSettings);
             ticksToFire = 2000;
             bulletSpawnLocation = new Vector2(200, 200);
-            engine = new GameEngine(new EventManager(), new EntityManager(), contentWrapper);
+            //engine = new GameEngine(new EventManager(), new EntityManager(), contentWrapper);
             explosionAnimationFrames = new List<Rectangle>() {
                         new Rectangle(0, 0, 32, 32),
                         new Rectangle(32, 0, 32, 32),
@@ -117,29 +117,8 @@ namespace Tank.GameStates.States
                         };
 
             explosionSounds = new List<SoundEffect>();
-        }
-
-        private void AddEngineSystems()
-        {
-            int screenWidth = viewportAdapter.VirtualWidth;
-            int screenHeight = viewportAdapter.VirtualHeight;
-            engine.AddSystem(new BindingSystem());
-            engine.AddSystem(new MapSculptingSystem());
-            engine.AddSystem(new ForceSystem(new VectorRectangle(0, 0, screenWidth, screenHeight)));
-            engine.AddSystem(new PhysicSystem(new Rectangle(0, 0, screenWidth, screenHeight), gameSettings.Gravity, gameSettings.Wind));
-            engine.AddSystem(new AnimationSystem());
-            engine.AddSystem(new DamageSystem());
-            engine.AddSystem(new SoundEffectSystem(settings));
-            engine.AddSystem(new FadeInFadeOutSystem());
-            engine.AddSystem(new RenderSystem(
-                 spriteBatch,
-                 defaultShader//,
-                 //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
-             ));
-            engine.AddSystem(new GameLogicSystem(gameSettings.PlayerCount, mapToUse));
-
-            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader()));
-            engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", settings));
+            engine.EventManager.SubscribeEvent(this, typeof(GameOverEvent));
+            engine.EventManager.SubscribeEvent(this, typeof(OpenMenuEvent));
         }
 
         private void AddEntites()
@@ -149,7 +128,7 @@ namespace Tank.GameStates.States
             {
                 Position = new Vector2(0, 0)
             });
-
+            /**
             engine.EntityManager.AddComponent(mapId, new VisibleComponent()
             {
                 Texture = mapToUse.Image,
@@ -160,7 +139,8 @@ namespace Tank.GameStates.States
             {
                 Map = mapToUse
             };
-            engine.EntityManager.AddComponent(mapId, mapComponent);
+            **/
+            //engine.EntityManager.AddComponent(mapId, mapComponent);
         }
 
         /// <inheritdoc/>
@@ -174,9 +154,9 @@ namespace Tank.GameStates.States
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion2"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion3"));
             explosionSounds.Add(contentWrapper.Load<SoundEffect>("Sound/Effects/Explosion4"));
-            defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
+            //defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
             gameFont = contentWrapper.Load<SpriteFont>("gameFont");
-            
+
         }
 
         /// <inheritdoc/>
@@ -185,7 +165,7 @@ namespace Tank.GameStates.States
             base.SetActive();
             MediaPlayer.Stop();
             RandomSoundFactory soundFactory = new RandomSoundFactory(explosionSounds, randomizer);
-            IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(bulletTestExplosion, explosionAnimationFrames, soundFactory);
+            IGameObjectBuilder explosionBuilder = new BaseExplosionBuilder(bulletTestExplosion, explosionAnimationFrames, randomizer, soundFactory);
             explosionBuilder.Init(engine);
             List<IGameObjectBuilder> explosionBuilders = new List<IGameObjectBuilder>();
             explosionBuilders.Add(explosionBuilder);
@@ -196,7 +176,16 @@ namespace Tank.GameStates.States
             debriBuilder.Init(engine);
 
             List<IGameObjectBuilder> cloudBuilders = new List<IGameObjectBuilder>();
-            Rectangle cloudSpawnArea = new Rectangle(-50, 0, mapToUse.Width, (int)mapToUse.HighestPosition - 50);
+            MapComponent map = engine.EntityManager.GetEntitiesWithComponent<MapComponent>()
+                                                   .Select(id => engine.EntityManager.GetComponent<MapComponent>(id))
+                                                   .FirstOrDefault();
+            if (map == null)
+            {
+                gameOverState = new MainMenuState();
+                return;
+            }
+
+            Rectangle cloudSpawnArea = new Rectangle(-50, 0, map.Width, (int)map.HighestPoint - 50);
             cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 0, 32, 16) }, randomizer, cloudSpawnArea));
             cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(32, 0, 32, 16) }, randomizer, cloudSpawnArea));
             cloudBuilders.Add(new CloudBuilder(clouds, new List<Rectangle>() { new Rectangle(0, 16, 64, 32) }, randomizer, cloudSpawnArea));
@@ -206,25 +195,19 @@ namespace Tank.GameStates.States
             }
             randomCloudFactory = new RandomEntityBuilderFactory(cloudBuilders, randomizer);
 
-            AddEngineSystems();
             AddEntites();
         }
 
         private void GenerateDebugEntity()
         {
             entityCounter = engine.EntityManager.CreateEntity(false);
-            engine.EntityManager.AddComponent(entityCounter, new PlaceableComponent()
-            {
-                Position = Vector2.Zero
-            });
+            PlaceableComponent placeableComponent = engine.EntityManager.CreateComponent<PlaceableComponent>();
+            placeableComponent.Position = Vector2.Zero;
+            VisibleTextComponent VisibleTextComponent = engine.EntityManager.CreateComponent<VisibleTextComponent>();
+            VisibleTextComponent.Font = gameFont;
 
-            engine.EntityManager.AddComponent(entityCounter, new VisibleTextComponent()
-            {
-                Text = "",
-                Color = Color.White,
-                Font = gameFont,
-                Scale = 1f
-            });
+            engine.EntityManager.AddComponent(entityCounter, placeableComponent);
+            engine.EntityManager.AddComponent(entityCounter, VisibleTextComponent, true);
             debugIdGenerated = true;
         }
 
@@ -235,24 +218,17 @@ namespace Tank.GameStates.States
         }
 
         /// <inheritdoc/>
-        public override void Suspend()
-        {
-            engine.Suspend();
-        }
-
-        /// <inheritdoc/>
-        public override void Restore()
-        {
-            newState = true;
-            engine.Restore();
-        }
-
-        /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
+            if (gameOverState != null)
+            {
+                gameStateManager.Replace(gameOverState);
+            }
+
             int cloudCounter = engine.EntityManager.GetEntitiesWithComponent<CloudTag>().Count;
             if (cloudCounter < cloudsToSpawn || Keyboard.GetState().IsKeyDown(Keys.F6))
             {
+                /**
                 int leftClouds = cloudsToSpawn - cloudCounter;
                 for (int i = 0; i < leftClouds; i++)
                 {
@@ -262,25 +238,14 @@ namespace Tank.GameStates.States
                         engine.EntityManager.AddComponent(cloudId, component);
                     }
                 }
-
-            }
-
-            if (Keyboard.GetState().IsKeyUp(Keys.Escape))
-            {
-                newState = false;
-            }
-            if (!newState && Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                engine.Update(gameTime);
-                gameStateManager.Add(new EscMenuScreen());
-                return;
+                **/
             }
 
             if (ticksToFire > 0)
             {
                 ticksToFire--;
             }
-            if (ticksToFire > 0 || Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
+            if (Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
             {
                 /**
                 uint debriId = engine.EntityManager.CreateEntity(false);
@@ -294,8 +259,6 @@ namespace Tank.GameStates.States
                     }
                 }
                 **/
-
-
                 uint projectileId = engine.EntityManager.CreateEntity(false);
                 foreach (IComponent component in bulletBuilder.BuildGameComponents())
                 {
@@ -328,7 +291,6 @@ namespace Tank.GameStates.States
             {
                 IState gameLoading = new GameLoadingScreen(
                     new MidpointDisplacementGenerator(
-                        TankGame.PublicGraphicsDevice,
                         viewportAdapter.VirtualWidth / 4,
                         0.5f,
                         new SystemRandomizer()
@@ -347,23 +309,21 @@ namespace Tank.GameStates.States
                     {
                         PlaceableComponent placeableComponent = (PlaceableComponent)component;
                         placeableComponent.Position = mouseWrapper.GetMouseVectorPosition();
-                        placeableComponent.Position -= new Vector2(32 / 2, 32 / 2);
                         circle = new Circle(mouseWrapper.GetMouseVectorPosition(), 16);
                     }
                     engine.EntityManager.AddComponent(exposion, component);
                     if (circle != null)
                     {
-                        DamageComponent damage = new DamageComponent()
-                        {
-                            DamagingDone = false,
-                            CenterDamageValue = 100,
-                            DamageArea = circle,
-                            EffectFactory = randomExplosionFactory
-
-                        };
+                        DamageComponent damage = engine.EntityManager.CreateComponent<DamageComponent>();
+                        damage.DamagingDone = false;
+                        damage.CenterDamageValue = 100;
+                        damage.DamageArea = circle;
+                        damage.EffectFactory = randomExplosionFactory;
                         engine.EntityManager.AddComponent(exposion, damage);
+
                         DamageTerrainEvent damageTerrainEvent = engine.EventManager.CreateEvent<DamageTerrainEvent>();
                         damageTerrainEvent.DamageArea = circle;
+
                         engine.EventManager.FireEvent<DamageTerrainEvent>(this, damageTerrainEvent);
                         MapCollisionEvent mapCollisionEvent = engine.EventManager.CreateEvent<MapCollisionEvent>();
                         mapCollisionEvent.EntityId = exposion;
@@ -389,11 +349,17 @@ namespace Tank.GameStates.States
                     entityCounterText.Text += "\nComponents: " + engine.GetComponentCount();
                     entityCounterText.Text += "\nUsed Components: " + engine.GetUsedComponentCount();
                     entityCounterText.Text += "\nSystems: " + engine.GetSystemCount();
+                    entityCounterText.Text += engine.GetSystemWatchedEntites();
                 }
             }
             engine.Update(gameTime);
             previousState = Keyboard.GetState();
             previousMouseState = Mouse.GetState();
+            if (openMenu)
+            {
+                openMenu = false;
+                gameStateManager.Add(new EscMenuScreen());
+            }
         }
 
         /// <inheritdoc/>
@@ -410,6 +376,23 @@ namespace Tank.GameStates.States
         public override void Destruct()
         {
             engine.Clear();
+            if (MediaPlayer.State == MediaState.Playing)
+            {
+                MediaPlayer.Stop();
+            }
+        }
+
+        public void EventNotification(object sender, IGameEvent eventArgs)
+        {
+            if (eventArgs is GameOverEvent)
+            {
+                gameOverState = new MainMenuState();
+            }
+
+            if (eventArgs is OpenMenuEvent)
+            {
+                openMenu = true;
+            }
         }
     }
 }

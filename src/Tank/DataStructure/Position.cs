@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace Tank.DataStructure
 {
     /// <summary>
     /// This class represents a position on the screen
-    /// </summary>   
+    /// </summary>
+    [Obsolete]
     public class Position
     {
         /// <summary>

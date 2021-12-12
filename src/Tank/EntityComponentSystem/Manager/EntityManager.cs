@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tank.Events;
 using Tank.Events.ComponentBased;
 using Tank.Events.EntityBased;
@@ -38,6 +39,10 @@ namespace Tank.EntityComponentSystem.Manager
         /// </summary>
         private IEventManager eventManager;
 
+        /// <summary>
+        /// The stack with all entities to remove
+        /// </summary>
+        private Stack<uint> removeStack;
 
         /// <summary>
         /// Create a new instance of the entity manager
@@ -49,6 +54,7 @@ namespace Tank.EntityComponentSystem.Manager
             componentManager = new ComponentManager();
             removedEntities = new Queue<uint>();
             nextId = uint.MinValue;
+            removeStack = new Stack<uint>();
         }
 
         /// <summary>
@@ -170,6 +176,12 @@ namespace Tank.EntityComponentSystem.Manager
         }
 
         /// <inheritdoc/>
+        public List<T> GetComponents<T>() where T : IComponent
+        {
+            return componentManager.GetComponents(typeof(T)).Cast<T>().ToList();
+        }
+
+        /// <inheritdoc/>
         public bool HasComponent<T>(uint entityId) where T : IComponent
         {
             return HasComponent(entityId, typeof(T));
@@ -230,12 +242,8 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public void RemoveEntity(uint entityId)
         {
-            RemoveComponents(entityId);
-            entities.Remove(entityId);
-            EntityRemovedEvent entityRemovedEvent = eventManager.CreateEvent<EntityRemovedEvent>();
-            entityRemovedEvent.EntityId = entityId;
-            eventManager.FireEvent(this, entityRemovedEvent);
-            removedEntities.Enqueue(entityId);
+            removeStack.Push(entityId);
+            return;
         }
 
         /// <inheritdoc/>
@@ -309,6 +317,22 @@ namespace Tank.EntityComponentSystem.Manager
             removedEntities.Clear();
             componentManager.Clear();
             nextId = 0;
+        }
+
+        public void LateUpdate()
+        {
+            while (removeStack.Count > 0)
+            {
+                uint entityId  = removeStack.Pop();
+                RemoveComponents(entityId);
+                entities.Remove(entityId);
+                EntityRemovedEvent entityRemovedEvent = eventManager.CreateEvent<EntityRemovedEvent>();
+                entityRemovedEvent.EntityId = entityId;
+                eventManager.FireEvent(this, entityRemovedEvent);
+                removedEntities.Enqueue(entityId);
+            }
+            
+
         }
     }
 }

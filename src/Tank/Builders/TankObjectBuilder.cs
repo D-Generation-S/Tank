@@ -2,10 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tank.Components;
+using Tank.Components.GameObject;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataStructure;
 using Tank.Interfaces.EntityComponentSystem;
+using Tank.Systems.Data;
 
 namespace Tank.Builders
 {
@@ -14,10 +15,6 @@ namespace Tank.Builders
     /// </summary>
     class TankObjectBuilder : BaseBuilder
     {
-        /// <summary>
-        /// The start position of the tank
-        /// </summary>
-        private readonly Vector2 startPosition;
 
         /// <summary>
         /// The spritesheet to use
@@ -28,6 +25,10 @@ namespace Tank.Builders
         /// The animation frames
         /// </summary>
         private readonly List<Rectangle> animationFrames;
+
+        /// <summary>
+        /// The collidert destination
+        /// </summary>
         private readonly Rectangle colliderDestination;
 
         /// <summary>
@@ -36,12 +37,17 @@ namespace Tank.Builders
         private readonly Effect effect;
 
         /// <summary>
+        /// The center or rotation
+        /// </summary>
+        private Vector2 RotationCenter;
+
+        /// <summary>
         /// Create a new instance of this class to spawn game objects
         /// </summary>
         /// <param name="spriteSheet"></param>
         /// <param name="animationFrames"></param>
-        public TankObjectBuilder(Vector2 startPosition, Texture2D spriteSheet, List<Rectangle> animationFrames)
-            : this(startPosition, spriteSheet, animationFrames, null)
+        public TankObjectBuilder(Texture2D spriteSheet, List<Rectangle> animationFrames)
+            : this(spriteSheet, animationFrames, null)
         {
         }
 
@@ -50,15 +56,15 @@ namespace Tank.Builders
         /// </summary>
         /// <param name="spriteSheet"></param>
         /// <param name="animationFrames"></param>
-        public TankObjectBuilder(Vector2 startPosition, Texture2D spriteSheet, List<Rectangle> animationFrames, Effect effect)
+        public TankObjectBuilder(Texture2D spriteSheet, List<Rectangle> animationFrames, Effect effect)
         {
-            this.startPosition = startPosition;
             this.spriteSheet = spriteSheet;
             this.animationFrames = animationFrames;
             this.effect = effect;
             int textureWidth = animationFrames[0].Width;
             int textureHeight = animationFrames[0].Height;
             colliderDestination = new Rectangle(-textureWidth / 2, -textureHeight / 2, textureWidth, textureHeight);
+            RotationCenter = new Vector2(textureWidth / 2, textureHeight / 2);
         }
 
         /// <summary>
@@ -67,11 +73,31 @@ namespace Tank.Builders
         /// <returns></returns>
         public override List<IComponent> BuildGameComponents(object parameter)
         {
-            List<IComponent> returnComponents = new List<IComponent>();
             if (entityManager == null)
             {
-                return returnComponents;
+                return new List<IComponent>();
             }
+
+            if (parameter is Vector2 startPosition)
+            {
+                return CreateComponents(startPosition);
+            }
+
+            return new List<IComponent>();
+        }
+
+        protected List<IComponent> CreateComponents(Vector2 startPosition)
+        {
+            List<IComponent> returnComponents = new List<IComponent>();
+            GameObjectData gameObjectData = entityManager.CreateComponent<GameObjectData>();
+            gameObjectData.Properties.Add("Health", 100f);
+            gameObjectData.Properties.Add("MaxHealth", gameObjectData.Properties["Health"]);
+            gameObjectData.Properties.Add("Strength", 5f);
+            gameObjectData.Properties.Add("MaxStrength", ControlStaticValues.MAX_STRENGHT);
+            
+            gameObjectData.Properties.Add("Armor", 10f);
+            gameObjectData.Properties.Add("Accuracy", 1f);
+            gameObjectData.DataChanged = true;
             PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
             placeableComponent.Position = startPosition + new Vector2(spriteSheet.Width, spriteSheet.Height) * -1;
             VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
@@ -80,23 +106,27 @@ namespace Tank.Builders
             visibleComponent.Destination = animationFrames[0];
             visibleComponent.Texture = spriteSheet;
             visibleComponent.ShaderEffect = effect;
-            visibleComponent.DrawMiddle = true;
+            visibleComponent.RotationCenter = RotationCenter;
             MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
             moveable.Mass = 15;
             moveable.ApplyPhysic = true;
             ColliderComponent collider = entityManager.CreateComponent<ColliderComponent>();
             collider.Collider = colliderDestination;
 
-            PlayerControllableComponent controllableComponent = entityManager.CreateComponent<PlayerControllableComponent>();
-            controllableComponent.Controller = new StaticKeyboardControls();
+            //PlayerControllableComponent controllableComponent = entityManager.CreateComponent<PlayerControllableComponent>();
+            //controllableComponent.Controller = new StaticKeyboardControls();
             GameObjectTag gameObjectTag = entityManager.CreateComponent<GameObjectTag>();
 
             returnComponents.Add(placeableComponent);
+            returnComponents.Add(gameObjectData);
             returnComponents.Add(visibleComponent);
             returnComponents.Add(moveable);
             returnComponents.Add(collider);
-            returnComponents.Add(controllableComponent);
+            //returnComponents.Add(controllableComponent);
             returnComponents.Add(gameObjectTag);
+            returnComponents.Add(entityManager.CreateComponent<PlayerControlledTag>());
+            returnComponents.Add(entityManager.CreateComponent<ControllableGameObject>());
+            returnComponents.Add(entityManager.CreateComponent<TankObjectTag>());
 
             return returnComponents;
         }

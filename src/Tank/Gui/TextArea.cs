@@ -60,9 +60,9 @@ namespace Tank.Gui
         protected override void SetupTextures()
         {
             imageSize = textureToShow.GetPatternImageSize("buttonLeft");
-            currentLeftSource = textureToShow.GetAreaFromPatternName("ButtonLeft");
-            currentMiddleSource = textureToShow.GetAreaFromPatternName("ButtonMiddle");
-            currentRightSource = textureToShow.GetAreaFromPatternName("ButtonRight");
+            currentLeftSource = textureToShow.GetAreaFromPattern("ButtonLeft");
+            currentMiddleSource = textureToShow.GetAreaFromPattern("ButtonMiddle");
+            currentRightSource = textureToShow.GetAreaFromPattern("ButtonRight");
         }
 
         /// <inheritdoc/>
@@ -151,7 +151,7 @@ namespace Tank.Gui
         protected virtual Vector2 CenterTextVertical(Vector2 startPosition, string text)
         {
             Vector2 textSize = GetTextLenght(text);
-            return startPosition + Vector2.UnitY * textSize.Y;
+            return startPosition + Vector2.UnitY * (textSize.Y / 2);
         }
     }
 }

@@ -96,6 +96,13 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         List<IComponent> GetComponents(uint entityId);
 
         /// <summary>
+        /// Get all the components of a specific type
+        /// </summary>
+        /// <typeparam name="T">The type to get</typeparam>
+        /// <returns>All the components of a given type</returns>
+        List<T> GetComponents<T>() where T : IComponent;
+
+        /// <summary>
         /// This method will return you all the components from an entity based on an component
         /// </summary>
         /// <param name="entityId">All the components from the given entity id</param>
@@ -203,5 +210,10 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// </summary>
         /// <returns>The number of component</returns>
         int GetUsedComponentCount();
+
+        /// <summary>
+        /// This method must be called latest, it will ensure that after a frame everything gets cleared
+        /// </summary>
+        void LateUpdate();
     }
 }

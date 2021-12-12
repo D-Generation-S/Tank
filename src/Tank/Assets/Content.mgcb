@@ -68,6 +68,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/Entities/CloudSpritesheet.png
 
+#begin Images/Entities/HealthBar.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Entities/HealthBar.png
+
 #begin Images/Entities/Pixel.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -79,6 +91,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/Entities/Pixel.png
+
+#begin Images/Entities/SelectionArrow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Entities/SelectionArrow.png
+
+#begin Images/Entities/StrengthMeter.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Entities/StrengthMeter.png
 
 #begin Images/Gui/WindowSpriteSheet.png
 /importer:TextureImporter

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Wrapper;
@@ -104,8 +105,12 @@ namespace Tank.EntityComponentSystem.Manager
 
             foreach (ISystem system in systems)
             {
+                system.PreUpdate();
                 system.Update(gameTime);
+                system.LateUpdate();
             }
+
+            EntityManager.LateUpdate();
         }
 
         /// <inheritdoc/>
@@ -176,6 +181,18 @@ namespace Tank.EntityComponentSystem.Manager
             locked = false;
         }
 
-
+        /// <inheritdoc/>
+        public string GetSystemWatchedEntites()
+        {
+            StringBuilder stringBuilder = new StringBuilder("\n");
+            foreach (ISystem system in systems)
+            {
+                stringBuilder.Append(system.GetType().Name);
+                stringBuilder.Append(": ");
+                stringBuilder.Append(system.WatchedEntitiesCount);
+                stringBuilder.Append("\n");
+            }
+            return stringBuilder.ToString();
+        }
     }
 }

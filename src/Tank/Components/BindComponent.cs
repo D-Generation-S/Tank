@@ -8,6 +8,11 @@ namespace Tank.Components
     class BindComponent : BaseComponent
     {
         /// <summary>
+        /// Remove this bound entity as soon as the parent is removed
+        /// </summary>
+        public bool DeleteIfParentGone;
+
+        /// <summary>
         /// The entity this is bound to
         /// </summary>
         public uint BoundEntityId { get; set; }
@@ -34,6 +39,7 @@ namespace Tank.Components
             Offset = Vector2.Zero;
             Source = false;
             PositionBound = false;
+            DeleteIfParentGone = false;
         }
     }
 }

@@ -27,7 +27,6 @@ namespace Tank.EntityComponentSystem.Manager
         /// </summary>
         private readonly List<IComponent> usedComponents;
 
-
         /// <summary>
         /// The maximum amount of components to keep
         /// </summary>
@@ -113,7 +112,18 @@ namespace Tank.EntityComponentSystem.Manager
             {
                 return new List<IComponent>();
             }
-            return storage.GetComponents(entityId);            
+            return storage.GetComponents(entityId);
+        }
+
+        /// <inheritdoc/>
+        public List<IComponent> GetComponents(Type componentType)
+        {
+            ComponentStorage storage = GetComponentStorage(componentType);
+            if (storage == null)
+            {
+                return new List<IComponent>();
+            }
+            return storage.GetComponents();
         }
 
         /// <inheritdoc/>
@@ -141,7 +151,8 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public bool MoveComponent(uint targetEntityId, IComponent componentToMove)
         {
-            throw new NotImplementedException();
+            componentToMove.SetEntityId(targetEntityId);
+            return true;
         }
 
         /// <inheritdoc/>
@@ -255,5 +266,6 @@ namespace Tank.EntityComponentSystem.Manager
             }
             return component == null ? (T)Activator.CreateInstance(type) : component;
         }
+
     }
 }

@@ -16,6 +16,8 @@ namespace Tank.Systems
     /// </summary>
     abstract class AbstractSystem : ISystem
     {
+        /// <inheritdoc/>
+        public int WatchedEntitiesCount => watchedEntities.Count;
 
         /// <inheritdoc/>
         public uint SystemId { get; private set; }
@@ -185,15 +187,13 @@ namespace Tank.Systems
         /// <param name="entityId">The id of the entity which got added</param>
         protected virtual void AddEntity(uint entityId)
         {
-            if (EntityIsRelevant(entityId))
+            if (!watchedEntities.Contains(entityId) 
+                && !newEntities.Contains(entityId) 
+                && EntityIsRelevant(entityId))
             {
                 if (entitiesToRemove.Contains(entityId))
                 {
                     entitiesToRemove.Remove(entityId);
-                }
-                if (watchedEntities.Contains(entityId) || newEntities.Contains(entityId))
-                {
-                    return;
                 }
                 newEntities.Add(entityId);
             }
@@ -246,7 +246,7 @@ namespace Tank.Systems
         /// <param name="entityId"></param>
         protected virtual void RemoveEntity(uint entityId)
         {
-            if (!entitiesToRemove.Contains(entityId))
+            if (!entitiesToRemove.Contains(entityId) && watchedEntities.Contains(entityId))
             {
                 entitiesToRemove.Add(entityId);
             }
@@ -266,6 +266,26 @@ namespace Tank.Systems
             }
         }
 
+        /// <inheritdoc/>
+        public void PreUpdate()
+        {
+            for (int i = entitiesToRemove.Count - 1; i >= 0; i--)
+            {
+                if (!watchedEntities.Contains(entitiesToRemove[i]))
+                {
+                    continue;
+                }
+                watchedEntities.Remove(entitiesToRemove[i]);
+                entitiesToRemove.RemoveAt(i);
+            }
+
+            for (int i = newEntities.Count - 1; i >= 0; i--)
+            {
+                watchedEntities.Add(newEntities[i]);
+                newEntities.RemoveAt(i);
+            }
+        }
+
         /// <summary>
         /// This method is the update method of the game.
         /// It will remove all the entites from the watched entites if present in the remove list
@@ -277,18 +297,11 @@ namespace Tank.Systems
             {
                 return;
             }
+        }
 
-            for (int i = entitiesToRemove.Count - 1; i >= 0; i--)
-            {
-                watchedEntities.Remove(entitiesToRemove[i]);
-                entitiesToRemove.RemoveAt(i);
-            }
-
-            for (int i = newEntities.Count - 1; i >= 0; i--)
-            {
-                watchedEntities.Add(newEntities[i]);
-                newEntities.RemoveAt(i);
-            }
+        /// <inheritdoc/>
+        public virtual void LateUpdate()
+        {
         }
 
 

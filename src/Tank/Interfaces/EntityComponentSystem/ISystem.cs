@@ -10,6 +10,11 @@ namespace Tank.Interfaces.EntityComponentSystem
     interface ISystem : IEventReceiver, IRestoreable
     {
         /// <summary>
+        /// All the watched entities in the system
+        /// </summary>
+        public int WatchedEntitiesCount { get; }
+
+        /// <summary>
         /// The system id
         /// </summary>
         uint SystemId { get; }
@@ -27,10 +32,20 @@ namespace Tank.Interfaces.EntityComponentSystem
         void Initialize(IGameEngine gameEngine);
 
         /// <summary>
+        /// Called before the real update
+        /// </summary>
+        void PreUpdate();
+
+        /// <summary>
         /// Update this system
         /// </summary>
         /// <param name="gameTime">The current GameTime</param>
         void Update(GameTime gameTime);
+
+        /// <summary>
+        /// Called after the update
+        /// </summary>
+        void LateUpdate();
 
         /// <summary>
         /// Draw this system

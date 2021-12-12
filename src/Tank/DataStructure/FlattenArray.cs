@@ -1,4 +1,7 @@
-﻿namespace Tank.DataStructure
+﻿using Microsoft.Xna.Framework;
+using System;
+
+namespace Tank.DataStructure
 {
     /// <summary>
     /// A helper class for creating flatten arrays and providing easier access methods
@@ -33,9 +36,26 @@
         }
 
         /// <summary>
+        /// Simple constructor for an empty dataset
+        /// </summary>
+        /// <param name="width">The width of the 2D array</param>
+        /// <param name="height">The height of the 2D array</param>
+        /// <param name="initialMethod">Method to prefill the array</param>
+        public FlattenArray(int width, int height, Func<T> initialMethod)
+        {
+            array = new T[width * height];
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = initialMethod();
+            }
+            this.width = width;
+        }
+
+        /// <summary>
         /// Converts an array to a flatten one
         /// </summary>
-        /// <param name="array"></param>
+        /// <param name="array">The array to convert</param>
+        /// <param name="singleRowWidth">Size of a single row</param>
         public FlattenArray(T[] array, int singleRowWidth)
         {
             this.array = new T[array.Length];
@@ -66,10 +86,21 @@
         /// Get the value for a given position
         /// </summary>
         /// <param name="position">The position to get the value for</param>
-        /// <returns></returns>
+        /// <returns>The value T at the given position</returns>
+        [Obsolete("Please use the method which requires a point")]
         public T GetValue(Position position)
         {
             return GetValue(position.X, position.Y);
+        }
+
+        /// <summary>
+        /// Get the value for a given position
+        /// </summary>
+        /// <param name="point">The position to get the value for</param>
+        /// <returns>The value T at the given position</returns>
+        public T GetValue(Point point)
+        {
+            return GetValue(point.X, point.Y);
         }
 
         /// <summary>
@@ -117,6 +148,42 @@
             array[targetPosition] = value;
 
             return true;
+        }
+
+        /// <summary>
+        /// Check if a point is part of the array
+        /// </summary>
+        /// <param name="x">The x position on the array</param>
+        /// <param name="y">The y position on the array</param>
+        /// <returns>True if the position is on the array</returns>
+        public bool IsInArray(int x, int y)
+        {
+            return IsInArray(y * width + x);
+        }
+
+        /// <summary>
+        /// Check if a point is part of the array
+        /// </summary>
+        /// <param name="point">The point to check</param>
+        /// <returns>True if the position is on the array</returns>
+        public bool IsInArray(Point point)
+        {
+            return IsInArray(point.X, point.Y);
+        }
+
+        public bool IsInArray(Vector2 point)
+        {
+            return IsInArray((int)point.X, (int)point.Y);
+        }
+
+        /// <summary>
+        /// Check if a point is part of the array
+        /// </summary>
+        /// <param name="targetPosition">The position on the array</param>
+        /// <returns>True if the position is on the array</returns>
+        public bool IsInArray(int targetPosition)
+        {
+            return targetPosition <= array.Length && targetPosition > 0;
         }
     }
 }

@@ -9,6 +9,11 @@ namespace Tank.Components.Rendering
     internal abstract class BaseVisibleComponent : BaseComponent
     {
         /// <summary>
+        /// Is this texture hidden right now
+        /// </summary>
+        public bool Hidden;
+
+        /// <summary>
         /// The draw color for the visible
         /// </summary>
         public Color Color;
@@ -29,20 +34,19 @@ namespace Tank.Components.Rendering
         public float LayerDepth;
 
         /// <summary>
-        /// Create a new instance of this class
+        /// The center of rotiation
         /// </summary>
-        public BaseVisibleComponent()
-        {
-            Priority = 500;
-        }
+        public Vector2 RotationCenter;
 
         /// <inheritdoc/>
         public override void Init()
         {
+            Hidden = false;
             Color = Color.White;
-            LayerDepth = 1f;
             Effect = SpriteEffects.None;
             ShaderEffect = null;
+            LayerDepth = 0f;
+            RotationCenter = Vector2.Zero;
         }
     }
 }

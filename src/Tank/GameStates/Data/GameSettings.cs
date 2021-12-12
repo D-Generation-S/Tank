@@ -1,4 +1,6 @@
-﻿namespace Tank.GameStates.Data
+﻿using System.Collections.Generic;
+
+namespace Tank.GameStates.Data
 {
     /// <summary>
     /// Class to contain the current game settings
@@ -8,7 +10,12 @@
         /// <summary>
         /// The number of players
         /// </summary>
-        public uint PlayerCount { get; }
+        public uint PlayerCount => (uint)Players.Count;
+
+        /// <summary>
+        /// The current players
+        /// </summary>
+        public List<Player> Players { get; }
 
         /// <summary>
         /// The level of gravity
@@ -43,12 +50,12 @@
         /// <param name="playerCount">The number of players</param>
         /// <param name="mapSeed">The map seed to use</param>
         /// <param name="spriteSetName">The name of the spriteset to load</param>
-        public GameSettings(float gravity, float wind, uint playerCount, int mapSeed, string spriteSetName)
+        public GameSettings(float gravity, float wind, List<Player> players, int mapSeed, string spriteSetName)
         {
             Gravity = gravity;
             Wind = wind;
-            PlayerCount = playerCount;
             MapSeed = mapSeed;
+            Players = players;
             SpriteSetName = spriteSetName;
             IsDebug = false;
         }

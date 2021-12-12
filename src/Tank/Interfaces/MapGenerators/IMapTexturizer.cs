@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Tank.Components;
 using Tank.Interfaces.Randomizer;
 
 namespace Tank.Interfaces.MapGenerators
@@ -13,7 +14,7 @@ namespace Tank.Interfaces.MapGenerators
         /// </summary>
         /// <param name="map">The map to texturize</param>
         /// <param name="generatorFillColor">The color the generator did use for creating the map</param>
-        void TexturizeMap(IMap map, Color generatorFillColor);
+        void TexturizeMap(MapComponent map, Color generatorFillColor);
 
         /// <summary>
         /// This will texturize a given map
@@ -21,6 +22,6 @@ namespace Tank.Interfaces.MapGenerators
         /// <param name="map">The map to texturize</param>
         /// <param name="generatorFillColor">The color the generator did use for creating the map</param>
         /// <param name="randomizer">The randomizer to use</param>
-        void TexturizeMap(IMap map, Color generatorFillColor, IRandomizer randomizer);
+        void TexturizeMap(MapComponent map, Color generatorFillColor, IRandomizer randomizer);
     }
 }

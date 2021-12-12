@@ -28,7 +28,7 @@ namespace Tank.GameStates.States
         /// <summary>
         /// The width for each button element
         /// </summary>
-        private const int ELEMENT_WIDTH = 120;
+        private const int ELEMENT_WIDTH = 150;
 
         /// <summary>
         /// The command to use to close the setting page

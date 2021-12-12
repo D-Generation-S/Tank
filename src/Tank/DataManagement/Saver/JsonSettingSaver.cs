@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Tank.DataStructure.Settings;
+using Tank.Utils;
 
 namespace Tank.DataManagement.Saver
 {
@@ -10,6 +11,16 @@ namespace Tank.DataManagement.Saver
     /// </summary>
     class JsonSettingSaver : IDataSaver<ApplicationSettings>
     {
+        /// <summary>
+        /// Utility to get default folders
+        /// </summary>
+        private DefaultFolderUtils folderUtils;
+
+        public JsonSettingSaver()
+        {
+            folderUtils = new DefaultFolderUtils();
+        }
+
         /// <inheritdoc/>
         public bool SaveData(ApplicationSettings dataToSave, string fileName)
         {
@@ -43,8 +54,7 @@ namespace Tank.DataManagement.Saver
         /// <returns>The path to the setting folder</returns>
         public string GetSettingFolder()
         {
-            string returnFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(returnFolder, TankGame.GameName);
+            return Path.Combine(folderUtils.GetApplicationFolder(), TankGame.GameName);
 
         }
     }

@@ -33,10 +33,20 @@ namespace Tank.Components.Rendering
         /// </summary>
         public bool DrawMiddle;
 
+        /// <summary>
+        /// The cutoff to the right
+        /// </summary>
+        public int CutoffRight;
+
         public override void Init()
         {
             base.Init();
+            Texture = null;
+            Destination = Rectangle.Empty;
             SingleTextureSize = Rectangle.Empty;
+            Source = Rectangle.Empty;
+            DrawMiddle = false;
+            CutoffRight = 0;
         }
     }
 }

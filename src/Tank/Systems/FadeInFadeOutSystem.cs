@@ -51,7 +51,9 @@ namespace Tank.Systems
 
             foreach (uint entityId in watchedEntities)
             {
-                VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
+
+                BaseVisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
+                visibleComponent = visibleComponent ?? entityManager.GetComponent<VisibleTextComponent>(entityId);
                 FadeComponent fadeComponent = entityManager.GetComponent<FadeComponent>(entityId);
                 if (visibleComponent == null || fadeComponent == null || entitiesToRemove.Contains(entityId))
                 {
@@ -91,7 +93,7 @@ namespace Tank.Systems
         /// </summary>
         /// <param name="visibleComponent">The visible component to use</param>
         /// <param name="fadeComponent">The face component to use</param>
-        private void FadeIn(VisibleComponent visibleComponent, FadeComponent fadeComponent)
+        private void FadeIn(BaseVisibleComponent visibleComponent, FadeComponent fadeComponent)
         {
             fadeComponent.RealOpacityChange += fadeComponent.OpacityChange; if (fadeComponent.RealOpacityChange > 1)
             {
@@ -108,7 +110,7 @@ namespace Tank.Systems
         /// </summary>
         /// <param name="visibleComponent">The visible component to use</param>
         /// <param name="fadeComponent">The fade component to use</param>
-        private void FadeOut(VisibleComponent visibleComponent, FadeComponent fadeComponent)
+        private void FadeOut(BaseVisibleComponent visibleComponent, FadeComponent fadeComponent)
         {
             fadeComponent.RealOpacityChange += fadeComponent.OpacityChange;
             if (fadeComponent.RealOpacityChange > 1)

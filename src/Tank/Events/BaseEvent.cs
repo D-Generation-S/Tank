@@ -23,7 +23,6 @@ namespace Tank.Events
         /// <inheritdoc/>
         public virtual void Init()
         {
-            throw new NotImplementedException();
         }
     }
 }
