@@ -1,0 +1,88 @@
+name: Latest unstable build
+
+on: 
+  push:
+    branches:
+      - develop
+
+jobs:
+   createGameBuild:
+     name: Create latest build artifact
+     runs-on: windows-latest
+     steps:
+       - name: Clone repository
+         uses: actions/checkout@v2
+       - name: Restore nuget packages
+         run: dotnet restore
+         shell: powershell
+       - name: Build project Windows
+         run: dotnet publish -c Release -r win-x64 --self-contained true
+         shell: powershell
+       - name: Move successful build
+         run: |
+          mkdir artifact/
+          mv .\src\Tank\bin\Release\**\win-x64\publish artifact/LastStable
+          mv ./src/Tank/bin/Release
+       - name: Upload artifact
+         uses: actions/upload-artifact@v2
+         with:
+          name: GameArtifact
+          path: |
+            artifact/
+   createZip:
+     name: Create zip
+     needs: ["createGameBuild"]
+     runs-on: ubuntu-latest   
+     steps:
+       - name: Download artifacts
+         uses: actions/download-artifact@v2
+         with:
+           name: GameArtifact
+           path: dist
+       - name: Create zip
+         run: |
+           cd dist/
+           zip -r Latest_GameArtifact.zip .
+       - name: Move artifact
+         run: |
+           mkdir upload-artifacts/
+           mv dist/Latest_GameArtifact.zip upload-artifacts/
+       - name: Upload build artifact
+         uses: actions/upload-artifact@v2
+         with:
+          name: ZipArtifact
+          path: |
+            upload-artifacts/
+   createUploadArtifact:
+     name: Upload last unstable
+     needs: ["createZip"]
+     runs-on: ubuntu-latest
+     steps:
+       - name: Download artifacts
+         uses: actions/download-artifact@v2
+         with:
+           name: ZipArtifact
+           path: releases
+       - name: Read folder content
+         run: ls -la releases
+       - name: Create last unstable release
+         id: create_release
+         uses: actions/create-release@v1
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         with:
+           tag_name: ${{ github.ref }}-${{ GITHUB.RUN_NUMBER }}
+           release_name: Latest unstable
+           body: This is the latest unstable build version, feel free to test it out
+           draft: false
+           prerelease: true
+       - name: Upload game data
+         id: upload-game-data
+         uses: actions/upload-release-asset@v1
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         with:
+           upload_url: ${{ steps.create_release.outputs.upload_url }}
+           asset_path: releases/Latest_GameArtifact.zip
+           asset_name: Latest_GameArtifact.zip
+           asset_content_type: application/zip
