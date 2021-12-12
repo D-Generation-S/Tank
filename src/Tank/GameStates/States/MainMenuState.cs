@@ -108,7 +108,7 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime); startGameCommand.Execute();
+            base.Update(gameTime);
         }
     }
 }
