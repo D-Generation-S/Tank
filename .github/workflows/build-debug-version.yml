@@ -23,25 +23,45 @@ jobs:
           mkdir artifact/
           mv .\src\Tank\bin\Release\**\win-x64 artifact/LastStable
           mv ./src/Tank/bin/Release
-       - name: zip artifact   
-         uses: papeloto/action-zip@v1
-         with:
-          files: artifact/LastStable/
-          dest: LastStable.zip
        - name: Upload artifact
          uses: actions/upload-artifact@v2
          with:
-          name: GameArtifact.zip
+          name: GameArtifact
           path: |
             artifact/
+   createZip:
+     name: Create zip
+     needs: ["createGameBuild"]
+     runs-on: ubuntu-latest   
+     steps:
+       - name: Download artifacts
+         uses: actions/download-artifact@v2
+         with:
+           name: GameArtifact
+           path: dist
+       - name: Create zip
+         run: |
+           cd dist/
+           zip -r Latest_GameArtifact.zip .
+       - name: Move artifact
+         run: |
+           mkdir upload-artifacts/
+           mv dist/Latest_GameArtifact.zip upload-artifacts/
+       - name: Upload build artifact
+         uses: actions/upload-artifact@v2
+         with:
+          name: ZipArtifact
+          path: |
+            upload-artifacts/
    createUploadArtifact:
      name: Upload last unstable
-     needs: ["createGameBuild"]
+     needs: ["createZip"]
      runs-on: ubuntu-latest
      steps:
        - name: Download artifacts
          uses: actions/download-artifact@v2
          with:
+           name: ZipArtifact
            path: releases
        - name: Read folder content
          run: ls -la releases
@@ -63,6 +83,6 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/GameArtifact.zip
+           asset_path: releases/Latest_GameArtifact.zip
            asset_name: Latest_GameArtifact.zip
            asset_content_type: application/zip
