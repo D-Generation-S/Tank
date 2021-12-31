@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Tank.Interfaces.EntityComponentSystem;
@@ -22,6 +21,26 @@ namespace Tank.EntityComponentSystem.Manager
         /// The next system id
         /// </summary>
         private uint nextSystemId;
+
+        /// <summary>
+        /// The time from the last call
+        /// </summary>
+        private float previousTime;
+
+        /// <summary>
+        /// The time left over from the last physic calculation
+        /// </summary>
+        private float leftOverDeltaTime;
+
+        /// <summary>
+        /// Was the engine restored lately
+        /// </summary>
+        private bool gotRestored;
+
+        /// <summary>
+        /// A number of milliseconds each physic update is allowed to use, is more was used in the last call it will be called twice in this call
+        /// </summary>
+        private readonly float physicMillisecondsDeltaTime;
 
         /// <summary>
         /// Readonly access to the event manager for classes from the outside
@@ -60,6 +79,12 @@ namespace Tank.EntityComponentSystem.Manager
         /// <param name="entityManager">The entity manager to use</param>
         /// <param name="contentWrapper">The content warpper to use</param>
         public GameEngine(IEventManager eventManager, IEntityManager entityManager, ContentWrapper contentWrapper)
+            : this(eventManager, entityManager, contentWrapper, 60)
+        {
+
+        }
+
+        public GameEngine(IEventManager eventManager, IEntityManager entityManager, ContentWrapper contentWrapper, int physicUpdatesPerSecond)
         {
             systems = new List<ISystem>();
             systemsToAdd = new List<ISystem>();
@@ -69,6 +94,8 @@ namespace Tank.EntityComponentSystem.Manager
             EntityManager = entityManager;
             ContentManager = contentWrapper;
             nextSystemId = 0;
+            gotRestored = true;
+            physicMillisecondsDeltaTime = 1000 / physicUpdatesPerSecond;
         }
 
         /// <inheritdoc/>
@@ -88,6 +115,17 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public void Update(GameTime gameTime)
         {
+            float deltaTime = gameTime.TotalGameTime.Milliseconds - previousTime;
+            previousTime = gameTime.TotalGameTime.Milliseconds;
+            int timeSteps = (int)((deltaTime + leftOverDeltaTime) / physicMillisecondsDeltaTime);
+            leftOverDeltaTime = deltaTime - (timeSteps * physicMillisecondsDeltaTime);
+            if (gotRestored)
+            {
+                gotRestored = false;
+                leftOverDeltaTime = 0;
+                timeSteps = 1;
+            }
+
             if (!locked)
             {
                 for (int i = systemsToAdd.Count - 1; i >= 0; i--)
@@ -106,6 +144,11 @@ namespace Tank.EntityComponentSystem.Manager
             foreach (ISystem system in systems)
             {
                 system.PreUpdate();
+
+                for (int iteration = 0; iteration < timeSteps; iteration++)
+                {
+                    system.PhysicUpdate(gameTime);
+                }
                 system.Update(gameTime);
                 system.LateUpdate();
             }
@@ -133,7 +176,7 @@ namespace Tank.EntityComponentSystem.Manager
         /// <inheritdoc/>
         public int GetComponentCount()
         {
-             return EntityManager.GetComponentCount();
+            return EntityManager.GetComponentCount();
         }
 
         /// <inheritdoc/>
@@ -164,6 +207,7 @@ namespace Tank.EntityComponentSystem.Manager
             {
                 system.Restore();
             }
+            gotRestored = true;
         }
 
         /// <inheritdoc/>

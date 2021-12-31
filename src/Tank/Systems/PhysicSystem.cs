@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Linq;
 using Tank.Components;
 using Tank.Events;
 using Tank.Events.EntityBased;
@@ -107,37 +108,17 @@ namespace Tank.Systems
         }
 
         /// <inheritdoc/>
-        public override void Update(GameTime gameTime)
+        public override void PhysicUpdate(GameTime gameTime)
         {
-            base.Update(gameTime);
-
-            float deltaTime = gameTime.TotalGameTime.Milliseconds - previousTime;
-            previousTime = gameTime.TotalGameTime.Milliseconds;
             MapComponent map = GetMapComponent();
             if (map == null)
             {
                 return;
             }
-
-            int timeSteps = (int)((deltaTime + leftOverDeltaTime) / fixedDeltaTime);
-
-            leftOverDeltaTime = deltaTime - (timeSteps * fixedDeltaTime);
-            if (gotRestored)
-            {
-                gotRestored = false;
-                leftOverDeltaTime = 0;
-                timeSteps = 1;
-            }
-
             updateLocked = true;
-
-            foreach (uint entityId in watchedEntities)
+            foreach (uint entityId in watchedEntities.Where(entityId => !entityManager.HasComponent(entityId, typeof(MapComponent)) && !entitiesToRemove.Contains(entityId)))
             {
-                if (entityManager.HasComponent(entityId, typeof(MapComponent)) || entitiesToRemove.Contains(entityId))
-                {
-                    continue;
-                }
-                CalculatePhysic(map, timeSteps, entityId);
+                CalculatePhysic(map, entityId);
             }
             updateLocked = false;
         }
@@ -154,133 +135,131 @@ namespace Tank.Systems
         /// <param name="map"></param>
         /// <param name="timeSteps"></param>
         /// <param name="entityId"></param>
-        private void CalculatePhysic(MapComponent map, int timeSteps, uint entityId)
+        private void CalculatePhysic(MapComponent map, uint entityId)
         {
             Vector2 oldPosition = Vector2.Zero;
             Vector2 bottomCenter = Vector2.Zero;
-            for (int iteration = 0; iteration < timeSteps; iteration++)
+            PlaceableComponent placeComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
+            MoveableComponent moveComponent = entityManager.GetComponent<MoveableComponent>(entityId);
+            ColliderComponent colliderComponent = entityManager.GetComponent<ColliderComponent>(entityId);
+
+            if (placeComponent == null || moveComponent == null)
             {
-                PlaceableComponent placeComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
-                MoveableComponent moveComponent = entityManager.GetComponent<MoveableComponent>(entityId);
-                ColliderComponent colliderComponent = entityManager.GetComponent<ColliderComponent>(entityId);
+                return;
+            }
 
-                if (placeComponent == null || moveComponent == null)
-                {
-                    break;
-                }
-
-                if (!moveComponent.ApplyPhysic)
-                {
-                    placeComponent.Position += moveComponent.Velocity;
-                    if (!extendedScreenBounds.Contains(placeComponent.Position))
-                    {
-                        RemoveEntityEvent removeEntityEvent = CreateEvent<RemoveEntityEvent>();
-                        removeEntityEvent.EntityId = entityId;
-                        FireEvent(removeEntityEvent);
-                        return;
-                    }
-                    continue;
-                }
-
-                if (colliderComponent == null)
-                {
-                    return;
-                }
-
-                ApplyForce(moveComponent, gravityForce, false);
-                ApplyForce(moveComponent, windForce);
-
-                oldPosition = placeComponent.Position;
-                bottomCenter = new Vector2(colliderComponent.Collider.Center.X, colliderComponent.Collider.Bottom - 2);
-                bottomCenter += oldPosition;
-                Raycast raycast = new Raycast(bottomCenter, moveComponent.Velocity, moveComponent.Velocity.Length());
-                Point[] rayPath = raycast.GetPoints();
-                for (int y = 0; y < rayPath.Length; y++)
-                {
-                    Point currentPosition = rayPath[y];
-                    if (IsPixelSolid(map, currentPosition))
-                    {
-                        Vector2 xForce = Vector2.UnitX;
-                        xForce *= moveComponent.Velocity.X;
-                        Raycast horizontalRaycast = new Raycast(bottomCenter, xForce, xForce.Length());
-                        Point[] horizontalRay = horizontalRaycast.GetPoints();
-                        for (int x = 0; x < horizontalRay.Length; x++)
-                        {
-                            Point currentXPosition = rayPath[x];
-                            if (IsPixelSolid(map, currentXPosition))
-                            {
-                                xForce *= -1;
-                                ApplyForce(moveComponent, windForce * -1);
-                                ApplyForce(moveComponent, xForce, false);
-                                break;
-                            }
-                        }
-
-                        if (colliderComponent.FireCollideEvent)
-                        {
-                            if (colliderComponent.FireBelow)
-                            {
-                                Raycast bottomCast = new Raycast(bottomCenter, Vector2.UnitY, 10);
-                                Point[] cast = bottomCast.GetPoints();
-                                for (int i = 0; i < cast.Length; i++)
-                                {
-                                    if (!map.ImageData.IsInArray(cast[i]))
-                                    {
-                                        continue;
-                                    }
-                                    if (map.NotSolidColors.Contains(map.ImageData.GetValue(cast[i])))
-                                    {
-                                        MapCollisionEvent mapCollisionEvent = CreateEvent<MapCollisionEvent>();
-                                        mapCollisionEvent.EntityId = entityId;
-                                        mapCollisionEvent.Position = cast[i].ToVector2();
-                                        FireEvent(mapCollisionEvent);
-                                        break;
-                                    }
-                                }
-                                return;
-                            }
-
-                            Vector2 frontPosition = Vector2.UnitX;
-                            frontPosition *= colliderComponent.Collider.Right;
-                            if (moveComponent.Velocity.X < 0)
-                            {
-                                frontPosition *= -1;
-                            }
-                            frontPosition += bottomCenter;
-                            MapCollisionEvent mapPositionCollisionEvent = CreateEvent<MapCollisionEvent>();
-                            mapPositionCollisionEvent.EntityId = entityId;
-                            mapPositionCollisionEvent.Position = frontPosition;
-                            FireEvent(mapPositionCollisionEvent);
-                            return;
-                        }
-
-                        Vector2 normalForce = GetNormalForce(moveComponent, bottomCenter, currentPosition.ToVector2());
-                        ApplyForce(moveComponent, normalForce, false);
-                        ApplyForce(moveComponent, gravityForce * -1, false);
-                        break;
-                    }
-                }
-                //moveComponent.Acceleration = moveComponent.Acceleration;
-                moveComponent.Velocity += moveComponent.Acceleration;
+            if (!moveComponent.ApplyPhysic)
+            {
                 placeComponent.Position += moveComponent.Velocity;
-
-                if (moveComponent.PhysicRotate)
-                {
-                    Vector2 rotationTarget = placeComponent.Position - oldPosition;
-                    placeComponent.Rotation = (float)Math.Atan2(
-                        rotationTarget.Y,
-                        rotationTarget.X
-                    );
-                }
-
-                if (!map.ImageData.IsInArray(placeComponent.Position))
+                if (!extendedScreenBounds.Contains(placeComponent.Position))
                 {
                     RemoveEntityEvent removeEntityEvent = CreateEvent<RemoveEntityEvent>();
                     removeEntityEvent.EntityId = entityId;
                     FireEvent(removeEntityEvent);
+                    return;
                 }
-                moveComponent.Acceleration *= 0;
+                return;
             }
+
+            if (colliderComponent == null)
+            {
+                return;
+            }
+
+            ApplyForce(moveComponent, gravityForce, false);
+            ApplyForce(moveComponent, windForce);
+
+            oldPosition = placeComponent.Position;
+            bottomCenter = new Vector2(colliderComponent.Collider.Center.X, colliderComponent.Collider.Bottom - 2);
+            bottomCenter += oldPosition;
+            Raycast raycast = new Raycast(bottomCenter, moveComponent.Velocity, moveComponent.Velocity.Length());
+            Point[] rayPath = raycast.GetPoints();
+            for (int y = 0; y < rayPath.Length; y++)
+            {
+                Point currentPosition = rayPath[y];
+                if (IsPixelSolid(map, currentPosition))
+                {
+                    Vector2 xForce = Vector2.UnitX;
+                    xForce *= moveComponent.Velocity.X;
+                    Raycast horizontalRaycast = new Raycast(bottomCenter, xForce, xForce.Length());
+                    Point[] horizontalRay = horizontalRaycast.GetPoints();
+                    for (int x = 0; x < horizontalRay.Length; x++)
+                    {
+                        Point currentXPosition = rayPath[x];
+                        if (IsPixelSolid(map, currentXPosition))
+                        {
+                            xForce *= -1;
+                            ApplyForce(moveComponent, windForce * -1);
+                            ApplyForce(moveComponent, xForce, false);
+                            break;
+                        }
+                    }
+
+                    if (colliderComponent.FireCollideEvent)
+                    {
+                        if (colliderComponent.FireBelow)
+                        {
+                            Raycast bottomCast = new Raycast(bottomCenter, Vector2.UnitY, 10);
+                            Point[] cast = bottomCast.GetPoints();
+                            for (int i = 0; i < cast.Length; i++)
+                            {
+                                if (!map.ImageData.IsInArray(cast[i]))
+                                {
+                                    continue;
+                                }
+                                if (map.NotSolidColors.Contains(map.ImageData.GetValue(cast[i])))
+                                {
+                                    MapCollisionEvent mapCollisionEvent = CreateEvent<MapCollisionEvent>();
+                                    mapCollisionEvent.EntityId = entityId;
+                                    mapCollisionEvent.Position = cast[i].ToVector2();
+                                    FireEvent(mapCollisionEvent);
+                                    break;
+                                }
+                            }
+                            return;
+                        }
+
+                        Vector2 frontPosition = Vector2.UnitX;
+                        frontPosition *= colliderComponent.Collider.Right;
+                        if (moveComponent.Velocity.X < 0)
+                        {
+                            frontPosition *= -1;
+                        }
+                        frontPosition += bottomCenter;
+                        MapCollisionEvent mapPositionCollisionEvent = CreateEvent<MapCollisionEvent>();
+                        mapPositionCollisionEvent.EntityId = entityId;
+                        mapPositionCollisionEvent.Position = frontPosition;
+                        FireEvent(mapPositionCollisionEvent);
+                        return;
+                    }
+
+                    Vector2 normalForce = GetNormalForce(moveComponent, bottomCenter, currentPosition.ToVector2());
+                    ApplyForce(moveComponent, normalForce, false);
+                    ApplyForce(moveComponent, gravityForce * -1, false);
+                    break;
+                }
+            }
+            //moveComponent.Acceleration = moveComponent.Acceleration;
+            moveComponent.Velocity += moveComponent.Acceleration;
+            placeComponent.Position += moveComponent.Velocity;
+
+            if (moveComponent.PhysicRotate)
+            {
+                Vector2 rotationTarget = placeComponent.Position - oldPosition;
+                placeComponent.Rotation = (float)Math.Atan2(
+                    rotationTarget.Y,
+                    rotationTarget.X
+                );
+            }
+
+            if (!map.ImageData.IsInArray(placeComponent.Position))
+            {
+                RemoveEntityEvent removeEntityEvent = CreateEvent<RemoveEntityEvent>();
+                removeEntityEvent.EntityId = entityId;
+                FireEvent(removeEntityEvent);
+            }
+            moveComponent.Acceleration *= 0;
+
         }
 
         private bool IsPixelSolid(MapComponent map, Point currentPosition)
