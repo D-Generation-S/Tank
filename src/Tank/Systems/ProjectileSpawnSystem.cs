@@ -17,37 +17,15 @@ namespace Tank.Systems
     {
         private readonly Register<IGameObjectBuilder> register;
 
-        /// <summary>
-        /// A fixed number used as to find out how many physic updates are needed
-        /// </summary>
-        private readonly float fixedDeltaTime;
-
-        /// <summary>
-        /// The time from the last call
-        /// </summary>
-        private float previousTime;
-
-        /// <summary>
-        /// The time left over from the last physic calculation
-        /// </summary>
-        private float leftOverDeltaTime;
-
         public ProjectileSpawnSystem(Register<IGameObjectBuilder> register)
         {
-            fixedDeltaTime = 16;
-
             this.register = register;
             validators.Add(new ProjectileSpawnValidator());
         }
 
-        public override void Update(GameTime gameTime)
+        /// <inheritdoc/>
+        public override void PhysicUpdate(GameTime gameTime)
         {
-            base.Update(gameTime);
-
-            float deltaTime = gameTime.TotalGameTime.Milliseconds - previousTime;
-            previousTime = gameTime.TotalGameTime.Milliseconds;
-            int timeSteps = (int)((deltaTime + leftOverDeltaTime) / fixedDeltaTime);
-
             foreach (uint entityId in watchedEntities)
             {
                 PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
@@ -66,10 +44,7 @@ namespace Tank.Systems
                     continue;
                 }
 
-                for (int i = 0; i < timeSteps; i++)
-                {
-                    spawnComponent.CurrentTick++;
-                }
+                spawnComponent.CurrentTick++;
                 if (spawnComponent.CurrentTick < spawnComponent.TicksUntilSpawn)
                 {
                     continue;
@@ -104,7 +79,6 @@ namespace Tank.Systems
                 FireEvent(addEntityEvent);
 
                 spawnComponent.Amount -= 1;
-
             }
         }
 
