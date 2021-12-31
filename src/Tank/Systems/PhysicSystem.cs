@@ -22,21 +22,6 @@ namespace Tank.Systems
         private readonly float fixedDeltaTime;
 
         /// <summary>
-        /// The milliseconds which are spend for an update
-        /// </summary>
-        private readonly float fixedDeltaTimeSeconds;
-
-        /// <summary>
-        /// The time left over from the last physic calculation
-        /// </summary>
-        private float leftOverDeltaTime;
-
-        /// <summary>
-        /// The time from the last call
-        /// </summary>
-        private float previousTime;
-
-        /// <summary>
         /// The screen rectangle, entites leaving the area will be removed
         /// </summary>
         private Rectangle screenBound;
@@ -55,11 +40,6 @@ namespace Tank.Systems
         /// The wind applied by the physic system
         /// </summary>
         private Vector2 windForce;
-
-        /// <summary>
-        /// The physic system got restored
-        /// </summary>
-        private bool gotRestored;
 
         /// <summary>
         /// Create a new instance of the physic system with a given screen bound
@@ -84,8 +64,6 @@ namespace Tank.Systems
         /// <param name="screenBound"></param>
         public PhysicSystem(Rectangle screenBound, float gravity, float wind) : base()
         {
-            fixedDeltaTime = 16;
-            fixedDeltaTimeSeconds = fixedDeltaTime / 1000f;
             gravityForce = new Vector2(0, gravity);
             windForce = new Vector2(wind, 0);
             this.screenBound = screenBound;
@@ -97,7 +75,6 @@ namespace Tank.Systems
 
             validators.Add(new PhysicEntityValidator());
             validators.Add(new MapValidator());
-            gotRestored = true;
         }
 
         /// <inheritdoc/>
@@ -121,12 +98,6 @@ namespace Tank.Systems
                 CalculatePhysic(map, entityId);
             }
             updateLocked = false;
-        }
-
-        /// <inheritdoc/>
-        public override void Restore()
-        {
-            gotRestored = true;
         }
 
         /// <summary>
