@@ -43,6 +43,12 @@ namespace Tank.Interfaces.EntityComponentSystem
         void Update(GameTime gameTime);
 
         /// <summary>
+        /// Update this system with a physic based update
+        /// </summary>
+        /// <param name="gameTime">The current Game Time</param>
+        void PhysicUpdate(GameTime gameTime);
+
+        /// <summary>
         /// Called after the update
         /// </summary>
         void LateUpdate();

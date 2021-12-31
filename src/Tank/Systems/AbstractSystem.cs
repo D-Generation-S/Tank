@@ -187,8 +187,8 @@ namespace Tank.Systems
         /// <param name="entityId">The id of the entity which got added</param>
         protected virtual void AddEntity(uint entityId)
         {
-            if (!watchedEntities.Contains(entityId) 
-                && !newEntities.Contains(entityId) 
+            if (!watchedEntities.Contains(entityId)
+                && !newEntities.Contains(entityId)
                 && EntityIsRelevant(entityId))
             {
                 if (entitiesToRemove.Contains(entityId))
@@ -297,6 +297,12 @@ namespace Tank.Systems
             {
                 return;
             }
+        }
+
+
+        /// <inheritdoc/>
+        public virtual void PhysicUpdate(GameTime gameTime)
+        {
         }
 
         /// <inheritdoc/>
