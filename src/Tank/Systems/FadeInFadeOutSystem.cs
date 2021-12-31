@@ -12,29 +12,6 @@ namespace Tank.Systems
     /// </summary>
     class FadeInFadeOutSystem : AbstractSystem
     {
-        /// <summary>
-        /// The time left over from the last physic calculation
-        /// </summary>
-        private float leftOverDeltaTime;
-
-        /// <summary>
-        /// The time from the last call
-        /// </summary>
-        private float previousTime;
-
-        /// <summary>
-        /// A fixed number used as to find out how many physic updates are needed
-        /// </summary>
-        private readonly float fixedDeltaTime;
-
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        public FadeInFadeOutSystem()
-        {
-            fixedDeltaTime = 16;
-        }
-
         /// <inheritdoc/>
         public override void Initialize(IGameEngine gameEngine)
         {
@@ -45,10 +22,6 @@ namespace Tank.Systems
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            float deltaTime = gameTime.TotalGameTime.Milliseconds - previousTime;
-            previousTime = gameTime.TotalGameTime.Milliseconds;
-            int timeSteps = (int)((deltaTime + leftOverDeltaTime) / fixedDeltaTime);
-
             foreach (uint entityId in watchedEntities)
             {
 
