@@ -17,16 +17,6 @@ namespace Tank.Systems
     class PhysicSystem : AbstractSystem
     {
         /// <summary>
-        /// A fixed number used as to find out how many physic updates are needed
-        /// </summary>
-        private readonly float fixedDeltaTime;
-
-        /// <summary>
-        /// The screen rectangle, entites leaving the area will be removed
-        /// </summary>
-        private Rectangle screenBound;
-
-        /// <summary>
         /// The extended screenBound
         /// </summary>
         private Rectangle extendedScreenBounds;
@@ -66,7 +56,6 @@ namespace Tank.Systems
         {
             gravityForce = new Vector2(0, gravity);
             windForce = new Vector2(wind, 0);
-            this.screenBound = screenBound;
             extendedScreenBounds = screenBound;
             extendedScreenBounds.X -= screenBound.Width / 4;
             extendedScreenBounds.Y -= screenBound.Height / 4;
