@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 
-namespace Tank.DataStructure.InputWrapper
+namespace TankEngine.DataStructures.InputWrapper
 {
     /// <summary>
     /// This class will wrap the keyboard

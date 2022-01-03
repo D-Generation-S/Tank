@@ -1,4 +1,4 @@
-﻿namespace Tank.Events.EntityBased
+﻿namespace TankEngine.EntityComponentSystem.Events
 {
     /// <summary>
     /// A class instance will tell the system to remove an entity

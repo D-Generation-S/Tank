@@ -1,4 +1,4 @@
-﻿namespace Tank.DataManagement.Saver
+﻿namespace TankEngine.DataProvider.Saver
 {
     /// <summary>
     /// Interface to save data

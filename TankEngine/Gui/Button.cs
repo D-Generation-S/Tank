@@ -3,11 +3,10 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using Tank.Commands;
-using Tank.DataStructure.Spritesheet;
 using TankEngine.Commands;
+using TankEngine.DataStructures.Spritesheet;
 
-namespace Tank.Gui
+namespace TankEngine.Gui
 {
     /// <summary>
     /// A simple button

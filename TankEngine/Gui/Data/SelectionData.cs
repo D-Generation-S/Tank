@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Tank.Gui.Data
+namespace TankEngine.Gui.Data
 {
     /// <summary>
     /// Data set for the selection gui element

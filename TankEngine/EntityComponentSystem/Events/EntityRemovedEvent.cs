@@ -1,4 +1,4 @@
-﻿namespace Tank.Events.EntityBased
+﻿namespace TankEngine.EntityComponentSystem.Events
 {
     /// <summary>
     /// This class will tell systems that an entity was removed from the manager

@@ -1,4 +1,4 @@
-﻿namespace Tank.Commands
+﻿namespace TankEngine.Commands
 {
     /// <summary>
     /// Command interface

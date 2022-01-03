@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tank.DataManagement.Loader
+namespace TankEngine.DataProvider.Loader
 {
     /// <summary>
     /// A simple data loader interface

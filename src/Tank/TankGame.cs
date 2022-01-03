@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Tank.DataStructure.Settings;
-using Tank.GameStates;
 using Tank.GameStates.States;
 using TankEngine.Adapter;
+using TankEngine.GameStates;
 using TankEngine.Wrapper;
 
 namespace Tank

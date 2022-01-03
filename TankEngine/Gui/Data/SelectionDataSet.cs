@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tank.Gui.Data
+namespace TankEngine.Gui.Data
 {
     /// <summary>
     /// A single dataset for the selection element
@@ -42,7 +42,7 @@ namespace Tank.Gui.Data
             }
             catch (Exception)
             {
-                return default(T);
+                return default;
             }
         }
     }

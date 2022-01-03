@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.Interfaces.EntityComponentSystem;
+using TankEngine.EntityComponentSystem;
 
 namespace Tank.Builders
 {

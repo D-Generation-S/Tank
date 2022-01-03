@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Tank.GameStates
+namespace TankEngine.GameStates
 {
     /// <summary>
     /// If a thing is drawable

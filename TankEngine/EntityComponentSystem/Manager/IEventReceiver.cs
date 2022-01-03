@@ -1,6 +1,6 @@
-﻿using Tank.Events;
+﻿using TankEngine.EntityComponentSystem.Events;
 
-namespace Tank.Interfaces.EntityComponentSystem.Manager
+namespace TankEngine.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This interface is part of the event system and allows a class to recieve events after subscribing

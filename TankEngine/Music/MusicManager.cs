@@ -2,11 +2,10 @@
 using System;
 using System.Collections.Generic;
 using Tank.DataManagement;
-using Tank.Interfaces.Randomizer;
-using Tank.Randomizer;
+using TankEngine.Randomizer;
 using TankEngine.Wrapper;
 
-namespace Tank.Music
+namespace TankEngine.Music
 {
     /// <summary>
     /// The music manager class to get the songs from the playlist

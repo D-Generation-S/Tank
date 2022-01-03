@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
-using Tank.Interfaces.Randomizer;
+using TankEngine.Factories;
+using TankEngine.Randomizer;
 
 namespace Tank.Factories
 {

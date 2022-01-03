@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TankEngine.Adapter;
+using TankEngine.GameStates;
+using TankEngine.GameStates.States;
 using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States

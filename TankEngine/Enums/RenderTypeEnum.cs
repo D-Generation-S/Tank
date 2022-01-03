@@ -1,4 +1,4 @@
-﻿namespace Tank.Enums
+﻿namespace TankEngine.Enums
 {
     /// <summary>
     /// The type of the render container

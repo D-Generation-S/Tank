@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using TankEngine.Wrapper;
 
-namespace Tank.Gui
+namespace TankEngine.Gui
 {
     /// <summary>
     /// Interface to describe gui elements

@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Tank.DataManagement.Loader;
-using Tank.DataManagement.Saver;
+using Tank.DataManagement;
+using TankEngine.DataProvider.Loader;
+using TankEngine.DataProvider.Saver;
 
-namespace Tank.DataManagement
+namespace TankEngine.DataProvider
 {
     /// <summary>
     /// Datamanager which can load and save data

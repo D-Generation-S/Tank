@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Tank.Commands;
 using Tank.Commands.GameManager;
 using Tank.DataStructure.Settings;
-using Tank.Factories;
-using Tank.Factories.Gui;
-using Tank.Gui;
+using TankEngine.Commands;
+using TankEngine.Factories;
+using TankEngine.Factories.Gui;
+using TankEngine.Gui;
 using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States

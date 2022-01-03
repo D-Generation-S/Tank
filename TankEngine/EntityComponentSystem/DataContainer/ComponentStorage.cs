@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Tank.Events.ComponentBased;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
 
-namespace Tank.EntityComponentSystem.DataContainer
+namespace TankEngine.EntityComponentSystem.DataContainer
 {
     /// <summary>
     /// Class to store components of a given type

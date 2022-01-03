@@ -1,5 +1,5 @@
-﻿using Tank.GameStates;
-using Tank.GameStates.States;
+﻿using TankEngine.GameStates;
+using TankEngine.GameStates.States;
 
 namespace Tank.Commands.GameManager
 {

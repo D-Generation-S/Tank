@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Tank.DataStructure.Geometrics;
+using Tank.DataStructure.Quadtree;
+using TankEngine.DataStructures.Geometrics;
 
-namespace Tank.DataStructure.Quadtree
+namespace TankEngine.DataStructures.Quadtree
 {
     /// <summary>
     /// Quadtree to use

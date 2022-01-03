@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Manager;
 
 namespace Tank.Interfaces.EntityComponentSystem.Manager
 {
@@ -35,8 +37,8 @@ namespace Tank.Interfaces.EntityComponentSystem.Manager
         /// <param name="entityId">The id of the entity to check</param>
         /// <param name="componentType">The type of the component to check if it exists on the entity</param>
         /// <returns>Return true if the component is existing</returns>
-        bool HasComponent(uint entityId, Type componentType);        
-        
+        bool HasComponent(uint entityId, Type componentType);
+
         /// <summary>
         /// This method will get you all the components from an entity
         /// </summary>

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using Tank.GameStates.States;
+using TankEngine.GameStates.States;
 using TankEngine.Wrapper;
 
-namespace Tank.GameStates
+namespace TankEngine.GameStates
 {
     /// <summary>
     /// Manager to manage the game state

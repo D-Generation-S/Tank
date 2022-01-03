@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Tank.Enums;
+using TankEngine.Enums;
 
-namespace Tank.DataStructure
+namespace TankEngine.DataStructures
 {
     /// <summary>
     /// Container to used for rendering

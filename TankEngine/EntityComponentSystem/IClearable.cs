@@ -1,4 +1,4 @@
-﻿namespace Tank.Interfaces.EntityComponentSystem
+﻿namespace TankEngine.EntityComponentSystem
 {
     /// <summary>
     /// This game object can be cleared

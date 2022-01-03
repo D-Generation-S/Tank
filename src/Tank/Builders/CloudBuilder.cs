@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.Randomizer;
+using TankEngine.EntityComponentSystem;
+using TankEngine.Randomizer;
 
 namespace Tank.Builders
 {

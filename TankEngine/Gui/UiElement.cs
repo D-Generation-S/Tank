@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using TankEngine.Wrapper;
 
-namespace Tank.Gui
+namespace TankEngine.Gui
 {
     /// <summary>
     /// A simple UI element

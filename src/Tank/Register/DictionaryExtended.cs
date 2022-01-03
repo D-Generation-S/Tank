@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Tank.Register
 {
-    class DictionaryExtended <G, T>
+    class DictionaryExtended<G, T>
     {
         public int Count => registeredEntries.Count;
         public bool Sealed => isSealed;

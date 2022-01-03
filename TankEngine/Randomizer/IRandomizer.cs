@@ -1,4 +1,4 @@
-﻿namespace Tank.Interfaces.Randomizer
+﻿namespace TankEngine.Randomizer
 {
     /// <summary>
     /// This interface will represent a randomizer

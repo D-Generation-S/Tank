@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Tank.DataStructure.Spritesheet;
-using Tank.Gui;
+using TankEngine.DataStructures.Spritesheet;
+using TankEngine.Gui;
 
-namespace Tank.Factories.Gui
+namespace TankEngine.Factories.Gui
 {
     /// <summary>
     /// A factory to create a simple button

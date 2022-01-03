@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
-namespace Tank.Gui
+namespace TankEngine.Gui
 {
     /// <summary>
     /// Base class for all panel type ui elements

@@ -9,17 +9,17 @@ using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataStructure;
-using Tank.Enums;
-using Tank.Events;
-using Tank.Events.EntityBased;
 using Tank.Events.StateEvents;
 using Tank.Interfaces.Builders;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Utils;
 using Tank.Validator;
 using TankEngine.Adapter;
+using TankEngine.DataStructures;
+using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Systems;
+using TankEngine.Enums;
 
 namespace Tank.Systems
 {
@@ -259,7 +259,7 @@ namespace Tank.Systems
                 spriteBatch.End();
                 CopyRenderTarget(postProcessingRenderTarget, gameRenderTarget);
             }
-            
+
             graphicsDevice.SetRenderTarget(null);
             viewportAdapter.Reset();
             graphicsDevice.Clear(Color.Black);
@@ -312,7 +312,7 @@ namespace Tank.Systems
             BeginDraw(currentContainer.ShaderEffect);
             switch (currentContainer.RenderType)
             {
-                
+
                 case RenderTypeEnum.Texture:
                     spriteBatch.Draw(
                       currentContainer.TextureToDraw,

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Tank.GameStates;
+using TankEngine.GameStates;
 using TankEngine.Wrapper;
 
-namespace Tank.Interfaces.EntityComponentSystem.Manager
+namespace TankEngine.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This interface represents the game engine itself

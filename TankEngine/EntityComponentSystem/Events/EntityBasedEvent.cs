@@ -1,4 +1,4 @@
-﻿namespace Tank.Events
+﻿namespace TankEngine.EntityComponentSystem.Events
 {
     /// <summary>
     /// This class is a base class to defined entity based events

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tank.Events
+namespace TankEngine.EntityComponentSystem.Events
 {
     /// <summary>
     /// Base event type

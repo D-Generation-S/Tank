@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tank.DataManagement.Loader;
-using Tank.Interfaces.EntityComponentSystem;
+using TankEngine.DataProvider;
+using TankEngine.DataProvider.Loader;
+using TankEngine.EntityComponentSystem;
 
 namespace Tank.DataManagement
 {

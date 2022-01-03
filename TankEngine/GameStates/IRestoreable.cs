@@ -1,4 +1,4 @@
-﻿namespace Tank.GameStates
+﻿namespace TankEngine.GameStates
 {
     /// <summary>
     /// Interface to define classes which are suspendable and restoreable

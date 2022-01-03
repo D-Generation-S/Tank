@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tank.Events.ComponentBased
+namespace TankEngine.EntityComponentSystem.Events
 {
     /// <summary>
     /// This event will allow you to remove an component from an entity

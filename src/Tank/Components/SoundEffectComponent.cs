@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Audio;
+using TankEngine.EntityComponentSystem.Components;
 
 namespace Tank.Components
 {

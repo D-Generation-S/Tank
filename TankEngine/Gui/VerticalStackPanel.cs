@@ -2,7 +2,7 @@
 using TankEngine.Adapter;
 using TankEngine.Wrapper;
 
-namespace Tank.Gui
+namespace TankEngine.Gui
 {
     /// <summary>
     /// A panel which stacks ui elements on top of each other

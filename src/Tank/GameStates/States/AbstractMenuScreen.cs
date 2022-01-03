@@ -6,9 +6,10 @@ using Tank.DataManagement;
 using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Settings;
-using Tank.DataStructure.Spritesheet;
-using Tank.Gui;
-using Tank.Music;
+using TankEngine.DataProvider.Loader;
+using TankEngine.DataStructures.Spritesheet;
+using TankEngine.Gui;
+using TankEngine.Music;
 using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
@@ -105,7 +106,7 @@ namespace Tank.GameStates.States
             spriteSetManager = new DataManager<SpritesheetData>(dataLoader);
             if (musicManager == null)
             {
-                musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(new JsonPlaylistLoader(), true));
+                musicManager = new MusicManager(contentWrapper, new DataManager<TankEngine.Music.Playlist>(new JsonPlaylistLoader(), true));
             }
             MediaPlayer.Volume = ApplicationSettingsSingelton.Instance.MusicVolume;
         }

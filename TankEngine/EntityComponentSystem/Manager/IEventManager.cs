@@ -1,7 +1,7 @@
 ﻿using System;
-using Tank.Events;
+using TankEngine.EntityComponentSystem.Events;
 
-namespace Tank.Interfaces.EntityComponentSystem.Manager
+namespace TankEngine.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This interface is the core of the event manager and allows you to subscribe, unsubscribe and fire events

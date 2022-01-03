@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using TankEngine.DataStructures.Serializeable;
 
-namespace Tank.DataStructure.Spritesheet
+namespace TankEngine.DataStructures.Spritesheet
 {
     /// <summary>
     /// Sprite sheet pattern do name parts of the sheet

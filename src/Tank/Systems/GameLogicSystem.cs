@@ -8,13 +8,13 @@ using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.Enums;
 using Tank.Events;
-using Tank.Events.ComponentBased;
 using Tank.Events.Data;
-using Tank.Events.EntityBased;
 using Tank.Events.StateEvents;
 using Tank.GameStates.Data;
-using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Systems;
 
 namespace Tank.Systems
 {
@@ -236,7 +236,7 @@ namespace Tank.Systems
         private int GetTeamCount()
         {
             List<int> teams = new List<int>();
-            foreach(uint entityId in watchedEntities)
+            foreach (uint entityId in watchedEntities)
             {
                 ControllableGameObject gameObject = entityManager.GetComponent<ControllableGameObject>(entityId);
                 if (teams.Contains(gameObject.Team))

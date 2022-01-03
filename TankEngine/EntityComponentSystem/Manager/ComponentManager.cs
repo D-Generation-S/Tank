@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Tank.EntityComponentSystem.DataContainer;
-using Tank.Events.ComponentBased;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.DataContainer;
+using TankEngine.EntityComponentSystem.Events;
 
-namespace Tank.EntityComponentSystem.Manager
+namespace TankEngine.EntityComponentSystem.Manager
 {
     /// <summary>
     /// The component manager 
@@ -87,7 +85,7 @@ namespace Tank.EntityComponentSystem.Manager
             IComponent component = GetComponent(entityId, typeof(T));
             if (component == null)
             {
-                return default(T);
+                return default;
             }
             return (T)component;
 

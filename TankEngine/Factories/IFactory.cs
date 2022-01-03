@@ -1,5 +1,4 @@
-﻿
-namespace Tank.Factories
+﻿namespace TankEngine.Factories
 {
     /// <summary>
     /// A interface for generic factoies

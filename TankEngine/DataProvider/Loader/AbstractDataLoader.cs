@@ -1,5 +1,4 @@
 ﻿using System;
-using Tank.DataManagement.Loader;
 
 namespace TankEngine.DataProvider.Loader
 {

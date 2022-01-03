@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Tank.DataStructure.Spritesheet;
+using TankEngine.DataStructures.Spritesheet;
 
-namespace Tank.Gui
+namespace TankEngine.Gui
 {
     /// <summary>
     /// A visible ui element

@@ -2,20 +2,20 @@
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Tank.Components;
 using Tank.Components.DataLookup;
 using Tank.Components.GameObject;
 using Tank.Components.Input;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.Events.EntityBased;
 using Tank.Events.StateEvents;
 using Tank.Interfaces.Builders;
-using Tank.Interfaces.EntityComponentSystem;
 using Tank.Register;
 using Tank.Systems.Data;
 using Tank.Validator.Input;
+using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Systems;
 
 namespace Tank.Systems
 {
@@ -42,14 +42,14 @@ namespace Tank.Systems
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            foreach(uint entityId in watchedEntities)
+            foreach (uint entityId in watchedEntities)
             {
                 if (!entityManager.HasComponent<ActiveGameObjectTag>(entityId))
                 {
                     continue;
                 }
 
-                
+
 
                 KeyboardControllerComponent keyboardController = entityManager.GetComponent<KeyboardControllerComponent>(entityId);
                 ControllableGameObject controllableGameObject = entityManager.GetComponent<ControllableGameObject>(entityId);
@@ -122,7 +122,8 @@ namespace Tank.Systems
                     if (projectileRegister.Contains(nextRegister))
                     {
                         controllableGameObject.SelectedProjectile = nextRegister;
-                    } else
+                    }
+                    else
                     {
                         controllableGameObject.SelectedProjectile = 0;
                     }

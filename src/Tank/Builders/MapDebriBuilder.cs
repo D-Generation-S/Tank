@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.Interfaces.EntityComponentSystem;
+using TankEngine.EntityComponentSystem;
 
 namespace Tank.Builders
 {
@@ -24,7 +22,7 @@ namespace Tank.Builders
             this.pixelTexture = pixelTexture;
             this.bounds = new Rectangle(0, 0, 1, 1);
             this.destination = new Rectangle(0, 0, 4, 4);
-            this.collider = new Rectangle(-2,-2, 4, 4);
+            this.collider = new Rectangle(-2, -2, 4, 4);
         }
 
         public override List<IComponent> BuildGameComponents(object parameter)

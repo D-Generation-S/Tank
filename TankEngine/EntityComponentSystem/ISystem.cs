@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Tank.GameStates;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.GameStates;
 
-namespace Tank.Interfaces.EntityComponentSystem
+namespace TankEngine.EntityComponentSystem
 {
     /// <summary>
     /// This interface describes a systems which can be added to the entity manager

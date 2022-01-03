@@ -15,23 +15,23 @@ using Tank.Components.Tags;
 using Tank.DataManagement;
 using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
-using Tank.DataStructure.Geometrics;
-using Tank.DataStructure.Spritesheet;
-using Tank.EntityComponentSystem.Manager;
-using Tank.Events.EntityBased;
 using Tank.Factories;
 using Tank.GameStates.Data;
 using Tank.Interfaces.Builders;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Interfaces.MapGenerators;
-using Tank.Interfaces.Randomizer;
 using Tank.Map.Textureizer;
-using Tank.Music;
-using Tank.Randomizer;
 using Tank.Register;
 using Tank.Systems;
 using Tank.Utils;
+using TankEngine.DataProvider.Loader;
+using TankEngine.DataStructures.Geometrics;
+using TankEngine.DataStructures.Spritesheet;
+using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.GameStates.States;
+using TankEngine.Music;
+using TankEngine.Randomizer;
 using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
@@ -275,7 +275,7 @@ namespace Tank.GameStates.States
                               //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
 
-            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(new JsonPlaylistLoader()));
+            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Playlist>(new JsonPlaylistLoader()));
             engine.AddSystem(new MusicSystem(musicManager, "IngameMusic"));
         }
 

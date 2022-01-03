@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
+using TankEngine.DataProvider.Loader;
 using TankEngine.Wrapper;
 
 namespace Tank.DataManagement.Loader

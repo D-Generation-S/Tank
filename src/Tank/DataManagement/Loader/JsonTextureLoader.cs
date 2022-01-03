@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using Tank.DataManagement.Data;
-using Tank.DataStructure.Spritesheet;
+using TankEngine.DataStructures.Spritesheet;
 
 namespace Tank.DataManagement.Loader
 {

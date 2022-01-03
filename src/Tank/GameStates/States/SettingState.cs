@@ -5,14 +5,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using Tank.Commands;
 using Tank.Commands.GameManager;
 using Tank.DataStructure.Settings;
-using Tank.Factories;
-using Tank.Factories.Gui;
-using Tank.Gui;
-using Tank.Gui.Data;
-using Tank.Music;
+using TankEngine.Commands;
+using TankEngine.Factories;
+using TankEngine.Factories.Gui;
+using TankEngine.Gui;
+using TankEngine.Gui.Data;
+using TankEngine.Music;
 using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States

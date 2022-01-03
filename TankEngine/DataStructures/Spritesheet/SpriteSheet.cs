@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace Tank.DataStructure.Spritesheet
+namespace TankEngine.DataStructures.Spritesheet
 {
     /// <summary>
     /// This class is representing a spritesheet it will provide you with some helper functions
@@ -65,7 +65,7 @@ namespace Tank.DataStructure.Spritesheet
         public SpriteSheet(Texture2D image, Point singleImageSize, int distanceBetweenImages, List<SpriteSheetPattern> patterns)
         {
             CompleteImage = image;
-            this.SingleImageSize = singleImageSize;
+            SingleImageSize = singleImageSize;
             this.distanceBetweenImages = distanceBetweenImages;
             SetSpriteSheetPattern(patterns);
             int xDimension = (int)Math.Floor((float)CompleteImage.Width / (singleImageSize.X + distanceBetweenImages));

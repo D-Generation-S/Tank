@@ -5,8 +5,8 @@ using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.Interfaces.EntityComponentSystem;
 using Tank.Systems.Data;
+using TankEngine.EntityComponentSystem;
 
 namespace Tank.Builders
 {
@@ -94,7 +94,7 @@ namespace Tank.Builders
             gameObjectData.Properties.Add("MaxHealth", gameObjectData.Properties["Health"]);
             gameObjectData.Properties.Add("Strength", 5f);
             gameObjectData.Properties.Add("MaxStrength", ControlStaticValues.MAX_STRENGHT);
-            
+
             gameObjectData.Properties.Add("Armor", 10f);
             gameObjectData.Properties.Add("Accuracy", 1f);
             gameObjectData.DataChanged = true;

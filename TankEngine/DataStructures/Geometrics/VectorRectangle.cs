@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Tank.DataStructure.Geometrics
+namespace TankEngine.DataStructures.Geometrics
 {
     /// <summary>
     /// A rectangle based on vectors

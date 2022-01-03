@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Tank.DataStructure.Spritesheet;
+using TankEngine.DataStructures.Spritesheet;
 
-namespace Tank.Factories.Gui
+namespace TankEngine.Factories.Gui
 {
     /// <summary>
     /// Abstract class to create ui elements

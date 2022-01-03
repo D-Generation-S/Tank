@@ -2,13 +2,13 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using Tank.DataStructure.Spritesheet;
-using Tank.Factories;
-using Tank.Factories.Gui;
-using Tank.Gui.Data;
+using TankEngine.DataStructures.Spritesheet;
+using TankEngine.Factories;
+using TankEngine.Factories.Gui;
+using TankEngine.Gui.Data;
 using TankEngine.Wrapper;
 
-namespace Tank.Gui
+namespace TankEngine.Gui
 {
     /// <summary>
     /// A simple select box
@@ -234,7 +234,7 @@ namespace Tank.Gui
             }
             Vector2 upperTextPosition = GetHorizontalTextMiddle(upperText);
             Vector2 lowerTextPosition = GetHorizontalTextMiddle(lowerText);
-            lowerTextPosition += (Vector2.UnitY * imageSize.Y) - (Vector2.UnitY * GetTextLenght(lowerText).Y);
+            lowerTextPosition += Vector2.UnitY * imageSize.Y - Vector2.UnitY * GetTextLenght(lowerText).Y;
 
             upperTextPosition += textOffset;
             lowerTextPosition -= textOffset;

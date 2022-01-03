@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Tank.Events;
-using Tank.Events.ComponentBased;
 using Tank.Events.EntityBased;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Events;
 
-namespace Tank.EntityComponentSystem.Manager
+namespace TankEngine.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This class is the default entity manager used inside of the game engine

@@ -1,7 +1,6 @@
 ﻿using System;
-using Tank.Interfaces.Randomizer;
 
-namespace Tank.Randomizer
+namespace TankEngine.Randomizer
 {
     /// <summary>
     /// An instance of the system randomizer

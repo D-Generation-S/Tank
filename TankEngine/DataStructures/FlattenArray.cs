@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace Tank.DataStructure
+namespace TankEngine.DataStructures
 {
     /// <summary>
     /// A helper class for creating flatten arrays and providing easier access methods

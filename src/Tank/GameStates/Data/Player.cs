@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Tank.Enums;
+﻿using Tank.Enums;
 using Tank.Interfaces.Builders;
 
 namespace Tank.GameStates.Data

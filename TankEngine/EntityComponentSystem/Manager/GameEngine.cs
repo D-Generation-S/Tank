@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Text;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
 using TankEngine.Wrapper;
 
-namespace Tank.EntityComponentSystem.Manager
+namespace TankEngine.EntityComponentSystem.Manager
 {
     /// <summary>
     /// This class is a container for all the game engine components
@@ -118,7 +116,7 @@ namespace Tank.EntityComponentSystem.Manager
             float deltaTime = gameTime.TotalGameTime.Milliseconds - previousTime;
             previousTime = gameTime.TotalGameTime.Milliseconds;
             int timeSteps = (int)((deltaTime + leftOverDeltaTime) / physicMillisecondsDeltaTime);
-            leftOverDeltaTime = deltaTime - (timeSteps * physicMillisecondsDeltaTime);
+            leftOverDeltaTime = deltaTime - timeSteps * physicMillisecondsDeltaTime;
             if (gotRestored)
             {
                 gotRestored = false;

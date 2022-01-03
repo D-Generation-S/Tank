@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tank.Interfaces.EntityComponentSystem
+namespace TankEngine.EntityComponentSystem
 {
     /// <summary>
     /// This interface is representing a component from an entity

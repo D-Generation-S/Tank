@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using Tank.Components;
 using Tank.Components.Forces;
 using Tank.Components.Rendering;
-using Tank.Factories;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.Randomizer;
+using TankEngine.EntityComponentSystem;
+using TankEngine.Factories;
+using TankEngine.Randomizer;
 
 namespace Tank.Builders
 {
@@ -107,7 +106,7 @@ namespace Tank.Builders
 
             float rotation = randomizer.GetNewNumber(0, 360);
 
-            
+
             VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
             visibleComponent.Texture = spriteSheet;
             visibleComponent.Source = animationFrames[0];

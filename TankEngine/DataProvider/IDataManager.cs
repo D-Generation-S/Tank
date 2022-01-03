@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Tank.DataManagement
+namespace TankEngine.DataProvider
 {
     public interface IDataManager<T>
     {

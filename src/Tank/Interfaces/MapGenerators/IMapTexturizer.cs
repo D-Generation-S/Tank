@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Tank.Components;
-using Tank.Interfaces.Randomizer;
+using TankEngine.Randomizer;
 
 namespace Tank.Interfaces.MapGenerators
 {

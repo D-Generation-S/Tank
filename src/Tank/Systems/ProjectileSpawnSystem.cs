@@ -5,11 +5,12 @@ using System.Diagnostics;
 using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Tags;
-using Tank.Events.EntityBased;
 using Tank.Interfaces.Builders;
-using Tank.Interfaces.EntityComponentSystem;
 using Tank.Register;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Systems;
 
 namespace Tank.Systems
 {

@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Tank.DataStructure.Spritesheet;
+using TankEngine.DataStructures.Spritesheet;
 
-namespace Tank.Gui
+namespace TankEngine.Gui
 {
     /// <summary>
     /// Simple checkbox class

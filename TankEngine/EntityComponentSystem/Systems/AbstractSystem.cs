@@ -1,15 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Tank.EntityComponentSystem.Validator;
-using Tank.Events;
-using Tank.Events.ComponentBased;
 using Tank.Events.EntityBased;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Validator;
 using TankEngine.Wrapper;
 
-namespace Tank.Systems
+namespace TankEngine.EntityComponentSystem.Systems
 {
     /// <summary>
     /// This abstract class is a base instance of the system. The class implements the ISystem interface

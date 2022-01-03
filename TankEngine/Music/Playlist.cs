@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Tank.Music
+namespace TankEngine.Music
 {
     /// <summary>
     /// This class represents a playlist

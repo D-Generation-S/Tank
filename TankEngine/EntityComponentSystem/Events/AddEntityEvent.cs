@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Tank.Interfaces.EntityComponentSystem;
 
-namespace Tank.Events.EntityBased
+namespace TankEngine.EntityComponentSystem.Events
 {
     /// <summary>
     /// This class can be used to add a new entity to the manager

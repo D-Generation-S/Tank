@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using Tank.DataStructure.Geometrics;
-using Tank.Factories;
-using Tank.Interfaces.EntityComponentSystem;
+using TankEngine.DataStructures.Geometrics;
+using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components;
+using TankEngine.Factories;
 
 namespace Tank.Components
 {
@@ -18,12 +19,12 @@ namespace Tank.Components
         /// <summary>
         /// Public readonly access to the area the damage should be applied to
         /// </summary>
-        public Circle DamageArea { get; set;  }
+        public Circle DamageArea { get; set; }
 
         /// <summary>
         /// Public access to the effect factory
         /// </summary>
-        public IFactory<List<IComponent>> EffectFactory { get; set;  }
+        public IFactory<List<IComponent>> EffectFactory { get; set; }
 
         /// <summary>
         /// Public access to the bool if this is a explosive

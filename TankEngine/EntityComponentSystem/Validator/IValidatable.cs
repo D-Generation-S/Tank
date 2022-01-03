@@ -1,6 +1,6 @@
-﻿using Tank.Interfaces.EntityComponentSystem.Manager;
+﻿using TankEngine.EntityComponentSystem.Manager;
 
-namespace Tank.EntityComponentSystem.Validator
+namespace TankEngine.EntityComponentSystem.Validator
 {
     /// <summary>
     /// This interface describes a validator for systems

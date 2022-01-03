@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Tank.Components.Rendering;
-using Tank.Events.EntityBased;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Systems;
 
 namespace Tank.Systems
 {
@@ -66,10 +67,10 @@ namespace Tank.Systems
                     spriteSource.Width -= visibleComponent.CutoffRight;
                     Rectangle destination = visibleComponent.Destination;
                     destination.Width = visibleComponent.SingleTextureSize.Width - visibleComponent.CutoffRight;
-                    
+
                     visibleComponent.Destination = destination;
                     visibleComponent.Source = spriteSource;
-                } 
+                }
             }
             updateLocked = false;
         }

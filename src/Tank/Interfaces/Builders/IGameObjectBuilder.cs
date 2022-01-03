@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Tank.EntityComponentSystem.Manager;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Manager;
 
 namespace Tank.Interfaces.Builders
 {

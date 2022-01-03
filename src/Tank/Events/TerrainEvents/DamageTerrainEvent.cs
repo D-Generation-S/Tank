@@ -1,4 +1,5 @@
-﻿using Tank.DataStructure.Geometrics;
+﻿using TankEngine.DataStructures.Geometrics;
+using TankEngine.EntityComponentSystem.Events;
 
 namespace Tank.Events.TerrainEvents
 {
@@ -15,7 +16,7 @@ namespace Tank.Events.TerrainEvents
         /// <inheritdoc/>
         public override void Init()
         {
-            DamageArea = null;            
+            DamageArea = null;
         }
     }
 }

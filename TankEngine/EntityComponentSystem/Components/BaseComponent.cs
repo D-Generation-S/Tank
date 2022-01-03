@@ -1,7 +1,6 @@
 ﻿using System;
-using Tank.Interfaces.EntityComponentSystem;
 
-namespace Tank.Components
+namespace TankEngine.EntityComponentSystem.Components
 {
     /// <summary>
     /// This class represents a component base class making the implementation easier

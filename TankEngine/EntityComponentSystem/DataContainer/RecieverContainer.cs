@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Manager;
 
-namespace Tank.EntityComponentSystem.DataContainer
+namespace TankEngine.EntityComponentSystem.DataContainer
 {
     /// <summary>
     /// A container for a set of recievers assigned to an type

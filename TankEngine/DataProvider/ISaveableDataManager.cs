@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Tank.DataManagement
+namespace TankEngine.DataProvider
 {
     public interface ISaveableDataManager<T> : IDataManager<T>
     {

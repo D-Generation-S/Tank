@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using TankEngine.Wrapper;
 
-namespace Tank.GameStates.States
+namespace TankEngine.GameStates.States
 {
     /// <summary>
     /// Interface for the current game state
