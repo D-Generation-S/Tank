@@ -131,7 +131,7 @@ namespace Tank.DataStructure.Spritesheet
             {
                 return Rectangle.Empty;
             }
-            Point imageSize = pattern.SizeOverwritten ? pattern.PatternSizeOverwrite : SingleImageSize;
+            Point imageSize = pattern.SizeOverwritten ? pattern.PatternSizeOverwrite.GetPoint() : SingleImageSize;
             int startPositionX = pattern.Position.X * imageSize.X;
             int startPositionY = pattern.Position.Y * imageSize.Y;
 
@@ -156,7 +156,7 @@ namespace Tank.DataStructure.Spritesheet
         /// <returns>The size of the image</returns>
         public Point GetPatternImageSize(SpriteSheetPattern pattern)
         {
-            return pattern != null && pattern.SizeOverwritten ? pattern.PatternSizeOverwrite : SingleImageSize;
+            return pattern != null && pattern.SizeOverwritten ? pattern.PatternSizeOverwrite.GetPoint() : SingleImageSize;
         }
 
 
@@ -172,8 +172,8 @@ namespace Tank.DataStructure.Spritesheet
                 return null;
             }
 
-            Point imageSize = pattern.SizeOverwritten ? pattern.PatternSizeOverwrite : SingleImageSize;
-            Point startPosition = imageSize * pattern.Position;
+            Point imageSize = pattern.SizeOverwritten ? pattern.PatternSizeOverwrite.GetPoint() : SingleImageSize;
+            Point startPosition = imageSize * pattern.Position.GetPoint();
             return GetColorFromSpriteAsFlatten(startPosition);
         }
 

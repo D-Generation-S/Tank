@@ -32,7 +32,6 @@ using Tank.Randomizer;
 using Tank.Register;
 using Tank.Systems;
 using Tank.Utils;
-using TankEngine.DataProvider.Loader;
 using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
@@ -133,7 +132,7 @@ namespace Tank.GameStates.States
         /// <param name="mapGenerator">The map generating algorihm to use</param>
         /// <param name="gameSettings">The game settings to use</param>
         public GameLoadingScreen(IMapGenerator mapGenerator, GameSettings gameSettings)
-            : this(mapGenerator, gameSettings, new JsonDataLoader<SpritesheetData>())
+            : this(mapGenerator, gameSettings, new JsonGameDataLoader<SpritesheetData>("Spritesheets"))
         {
         }
 
@@ -188,6 +187,10 @@ namespace Tank.GameStates.States
         {
             Func<SpritesheetData, SpriteSheet> conversionFunc = sheet =>
             {
+                if (sheet == null)
+                {
+                    return null;
+                }
                 Texture2D texture = contentWrapper.Load<Texture2D>(sheet.TextureName);
                 return new SpriteSheet(texture, sheet.SingleImageSize.GetPoint(), sheet.DistanceBetweenImages, sheet.Patterns);
             };
