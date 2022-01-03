@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tank.Enums
+﻿namespace Tank.Enums
 {
-    enum GameStatesEnum
+    public enum GameStatesEnum
     {
         Unknown,
         RoundStart,

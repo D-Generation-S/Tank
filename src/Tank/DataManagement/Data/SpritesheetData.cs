@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Tank.DataStructure;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Tank.DataStructure.Spritesheet;
 
 namespace Tank.DataManagement.Data
@@ -12,21 +12,32 @@ namespace Tank.DataManagement.Data
         /// <summary>
         /// The name of the texture to load
         /// </summary>
-        public string TextureName;
+        public string TextureName { get; set; }
 
         /// <summary>
-        /// The size of a single texture in the sheet
+        /// The single image size to use
         /// </summary>
-        public Position SingleImageSize;
+        public ImageSize SingleImageSize { get; set; }
 
         /// <summary>
         /// The distance between the images
         /// </summary>
-        public int DistanceBetweenImages;
+        public int DistanceBetweenImages { get; set; }
 
         /// <summary>
         /// The patterns to apply for the sheet
         /// </summary>
-        public List<SpriteSheetPattern> Patterns;
+        public List<SpriteSheetPattern> Patterns { get; set; }
+
+        internal struct ImageSize
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+
+            public Point GetPoint()
+            {
+                return new Point(X, Y);
+            }
+        }
     }
 }

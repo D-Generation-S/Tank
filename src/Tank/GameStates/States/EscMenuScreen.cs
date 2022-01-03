@@ -7,7 +7,7 @@ using Tank.DataStructure.Settings;
 using Tank.Factories;
 using Tank.Factories.Gui;
 using Tank.Gui;
-using Tank.Wrapper;
+using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
 {
@@ -36,9 +36,9 @@ namespace Tank.GameStates.States
         /// </summary>
         /// <param name="contentWrapper"></param>
         /// <param name="spriteBatch"></param>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
-            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
+            base.Initialize(contentWrapper, spriteBatch);
             closeStateCommand = new CloseStateCommand(gameStateManager);
             mainMenuCommand = new RevertToMainMenuCommand(gameStateManager);
 
@@ -60,6 +60,7 @@ namespace Tank.GameStates.States
             back.SetCommand(closeStateCommand);
 
             VerticalStackPanel verticalStackPanel = new VerticalStackPanel(
+                TankGame.PublicViewportAdapter,
                 new Vector2(0, TankGame.PublicGraphicsDevice.Viewport.Height / 2),
                 TankGame.PublicGraphicsDevice.Viewport.Width,
                 15,
@@ -71,8 +72,7 @@ namespace Tank.GameStates.States
 
             elementToDraw = verticalStackPanel;
 
-
-            UpdateUiEffects(settings.EffectVolume);
+            UpdateUiEffects(ApplicationSettingsSingelton.Instance.EffectVolume);
         }
 
         /// <inheritdoc/>

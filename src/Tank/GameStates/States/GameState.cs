@@ -11,7 +11,6 @@ using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataStructure.Geometrics;
-using Tank.DataStructure.Settings;
 using Tank.Events;
 using Tank.Events.PhysicBased;
 using Tank.Events.StateEvents;
@@ -21,9 +20,10 @@ using Tank.GameStates.Data;
 using Tank.Interfaces.Builders;
 using Tank.Interfaces.EntityComponentSystem;
 using Tank.Interfaces.EntityComponentSystem.Manager;
+using Tank.Interfaces.Randomizer;
 using Tank.Map.Generators;
 using Tank.Randomizer;
-using Tank.Wrapper;
+using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
 {
@@ -62,7 +62,7 @@ namespace Tank.GameStates.States
         IGameEngine engine;
         //private readonly IMap mapToUse;
         private readonly GameSettings gameSettings;
-        private readonly SystemRandomizer randomizer;
+        private readonly IRandomizer randomizer;
 
         private uint mapId;
         private uint entityCounter;
@@ -89,9 +89,9 @@ namespace Tank.GameStates.States
         }
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
-            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
+            base.Initialize(contentWrapper, spriteBatch);
             ticksToFire = 2000;
             bulletSpawnLocation = new Vector2(200, 200);
             //engine = new GameEngine(new EventManager(), new EntityManager(), contentWrapper);

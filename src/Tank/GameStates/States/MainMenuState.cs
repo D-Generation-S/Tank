@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Tank.Builders;
 using Tank.Commands;
 using Tank.Commands.GameManager;
-using Tank.DataStructure.Settings;
 using Tank.Enums;
 using Tank.Factories;
 using Tank.Factories.Gui;
@@ -12,7 +11,7 @@ using Tank.GameStates.Data;
 using Tank.Gui;
 using Tank.Map.Generators;
 using Tank.Randomizer;
-using Tank.Wrapper;
+using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
 {
@@ -38,9 +37,9 @@ namespace Tank.GameStates.States
         private ICommand openSettingCommand;
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
-            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
+            base.Initialize(contentWrapper, spriteBatch);
             closeGameCommand = new CloseGameCommand(gameStateManager);
             List<Player> players = new List<Player>();
             List<Rectangle> animationFrames = new List<Rectangle>();
@@ -94,7 +93,7 @@ namespace Tank.GameStates.States
             startGameButton.SetText("Start game");
             startGameButton.SetCommand(startGameCommand);
 
-            VerticalStackPanel verticalStackPanel = new VerticalStackPanel(new Vector2(0, 0), viewportAdapter.VirtualViewport.Width / 6, 15, true);
+            VerticalStackPanel verticalStackPanel = new VerticalStackPanel(TankGame.PublicViewportAdapter, new Vector2(0, 0), viewportAdapter.VirtualViewport.Width / 6, 15, true);
             verticalStackPanel.AddElement(startGameButton);
             verticalStackPanel.AddElement(openSettings);
             verticalStackPanel.AddElement(exitButton);
@@ -102,7 +101,7 @@ namespace Tank.GameStates.States
 
             elementToDraw = verticalStackPanel;
 
-            UpdateUiEffects(settings.EffectVolume);
+            //UpdateUiEffects(settings.EffectVolume);
         }
 
         /// <inheritdoc/>

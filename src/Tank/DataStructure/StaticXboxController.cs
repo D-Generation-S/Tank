@@ -4,7 +4,7 @@ using Tank.Interfaces.GameObjectControlling;
 
 namespace Tank.DataStructure
 {
-    class StaticXboxController : IGameObjectController
+    public class StaticXboxController : IGameObjectController
     {
         /// <summary>
         /// The warpper to use

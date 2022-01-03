@@ -2,15 +2,14 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using System;
-using System.Diagnostics;
 using Tank.DataManagement;
+using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Settings;
 using Tank.DataStructure.Spritesheet;
 using Tank.Gui;
 using Tank.Music;
-using Tank.Wrapper;
+using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
 {
@@ -22,7 +21,7 @@ namespace Tank.GameStates.States
         /// <summary>
         /// The data loader to use
         /// </summary>
-        protected readonly IDataLoader<SpriteSheet> dataLoader;
+        protected readonly IDataLoader<SpritesheetData> dataLoader;
 
         /// <summary>
         /// The gui sprite to use
@@ -37,7 +36,7 @@ namespace Tank.GameStates.States
         /// <summary>
         /// The amanger to load sprite sheets
         /// </summary>
-        protected DataManager<SpriteSheet> spriteSetManager;
+        protected DataManager<SpritesheetData> spriteSetManager;
 
         /// <summary>
         /// The sound to make for button clicks
@@ -63,7 +62,7 @@ namespace Tank.GameStates.States
         /// Create a new instance of this class
         /// </summary>
         public AbstractMenuScreen()
-            : this(new JsonTextureLoader())
+            : this(new JsonGameDataLoader<SpritesheetData>("Spritesheets"))
         {
 
         }
@@ -73,7 +72,7 @@ namespace Tank.GameStates.States
         /// </summary>
         /// <param name="manager">The music manager to use</param>
         public AbstractMenuScreen(MusicManager manager)
-            : this(new JsonTextureLoader(), manager)
+            : this(new JsonGameDataLoader<SpritesheetData>("Spritesheets"), manager)
         {
 
         }
@@ -82,10 +81,10 @@ namespace Tank.GameStates.States
         /// Create a new instance of this class
         /// </summary>
         /// <param name="dataLoader">The data loader to use</param>
-        public AbstractMenuScreen(IDataLoader<SpriteSheet> dataLoader)
-            :this(dataLoader, null)
+        public AbstractMenuScreen(IDataLoader<SpritesheetData> dataLoader)
+            : this(dataLoader, null)
         {
-            
+
         }
 
         /// <summary>
@@ -93,28 +92,32 @@ namespace Tank.GameStates.States
         /// </summary>
         /// <param name="dataLoader">The data loader to use</param>
         /// <param name="musicManager">The music manager to use</param>
-        public AbstractMenuScreen(IDataLoader<SpriteSheet> dataLoader, MusicManager musicManager)
+        public AbstractMenuScreen(IDataLoader<SpritesheetData> dataLoader, MusicManager musicManager)
         {
             this.dataLoader = dataLoader;
             this.musicManager = musicManager;
         }
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
-            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
-            spriteSetManager = new DataManager<SpriteSheet>(contentWrapper, dataLoader);
+            base.Initialize(contentWrapper, spriteBatch);
+            spriteSetManager = new DataManager<SpritesheetData>(dataLoader);
             if (musicManager == null)
             {
-                musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader(), true));
+                musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(new JsonPlaylistLoader(), true));
             }
-            MediaPlayer.Volume = settings.MusicVolume;
+            MediaPlayer.Volume = ApplicationSettingsSingelton.Instance.MusicVolume;
         }
 
         /// <inheritdoc/>
         public override void LoadContent()
         {
-            guiSprite = spriteSetManager.GetData("GuiSpriteSheet");
+            guiSprite = spriteSetManager.GetData("GuiSpriteSheet", data =>
+            {
+                Texture2D texture = contentWrapper.Load<Texture2D>(data.TextureName);
+                return new SpriteSheet(texture, data.SingleImageSize.GetPoint(), data.DistanceBetweenImages, data.Patterns);
+            });
             baseFont = contentWrapper.Load<SpriteFont>("gameFont");
             buttonClick = contentWrapper.Load<SoundEffect>("Sound/Effects/UiClick");
             buttonHover = contentWrapper.Load<SoundEffect>("Sound/Effects/UiHover");
@@ -128,20 +131,20 @@ namespace Tank.GameStates.States
         public override void Restore()
         {
             base.Restore();
-            MediaPlayer.Volume = settings.MusicVolume;
-            UpdateUiEffects(settings.EffectVolume);
-            if (settings.LastPlayedSong == null || MediaPlayer.State == MediaState.Playing)
+            MediaPlayer.Volume = ApplicationSettingsSingelton.Instance.MusicVolume;
+            UpdateUiEffects(ApplicationSettingsSingelton.Instance.EffectVolume);
+            if (ApplicationSettingsSingelton.Instance.LastPlayedSong == null || MediaPlayer.State == MediaState.Playing)
             {
                 return;
             }
-            MediaPlayer.Play(settings.LastPlayedSong, settings.LastTimeSpan);
+            MediaPlayer.Play(ApplicationSettingsSingelton.Instance.LastPlayedSong, ApplicationSettingsSingelton.Instance.LastTimeSpan);
         }
 
         /// <inheritdoc/>
         public override void Suspend()
         {
             base.Suspend();
-            settings.LastTimeSpan = MediaPlayer.PlayPosition;
+            ApplicationSettingsSingelton.Instance.LastTimeSpan = MediaPlayer.PlayPosition;
             MediaPlayer.Stop();
         }
 
@@ -178,8 +181,8 @@ namespace Tank.GameStates.States
         {
             if (MediaPlayer.State == MediaState.Stopped)
             {
-                settings.LastPlayedSong = musicManager.GetNextSong();
-                MediaPlayer.Play(settings.LastPlayedSong);
+                ApplicationSettingsSingelton.Instance.LastPlayedSong = musicManager.GetNextSong();
+                MediaPlayer.Play(ApplicationSettingsSingelton.Instance.LastPlayedSong);
             }
             if (elementToDraw == null)
             {

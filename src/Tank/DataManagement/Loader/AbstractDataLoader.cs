@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
-using Tank.Wrapper;
+using TankEngine.Wrapper;
 
 namespace Tank.DataManagement.Loader
 {
@@ -34,5 +34,10 @@ namespace Tank.DataManagement.Loader
 
         /// <inheritdoc/>
         public abstract T LoadData(string fileName);
+
+        public C LoadData<C>(string fileName, System.Func<T, C> dataConversion)
+        {
+            return dataConversion(LoadData(fileName));
+        }
     }
 }

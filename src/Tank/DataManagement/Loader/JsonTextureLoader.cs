@@ -41,7 +41,7 @@ namespace Tank.DataManagement.Loader
                 {
                     SpritesheetData data = JsonConvert.DeserializeObject<SpritesheetData>(reader.ReadToEnd());
                     Texture2D texture = contentWrapper.Load<Texture2D>(data.TextureName);
-                    dataToReturn = new SpriteSheet(texture, data.SingleImageSize, data.DistanceBetweenImages, data.Patterns);
+                    dataToReturn = new SpriteSheet(texture, data.SingleImageSize.GetPoint(), data.DistanceBetweenImages, data.Patterns);
                 }
                 catch (Exception)
                 {

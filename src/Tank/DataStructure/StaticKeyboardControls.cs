@@ -4,7 +4,7 @@ using Tank.Interfaces.GameObjectControlling;
 
 namespace Tank.DataStructure
 {
-    class StaticKeyboardControls : IGameObjectController
+    public class StaticKeyboardControls : IGameObjectController
     {
         /// <summary>
         /// The keyboard wrapper to use

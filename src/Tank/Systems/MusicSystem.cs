@@ -16,10 +16,6 @@ namespace Tank.Systems
         /// </summary>
         private readonly MusicManager musicManager;
 
-        /// <summary>
-        /// The application settings
-        /// </summary>
-        private readonly ApplicationSettings applicationSettings;
 
         /// <summary>
         /// The current track time
@@ -36,13 +32,11 @@ namespace Tank.Systems
         /// </summary>
         /// <param name="musicManager">The music manager to use</param>
         /// <param name="playlist">The playlist to load</param>
-        /// <param name="applicationSettings">The application settings</param>
-        public MusicSystem(MusicManager musicManager, string playlist, ApplicationSettings applicationSettings)
+        public MusicSystem(MusicManager musicManager, string playlist)
         {
             musicManager.LoadPlaylist(playlist);
             this.musicManager = musicManager;
-            this.applicationSettings = applicationSettings;
-            MediaPlayer.Volume = applicationSettings.MusicVolume;
+            MediaPlayer.Volume = ApplicationSettingsSingelton.Instance.MusicVolume;
         }
 
         /// <inheritdoc/>
@@ -53,7 +47,7 @@ namespace Tank.Systems
             {
                 MediaPlayer.Play(currentTrack, trackTime);
             }
-            MediaPlayer.Volume = applicationSettings.MusicVolume;
+            MediaPlayer.Volume = ApplicationSettingsSingelton.Instance.MusicVolume;
 
 
         }

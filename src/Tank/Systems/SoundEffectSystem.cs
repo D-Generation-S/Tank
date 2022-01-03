@@ -17,18 +17,12 @@ namespace Tank.Systems
         private readonly Random random;
 
         /// <summary>
-        /// The application settings to use
-        /// </summary>
-        private readonly ApplicationSettings applicationSettings;
-
-        /// <summary>
         /// Create a new instance of this system
         /// </summary>
-        public SoundEffectSystem(ApplicationSettings applicationSettings) : base()
+        public SoundEffectSystem() : base()
         {
             validators.Add(new SoundEffectValidator());
             random = new Random();
-            this.applicationSettings = applicationSettings;
         }
 
         /// <summary>
@@ -55,7 +49,7 @@ namespace Tank.Systems
                 {
                     return;
                 }
-                soundEffect.SoundEffect.Play(applicationSettings.EffectVolume, pitch, 0f);
+                soundEffect.SoundEffect.Play(ApplicationSettingsSingelton.Instance.EffectVolume, pitch, 0f);
                 entityManager.RemoveComponents(entityId, soundEffect);
             }
         }

@@ -7,16 +7,13 @@ using System.IO;
 using System.Reflection;
 using Tank.Commands;
 using Tank.Commands.GameManager;
-using Tank.DataManagement;
-using Tank.DataManagement.Loader;
-using Tank.DataManagement.Saver;
 using Tank.DataStructure.Settings;
 using Tank.Factories;
 using Tank.Factories.Gui;
 using Tank.Gui;
 using Tank.Gui.Data;
 using Tank.Music;
-using Tank.Wrapper;
+using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
 {
@@ -49,7 +46,7 @@ namespace Tank.GameStates.States
         /// The music volume selection
         /// </summary>
         private SelectBox musicVolumeSelection;
-        
+
         /// <summary>
         /// The effect volume selection
         /// </summary>
@@ -66,11 +63,6 @@ namespace Tank.GameStates.States
         private Checkbox fullScreen;
 
         /// <summary>
-        /// The settings manager to use
-        /// </summary>
-        private SaveableDataManager<ApplicationSettings> settingManager;
-
-        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         /// <param name="manager">The manager to use</param>
@@ -79,13 +71,12 @@ namespace Tank.GameStates.States
         }
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
-            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
+            base.Initialize(contentWrapper, spriteBatch);
             closeSettingsCommand = new CloseStateCommand(gameStateManager);
-            settingManager = new SaveableDataManager<ApplicationSettings>(contentWrapper, new JsonSettingLoader(), new JsonSettingSaver());
         }
-        
+
         /// <inheritdoc/>
         public override void SetActive()
         {
@@ -100,7 +91,7 @@ namespace Tank.GameStates.States
             fullScreen = checkboxFactory.GetNewObject();
             fullScreen.SetText("Fullscreen");
             fullScreen.Name = "CB_Fullscreen";
-            fullScreen.Checked = settings.FullScreen;
+            fullScreen.Checked = ApplicationSettingsSingelton.Instance.FullScreen;
 
             resolutionSelection = selectionFactory.GetNewObject();
             masterVolumeSelection = selectionFactory.GetNewObject();
@@ -110,16 +101,16 @@ namespace Tank.GameStates.States
             List<SelectionDataSet> data = GetVolumeData();
             List<SelectionDataSet> resolutions = GetResolutions();
 
-            resolutionSelection.SetData(resolutions, GetSelectedResolution(resolutions, settings.Resolution));
+            resolutionSelection.SetData(resolutions, GetSelectedResolution(resolutions, ApplicationSettingsSingelton.Instance.Resolution));
             resolutionSelection.SetText("Resolution");
 
-            masterVolumeSelection.SetData(data, GetVolumeDataIndex(data, settings.MasterVolumePercent));
+            masterVolumeSelection.SetData(data, GetVolumeDataIndex(data, ApplicationSettingsSingelton.Instance.MasterVolumePercent));
             masterVolumeSelection.SetText("Master volume");
 
-            musicVolumeSelection.SetData(data, GetVolumeDataIndex(data, settings.MusicVolumePercent));
+            musicVolumeSelection.SetData(data, GetVolumeDataIndex(data, ApplicationSettingsSingelton.Instance.MusicVolumePercent));
             musicVolumeSelection.SetText("Music volume");
 
-            effectVolumeSelection.SetData(data, GetVolumeDataIndex(data, settings.EffectVolumePercent));
+            effectVolumeSelection.SetData(data, GetVolumeDataIndex(data, ApplicationSettingsSingelton.Instance.EffectVolumePercent));
             effectVolumeSelection.SetText("Effect volume");
 
 
@@ -127,6 +118,7 @@ namespace Tank.GameStates.States
             saveButton.SetText("Save");
 
             VerticalStackPanel stackPanel = new VerticalStackPanel(
+                TankGame.PublicViewportAdapter,
                 new Vector2(viewportAdapter.Center.X, 0),
                 TankGame.PublicViewportAdapter.VirtualWidth,
                 16,
@@ -142,7 +134,7 @@ namespace Tank.GameStates.States
             stackPanel.AddElement(backButton);
             elementToDraw = stackPanel;
 
-            UpdateUiEffects(settings.EffectVolume);
+            UpdateUiEffects(ApplicationSettingsSingelton.Instance.EffectVolume);
         }
 
         /// <inheritdoc/>
@@ -150,10 +142,10 @@ namespace Tank.GameStates.States
         {
             base.Restore();
             List<SelectionDataSet> data = GetVolumeData();
-            resolutionSelection.SetCurrentDataSet(GetSelectedResolution(GetResolutions(), settings.Resolution));
-            masterVolumeSelection.SetCurrentDataSet(GetVolumeDataIndex(data, settings.MasterVolumePercent));
-            musicVolumeSelection.SetCurrentDataSet(GetVolumeDataIndex(data, settings.MusicVolumePercent));
-            effectVolumeSelection.SetCurrentDataSet(GetVolumeDataIndex(data, settings.EffectVolumePercent));
+            resolutionSelection.SetCurrentDataSet(GetSelectedResolution(GetResolutions(), ApplicationSettingsSingelton.Instance.Resolution));
+            masterVolumeSelection.SetCurrentDataSet(GetVolumeDataIndex(data, ApplicationSettingsSingelton.Instance.MasterVolumePercent));
+            musicVolumeSelection.SetCurrentDataSet(GetVolumeDataIndex(data, ApplicationSettingsSingelton.Instance.MusicVolumePercent));
+            effectVolumeSelection.SetCurrentDataSet(GetVolumeDataIndex(data, ApplicationSettingsSingelton.Instance.EffectVolumePercent));
 
         }
 
@@ -214,8 +206,8 @@ namespace Tank.GameStates.States
             base.Update(gameTime);
 
             Point newResolution = resolutionSelection.GetData().GetData<Point>();
-            bool restartRequired = settings.FullScreen != fullScreen.Checked;
-            restartRequired = restartRequired || settings.Resolution != newResolution;
+            bool restartRequired = ApplicationSettingsSingelton.Instance.FullScreen != fullScreen.Checked;
+            restartRequired = restartRequired || ApplicationSettingsSingelton.Instance.Resolution != newResolution;
 
             saveButton.SetText("Save");
             if (restartRequired)
@@ -251,16 +243,16 @@ namespace Tank.GameStates.States
                 float effectData = (float)dataPercent / 100f;
                 UpdateUiEffects(effectData * masterData);
             }
-            
+
             if (saveButton.Clicked)
             {
-                settings.FullScreen = fullScreen.Checked;
-                settings.Resolution = newResolution;
-                settings.MasterVolumePercent = masterVolumeSelection.GetData().GetData<int>();
-                settings.MusicVolumePercent = musicVolumeSelection.GetData().GetData<int>();
-                settings.EffectVolumePercent = effectVolumeSelection.GetData().GetData<int>();
-                
-                settingManager.SaveData(settings, "settings");
+                ApplicationSettingsSingelton.Instance.FullScreen = fullScreen.Checked;
+                ApplicationSettingsSingelton.Instance.Resolution = newResolution;
+                ApplicationSettingsSingelton.Instance.MasterVolumePercent = masterVolumeSelection.GetData().GetData<int>();
+                ApplicationSettingsSingelton.Instance.MusicVolumePercent = musicVolumeSelection.GetData().GetData<int>();
+                ApplicationSettingsSingelton.Instance.EffectVolumePercent = effectVolumeSelection.GetData().GetData<int>();
+
+                ApplicationSettingsSingelton.Instance.Save();
                 if (restartRequired)
                 {
                     string applicationName = FindExecuteable();
