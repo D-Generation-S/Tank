@@ -2,8 +2,10 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using Tank.Commands;
 using Tank.DataStructure.Spritesheet;
+using TankEngine.Commands;
 
 namespace Tank.Gui
 {
@@ -86,6 +88,15 @@ namespace Tank.Gui
         public void SetCommand(ICommand command)
         {
             this.command = command;
+        }
+
+        /// <summary>
+        /// Set the command to use on click
+        /// </summary>
+        /// <param name="actionToPerform">The action to perform</param>
+        public void SetCommand(Action actionToPerform)
+        {
+            command = new ActionCommand(actionToPerform);
         }
 
         /// <inheritdoc/>

@@ -61,6 +61,7 @@ namespace Tank.GameStates.States
         /// Should be fullscreen
         /// </summary>
         private Checkbox fullScreen;
+        private bool restartRequired;
 
         /// <summary>
         /// Create a new instance of this class
@@ -115,6 +116,27 @@ namespace Tank.GameStates.States
 
 
             saveButton = buttonFactory.GetNewObject();
+            saveButton.SetCommand(() =>
+            {
+                ApplicationSettingsSingelton.Instance.FullScreen = fullScreen.Checked;
+                ApplicationSettingsSingelton.Instance.Resolution = resolutionSelection.GetData().GetData<Point>();
+                ApplicationSettingsSingelton.Instance.MasterVolumePercent = masterVolumeSelection.GetData().GetData<int>();
+                ApplicationSettingsSingelton.Instance.MusicVolumePercent = musicVolumeSelection.GetData().GetData<int>();
+                ApplicationSettingsSingelton.Instance.EffectVolumePercent = effectVolumeSelection.GetData().GetData<int>();
+
+                ApplicationSettingsSingelton.Instance.Save();
+                if (restartRequired)
+                {
+                    string applicationName = FindExecuteable();
+                    if (applicationName == string.Empty)
+                    {
+                        return;
+                    }
+
+                    gameStateManager.Clear();
+                    Process.Start(applicationName);
+                }
+            });
             saveButton.SetText("Save");
 
             VerticalStackPanel stackPanel = new VerticalStackPanel(
@@ -206,7 +228,7 @@ namespace Tank.GameStates.States
             base.Update(gameTime);
 
             Point newResolution = resolutionSelection.GetData().GetData<Point>();
-            bool restartRequired = ApplicationSettingsSingelton.Instance.FullScreen != fullScreen.Checked;
+            restartRequired = ApplicationSettingsSingelton.Instance.FullScreen != fullScreen.Checked;
             restartRequired = restartRequired || ApplicationSettingsSingelton.Instance.Resolution != newResolution;
 
             saveButton.SetText("Save");
@@ -242,28 +264,6 @@ namespace Tank.GameStates.States
                 float dataPercent = effectVolumeSelection.GetData().GetData<float>();
                 float effectData = (float)dataPercent / 100f;
                 UpdateUiEffects(effectData * masterData);
-            }
-
-            if (saveButton.Clicked)
-            {
-                ApplicationSettingsSingelton.Instance.FullScreen = fullScreen.Checked;
-                ApplicationSettingsSingelton.Instance.Resolution = newResolution;
-                ApplicationSettingsSingelton.Instance.MasterVolumePercent = masterVolumeSelection.GetData().GetData<int>();
-                ApplicationSettingsSingelton.Instance.MusicVolumePercent = musicVolumeSelection.GetData().GetData<int>();
-                ApplicationSettingsSingelton.Instance.EffectVolumePercent = effectVolumeSelection.GetData().GetData<int>();
-
-                ApplicationSettingsSingelton.Instance.Save();
-                if (restartRequired)
-                {
-                    string applicationName = FindExecuteable();
-                    if (applicationName == string.Empty)
-                    {
-                        return;
-                    }
-
-                    gameStateManager.Clear();
-                    Process.Start(applicationName);
-                }
             }
         }
 
