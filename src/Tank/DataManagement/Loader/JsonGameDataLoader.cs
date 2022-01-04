@@ -4,15 +4,24 @@ using TankEngine.DataProvider.Loader;
 
 namespace Tank.DataManagement.Loader
 {
+    /// <summary>
+    /// Json data loader using the "game data" folder as a root directory
+    /// </summary>
+    /// <typeparam name="T">The type of data to load</typeparam>
     internal class JsonGameDataLoader<T> : JsonDataLoader<T>
     {
+        /// <summary>
+        /// The sub folder to use on the game data folder
+        /// </summary>
         public string SubFolder { get; }
 
+        /// <inheritdoc/>
         public JsonGameDataLoader(string subFolder)
         {
             SubFolder = subFolder;
         }
 
+        /// <inheritdoc/>
         public override T LoadData(string fileName)
         {
             fileName = Path.Combine(GetGameDataFolder(), fileName);
