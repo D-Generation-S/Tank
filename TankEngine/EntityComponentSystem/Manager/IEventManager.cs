@@ -31,6 +31,13 @@ namespace TankEngine.EntityComponentSystem.Manager
         void SubscribeEvent(IEventReceiver eventReceiver, Type eventType);
 
         /// <summary>
+        /// This method will allow you to add a new listener to the event manager
+        /// </summary>
+        /// <typeparam name="T">The type of the event you want to subscribe to</typeparam>
+        /// <param name="eventReceiver">The listner to remove</param>
+        void SubscribeEvent<T>(IEventReceiver eventReceiver);
+
+        /// <summary>
         /// This method will allow you to stop listning to an event
         /// </summary>
         /// <param name="eventReceiver">The listner to remove</param>

@@ -1,22 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 using System;
-using Tank.DataStructure.Settings;
-using TankEngine.EntityComponentSystem.Systems;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
 using TankEngine.Music;
 
-namespace Tank.Systems
+namespace TankEngine.EntityComponentSystem.Systems
 {
     /// <summary>
     /// A system to play music in the game
     /// </summary>
-    class MusicSystem : AbstractSystem
+    public class MusicSystem : AbstractSystem
     {
         /// <summary>
         /// The music manager to use
         /// </summary>
         private readonly MusicManager musicManager;
 
+        /// <summary>
+        /// The music volume for the system
+        /// </summary>
+        private float musicVolume;
 
         /// <summary>
         /// The current track time
@@ -33,11 +37,18 @@ namespace Tank.Systems
         /// </summary>
         /// <param name="musicManager">The music manager to use</param>
         /// <param name="playlist">The playlist to load</param>
-        public MusicSystem(MusicManager musicManager, string playlist)
+        public MusicSystem(MusicManager musicManager, string playlist, float musicVolume)
         {
             musicManager.LoadPlaylist(playlist);
             this.musicManager = musicManager;
-            MediaPlayer.Volume = ApplicationSettingsSingelton.Instance.MusicVolume;
+            this.musicVolume = MathHelper.Clamp(musicVolume, 0, 1);
+            MediaPlayer.Volume = musicVolume;
+        }
+
+        public override void Initialize(IGameEngine gameEngine)
+        {
+            base.Initialize(gameEngine);
+            eventManager.SubscribeEvent<VolumeChangedEvent>(this);
         }
 
         /// <inheritdoc/>
@@ -48,9 +59,7 @@ namespace Tank.Systems
             {
                 MediaPlayer.Play(currentTrack, trackTime);
             }
-            MediaPlayer.Volume = ApplicationSettingsSingelton.Instance.MusicVolume;
-
-
+            MediaPlayer.Volume = musicVolume;
         }
 
         /// <inheritdoc/>
@@ -59,6 +68,23 @@ namespace Tank.Systems
             base.Suspend();
             trackTime = MediaPlayer.PlayPosition;
             MediaPlayer.Stop();
+        }
+
+        /// <inheritdoc/>
+        public override void EventNotification(object sender, IGameEvent eventArgs)
+        {
+            if (eventArgs is VolumeChangedEvent volumeEvent)
+            {
+                switch (volumeEvent.VolumeType)
+                {
+                    case Enums.VolumeTypeEnum.Music:
+                        musicVolume = volumeEvent.NewVolume;
+                        break;
+                    default:
+                        break;
+                }
+                MediaPlayer.Volume = musicVolume;
+            }
         }
 
         /// <inheritdoc/>

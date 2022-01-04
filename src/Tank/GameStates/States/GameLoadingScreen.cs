@@ -15,6 +15,7 @@ using Tank.Components.Tags;
 using Tank.DataManagement;
 using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
+using Tank.DataStructure.Settings;
 using Tank.Factories;
 using Tank.GameStates.Data;
 using Tank.Interfaces.Builders;
@@ -29,6 +30,7 @@ using TankEngine.DataStructures.Spritesheet;
 using TankEngine.EntityComponentSystem;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Systems;
 using TankEngine.GameStates.States;
 using TankEngine.Music;
 using TankEngine.Randomizer;
@@ -276,7 +278,7 @@ namespace Tank.GameStates.States
              ));
 
             MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Playlist>(new JsonGameDataLoader<Playlist>("Playlists")));
-            engine.AddSystem(new MusicSystem(musicManager, "IngameMusic"));
+            engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", ApplicationSettingsSingelton.Instance.MusicVolume));
         }
 
         private Register<IGameObjectBuilder> CreateProjectileRegister()

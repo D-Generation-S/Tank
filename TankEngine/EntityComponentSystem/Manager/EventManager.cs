@@ -88,6 +88,12 @@ namespace TankEngine.EntityComponentSystem.Manager
         }
 
         /// <inheritdoc/>
+        public void SubscribeEvent<T>(IEventReceiver eventReceiver)
+        {
+            SubscribeEvent(eventReceiver, typeof(T));
+        }
+
+        /// <inheritdoc/>
         public void UnsubscibeEvent(IEventReceiver eventReciver, Type eventType)
         {
             RecieverContainer containerToRemove = eventReceivers.Find((container) =>
