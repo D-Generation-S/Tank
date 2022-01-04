@@ -2,9 +2,10 @@
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.IO;
-using System.Text.Json;
 using Tank.Settings;
 using Tank.Utils;
+using TankEngine.DataProvider.Loader;
+using TankEngine.DataProvider.Saver;
 
 namespace Tank.DataStructure.Settings
 {
@@ -14,6 +15,9 @@ namespace Tank.DataStructure.Settings
     /// </summary>
     public sealed class ApplicationSettingsSingelton
     {
+        /// <summary>
+        /// The name of the settings file
+        /// </summary>
         private const string SETTING_FILE_NAME = "settings.json";
 
         /// <summary>
@@ -77,6 +81,18 @@ namespace Tank.DataStructure.Settings
         private static ApplicationSettingsSingelton instance;
 
         /// <summary>
+        /// Data loader to use for the settings
+        /// </summary>
+        private IDataLoader<SerializeableSettings> dataLoader;
+
+        /// <summary>
+        /// Data saver used for the settings
+        /// </summary>
+        private IDataSaver<SerializeableSettings> dataSaver;
+
+
+
+        /// <summary>
         /// Settings public instance accessor
         /// </summary>
         public static ApplicationSettingsSingelton Instance
@@ -96,6 +112,10 @@ namespace Tank.DataStructure.Settings
             FullScreen = false;
             instance = null;
             folderUtils = new DefaultFolderUtils();
+
+            dataLoader = new JsonDataLoader<SerializeableSettings>();
+            dataSaver = new JsonDataSaver<SerializeableSettings>();
+
         }
 
         /// <summary>
@@ -108,23 +128,17 @@ namespace Tank.DataStructure.Settings
             {
                 return false;
             }
-            using (StreamReader reader = new StreamReader(GetSettingFileName()))
+            SerializeableSettings settings = dataLoader.LoadData(GetSettingFileName());
+            if (settings == null)
             {
-                try
-                {
-                    SerializeableSettings settings = JsonSerializer.Deserialize<SerializeableSettings>(reader.ReadToEnd());
-                    FullScreen = settings.FullScreen;
-                    Resolution = settings.Resolution.GetResolution();
-                    MasterVolumePercent = settings.MasterVolumePercent;
-                    EffectVolumePercent = settings.EffectVolumePercent;
-                    MusicVolumePercent = settings.MusicVolumePercent;
-
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
+                return false;
             }
+            FullScreen = settings.FullScreen;
+            Resolution = settings.Resolution.GetResolution();
+            MasterVolumePercent = settings.MasterVolumePercent;
+            EffectVolumePercent = settings.EffectVolumePercent;
+            MusicVolumePercent = settings.MusicVolumePercent;
+
             return true;
         }
 
@@ -138,34 +152,19 @@ namespace Tank.DataStructure.Settings
             {
                 Directory.CreateDirectory(GetSettingFolder());
             }
-
-            using (StreamWriter writer = new StreamWriter(GetSettingFileName()))
+            SerializeableSettings settings = new SerializeableSettings()
             {
-                try
+                FullScreen = FullScreen,
+                Resolution = new Resolution()
                 {
-                    SerializeableSettings settings = new SerializeableSettings()
-                    {
-                        FullScreen = FullScreen,
-                        Resolution = new Resolution()
-                        {
-                            X = Resolution.X,
-                            Y = Resolution.Y,
-                        },
-                        MasterVolumePercent = MasterVolumePercent,
-                        EffectVolumePercent = EffectVolumePercent,
-                        MusicVolumePercent = MusicVolumePercent
-                    };
-                    string data = JsonSerializer.Serialize(settings);
-                    writer.Write(data);
-                }
-                catch (Exception)
-                {
-                    return false;
-                    ///Loading did fail returning null
-                }
-            }
-
-            return true;
+                    X = Resolution.X,
+                    Y = Resolution.Y,
+                },
+                MasterVolumePercent = MasterVolumePercent,
+                EffectVolumePercent = EffectVolumePercent,
+                MusicVolumePercent = MusicVolumePercent
+            };
+            return dataSaver.SaveData(settings, GetSettingFileName());
         }
 
         /// <summary>
