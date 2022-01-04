@@ -267,7 +267,7 @@ namespace Tank.GameStates.States
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new DamageSystem());
             engine.AddSystem(new MapSystem());
-            engine.AddSystem(new SoundEffectSystem());
+            engine.AddSystem(new SoundEffectSystem(ApplicationSettingsSingelton.Instance.EffectVolume));
             engine.AddSystem(new AnimationAttributeDisplaySystem());
             engine.AddSystem(new FadeInFadeOutSystem());
             engine.AddSystem(new RenderSystem(

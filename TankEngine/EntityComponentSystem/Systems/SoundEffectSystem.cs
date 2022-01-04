@@ -1,29 +1,53 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using Tank.Components;
-using Tank.DataStructure.Settings;
-using Tank.Validator;
-using TankEngine.EntityComponentSystem.Systems;
+using TankEngine.EntityComponentSystem.Components.Sound;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Validator;
 
-namespace Tank.Systems
+namespace TankEngine.EntityComponentSystem.Systems
 {
     /// <summary>
     /// This system will play sound effects 
     /// </summary>
-    class SoundEffectSystem : AbstractSystem
+    public class SoundEffectSystem : AbstractSystem
     {
         /// <summary>
         /// Random class to use to change the pitch if needed
         /// </summary>
         private readonly Random random;
 
+        private float effectVolume;
+
         /// <summary>
         /// Create a new instance of this system
         /// </summary>
-        public SoundEffectSystem() : base()
+        public SoundEffectSystem(float effectVolume) : base()
         {
             validators.Add(new SoundEffectValidator());
             random = new Random();
+            this.effectVolume = MathHelper.Clamp(effectVolume, 0, 1);
+        }
+
+        /// <inheritdoc/>
+        public override void Initialize(IGameEngine gameEngine)
+        {
+            base.Initialize(gameEngine);
+            gameEngine.EventManager.SubscribeEvent<VolumeChangedEvent>(this);
+        }
+
+        /// <inheritdoc/>
+        public override void EventNotification(object sender, IGameEvent eventArgs)
+        {
+            if (eventArgs is VolumeChangedEvent volumeChanged)
+            {
+                switch (volumeChanged.VolumeType)
+                {
+                    case Enums.VolumeTypeEnum.Effect:
+                        effectVolume = volumeChanged.NewVolume;
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -50,7 +74,7 @@ namespace Tank.Systems
                 {
                     return;
                 }
-                soundEffect.SoundEffect.Play(ApplicationSettingsSingelton.Instance.EffectVolume, pitch, 0f);
+                soundEffect.SoundEffect.Play(effectVolume, pitch, 0f);
                 entityManager.RemoveComponents(entityId, soundEffect);
             }
         }

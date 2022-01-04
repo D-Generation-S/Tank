@@ -7,6 +7,7 @@
     {
         Unknown,
         Master,
+        Effect,
         Music
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Audio;
-using TankEngine.EntityComponentSystem.Components;
 
-namespace Tank.Components
+namespace TankEngine.EntityComponentSystem.Components.Sound
 {
     /// <summary>
     /// Sound effect component

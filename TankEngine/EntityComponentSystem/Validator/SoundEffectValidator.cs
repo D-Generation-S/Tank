@@ -1,8 +1,7 @@
-﻿using Tank.Components;
+﻿using TankEngine.EntityComponentSystem.Components.Sound;
 using TankEngine.EntityComponentSystem.Manager;
-using TankEngine.EntityComponentSystem.Validator;
 
-namespace Tank.Validator
+namespace TankEngine.EntityComponentSystem.Validator
 {
     /// <summary>
     /// This class will validate an entity as an sound effect
