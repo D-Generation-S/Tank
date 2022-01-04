@@ -6,6 +6,7 @@ using Tank.Components;
 using Tank.Components.Forces;
 using Tank.Components.Rendering;
 using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components.Sound;
 using TankEngine.Factories;
 using TankEngine.Randomizer;
 

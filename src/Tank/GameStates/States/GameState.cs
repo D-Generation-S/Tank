@@ -300,7 +300,7 @@ namespace Tank.GameStates.States
 
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
-                uint exposion = engine.EntityManager.CreateEntity();
+                uint explosion = engine.EntityManager.CreateEntity();
 
                 foreach (IComponent component in randomExplosionFactory.GetNewObject())
                 {
@@ -311,7 +311,7 @@ namespace Tank.GameStates.States
                         placeableComponent.Position = mouseWrapper.GetMouseVectorPosition();
                         circle = new Circle(mouseWrapper.GetMouseVectorPosition(), 16);
                     }
-                    engine.EntityManager.AddComponent(exposion, component);
+                    engine.EntityManager.AddComponent(explosion, component);
                     if (circle != null)
                     {
                         DamageComponent damage = engine.EntityManager.CreateComponent<DamageComponent>();
@@ -319,14 +319,14 @@ namespace Tank.GameStates.States
                         damage.CenterDamageValue = 100;
                         damage.DamageArea = circle;
                         damage.EffectFactory = randomExplosionFactory;
-                        engine.EntityManager.AddComponent(exposion, damage);
+                        engine.EntityManager.AddComponent(explosion, damage);
 
                         DamageTerrainEvent damageTerrainEvent = engine.EventManager.CreateEvent<DamageTerrainEvent>();
                         damageTerrainEvent.DamageArea = circle;
 
                         engine.EventManager.FireEvent<DamageTerrainEvent>(this, damageTerrainEvent);
                         MapCollisionEvent mapCollisionEvent = engine.EventManager.CreateEvent<MapCollisionEvent>();
-                        mapCollisionEvent.EntityId = exposion;
+                        mapCollisionEvent.EntityId = explosion;
                         mapCollisionEvent.Position = circle.Center;
                         engine.EventManager.FireEvent<MapCollisionEvent>(this, mapCollisionEvent);
                     }

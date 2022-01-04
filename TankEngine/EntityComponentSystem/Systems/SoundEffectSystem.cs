@@ -17,6 +17,9 @@ namespace TankEngine.EntityComponentSystem.Systems
         /// </summary>
         private readonly Random random;
 
+        /// <summary>
+        /// The effect volume to use
+        /// </summary>
         private float effectVolume;
 
         /// <summary>
@@ -39,6 +42,7 @@ namespace TankEngine.EntityComponentSystem.Systems
         /// <inheritdoc/>
         public override void EventNotification(object sender, IGameEvent eventArgs)
         {
+            base.EventNotification(sender, eventArgs);
             if (eventArgs is VolumeChangedEvent volumeChanged)
             {
                 switch (volumeChanged.VolumeType)

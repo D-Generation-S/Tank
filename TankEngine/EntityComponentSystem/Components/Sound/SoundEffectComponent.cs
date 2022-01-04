@@ -5,7 +5,7 @@ namespace TankEngine.EntityComponentSystem.Components.Sound
     /// <summary>
     /// Sound effect component
     /// </summary>
-    class SoundEffectComponent : BaseComponent
+    public class SoundEffectComponent : BaseComponent
     {
         /// <summary>
         /// Name of the sound effect
