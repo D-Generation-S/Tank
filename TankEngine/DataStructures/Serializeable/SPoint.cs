@@ -3,7 +3,7 @@
 namespace TankEngine.DataStructures.Serializeable
 {
     /// <summary>
-    /// This class is a serializeable one for the monogame point
+    /// This class is a serializeable version for the monogame point
     /// </summary>
     public class SPoint
     {

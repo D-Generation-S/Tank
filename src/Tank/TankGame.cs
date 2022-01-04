@@ -32,8 +32,6 @@ namespace Tank
         {
             base.Initialize();
             ContentWrapper contentWrapper = new ContentWrapper(Content);
-            //SaveableDataManager<ApplicationSettingsSingelton> settingManager = new SaveableDataManager<ApplicationSettingsSingelton>(contentWrapper, new JsonSettingLoader(), new JsonSettingSaver());
-            //ApplicationSettingsSingelton settings = settingManager.GetData("settings");
             ApplicationSettingsSingelton.Instance.Load();
             InitResolution(ApplicationSettingsSingelton.Instance.Resolution.X, ApplicationSettingsSingelton.Instance.Resolution.Y, ApplicationSettingsSingelton.Instance.FullScreen);
 

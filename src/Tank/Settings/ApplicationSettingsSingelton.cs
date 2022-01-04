@@ -6,6 +6,7 @@ using Tank.Settings;
 using Tank.Utils;
 using TankEngine.DataProvider.Loader;
 using TankEngine.DataProvider.Saver;
+using TankEngine.DataStructures.Serializeable;
 
 namespace Tank.DataStructure.Settings
 {
@@ -134,7 +135,7 @@ namespace Tank.DataStructure.Settings
                 return false;
             }
             FullScreen = settings.FullScreen;
-            Resolution = settings.Resolution.GetResolution();
+            Resolution = settings.Resolution.GetPoint();
             MasterVolumePercent = settings.MasterVolumePercent;
             EffectVolumePercent = settings.EffectVolumePercent;
             MusicVolumePercent = settings.MusicVolumePercent;
@@ -155,11 +156,7 @@ namespace Tank.DataStructure.Settings
             SerializeableSettings settings = new SerializeableSettings()
             {
                 FullScreen = FullScreen,
-                Resolution = new Resolution()
-                {
-                    X = Resolution.X,
-                    Y = Resolution.Y,
-                },
+                Resolution = new SPoint(Resolution),
                 MasterVolumePercent = MasterVolumePercent,
                 EffectVolumePercent = EffectVolumePercent,
                 MusicVolumePercent = MusicVolumePercent
