@@ -30,6 +30,9 @@ namespace TankEngine.DataStructures.Spritesheet
         [JsonIgnore]
         public bool SizeOverwritten => PatternSizeOverwrite != null;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public SpriteSheetPattern() : this(string.Empty, new Point(), null)
         {
 
@@ -45,9 +48,9 @@ namespace TankEngine.DataStructures.Spritesheet
         {
             Name = name;
             Position = new SPoint(position);
-            if (patternSizeOverwrite != null)
+            if (patternSizeOverwrite.HasValue)
             {
-                PatternSizeOverwrite = new SPoint(patternSizeOverwrite);
+                PatternSizeOverwrite = new SPoint(patternSizeOverwrite.Value);
             }
 
         }

@@ -40,21 +40,9 @@ namespace TankEngine.DataStructures.Serializeable
         public SPoint(Point point) : this(point.X, point.Y) { }
 
         /// <summary>
-        /// Create a instance from a monogame point
+        /// Convert to a Monogame point
         /// </summary>
-        /// <param name="point">The monogame point to use</param>
-        public SPoint(Point? point)
-        {
-            if (point == null)
-            {
-                X = 0;
-                Y = 0;
-                return;
-            }
-            X = point.Value.X;
-            Y = point.Value.Y;
-        }
-
+        /// <returns>A useable monogame point</returns>
         public Point GetPoint()
         {
             return new Point(X, Y);
