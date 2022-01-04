@@ -1,11 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using TankEngine.DataProvider.Saver;
 
 namespace TankEngine.DataProvider
 {
-    public interface ISaveableDataManager<T> : IDataManager<T>
+    public interface ISaveableDataManager<T> : IDataManager<T>, IDataSaver<T>
     {
-        bool SaveData(T data, string filename);
-
-        Task<bool> SaveDataAsync(T data, string filename);
     }
 }

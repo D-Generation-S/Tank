@@ -51,12 +51,21 @@ namespace Tank.DataManagement
             }
         }
 
+        /// <inheritdoc/>
+        public void Clear()
+        {
+            if (cacheData)
+            {
+                dataCache.Clear();
+            }
+        }
+
         /// <summary>
         /// Get the data from a speficit file name
         /// </summary>
         /// <param name="fileName">The filename to get the data from</param>
         /// <returns>The requested data</returns>
-        public T GetData(string fileName)
+        public T LoadData(string fileName)
         {
             T dataToReturn;
             if (cacheData && dataCache.ContainsKey(fileName))
@@ -73,35 +82,24 @@ namespace Tank.DataManagement
             return dataToReturn;
         }
 
+
+
         /// <inheritdoc/>
-        public void Clear()
+        public async Task<T> LoadDataAsync(string fileName)
         {
-            if (cacheData)
-            {
-                dataCache.Clear();
-            }
+            return await Task.Run(() => LoadData(fileName));
         }
 
         /// <inheritdoc/>
-        public async Task<T> GetDataAsync(string fileName)
+        public C LoadData<C>(string fileName, System.Func<T, C> dataConversion)
         {
-            return await Task.Run(() => GetData(fileName));
+            return dataLoader.LoadData(fileName, dataConversion);
         }
 
         /// <inheritdoc/>
-        public C GetData<C>(string fileName, System.Func<T, C> dataConversion)
+        public async Task<C> LoadDataAsync<C>(string fileName, System.Func<T, C> dataConversion)
         {
-            return dataConversion(GetData(fileName));
-        }
-
-        /// <inheritdoc/>
-        public async Task<C> GetDataAsync<C>(string fileName, System.Func<T, C> dataConversion)
-        {
-            return await Task.Run(async () =>
-            {
-                T data = await GetDataAsync(fileName);
-                return dataConversion(data);
-            });
+            return await Task.Run(async () => await dataLoader.LoadDataAsync(fileName, dataConversion));
         }
     }
 }

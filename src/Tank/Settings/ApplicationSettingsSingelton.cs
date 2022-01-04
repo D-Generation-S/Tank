@@ -69,7 +69,7 @@ namespace Tank.DataStructure.Settings
         /// <summary>
         /// Utility to get default folders
         /// </summary>
-        private DefaultFolderUtils folderUtils;
+        private readonly DefaultFolderUtils folderUtils;
 
         /// <summary>
         /// Settings private singelton instance
@@ -98,6 +98,10 @@ namespace Tank.DataStructure.Settings
             folderUtils = new DefaultFolderUtils();
         }
 
+        /// <summary>
+        /// Load the game settings
+        /// </summary>
+        /// <returns>True if loading was successful</returns>
         public bool Load()
         {
             if (!File.Exists(GetSettingFileName()))
@@ -124,6 +128,10 @@ namespace Tank.DataStructure.Settings
             return true;
         }
 
+        /// <summary>
+        /// Save the application settings
+        /// </summary>
+        /// <returns>True if saving was successful</returns>
         public bool Save()
         {
             if (!Directory.Exists(GetSettingFolder()))
@@ -160,6 +168,10 @@ namespace Tank.DataStructure.Settings
             return true;
         }
 
+        /// <summary>
+        /// Get the path to the settings file
+        /// </summary>
+        /// <returns>The full path of the settings file</returns>
         public string GetSettingFileName()
         {
             return Path.Combine(GetSettingFolder(), SETTING_FILE_NAME);
@@ -172,7 +184,6 @@ namespace Tank.DataStructure.Settings
         public string GetSettingFolder()
         {
             return Path.Combine(folderUtils.GetApplicationFolder(), TankGame.GameName);
-
         }
 
     }

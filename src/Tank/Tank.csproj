@@ -68,7 +68,6 @@
   <ItemGroup>
     <Folder Include="Events\ComponentBased\" />
     <Folder Include="Events\EntityBased\" />
-    <Folder Include="Factories\Gui\" />
   </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties gamedata_4playlists_4menumusic_1json__JsonSchema="{}" /></VisualStudio></ProjectExtensions>
 </Project>

@@ -106,7 +106,7 @@ namespace Tank.GameStates.States
             spriteSetManager = new DataManager<SpritesheetData>(dataLoader);
             if (musicManager == null)
             {
-                musicManager = new MusicManager(contentWrapper, new DataManager<TankEngine.Music.Playlist>(new JsonPlaylistLoader(), true));
+                musicManager = new MusicManager(contentWrapper, new DataManager<TankEngine.Music.Playlist>(new JsonGameDataLoader<TankEngine.Music.Playlist>("Playlists"), true));
             }
             MediaPlayer.Volume = ApplicationSettingsSingelton.Instance.MusicVolume;
         }
@@ -114,7 +114,7 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void LoadContent()
         {
-            guiSprite = spriteSetManager.GetData("GuiSpriteSheet", data =>
+            guiSprite = spriteSetManager.LoadData("GuiSpriteSheet", data =>
             {
                 Texture2D texture = contentWrapper.Load<Texture2D>(data.TextureName);
                 return new SpriteSheet(texture, data.SingleImageSize.GetPoint(), data.DistanceBetweenImages, data.Patterns);

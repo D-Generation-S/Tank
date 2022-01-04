@@ -73,7 +73,7 @@ namespace TankEngine.Music
                 return;
             }
 
-            Playlist playlist = playlistLoader.GetData(name);
+            Playlist playlist = playlistLoader.LoadData(name);
             if (playlist == null)
             {
                 return;

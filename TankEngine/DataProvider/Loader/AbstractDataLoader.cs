@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace TankEngine.DataProvider.Loader
 {
@@ -31,9 +32,21 @@ namespace TankEngine.DataProvider.Loader
         public abstract T LoadData(string fileName);
 
         /// <inheritdoc/>
+        public async Task<T> LoadDataAsync(string fileName)
+        {
+            return await Task.Run(() => LoadData(fileName));
+        }
+
+        /// <inheritdoc/>
         public C LoadData<C>(string fileName, Func<T, C> dataConversion)
         {
             return dataConversion(LoadData(fileName));
+        }
+
+        /// <inheritdoc/>
+        public async Task<C> LoadDataAsync<C>(string fileName, Func<T, C> dataConversion)
+        {
+            return await Task.Run(() => LoadData(fileName, dataConversion));
         }
     }
 }

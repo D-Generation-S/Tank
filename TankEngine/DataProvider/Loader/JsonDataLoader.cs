@@ -4,8 +4,13 @@ using System.Text.Json;
 
 namespace TankEngine.DataProvider.Loader
 {
+    /// <summary>
+    /// Class to load json files
+    /// </summary>
+    /// <typeparam name="T">The type of data to load</typeparam>
     public class JsonDataLoader<T> : AbstractDataLoader<T>
     {
+        /// <inheritdoc/>
         public override T LoadData(string fileName)
         {
             T returnData = default(T);

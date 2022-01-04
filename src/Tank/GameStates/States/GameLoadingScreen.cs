@@ -194,9 +194,9 @@ namespace Tank.GameStates.States
                 Texture2D texture = contentWrapper.Load<Texture2D>(sheet.TextureName);
                 return new SpriteSheet(texture, sheet.SingleImageSize.GetPoint(), sheet.DistanceBetweenImages, sheet.Patterns);
             };
-            spritesheetToUse = spriteSetManager.GetData(gameSettings.SpriteSetName, conversionFunc);
-            healthBarSprite = spriteSetManager.GetData("HealthBarSheet", conversionFunc);
-            powerBarSprite = spriteSetManager.GetData("StrengthMeterSheet", conversionFunc);
+            spritesheetToUse = spriteSetManager.LoadData(gameSettings.SpriteSetName, conversionFunc);
+            healthBarSprite = spriteSetManager.LoadData("HealthBarSheet", conversionFunc);
+            powerBarSprite = spriteSetManager.LoadData("StrengthMeterSheet", conversionFunc);
             defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
             gameFont = contentWrapper.Load<SpriteFont>("gameFont");
 
@@ -275,7 +275,7 @@ namespace Tank.GameStates.States
                               //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
 
-            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Playlist>(new JsonPlaylistLoader()));
+            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Playlist>(new JsonGameDataLoader<Playlist>("Playlists")));
             engine.AddSystem(new MusicSystem(musicManager, "IngameMusic"));
         }
 

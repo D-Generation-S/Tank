@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace TankEngine.Music
 {
@@ -11,7 +12,13 @@ namespace TankEngine.Music
         /// <summary>
         /// The stored playlist
         /// </summary>
-        private List<string> playlist;
+        [JsonPropertyName("Playlist")]
+        public List<string> PlayList { get; set; }
+
+        public Playlist()
+        {
+            PlayList = new List<string>();
+        }
 
         /// <summary>
         /// Create a new instance of this class
@@ -20,7 +27,7 @@ namespace TankEngine.Music
         public Playlist(List<string> playlist)
         {
             playlist = RemoveDuplicates(playlist);
-            this.playlist = playlist;
+            PlayList = playlist;
         }
 
         /// <summary>
@@ -40,7 +47,7 @@ namespace TankEngine.Music
         /// <returns>True if song is in playlist</returns>
         public bool Contains(string songName)
         {
-            return playlist.Contains(songName);
+            return PlayList.Contains(songName);
         }
 
         /// <summary>
@@ -61,7 +68,7 @@ namespace TankEngine.Music
         /// <param name="songName">The name of the song to remove</param>
         public void Remove(string songName)
         {
-            playlist.Remove(songName);
+            PlayList.Remove(songName);
         }
 
         /// <summary>
@@ -70,7 +77,7 @@ namespace TankEngine.Music
         /// <returns>A list with all the songs</returns>
         public List<string> GetSongs()
         {
-            return playlist;
+            return PlayList;
         }
     }
 }
