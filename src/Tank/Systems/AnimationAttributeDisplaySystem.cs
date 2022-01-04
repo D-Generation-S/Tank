@@ -4,6 +4,7 @@ using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Rendering;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Systems;
 
 namespace Tank.Systems
 {
@@ -26,7 +27,7 @@ namespace Tank.Systems
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            foreach(uint entityId in watchedEntities)
+            foreach (uint entityId in watchedEntities)
             {
                 AttributeDisplayComponent attributeDisplayComponent = entityManager.GetComponent<AttributeDisplayComponent>(entityId);
                 VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
@@ -69,7 +70,7 @@ namespace Tank.Systems
         public override void LateUpdate()
         {
             base.LateUpdate();
-            foreach(uint updatedEntity in updatedEntites)
+            foreach (uint updatedEntity in updatedEntites)
             {
                 GameObjectData data = entityManager.GetComponent<GameObjectData>(updatedEntity);
                 if (data != null)

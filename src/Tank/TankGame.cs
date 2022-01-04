@@ -1,14 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Tank.Adapter;
-using Tank.DataManagement;
-using Tank.DataManagement.Loader;
-using Tank.DataManagement.Saver;
 using Tank.DataStructure.Settings;
-using Tank.GameStates;
 using Tank.GameStates.States;
-using Tank.Wrapper;
+using TankEngine.Adapter;
+using TankEngine.GameStates;
+using TankEngine.Wrapper;
 
 namespace Tank
 {
@@ -35,23 +32,22 @@ namespace Tank
         {
             base.Initialize();
             ContentWrapper contentWrapper = new ContentWrapper(Content);
-            SaveableDataManager<ApplicationSettings> settingManager = new SaveableDataManager<ApplicationSettings>(contentWrapper, new JsonSettingLoader(), new JsonSettingSaver());
-            ApplicationSettings settings = settingManager.GetData("settings");
-            InitResolution(settings.Resolution.X, settings.Resolution.Y, settings.FullScreen);
+            ApplicationSettingsSingelton.Instance.Load();
+            InitResolution(ApplicationSettingsSingelton.Instance.Resolution.X, ApplicationSettingsSingelton.Instance.Resolution.Y, ApplicationSettingsSingelton.Instance.FullScreen);
 
             PublicGraphicsDevice = GraphicsDevice;
             PublicContentManager = Content;
-            PublicViewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, settings.FullScreen, 1920, 1080);
+            PublicViewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, ApplicationSettingsSingelton.Instance.FullScreen, 1920, 1080);
             PublicViewportAdapter.Reset();
 
-            gameStateManager = new GameStateManager(contentWrapper, spriteBatch, settings);
+            gameStateManager = new GameStateManager(contentWrapper, spriteBatch);
             gameStateManager.Add(new MainMenuState());
             IsMouseVisible = true;
 
             Window.ClientSizeChanged += (sender, eventData) =>
             {
                 // Called to often, there should be a better solution!
-                InitResolution(settings.Resolution.X, settings.Resolution.Y, settings.FullScreen);
+                InitResolution(ApplicationSettingsSingelton.Instance.Resolution.X, ApplicationSettingsSingelton.Instance.Resolution.Y, ApplicationSettingsSingelton.Instance.FullScreen);
             };
         }
 

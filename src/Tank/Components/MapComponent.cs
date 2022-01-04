@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using Tank.DataStructure;
+using TankEngine.DataStructures;
+using TankEngine.EntityComponentSystem.Components;
 
 namespace Tank.Components
 {

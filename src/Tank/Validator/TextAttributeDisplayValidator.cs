@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Tank.Components;
+﻿using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Rendering;
-using Tank.EntityComponentSystem.Validator;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Validator;
 
 namespace Tank.Validator
 {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Input;
-using Tank.DataStructure.InputWrapper;
 using Tank.Interfaces.GameObjectControlling;
+using TankEngine.DataStructures.InputWrapper;
 
 namespace Tank.DataStructure
 {
-    class StaticKeyboardControls : IGameObjectController
+    public class StaticKeyboardControls : IGameObjectController
     {
         /// <summary>
         /// The keyboard wrapper to use

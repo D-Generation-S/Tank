@@ -2,12 +2,12 @@
 using System;
 using System.Linq;
 using Tank.Components;
-using Tank.Events;
-using Tank.Events.EntityBased;
 using Tank.Events.PhysicBased;
-using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Utils;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Systems;
 
 namespace Tank.Systems
 {

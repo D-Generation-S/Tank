@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tank.Components;
-using Tank.DataStructure;
 using Tank.Interfaces.MapGenerators;
-using Tank.Interfaces.Randomizer;
+using TankEngine.DataStructures;
+using TankEngine.Randomizer;
 
 namespace Tank.Map.Generators
 {

@@ -1,4 +1,6 @@
-﻿namespace Tank.Components.Tags
+﻿using TankEngine.EntityComponentSystem.Components;
+
+namespace Tank.Components.Tags
 {
     /// <summary>
     /// Base tag class

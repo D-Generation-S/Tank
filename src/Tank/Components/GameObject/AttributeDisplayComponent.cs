@@ -1,4 +1,6 @@
-﻿namespace Tank.Components.GameObject
+﻿using TankEngine.EntityComponentSystem.Components;
+
+namespace Tank.Components.GameObject
 {
     class AttributeDisplayComponent : BaseComponent
     {

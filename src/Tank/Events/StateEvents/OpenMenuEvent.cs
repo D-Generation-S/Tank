@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using TankEngine.EntityComponentSystem.Events;
 
 namespace Tank.Events.StateEvents
 {

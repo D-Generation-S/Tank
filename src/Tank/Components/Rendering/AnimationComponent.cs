@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using TankEngine.EntityComponentSystem.Components;
 
 namespace Tank.Components.Rendering
 {

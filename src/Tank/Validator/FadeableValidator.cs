@@ -1,5 +1,5 @@
 ﻿using Tank.Components;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Manager;
 
 namespace Tank.Validator
 {

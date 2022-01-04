@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Input;
+using TankEngine.EntityComponentSystem.Components;
 
 namespace Tank.Components.Input
 {

@@ -1,4 +1,6 @@
-﻿namespace Tank.Components
+﻿using TankEngine.EntityComponentSystem.Components;
+
+namespace Tank.Components
 {
     /// <summary>
     /// A component to fade in/out some entity

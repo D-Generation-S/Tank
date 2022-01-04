@@ -1,4 +1,5 @@
 ﻿using Tank.Enums;
+using TankEngine.EntityComponentSystem.Components;
 
 namespace Tank.Components.Forces
 {

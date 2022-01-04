@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Rendering;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Systems;
 
 namespace Tank.Systems
 {
@@ -19,7 +18,7 @@ namespace Tank.Systems
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            foreach(uint entityId in watchedEntities)
+            foreach (uint entityId in watchedEntities)
             {
                 AttributeDisplayComponent attributeDisplayComponent = entityManager.GetComponent<AttributeDisplayComponent>(entityId);
                 VisibleTextComponent textComponent = entityManager.GetComponent<VisibleTextComponent>(entityId);

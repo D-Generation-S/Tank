@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataStructure.Geometrics;
-using Tank.Factories;
-using Tank.Interfaces.EntityComponentSystem;
+using TankEngine.DataStructures.Geometrics;
+using TankEngine.EntityComponentSystem;
+using TankEngine.Factories;
 
 namespace Tank.Builders
 {
@@ -93,7 +93,7 @@ namespace Tank.Builders
             moveable.ApplyPhysic = true;
             moveable.PhysicRotate = true;
             moveable.Mass = 7;
-            
+
 
             VisibleComponent visuals = entityManager.CreateComponent<VisibleComponent>();
             visuals.Texture = texture;

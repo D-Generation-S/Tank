@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tank.Register
+﻿namespace Tank.Register
 {
     class Register<T> : DictionaryExtended<string, T>
     {
@@ -14,7 +10,7 @@ namespace Tank.Register
             }
 
             int position = 0;
-            foreach(string currentKey in GetKeys())
+            foreach (string currentKey in GetKeys())
             {
                 if (currentKey == key)
                 {

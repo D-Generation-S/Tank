@@ -1,6 +1,6 @@
 ﻿using Tank.Components;
 using Tank.Components.Tags;
-using Tank.Interfaces.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Manager;
 
 namespace Tank.Validator
 {

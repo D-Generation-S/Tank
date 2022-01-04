@@ -13,26 +13,28 @@ using Tank.Components.Input;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.DataManagement;
+using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
-using Tank.DataStructure.Geometrics;
 using Tank.DataStructure.Settings;
-using Tank.DataStructure.Spritesheet;
-using Tank.EntityComponentSystem.Manager;
-using Tank.Events.EntityBased;
 using Tank.Factories;
 using Tank.GameStates.Data;
 using Tank.Interfaces.Builders;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Interfaces.MapGenerators;
-using Tank.Interfaces.Randomizer;
 using Tank.Map.Textureizer;
-using Tank.Music;
-using Tank.Randomizer;
 using Tank.Register;
 using Tank.Systems;
 using Tank.Utils;
-using Tank.Wrapper;
+using TankEngine.DataProvider.Loader;
+using TankEngine.DataStructures.Geometrics;
+using TankEngine.DataStructures.Spritesheet;
+using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Systems;
+using TankEngine.GameStates.States;
+using TankEngine.Music;
+using TankEngine.Randomizer;
+using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
 {
@@ -54,12 +56,12 @@ namespace Tank.GameStates.States
         /// <summary>
         /// The data loader to use
         /// </summary>
-        private readonly IDataLoader<SpriteSheet> dataLoader;
+        private readonly IDataLoader<SpritesheetData> dataLoader;
 
         /// <summary>
         /// The manager used to load the sprites
         /// </summary>
-        private DataManager<SpriteSheet> spriteSetManager;
+        private DataManager<SpritesheetData> spriteSetManager;
 
         /// <summary>
         /// The spritesheet to use for the map
@@ -132,7 +134,7 @@ namespace Tank.GameStates.States
         /// <param name="mapGenerator">The map generating algorihm to use</param>
         /// <param name="gameSettings">The game settings to use</param>
         public GameLoadingScreen(IMapGenerator mapGenerator, GameSettings gameSettings)
-            : this(mapGenerator, gameSettings, new JsonTextureLoader())
+            : this(mapGenerator, gameSettings, new JsonGameDataLoader<SpritesheetData>("Spritesheets"))
         {
         }
 
@@ -142,7 +144,7 @@ namespace Tank.GameStates.States
         /// <param name="mapGenerator">The map generating algorihm to use</param>
         /// <param name="gameSettings">The game settings to use</param>
         /// <param name="dataLoader">The data loader to use</param>
-        public GameLoadingScreen(IMapGenerator mapGenerator, GameSettings gameSettings, IDataLoader<SpriteSheet> dataLoader)
+        public GameLoadingScreen(IMapGenerator mapGenerator, GameSettings gameSettings, IDataLoader<SpritesheetData> dataLoader)
         {
             this.mapGenerator = mapGenerator;
             this.gameSettings = gameSettings;
@@ -155,10 +157,10 @@ namespace Tank.GameStates.States
 
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
-            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
-            spriteSetManager = new DataManager<SpriteSheet>(contentWrapper, dataLoader);
+            base.Initialize(contentWrapper, spriteBatch);
+            spriteSetManager = new DataManager<SpritesheetData>(dataLoader);
 
             standardShellExplosionAnimation = new List<Rectangle>() {
                         new Rectangle(0, 0, 32, 32),
@@ -185,9 +187,18 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void LoadContent()
         {
-            spritesheetToUse = spriteSetManager.GetData(gameSettings.SpriteSetName);
-            healthBarSprite = spriteSetManager.GetData("HealthBarSheet");
-            powerBarSprite = spriteSetManager.GetData("StrengthMeterSheet");
+            Func<SpritesheetData, SpriteSheet> conversionFunc = sheet =>
+            {
+                if (sheet == null)
+                {
+                    return null;
+                }
+                Texture2D texture = contentWrapper.Load<Texture2D>(sheet.TextureName);
+                return new SpriteSheet(texture, sheet.SingleImageSize.GetPoint(), sheet.DistanceBetweenImages, sheet.Patterns);
+            };
+            spritesheetToUse = spriteSetManager.LoadData(gameSettings.SpriteSetName, conversionFunc);
+            healthBarSprite = spriteSetManager.LoadData("HealthBarSheet", conversionFunc);
+            powerBarSprite = spriteSetManager.LoadData("StrengthMeterSheet", conversionFunc);
             defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
             gameFont = contentWrapper.Load<SpriteFont>("gameFont");
 
@@ -256,7 +267,7 @@ namespace Tank.GameStates.States
             engine.AddSystem(new AnimationSystem());
             engine.AddSystem(new DamageSystem());
             engine.AddSystem(new MapSystem());
-            engine.AddSystem(new SoundEffectSystem(settings));
+            engine.AddSystem(new SoundEffectSystem(ApplicationSettingsSingelton.Instance.EffectVolume));
             engine.AddSystem(new AnimationAttributeDisplaySystem());
             engine.AddSystem(new FadeInFadeOutSystem());
             engine.AddSystem(new RenderSystem(
@@ -266,8 +277,8 @@ namespace Tank.GameStates.States
                               //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
 
-            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Music.Playlist>(contentWrapper, new JsonPlaylistLoader()));
-            engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", settings));
+            MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Playlist>(new JsonGameDataLoader<Playlist>("Playlists")));
+            engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", ApplicationSettingsSingelton.Instance.MusicVolume));
         }
 
         private Register<IGameObjectBuilder> CreateProjectileRegister()

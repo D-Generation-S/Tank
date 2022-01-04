@@ -10,20 +10,20 @@ using Tank.Builders;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataStructure.Geometrics;
-using Tank.DataStructure.Settings;
-using Tank.Events;
 using Tank.Events.PhysicBased;
 using Tank.Events.StateEvents;
 using Tank.Events.TerrainEvents;
 using Tank.Factories;
 using Tank.GameStates.Data;
 using Tank.Interfaces.Builders;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Map.Generators;
-using Tank.Randomizer;
-using Tank.Wrapper;
+using TankEngine.DataStructures.Geometrics;
+using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.GameStates.States;
+using TankEngine.Randomizer;
+using TankEngine.Wrapper;
 
 namespace Tank.GameStates.States
 {
@@ -62,7 +62,7 @@ namespace Tank.GameStates.States
         IGameEngine engine;
         //private readonly IMap mapToUse;
         private readonly GameSettings gameSettings;
-        private readonly SystemRandomizer randomizer;
+        private readonly IRandomizer randomizer;
 
         private uint mapId;
         private uint entityCounter;
@@ -89,9 +89,9 @@ namespace Tank.GameStates.States
         }
 
         /// <inheritdoc/>
-        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch, ApplicationSettings applicationSettings)
+        public override void Initialize(ContentWrapper contentWrapper, SpriteBatch spriteBatch)
         {
-            base.Initialize(contentWrapper, spriteBatch, applicationSettings);
+            base.Initialize(contentWrapper, spriteBatch);
             ticksToFire = 2000;
             bulletSpawnLocation = new Vector2(200, 200);
             //engine = new GameEngine(new EventManager(), new EntityManager(), contentWrapper);
@@ -300,7 +300,7 @@ namespace Tank.GameStates.States
 
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
-                uint exposion = engine.EntityManager.CreateEntity();
+                uint explosion = engine.EntityManager.CreateEntity();
 
                 foreach (IComponent component in randomExplosionFactory.GetNewObject())
                 {
@@ -311,7 +311,7 @@ namespace Tank.GameStates.States
                         placeableComponent.Position = mouseWrapper.GetMouseVectorPosition();
                         circle = new Circle(mouseWrapper.GetMouseVectorPosition(), 16);
                     }
-                    engine.EntityManager.AddComponent(exposion, component);
+                    engine.EntityManager.AddComponent(explosion, component);
                     if (circle != null)
                     {
                         DamageComponent damage = engine.EntityManager.CreateComponent<DamageComponent>();
@@ -319,14 +319,14 @@ namespace Tank.GameStates.States
                         damage.CenterDamageValue = 100;
                         damage.DamageArea = circle;
                         damage.EffectFactory = randomExplosionFactory;
-                        engine.EntityManager.AddComponent(exposion, damage);
+                        engine.EntityManager.AddComponent(explosion, damage);
 
                         DamageTerrainEvent damageTerrainEvent = engine.EventManager.CreateEvent<DamageTerrainEvent>();
                         damageTerrainEvent.DamageArea = circle;
 
                         engine.EventManager.FireEvent<DamageTerrainEvent>(this, damageTerrainEvent);
                         MapCollisionEvent mapCollisionEvent = engine.EventManager.CreateEvent<MapCollisionEvent>();
-                        mapCollisionEvent.EntityId = exposion;
+                        mapCollisionEvent.EntityId = explosion;
                         mapCollisionEvent.Position = circle.Center;
                         engine.EventManager.FireEvent<MapCollisionEvent>(this, mapCollisionEvent);
                     }

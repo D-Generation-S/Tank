@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using Tank.Interfaces.Builders;
-using Tank.Interfaces.EntityComponentSystem;
-using Tank.Interfaces.Randomizer;
+using TankEngine.EntityComponentSystem;
+using TankEngine.Factories;
+using TankEngine.Randomizer;
 
 namespace Tank.Factories
 {

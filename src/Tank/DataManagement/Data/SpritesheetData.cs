@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Tank.DataStructure;
-using Tank.DataStructure.Spritesheet;
+using TankEngine.DataStructures.Serializeable;
+using TankEngine.DataStructures.Spritesheet;
 
 namespace Tank.DataManagement.Data
 {
@@ -12,21 +12,21 @@ namespace Tank.DataManagement.Data
         /// <summary>
         /// The name of the texture to load
         /// </summary>
-        public string TextureName;
+        public string TextureName { get; set; }
 
         /// <summary>
-        /// The size of a single texture in the sheet
+        /// The single image size to use
         /// </summary>
-        public Position SingleImageSize;
+        public SPoint SingleImageSize { get; set; }
 
         /// <summary>
         /// The distance between the images
         /// </summary>
-        public int DistanceBetweenImages;
+        public int DistanceBetweenImages { get; set; }
 
         /// <summary>
         /// The patterns to apply for the sheet
         /// </summary>
-        public List<SpriteSheetPattern> Patterns;
+        public List<SpriteSheetPattern> Patterns { get; set; }
     }
 }

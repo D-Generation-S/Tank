@@ -3,12 +3,13 @@ using System.Linq;
 using Tank.Components;
 using Tank.Components.Rendering;
 using Tank.Components.Tags;
-using Tank.DataStructure.Geometrics;
-using Tank.Events;
 using Tank.Events.PhysicBased;
 using Tank.Events.TerrainEvents;
-using Tank.Interfaces.EntityComponentSystem.Manager;
 using Tank.Validator;
+using TankEngine.DataStructures.Geometrics;
+using TankEngine.EntityComponentSystem.Events;
+using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Systems;
 
 namespace Tank.Systems
 {

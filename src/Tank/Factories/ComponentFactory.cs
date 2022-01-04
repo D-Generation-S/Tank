@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Tank.Interfaces.Builders;
-using Tank.Interfaces.EntityComponentSystem;
+using TankEngine.EntityComponentSystem;
+using TankEngine.Factories;
 
 namespace Tank.Factories
 {

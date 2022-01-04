@@ -3,12 +3,14 @@ using System;
 using System.Collections.Generic;
 using Tank.Components;
 using Tank.Components.Forces;
-using Tank.DataStructure.Geometrics;
 using Tank.DataStructure.Quadtree;
-using Tank.EntityComponentSystem.Validator;
 using Tank.Enums;
 using Tank.Events.PhysicBased;
 using Tank.Validator;
+using TankEngine.DataStructures.Geometrics;
+using TankEngine.DataStructures.Quadtree;
+using TankEngine.EntityComponentSystem.Systems;
+using TankEngine.EntityComponentSystem.Validator;
 
 namespace Tank.Systems
 {
@@ -41,7 +43,7 @@ namespace Tank.Systems
         /// Create a new instance of this class
         /// </summary>
         public ForceSystem(VectorRectangle forceBounding)
-            :this(new QuadTree(forceBounding, 4))
+            : this(new QuadTree(forceBounding, 4))
         {
         }
 
@@ -93,7 +95,7 @@ namespace Tank.Systems
                 ApplyForces(entityId, force, placeable);
             }
 
-            foreach(QuadTreeData treeData in activeDataContainer)
+            foreach (QuadTreeData treeData in activeDataContainer)
             {
                 usedDataContainer.Enqueue(treeData);
             }
