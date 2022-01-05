@@ -152,9 +152,20 @@ jobs:
      needs: ["createWindowsGameZip", "createLinuxGameZip", "createMacOsGameZip"]
      runs-on: ubuntu-latest
      steps:
-       - name: Download artifacts
+       - name: Download Windows artifact
          uses: actions/download-artifact@v2
          with:
+           name: WindowsGameArtifactZip
+           path: releases
+       - name: Download Linux artifact
+         uses: actions/download-artifact@v2
+         with:
+           name: LinuxGameArtifactZip
+           path: releases
+       - name: Download MacOs artifact
+         uses: actions/download-artifact@v2
+         with:
+           name: MacOsGameArtifactZip
            path: releases
        - name: Read folder content
          run: ls -la releases
