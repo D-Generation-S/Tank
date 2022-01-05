@@ -18,6 +18,16 @@ On Windows you should be able to click the `Tank.exe` and the game should start.
 
 On Linux you will need to run `sudo chmod +x Tank` and start it with `./Tank` while being in the folder of the build.
 
+### Controls
+
+Right now there is nothing changeable inside the game and nothing is getting shown. The controls are the following
+
+* W/S   -> Increase/Decrease strength for shooting
+* A/D   -> Move Barrel to left or right
+* Space -> Shoot
+
+Keep in mind that right now there is no visual to see the barrel position. The strength can be seen on the bar to the right of the screen.
+
 ### Important
 
 Please keep in mind that I cannot test the MacOs build and only test the Linux build from time to time so I cannot tell you if it works and how stable it will work.
