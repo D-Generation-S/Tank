@@ -170,8 +170,8 @@ jobs:
        - name: Read folder content
          run: ls -la releases
        - name: Get release name
-          id: getReleaseName
-          run: echo ::set-output name=RELEASE_NAME::${GITHUB_REF/refs\/tags\//}-${GITHUB.RUN_NUMBER}  
+         id: getReleaseName
+         run: echo ::set-output name=RELEASE_NAME::${GITHUB_REF/refs\/tags\//}-${GITHUB.RUN_NUMBER}  
        - name: Create last unstable Release
          uses: softprops/action-gh-release@v1
          with:
