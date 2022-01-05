@@ -2,12 +2,12 @@ name: Latest unstable build
 
 on: 
   push:
-    branches:
-      - develop
+    #branches:
+    #  - develop
 
 jobs:
-   createGameBuild:
-     name: Create latest build artifact
+   createWindowsGameBuild:
+     name: Create latest build artifact for Windows
      runs-on: windows-latest
      steps:
        - name: Clone repository
@@ -26,36 +26,130 @@ jobs:
        - name: Upload artifact
          uses: actions/upload-artifact@v2
          with:
-          name: GameArtifact
+          name: WindowsGameArtifact
           path: |
             artifact/
-   createZip:
+   createLinuxGameBuild:
+     name: Create latest build artifact for Linux
+     runs-on: windows-latest
+     steps:
+       - name: Clone repository
+         uses: actions/checkout@v2
+       - name: Restore nuget packages
+         run: dotnet restore
+         shell: powershell
+       - name: Build project Linux
+         run: dotnet publish -c Release -r linux-x64 --self-contained true
+         shell: powershell
+       - name: Move successful build
+         run: |
+          mkdir artifact/
+          mv .\src\Tank\bin\Release\**\win-x64\publish artifact/LastStable
+          mv ./src/Tank/bin/Release
+       - name: Upload artifact
+         uses: actions/upload-artifact@v2
+         with:
+          name: LinuxGameArtifact
+          path: |
+            artifact/   
+   createDarwinGameBuild:
+     name: Create latest build artifact for MacOs
+     runs-on: windows-latest
+     steps:
+       - name: Clone repository
+         uses: actions/checkout@v2
+       - name: Restore nuget packages
+         run: dotnet restore
+         shell: powershell
+       - name: Build project MacOs
+         run: dotnet publish -c Release -r osx-x64 --self-contained true
+         shell: powershell
+       - name: Move successful build
+         run: |
+          mkdir artifact/
+          mv .\src\Tank\bin\Release\**\win-x64\publish artifact/LastStable
+          mv ./src/Tank/bin/Release
+       - name: Upload artifact
+         uses: actions/upload-artifact@v2
+         with:
+          name: DarwinGameArtifact
+          path: |
+            artifact/
+   createWindowsGameZip:
      name: Create zip
-     needs: ["createGameBuild"]
+     needs: ["createWindowsGameBuild"]
      runs-on: ubuntu-latest   
      steps:
        - name: Download artifacts
          uses: actions/download-artifact@v2
          with:
-           name: GameArtifact
+           name: WindowsGameArtifact
            path: dist
        - name: Create zip
          run: |
            cd dist/
-           zip -r Latest_GameArtifact.zip .
+           zip -r Latest_WindowsGameArtifactZip.zip .
        - name: Move artifact
          run: |
            mkdir upload-artifacts/
-           mv dist/Latest_GameArtifact.zip upload-artifacts/
+           mv dist/Latest_WindowsGameArtifactZip.zip upload-artifacts/
        - name: Upload build artifact
          uses: actions/upload-artifact@v2
          with:
-          name: ZipArtifact
+          name: WindowsGameArtifactZip
           path: |
             upload-artifacts/
-   createUploadArtifact:
+   createLinuxGameZip:
+     name: Create zip
+     needs: ["createLinuxGameBuild"]
+     runs-on: ubuntu-latest   
+     steps:
+       - name: Download artifacts
+         uses: actions/download-artifact@v2
+         with:
+           name: LinuxGameArtifact
+           path: dist
+       - name: Create zip
+         run: |
+           cd dist/
+           zip -r Latest_LinuxGameArtifactZip.zip .
+       - name: Move artifact
+         run: |
+           mkdir upload-artifacts/
+           mv dist/Latest_LinuxGameArtifactZip.zip upload-artifacts/
+       - name: Upload build artifact
+         uses: actions/upload-artifact@v2
+         with:
+          name: LinuxGameArtifactZip
+          path: |
+            upload-artifacts/
+   createDarwinGameZip:
+     name: Create zip
+     needs: ["createDarwinGameBuild"]
+     runs-on: ubuntu-latest   
+     steps:
+       - name: Download artifacts
+         uses: actions/download-artifact@v2
+         with:
+           name: DarwinGameArtifact
+           path: dist
+       - name: Create zip
+         run: |
+           cd dist/
+           zip -r Latest_DarwinGameArtifactZip.zip .
+       - name: Move artifact
+         run: |
+           mkdir upload-artifacts/
+           mv dist/Latest_DarwinGameArtifactZip.zip upload-artifacts/
+       - name: Upload build artifact
+         uses: actions/upload-artifact@v2
+         with:
+          name: DarwinGameArtifactZip
+          path: |
+            upload-artifacts/
+   createUnstableReleaseAndUploadArtifacts:
      name: Upload last unstable
-     needs: ["createZip"]
+     needs: ["createWindowsGameZip", "createLinuxGameZip", "createDarwinGameZip"]
      runs-on: ubuntu-latest
      steps:
        - name: Download artifacts
@@ -73,16 +167,36 @@ jobs:
          with:
            tag_name: ${{ github.ref }}-${{ GITHUB.RUN_NUMBER }}
            release_name: Latest unstable
-           body: This is the latest unstable build version, feel free to test it out
-           draft: false
+           body: This is the latest unstable build version, feel free to test it out. Most of the time only the windows build got tested!
+           draft: true
            prerelease: true
-       - name: Upload game data
+       - name: Upload Windows game artifact
          id: upload-game-data
          uses: actions/upload-release-asset@v1
          env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_GameArtifact.zip
-           asset_name: Latest_GameArtifact.zip
+           asset_path: releases/Latest_WindowsGameArtifactZip.zip
+           asset_name: Latest_WindowsGameArtifact.zip
+           asset_content_type: application/zip
+       - name: Upload Linux game artifact
+         id: upload-game-data
+         uses: actions/upload-release-asset@v1
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         with:
+           upload_url: ${{ steps.create_release.outputs.upload_url }}
+           asset_path: releases/Latest_LinuxGameArtifactZip.zip
+           asset_name: Latest_LinuxGameArtifact.zip
+           asset_content_type: application/zip
+       - name: Upload Darwin game artifact
+         id: upload-game-data
+         uses: actions/upload-release-asset@v1
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         with:
+           upload_url: ${{ steps.create_release.outputs.upload_url }}
+           asset_path: releases/Latest_DarwinGameArtifactZip.zip
+           asset_name: Latest_DarwinGameArtifact.zip
            asset_content_type: application/zip
