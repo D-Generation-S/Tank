@@ -169,44 +169,16 @@ jobs:
            path: releases
        - name: Read folder content
          run: ls -la releases
-       - name: Create last unstable release
-         id: create_release
-         uses: actions/create-release@v1
-         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       - name: Replace part of tag
+         run: echo "custom_tag=latest-unstable" >> $GITHUB_ENV
+       - name: Create last unstable Release
+         uses: softprops/action-gh-release@v1
          with:
-           tag_name: ${{ github.ref }}-${{ GITHUB.RUN_NUMBER }}
-           release_name: Latest unstable
+           name: Latest unstable
            body: This is the latest unstable build version, feel free to test it out. Most of the time only the windows build got tested!
+           tag_name: ${{ env.custom_tag }}-${{ GITHUB.RUN_NUMBER }}
            draft: false
            prerelease: true
-       - name: Upload Windows game artifact
-         id: upload-windows-game-artifact
-         uses: actions/upload-release-asset@v1
+           files: releases/**.zip
          env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         with:
-           upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_WindowsGameArtifact.zip
-           asset_name: Latest_WindowsGameArtifact.zip
-           asset_content_type: application/zip
-       - name: Upload Linux game artifact
-         id: upload-linux-game-artifact
-         uses: actions/upload-release-asset@v1
-         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         with:
-           upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_LinuxGameArtifact.zip
-           asset_name: Latest_LinuxGameArtifact.zip
-           asset_content_type: application/zip
-       - name: Upload MacOs game artifact
-         id: upload-macos-game-artifact
-         uses: actions/upload-release-asset@v1
-         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         with:
-           upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_MacOsGameArtifact.zip
-           asset_name: Latest_MacOsGameArtifact.zip
-           asset_content_type: application/zip 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
