@@ -76,7 +76,7 @@ jobs:
           path: |
             artifact/
    createWindowsGameZip:
-     name: Create zip
+     name: Create Windows zip
      needs: ["createWindowsGameBuild"]
      runs-on: ubuntu-latest   
      steps:
@@ -100,7 +100,7 @@ jobs:
           path: |
             upload-artifacts/
    createLinuxGameZip:
-     name: Create zip
+     name: Create Linux zip
      needs: ["createLinuxGameBuild"]
      runs-on: ubuntu-latest   
      steps:
@@ -124,7 +124,7 @@ jobs:
           path: |
             upload-artifacts/
    createDarwinGameZip:
-     name: Create zip
+     name: Create Darwin zip
      needs: ["createDarwinGameBuild"]
      runs-on: ubuntu-latest   
      steps:
