@@ -2,8 +2,8 @@ name: Latest unstable build
 
 on: 
   push:
-    #branches:
-      #- develop
+    branches:
+      - develop
 
 jobs:
    createWindowsGameBuild:
