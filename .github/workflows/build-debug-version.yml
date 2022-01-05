@@ -2,8 +2,8 @@ name: Latest unstable build
 
 on: 
   push:
-    branches:
-      - develop
+    #branches:
+      #- develop
 
 jobs:
    createWindowsGameBuild:
@@ -178,7 +178,7 @@ jobs:
            tag_name: ${{ github.ref }}-${{ GITHUB.RUN_NUMBER }}
            release_name: Latest unstable
            body: This is the latest unstable build version, feel free to test it out. Most of the time only the windows build got tested!
-           draft: false
+           draft: true
            prerelease: true
        - name: Upload Windows game artifact
          id: upload-windows-game-artifact
