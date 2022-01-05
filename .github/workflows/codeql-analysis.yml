@@ -13,7 +13,7 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ main, develop, feature/51_extend-action-pipeline-for-other-os ]
+    branches: [ main, develop ]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ main ]
