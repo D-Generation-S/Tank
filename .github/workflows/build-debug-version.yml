@@ -9,6 +9,7 @@ jobs:
    createWindowsGameBuild:
      name: Create latest build artifact for Windows
      runs-on: windows-latest
+     steps:
        - name: Clone repository
          uses: actions/checkout@v2
        - name: Restore nuget packages
