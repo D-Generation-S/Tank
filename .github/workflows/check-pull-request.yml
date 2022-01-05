@@ -5,7 +5,7 @@ on:
 
 jobs:
    checkWindowsGameBuild:
-     name: Check build
+     name: Check build for Windows
      runs-on: windows-latest
      steps:
        - name: Clone repository
@@ -17,7 +17,7 @@ jobs:
          run: dotnet publish -c Release -r win-x64 --self-contained true
          shell: powershell
    checkLinuxGameBuild:
-     name: Check build
+     name: Check build for Linux
      runs-on: windows-latest
      steps:
        - name: Clone repository
@@ -29,7 +29,7 @@ jobs:
          run: dotnet publish -c Release -r linux-x64 --self-contained true
          shell: powershell
    checkDarwinGameBuild:
-     name: Check build
+     name: Check build for MacOs
      runs-on: windows-latest
      steps:
        - name: Clone repository
