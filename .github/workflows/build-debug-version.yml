@@ -2,8 +2,8 @@ name: Latest unstable build
 
 on: 
   push:
-    branches:
-      - develop
+    #branches:
+      #- develop
 
 jobs:
    createWindowsGameBuild:
@@ -178,3 +178,5 @@ jobs:
            draft: false
            prerelease: true
            files: releases/**.zip
+         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
