@@ -172,10 +172,10 @@ jobs:
        - name: Create last unstable Release
          uses: softprops/action-gh-release@v1
          #if: startsWith(github.ref, 'refs/tags/')
-         body: This is the latest unstable build version, feel free to test it out. Most of the time only the windows build got tested!
-         draft: true
-         prerelease: true
          with:
+           body: This is the latest unstable build version, feel free to test it out. Most of the time only the windows build got tested!
+           draft: true
+           prerelease: true
            files: |
             releases/**.zip
        #- name: Create last unstable release
