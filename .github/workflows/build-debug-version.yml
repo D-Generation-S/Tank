@@ -52,7 +52,7 @@ jobs:
           name: LinuxGameArtifact
           path: |
             artifact/   
-   createDarwinGameBuild:
+   createMacOsGameBuild:
      name: Create latest build artifact for MacOs
      runs-on: windows-latest
      steps:
@@ -72,7 +72,7 @@ jobs:
        - name: Upload artifact
          uses: actions/upload-artifact@v2
          with:
-          name: DarwinGameArtifact
+          name: MacOsGameArtifact
           path: |
             artifact/
    createWindowsGameZip:
@@ -123,33 +123,33 @@ jobs:
           name: LinuxGameArtifactZip
           path: |
             upload-artifacts/
-   createDarwinGameZip:
-     name: Create Darwin zip
-     needs: ["createDarwinGameBuild"]
+   createMacOsGameZip:
+     name: Create MacOs zip
+     needs: ["createMacOsGameBuild"]
      runs-on: ubuntu-latest   
      steps:
        - name: Download artifacts
          uses: actions/download-artifact@v2
          with:
-           name: DarwinGameArtifact
+           name: MacOsGameArtifact
            path: dist
        - name: Create zip
          run: |
            cd dist/
-           zip -r Latest_DarwinGameArtifactZip.zip .
+           zip -r Latest_MacOsGameArtifactZip.zip .
        - name: Move artifact
          run: |
            mkdir upload-artifacts/
-           mv dist/Latest_DarwinGameArtifactZip.zip upload-artifacts/
+           mv dist/Latest_MacOsGameArtifactZip.zip upload-artifacts/
        - name: Upload build artifact
          uses: actions/upload-artifact@v2
          with:
-          name: DarwinGameArtifactZip
+          name: MacOsGameArtifactZip
           path: |
             upload-artifacts/
    createUnstableReleaseAndUploadArtifacts:
      name: Upload last unstable
-     needs: ["createWindowsGameZip", "createLinuxGameZip", "createDarwinGameZip"]
+     needs: ["createWindowsGameZip", "createLinuxGameZip", "createMacOsGameZip"]
      runs-on: ubuntu-latest
      steps:
        - name: Download artifacts
@@ -176,7 +176,7 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_WindowsGameArtifactZip.zip
+           asset_path: releases/WindowsGameArtifactZip 
            asset_name: Latest_WindowsGameArtifact.zip
            asset_content_type: application/zip
        - name: Upload Linux game artifact
@@ -186,16 +186,16 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_LinuxGameArtifactZip.zip
+           asset_path: releases/LinuxGameArtifactZip 
            asset_name: Latest_LinuxGameArtifact.zip
            asset_content_type: application/zip
-       - name: Upload Darwin game artifact
-         id: upload-darwin-game-artifact
+       - name: Upload MacOs game artifact
+         id: upload-macos-game-artifact
          uses: actions/upload-release-asset@v1
          env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_DarwinGameArtifactZip.zip
-           asset_name: Latest_DarwinGameArtifact.zip
+           asset_path: releases/MacOsGameArtifactZip
+           asset_name: Latest_MacOsGameArtifact.zip
            asset_content_type: application/zip
