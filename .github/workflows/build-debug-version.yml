@@ -169,12 +169,18 @@ jobs:
            path: releases
        - name: Read folder content
          run: ls -la releases
+       - name: Replace part of tag
+         if: startsWith(github.ref, 'refs/tags/')
+         run: |
+              ref=${GITHUB_REF/refs\/heads\//}
+              echo $ref
+              echo "custom_tag=${ref}" >> $GITHUB_ENV
        - name: Create last unstable Release
          uses: softprops/action-gh-release@v1
          with:
            name: Latest unstable
            body: This is the latest unstable build version, feel free to test it out. Most of the time only the windows build got tested!
-           tag_name: {{ GITHUB.GITHUB_REF }}-${{ GITHUB.RUN_NUMBER }}
+           tag_name: ${{ env.custom_tag }}-${{ GITHUB.RUN_NUMBER }}
            draft: false
            prerelease: true
            files: releases/**.zip
