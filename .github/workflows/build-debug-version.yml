@@ -9,13 +9,6 @@ jobs:
    createWindowsGameBuild:
      name: Create latest build artifact for Windows
      runs-on: windows-latest
-     steps:
-       - name: Replace part of tag REMOVE ME!
-         if: startsWith(github.ref, 'refs/tags/')
-         run: |
-              ref=${GITHUB_REF/refs\/heads\//}
-              echo $ref
-              echo "custom_tag=${ref}" >> $GITHUB_ENV
        - name: Clone repository
          uses: actions/checkout@v2
        - name: Restore nuget packages
@@ -176,11 +169,7 @@ jobs:
        - name: Read folder content
          run: ls -la releases
        - name: Replace part of tag
-         if: startsWith(github.ref, 'refs/tags/')
-         run: |
-              ref=${GITHUB_REF/refs\/heads\//}
-              echo $ref
-              echo "custom_tag=${ref}" >> $GITHUB_ENV
+         run: echo "custom_tag=latest-unstable" >> $GITHUB_ENV
        - name: Create last unstable Release
          uses: softprops/action-gh-release@v1
          with:
