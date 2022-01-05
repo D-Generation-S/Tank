@@ -187,7 +187,7 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/WindowsGameArtifactZip 
+           asset_path: releases/Latest_WindowsGameArtifactZip.zip
            asset_name: Latest_WindowsGameArtifact.zip
            asset_content_type: application/zip
        - name: Upload Linux game artifact
@@ -197,7 +197,7 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/LinuxGameArtifactZip 
+           asset_path: releases/Latest_LinuxGameArtifactZip.zip
            asset_name: Latest_LinuxGameArtifact.zip
            asset_content_type: application/zip
        - name: Upload MacOs game artifact
@@ -207,6 +207,6 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/MacOsGameArtifactZip
+           asset_path: releases/Latest_MacOsGameArtifactZip.zip
            asset_name: Latest_MacOsGameArtifact.zip
            asset_content_type: application/zip
