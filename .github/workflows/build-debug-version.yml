@@ -169,15 +169,12 @@ jobs:
            path: releases
        - name: Read folder content
          run: ls -la releases
-       - name: Get release name
-         id: getReleaseName
-         run: echo ::set-output name=RELEASE_NAME::${GITHUB_REF/refs\/tags\//}
        - name: Create last unstable Release
          uses: softprops/action-gh-release@v1
          with:
            name: Latest unstable
            body: This is the latest unstable build version, feel free to test it out. Most of the time only the windows build got tested!
-           tag_name: ${{ steps.getReleaseName.outputs.RELEASE_NAME }}-${{ GITHUB.RUN_NUMBER }}
+           tag_name: {{ GITHUB.GITHUB_REF }}-${{ GITHUB.RUN_NUMBER }}
            draft: false
            prerelease: true
            files: releases/**.zip
