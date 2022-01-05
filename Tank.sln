@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tank", "src\Tank\Tank.csproj", "{3D3E4DA2-5418-4D10-842E-187650D070A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TankEngine", "TankEngine\TankEngine.csproj", "{1CE6E1B6-3B18-4BF5-8E47-0636D5CFA134}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TankEngine", "src\TankEngine\TankEngine.csproj", "{1CE6E1B6-3B18-4BF5-8E47-0636D5CFA134}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

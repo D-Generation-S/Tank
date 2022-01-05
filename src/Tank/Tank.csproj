@@ -42,9 +42,6 @@
     <MonoGameContentReference Include="Assets\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TankEngine\TankEngine.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="GameData\Playlists\IngameMusic.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -67,6 +64,9 @@
   <ItemGroup>
     <Folder Include="Events\ComponentBased\" />
     <Folder Include="Events\EntityBased\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TankEngine\TankEngine.csproj" />
   </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties gamedata_4playlists_4menumusic_1json__JsonSchema="{}" /></VisualStudio></ProjectExtensions>
 </Project>
