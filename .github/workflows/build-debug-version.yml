@@ -2,8 +2,8 @@ name: Latest unstable build
 
 on: 
   push:
-    branches:
-      - develop
+    #branches:
+    #  - develop
 
 jobs:
    createWindowsGameBuild:
@@ -26,7 +26,7 @@ jobs:
        - name: Upload artifact
          uses: actions/upload-artifact@v2
          with:
-          name: WindowsGameArtifact
+          name: WindowsGameBuildArtifact
           path: |
             artifact/
    createLinuxGameBuild:
@@ -49,7 +49,7 @@ jobs:
        - name: Upload artifact
          uses: actions/upload-artifact@v2
          with:
-          name: LinuxGameArtifact
+          name: LinuxGameBuildArtifact
           path: |
             artifact/   
    createMacOsGameBuild:
@@ -72,7 +72,7 @@ jobs:
        - name: Upload artifact
          uses: actions/upload-artifact@v2
          with:
-          name: MacOsGameArtifact
+          name: MacOsGameBuildArtifact
           path: |
             artifact/
    createWindowsGameZip:
@@ -83,20 +83,20 @@ jobs:
        - name: Download artifacts
          uses: actions/download-artifact@v2
          with:
-           name: WindowsGameArtifact
+           name: WindowsGameBuildArtifact
            path: dist
        - name: Create zip
          run: |
            cd dist/
-           zip -r Latest_WindowsGameArtifactZip.zip .
+           zip -r Latest_WindowsGameArtifact.zip .
        - name: Move artifact
          run: |
            mkdir upload-artifacts/
-           mv dist/Latest_WindowsGameArtifactZip.zip upload-artifacts/
+           mv dist/Latest_WindowsGameArtifact.zip upload-artifacts/
        - name: Upload build artifact
          uses: actions/upload-artifact@v2
          with:
-          name: WindowsGameArtifactZip
+          name: WindowsGameArtifact
           path: |
             upload-artifacts/
    createLinuxGameZip:
@@ -107,20 +107,20 @@ jobs:
        - name: Download artifacts
          uses: actions/download-artifact@v2
          with:
-           name: LinuxGameArtifact
+           name: LinuxGameBuildArtifact
            path: dist
        - name: Create zip
          run: |
            cd dist/
-           zip -r Latest_LinuxGameArtifactZip.zip .
+           zip -r Latest_LinuxGameArtifact.zip .
        - name: Move artifact
          run: |
            mkdir upload-artifacts/
-           mv dist/Latest_LinuxGameArtifactZip.zip upload-artifacts/
+           mv dist/Latest_LinuxGameArtifact.zip upload-artifacts/
        - name: Upload build artifact
          uses: actions/upload-artifact@v2
          with:
-          name: LinuxGameArtifactZip
+          name: LinuxGameArtifact
           path: |
             upload-artifacts/
    createMacOsGameZip:
@@ -131,20 +131,20 @@ jobs:
        - name: Download artifacts
          uses: actions/download-artifact@v2
          with:
-           name: MacOsGameArtifact
+           name: MacOsGameBuildArtifact
            path: dist
        - name: Create zip
          run: |
            cd dist/
-           zip -r Latest_MacOsGameArtifactZip.zip .
+           zip -r Latest_MacOsGameArtifact.zip .
        - name: Move artifact
          run: |
            mkdir upload-artifacts/
-           mv dist/Latest_MacOsGameArtifactZip.zip upload-artifacts/
+           mv dist/Latest_MacOsGameArtifact.zip upload-artifacts/
        - name: Upload build artifact
          uses: actions/upload-artifact@v2
          with:
-          name: MacOsGameArtifactZip
+          name: MacOsGameArtifact
           path: |
             upload-artifacts/
    createUnstableReleaseAndUploadArtifacts:
@@ -155,17 +155,17 @@ jobs:
        - name: Download Windows artifact
          uses: actions/download-artifact@v2
          with:
-           name: WindowsGameArtifactZip
+           name: WindowsGameArtifact
            path: releases
        - name: Download Linux artifact
          uses: actions/download-artifact@v2
          with:
-           name: LinuxGameArtifactZip
+           name: LinuxGameArtifact
            path: releases
        - name: Download MacOs artifact
          uses: actions/download-artifact@v2
          with:
-           name: MacOsGameArtifactZip
+           name: MacOsGameArtifact
            path: releases
        - name: Read folder content
          run: ls -la releases
@@ -187,7 +187,7 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_WindowsGameArtifactZip.zip
+           asset_path: releases/Latest_WindowsGameArtifact.zip
            asset_name: Latest_WindowsGameArtifact.zip
            asset_content_type: application/zip
        - name: Upload Linux game artifact
@@ -197,7 +197,7 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_LinuxGameArtifactZip.zip
+           asset_path: releases/Latest_LinuxGameArtifact.zip
            asset_name: Latest_LinuxGameArtifact.zip
            asset_content_type: application/zip
        - name: Upload MacOs game artifact
@@ -207,6 +207,6 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            upload_url: ${{ steps.create_release.outputs.upload_url }}
-           asset_path: releases/Latest_MacOsGameArtifactZip.zip
+           asset_path: releases/Latest_MacOsGameArtifact.zip
            asset_name: Latest_MacOsGameArtifact.zip
            asset_content_type: application/zip
