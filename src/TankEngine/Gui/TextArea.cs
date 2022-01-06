@@ -51,7 +51,6 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         protected override void Setup()
         {
-            //centerPartToDraw =
             //@Note: This is properly not always correct since there could be multiple areas with the same tag!
             SpritesheetArea centerArea = GetCenterArea();
             SpritesheetArea leftArea = GetLeftArea();
@@ -108,8 +107,7 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         protected override void UpdateCollider()
         {
-            SpritesheetArea middlePartArea = Areas.FirstOrDefault(area => area.ContainsPropertyValue(CENTER_TAG, false));
-            collider = new Rectangle((int)Position.X, (int)Position.Y, completeXSize, middlePartArea.Area.Height);
+            collider = new Rectangle((int)Position.X, (int)Position.Y, completeXSize, centerPartToDraw.Height);
             Size = collider.Size.ToVector2();
         }
 

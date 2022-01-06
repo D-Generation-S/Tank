@@ -144,6 +144,7 @@ namespace Tank.GameStates.States
                 new Vector2(viewportAdapter.Center.X, 0),
                 TankGame.PublicViewportAdapter.VirtualWidth,
                 16,
+                true,
                 true
                 );
             stackPanel.SetMouseWrapper(mouseWrapper);

@@ -66,7 +66,7 @@ namespace TankEngine.Gui
         /// <summary>
         /// The size of a single image
         /// </summary>
-        private Point imageSize;
+        //private Point imageSize;
 
         /// <summary>
         /// Create a new instance of this class
@@ -108,7 +108,7 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         protected override void UpdateCollider()
         {
-            collider = new Rectangle((int)Position.X, (int)Position.Y, imageSize.X + boxTextSpace + (int)GetTextLenght(text, font).X, imageSize.Y);
+            collider = new Rectangle((int)Position.X, (int)Position.Y, idleBox.Width + boxTextSpace + (int)GetTextLenght(text, font).X, idleBox.Width);
             Size = collider.Size.ToVector2();
         }
 
@@ -143,10 +143,9 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
-            /**
             spriteBatch.Draw(
-                spritesheetTexture.CompleteImage,
-                new Rectangle((int)Position.X, (int)Position.Y, imageSize.X, imageSize.Y),
+                spritesheetTexture.Texture,
+                new Rectangle((int)Position.X, (int)Position.Y, sourceToDraw.Width, sourceToDraw.Height),
                 sourceToDraw,
                 Color.White
                 );
@@ -155,11 +154,10 @@ namespace TankEngine.Gui
                 return;
             }
             Vector2 textPosition = Position;
-            textPosition.X += imageSize.X + boxTextSpace;
-            textPosition.Y += imageSize.Y / 2;
+            textPosition.X += idleBox.Width + boxTextSpace;
+            textPosition.Y += idleBox.Height / 2;
             textPosition.Y -= GetTextLenght(text, font).Y / 2;
             spriteBatch.DrawString(font, text, textPosition, Color.White);
-            **/
         }
     }
 }
