@@ -2,12 +2,15 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using System;
 using Tank.DataManagement;
 using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Settings;
+using Tank.Utils;
 using TankEngine.DataProvider.Loader;
 using TankEngine.DataStructures.Spritesheet;
+using TankEngine.DataStructures.Spritesheet.Aseprite.Loader;
 using TankEngine.Gui;
 using TankEngine.Music;
 using TankEngine.Wrapper;
@@ -27,12 +30,17 @@ namespace Tank.GameStates.States
         /// <summary>
         /// The gui sprite to use
         /// </summary>
+        [Obsolete]
         protected SpriteSheet guiSprite;
+
+        ///@TODO: Add new spritesheet for usage
 
         /// <summary>
         /// The font to use for text
         /// </summary>
         protected SpriteFont baseFont;
+
+        protected IDataLoader<ISpritesheetData> spritesheetDataLoader;
 
         /// <summary>
         /// The amanger to load sprite sheets
@@ -104,6 +112,7 @@ namespace Tank.GameStates.States
         {
             base.Initialize(contentWrapper, spriteBatch);
             spriteSetManager = new DataManager<SpritesheetData>(dataLoader);
+            spritesheetDataLoader = new AsepriteSpritesheetDataLoader();
             if (musicManager == null)
             {
                 musicManager = new MusicManager(contentWrapper, new DataManager<TankEngine.Music.Playlist>(new JsonGameDataLoader<TankEngine.Music.Playlist>("Playlists"), true));
@@ -114,6 +123,13 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void LoadContent()
         {
+            DefaultFolderUtils folderUtils = new DefaultFolderUtils();
+            string fileName = folderUtils.GetGameDataFolder("Spritesheets", "WindowSpriteSheet");
+            ISpritesheetData spriteData = spritesheetDataLoader.LoadData(fileName);
+            SpritesheetTexture spritesheetTexture = new SpritesheetTexture(spriteData, sheet =>
+            {
+                return contentWrapper.Load<Texture2D>("Images/Gui", sheet.ImageNameWithoutExtension);
+            });
             guiSprite = spriteSetManager.LoadData("GuiSpriteSheet", data =>
             {
                 Texture2D texture = contentWrapper.Load<Texture2D>(data.TextureName);

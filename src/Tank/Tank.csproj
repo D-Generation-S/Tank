@@ -60,6 +60,9 @@
     <None Update="GameData\Spritesheets\MoistContinentalSpritesheet.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="GameData\Spritesheets\WindowSpriteSheet.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Events\ComponentBased\" />

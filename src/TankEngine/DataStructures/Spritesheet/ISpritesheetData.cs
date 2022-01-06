@@ -6,12 +6,17 @@ namespace TankEngine.DataStructures.Spritesheet
     /// <summary>
     /// Spritesheet data for a single spritesheet file
     /// </summary>
-    public interface ISpritesheet
+    public interface ISpritesheetData
     {
         /// <summary>
         /// The name of the image this dataset belongs to
         /// </summary>
         string ImageName { get; }
+
+        /// <summary>
+        /// The name of the image without extension
+        /// </summary>
+        string ImageNameWithoutExtension { get; }
 
         /// <summary>
         /// The size of the image for this data set

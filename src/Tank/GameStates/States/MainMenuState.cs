@@ -42,6 +42,18 @@ namespace Tank.GameStates.States
         {
             base.Initialize(contentWrapper, spriteBatch);
             closeGameCommand = new CloseGameCommand(gameStateManager);
+            IState stateToReplace = PlaceholderGameSetup(contentWrapper);
+            openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState(musicManager), false);
+            startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
+        }
+
+        /// <summary>
+        /// This method will setup the game, need to be part of the lobby screen later on.
+        /// </summary>
+        /// <param name="contentWrapper">The content wrapper to use</param>
+        /// <returns></returns>
+        private IState PlaceholderGameSetup(ContentWrapper contentWrapper)
+        {
             List<Player> players = new List<Player>();
             List<Rectangle> animationFrames = new List<Rectangle>();
             animationFrames.Add(new Rectangle(0, 0, 32, 32));
@@ -73,8 +85,7 @@ namespace Tank.GameStates.States
                                             0.5f,
                                             new SystemRandomizer()),
                                         settings);
-            openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState(musicManager), false);
-            startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
+            return stateToReplace;
         }
 
         /// <inheritdoc/>

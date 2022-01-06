@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Content;
+using System.IO;
 
 namespace TankEngine.Wrapper
 {
@@ -30,6 +31,18 @@ namespace TankEngine.Wrapper
         public T Load<T>(string fileName)
         {
             return contentManager.Load<T>(fileName);
+        }
+
+        /// <summary>
+        /// Load the content
+        /// </summary>
+        /// <typeparam name="T">The type of content to load</typeparam>
+        /// <param name="subFolder">The subfolder to get the data from</param>
+        /// <param name="fileName">The name of the content file to load</param>
+        /// <returns>The loaded content or null</returns>
+        public T Load<T>(string subFolder, string fileName)
+        {
+            return contentManager.Load<T>(Path.Combine(subFolder, fileName));
         }
     }
 }

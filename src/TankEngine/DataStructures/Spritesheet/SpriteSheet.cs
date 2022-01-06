@@ -8,6 +8,7 @@ namespace TankEngine.DataStructures.Spritesheet
     /// <summary>
     /// This class is representing a spritesheet it will provide you with some helper functions
     /// </summary>
+    [Obsolete("Please use the SpritesheetTexture class instead!")]
     public class SpriteSheet
     {
         /// <summary>

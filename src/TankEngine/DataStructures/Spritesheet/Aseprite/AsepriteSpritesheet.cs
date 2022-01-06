@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace TankEngine.DataStructures.Spritesheet.Aseprite
@@ -8,10 +9,13 @@ namespace TankEngine.DataStructures.Spritesheet.Aseprite
     /// <summary>
     /// Spritesheet for aseprite data files
     /// </summary>
-    public class AsepriteSpritesheet : ISpritesheet
+    public class AsepriteSpritesheet : ISpritesheetData
     {
         /// <inheritdoc/>
         public string ImageName { get; }
+
+        /// <inheritdoc/>
+        public string ImageNameWithoutExtension { get; }
 
         /// <inheritdoc/>
         public Point ImageSize { get; }
@@ -28,6 +32,7 @@ namespace TankEngine.DataStructures.Spritesheet.Aseprite
         /// <inheritdoc/>
         public List<SpritesheetFrameTag> FrameTags { get; }
 
+
         /// <summary>
         /// Create a new instance of this class form a aseprite file data set
         /// </summary>
@@ -35,6 +40,8 @@ namespace TankEngine.DataStructures.Spritesheet.Aseprite
         public AsepriteSpritesheet(AsepriteArrayFileData asepriteArrayFileData)
         {
             ImageName = asepriteArrayFileData.Meta.Image;
+            FileInfo info = new FileInfo(ImageName);
+            ImageNameWithoutExtension = info.Name.Replace(info.Extension, string.Empty);
             ImageSize = asepriteArrayFileData.Meta.Size.GetPoint();
             ImageScale = 1;
             try
