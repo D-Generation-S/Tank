@@ -54,7 +54,6 @@ namespace TankEngine.DataStructures.Spritesheet.Aseprite
         /// <inheritdoc/>
         public IEnumerable<SpritesheetFrame> GetFrames(SpritesheetFrameTag tag)
         {
-            //@TODO The number of returned frames is missing one frame!
             int frameNumberToTake = (tag.EndFrame - tag.StartFrame) + 1;
             return Frames.Skip(tag.StartFrame).Take(frameNumberToTake);
         }
