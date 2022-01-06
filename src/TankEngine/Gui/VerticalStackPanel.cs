@@ -116,6 +116,9 @@ namespace TankEngine.Gui
             AddElementToLeft(elementToAdd);
         }
 
+        /// <summary>
+        /// Center all the elements horizontally
+        /// </summary>
         private void CenterHorizontal()
         {
             if (!centerHorizontal)
@@ -130,6 +133,10 @@ namespace TankEngine.Gui
             }
         }
 
+        /// <summary>
+        /// Add a element vertically centered
+        /// </summary>
+        /// <param name="elementToAdd">The element to add</param>
         private void AddElementAtCenter(IGuiElement elementToAdd)
         {
             base.AddElement(elementToAdd);
@@ -149,6 +156,10 @@ namespace TankEngine.Gui
             CenterHorizontal();
         }
 
+        /// <summary>
+        /// Add a element to the panel on the left side
+        /// </summary>
+        /// <param name="elementToAdd">The element to add</param>
         private void AddElementToLeft(IGuiElement elementToAdd)
         {
             Vector2 position = Position;
