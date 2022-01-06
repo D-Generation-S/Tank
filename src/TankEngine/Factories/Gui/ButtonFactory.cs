@@ -12,34 +12,33 @@ namespace TankEngine.Factories.Gui
     public class ButtonFactory : AbstractGuiFactory<Button>
     {
         /// <inheritdoc/>
-        public ButtonFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch) : base(font, spriteSheet, spriteBatch)
+        public ButtonFactory(SpriteFont font, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, int width)
+            : base(font, spritesheetTexture, spriteBatch, width)
         {
         }
 
         /// <inheritdoc/>
-        public ButtonFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width) : base(font, spriteSheet, spriteBatch, width)
+        public ButtonFactory(SpriteFont font, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, int width, Vector2 position)
+            : base(font, spritesheetTexture, spriteBatch, width, position)
         {
         }
 
         /// <inheritdoc/>
-        public ButtonFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width, Vector2 position) : base(font, spriteSheet, spriteBatch, width, position)
+        public ButtonFactory(SpriteFont font, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound)
+            : base(font, spritesheetTexture, spriteBatch, width, position, clickSound)
         {
         }
 
         /// <inheritdoc/>
-        public ButtonFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound) : base(font, spriteSheet, spriteBatch, width, position, clickSound)
-        {
-        }
-
-        /// <inheritdoc/>
-        public ButtonFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound, SoundEffect hoverSound) : base(font, spriteSheet, spriteBatch, width, position, clickSound, hoverSound)
+        public ButtonFactory(SpriteFont font, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound, SoundEffect hoverSound)
+            : base(font, spritesheetTexture, spriteBatch, width, position, clickSound, hoverSound)
         {
         }
 
         /// <inheritdoc/>
         public override Button GetNewObject()
         {
-            Button returnButton = new Button(position, width, spriteSheet, spriteBatch);
+            Button returnButton = new Button(position, width, spritesheetTexture, spriteBatch);
             returnButton.SetFont(font);
             returnButton.SetClickEffect(clickSound);
             returnButton.SetHoverEffect(hoverSound);

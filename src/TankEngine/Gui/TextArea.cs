@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TankEngine.DataStructures.Spritesheet;
 
 namespace TankEngine.Gui
@@ -23,51 +25,96 @@ namespace TankEngine.Gui
         /// <summary>
         /// The size of a single image
         /// </summary>
-        protected Point imageSize;
+        //protected Point imageSize;
+
+        /// <summary>
+        /// The areas for the gui element
+        /// </summary>
+        protected List<SpritesheetArea> Areas;
 
         /// <summary>
         /// The current left part to draw
         /// </summary>
-        protected Rectangle currentLeftSource;
+        protected Rectangle leftPartToDraw;
 
         /// <summary>
         /// The current middle part to draw
         /// </summary>
-        protected Rectangle currentMiddleSource;
+        protected Rectangle centerPartToDraw;
 
         /// <summary>
         /// The current right part to draw
         /// </summary>
-        protected Rectangle currentRightSource;
+        protected Rectangle rightPartToDraw;
 
         /// <inheritdoc/>
-        public TextArea(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch) : base(position, width, textureToShow, spriteBatch)
+        public TextArea(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch)
+            : base(position, width, spritesheetTexture, spriteBatch)
         {
         }
 
         /// <inheritdoc/>
         protected override void Setup()
         {
-            middlePartCount = (int)Math.Round((float)width / textureToShow.SingleImageSize.X);
-            middlePartCount = middlePartCount == 0 ? 1 : middlePartCount;
+            //centerPartToDraw =
+            //@Note: This is properly not always correct since there could be multiple areas with the same tag!
+            SpritesheetArea centerArea = GetCenterArea();
+            SpritesheetArea leftArea = GetLeftArea();
+            SpritesheetArea rightArea = GetRightArea();
 
-            completeXSize = imageSize.X * 2;
-            completeXSize += imageSize.X * middlePartCount;
+            if (centerArea == null || leftArea == null || rightArea == null)
+            {
+                return;
+            }
+
+            centerPartToDraw = centerArea.Area;
+            leftPartToDraw = leftArea.Area;
+            rightPartToDraw = rightArea.Area;
+
+            middlePartCount = (int)Math.Round((float)width / centerPartToDraw.Width);
+            middlePartCount = middlePartCount == 0 ? 1 : middlePartCount;
+            completeXSize = leftPartToDraw.Width + rightPartToDraw.Width;
+            completeXSize += centerPartToDraw.Width * middlePartCount;
+        }
+
+        /// <summary>
+        /// Get the left area for inital setup
+        /// </summary>
+        /// <returns>The left area to use</returns>
+        protected virtual SpritesheetArea GetCenterArea()
+        {
+            return Areas.FirstOrDefault(area => area.ContainsPropertyValue(CENTER_TAG, false));
+        }
+
+        /// <summary>
+        /// Get the left area for inital setup
+        /// </summary>
+        /// <returns>The left area to use</returns>
+        protected virtual SpritesheetArea GetLeftArea()
+        {
+            return Areas.FirstOrDefault(area => area.ContainsPropertyValue(LEFT_TAG, false));
+        }
+
+        /// <summary>
+        /// Get the right area for inital setup
+        /// </summary>
+        /// <returns>The right area to use</returns>
+        protected virtual SpritesheetArea GetRightArea()
+        {
+            return Areas.FirstOrDefault(area => area.ContainsPropertyValue(RIGHT_TAG, false));
         }
 
         /// <inheritdoc/>
-        protected override void SetupTextures()
+        protected override void SetupAreas()
         {
-            imageSize = textureToShow.GetPatternImageSize("buttonLeft");
-            currentLeftSource = textureToShow.GetAreaFromPattern("ButtonLeft");
-            currentMiddleSource = textureToShow.GetAreaFromPattern("ButtonMiddle");
-            currentRightSource = textureToShow.GetAreaFromPattern("ButtonRight");
+            Areas = spritesheetTexture.Areas.Where(area => area.Properties.Any(SearchByPropertyValue("textarea"))).ToList();
         }
 
         /// <inheritdoc/>
         protected override void UpdateCollider()
         {
-            collider = new Rectangle((int)Position.X, (int)Position.Y, completeXSize, imageSize.Y);
+            SpritesheetArea middlePartArea = Areas.FirstOrDefault(area => area.ContainsPropertyValue(CENTER_TAG, false));
+            collider = new Rectangle((int)Position.X, (int)Position.Y, completeXSize, middlePartArea.Area.Height);
             Size = collider.Size.ToVector2();
         }
 
@@ -80,30 +127,31 @@ namespace TankEngine.Gui
 
         protected virtual void DrawBackground()
         {
+
             spriteBatch.Draw(
-                textureToShow.CompleteImage,
-                new Rectangle((int)Position.X, (int)Position.Y, imageSize.X, imageSize.Y),
-                currentLeftSource,
+                spritesheetTexture.Texture,
+                new Rectangle((int)Position.X, (int)Position.Y, leftPartToDraw.Width, leftPartToDraw.Height),
+                leftPartToDraw,
                 Color.White
                 );
-
             for (int i = 0; i < middlePartCount; i++)
             {
-                int index = i + 1;
+                int xCenterPosition = (int)(Position.X + leftPartToDraw.Width);
+                xCenterPosition += centerPartToDraw.Width * i;
                 spriteBatch.Draw(
-                    textureToShow.CompleteImage,
-                    new Rectangle((int)Position.X + imageSize.X * index, (int)Position.Y, imageSize.X, imageSize.Y),
-                    currentMiddleSource,
+                    spritesheetTexture.Texture,
+                    new Rectangle(xCenterPosition, (int)Position.Y, centerPartToDraw.Width, centerPartToDraw.Height),
+                    centerPartToDraw,
                     Color.White
                     );
             }
 
-            int xPosition = (int)Position.X + imageSize.X * 2;
-            xPosition += imageSize.X * (middlePartCount - 1);
+            int xPosition = (int)(Position.X + leftPartToDraw.Width);
+            xPosition += centerPartToDraw.Width * (middlePartCount);
             spriteBatch.Draw(
-                textureToShow.CompleteImage,
-                new Rectangle(xPosition, (int)Position.Y, imageSize.X, imageSize.Y),
-                currentRightSource,
+                spritesheetTexture.Texture,
+                new Rectangle(xPosition, (int)Position.Y, rightPartToDraw.Width, rightPartToDraw.Height),
+                rightPartToDraw,
                 Color.White
                 );
         }
@@ -132,9 +180,9 @@ namespace TankEngine.Gui
             Vector2 startPosition = Position;
 
             Vector2 textSize = GetTextLenght(textToUse);
-            float middleSize = imageSize.X * middlePartCount;
+            float middleSize = centerPartToDraw.Width * middlePartCount;
 
-            startPosition += Vector2.UnitX * imageSize.X;
+            startPosition += Vector2.UnitX * leftPartToDraw.Width;
             startPosition += Vector2.UnitX * (middleSize / 2);
             startPosition -= Vector2.UnitX * (textSize.X / 2);
 

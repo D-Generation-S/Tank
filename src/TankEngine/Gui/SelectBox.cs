@@ -55,9 +55,9 @@ namespace TankEngine.Gui
         /// </summary>
         /// <param name="position">The position to use</param>
         /// <param name="width">The width to use</param>
-        /// <param name="textureToShow">The texture to show</param>
+        /// <param name="spritesheetTexture">The texture to show</param>
         /// <param name="spriteBatch">The spritebatch to use</param>
-        public SelectBox(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch) : base(position, width, textureToShow, spriteBatch)
+        public SelectBox(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch) : base(position, width, spritesheetTexture, spriteBatch)
         {
             textOffset = Vector2.Zero;
         }
@@ -71,7 +71,7 @@ namespace TankEngine.Gui
         }
 
         /// <summary>
-        /// Set a  specific y-axis text offset
+        /// Set a specific y-axis text offset
         /// </summary>
         /// <param name="textOffset">The text offset to use</param>
         public virtual void SetTextOffset(float textOffset)
@@ -173,7 +173,7 @@ namespace TankEngine.Gui
         protected override void Setup()
         {
             base.Setup();
-            IFactory<Button> buttonFactory = new ButtonFactory(font, textureToShow, spriteBatch, 50, Vector2.Zero);
+            IFactory<Button> buttonFactory = new ButtonFactory(font, spritesheetTexture, spriteBatch, 50, Vector2.Zero);
             leftButton = buttonFactory.GetNewObject();
             rightButton = buttonFactory.GetNewObject();
 
@@ -234,7 +234,7 @@ namespace TankEngine.Gui
             }
             Vector2 upperTextPosition = GetHorizontalTextMiddle(upperText);
             Vector2 lowerTextPosition = GetHorizontalTextMiddle(lowerText);
-            lowerTextPosition += Vector2.UnitY * imageSize.Y - Vector2.UnitY * GetTextLenght(lowerText).Y;
+            lowerTextPosition += Vector2.UnitY * centerPartToDraw.Height - Vector2.UnitY * GetTextLenght(lowerText).Y;
 
             upperTextPosition += textOffset;
             lowerTextPosition -= textOffset;

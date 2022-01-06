@@ -14,7 +14,7 @@ namespace TankEngine.Factories.Gui
         /// <summary>
         /// The spriteshett to use
         /// </summary>
-        protected readonly SpriteSheet spriteSheet;
+        protected readonly SpritesheetTexture spritesheetTexture;
 
         /// <summary>
         /// The font to use
@@ -52,20 +52,9 @@ namespace TankEngine.Factories.Gui
         /// <param name="font">The font to use</param>
         /// <param name="spriteSheet">The spritesheet to use</param>
         /// <param name="spriteBatch">The spritebatch to use</param>
-        public AbstractGuiFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch)
-            : this(font, spriteSheet, spriteBatch, spriteSheet.SingleImageSize.X)
-        {
-        }
-
-        /// <summary>
-        /// Create a new instance of this class
-        /// </summary>
-        /// <param name="font">The font to use</param>
-        /// <param name="spriteSheet">The spritesheet to use</param>
-        /// <param name="spriteBatch">The spritebatch to use</param>
         /// <param name="width">The width of the element</param>
-        public AbstractGuiFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width)
-            : this(font, spriteSheet, spriteBatch, width, Vector2.Zero)
+        public AbstractGuiFactory(SpriteFont font, SpritesheetTexture spriteSheetTexture, SpriteBatch spriteBatch, int width)
+            : this(font, spriteSheetTexture, spriteBatch, width, Vector2.Zero)
         {
         }
 
@@ -77,8 +66,8 @@ namespace TankEngine.Factories.Gui
         /// <param name="spriteBatch">The spritebatch to use</param>
         /// <param name="width">The width of the element</param>
         /// <param name="position">The position of the element</param>
-        public AbstractGuiFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width, Vector2 position)
-            : this(font, spriteSheet, spriteBatch, width, position, null)
+        public AbstractGuiFactory(SpriteFont font, SpritesheetTexture spriteSheetTexture, SpriteBatch spriteBatch, int width, Vector2 position)
+            : this(font, spriteSheetTexture, spriteBatch, width, position, null)
         {
         }
 
@@ -91,8 +80,8 @@ namespace TankEngine.Factories.Gui
         /// <param name="width">The width of the element</param>
         /// <param name="position">The position of the element</param>
         /// <param name="clickSound">The sound if element got clicked</param>
-        public AbstractGuiFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound)
-            : this(font, spriteSheet, spriteBatch, width, position, clickSound, null)
+        public AbstractGuiFactory(SpriteFont font, SpritesheetTexture spriteSheetTexture, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound)
+            : this(font, spriteSheetTexture, spriteBatch, width, position, clickSound, null)
         {
         }
 
@@ -106,10 +95,10 @@ namespace TankEngine.Factories.Gui
         /// <param name="position">The position of the element</param>
         /// <param name="clickSound">The sound if element got clicked</param>
         /// <param name="hoverSound">The sound if mouse hovers over the element</param>
-        public AbstractGuiFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound, SoundEffect hoverSound)
+        public AbstractGuiFactory(SpriteFont font, SpritesheetTexture spriteSheetTexture, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound, SoundEffect hoverSound)
         {
             this.font = font;
-            this.spriteSheet = spriteSheet;
+            this.spritesheetTexture = spriteSheetTexture;
             this.spriteBatch = spriteBatch;
             this.width = width;
             this.position = position;

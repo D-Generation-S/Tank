@@ -31,9 +31,10 @@ namespace Tank.GameStates.States
         /// The gui sprite to use
         /// </summary>
         [Obsolete]
-        protected SpriteSheet guiSprite;
+        protected SpriteSheet oldGuiSprite;
 
         ///@TODO: Add new spritesheet for usage
+        protected SpritesheetTexture guiSprite;
 
         /// <summary>
         /// The font to use for text
@@ -126,11 +127,11 @@ namespace Tank.GameStates.States
             DefaultFolderUtils folderUtils = new DefaultFolderUtils();
             string fileName = folderUtils.GetGameDataFolder("Spritesheets", "WindowSpriteSheet");
             ISpritesheetData spriteData = spritesheetDataLoader.LoadData(fileName);
-            SpritesheetTexture spritesheetTexture = new SpritesheetTexture(spriteData, sheet =>
+            guiSprite = new SpritesheetTexture(spriteData, sheet =>
             {
                 return contentWrapper.Load<Texture2D>("Images/Gui", sheet.ImageNameWithoutExtension);
             });
-            guiSprite = spriteSetManager.LoadData("GuiSpriteSheet", data =>
+            oldGuiSprite = spriteSetManager.LoadData("GuiSpriteSheet", data =>
             {
                 Texture2D texture = contentWrapper.Load<Texture2D>(data.TextureName);
                 return new SpriteSheet(texture, data.SingleImageSize.GetPoint(), data.DistanceBetweenImages, data.Patterns);

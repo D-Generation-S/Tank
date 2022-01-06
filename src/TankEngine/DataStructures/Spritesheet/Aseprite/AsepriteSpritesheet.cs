@@ -38,6 +38,14 @@ namespace TankEngine.DataStructures.Spritesheet.Aseprite
         /// </summary>
         /// <param name="asepriteArrayFileData">The aseprite file data set to use as a base</param>
         public AsepriteSpritesheet(AsepriteArrayFileData asepriteArrayFileData)
+            : this(asepriteArrayFileData, null) { }
+
+        /// <summary>
+        /// Create a new instance of this class form a aseprite file data set
+        /// </summary>
+        /// <param name="asepriteArrayFileData">The aseprite file data set to use as a base</param>
+        /// <param name="dataToPropertyConversion">The conversion for the data to property</param>
+        public AsepriteSpritesheet(AsepriteArrayFileData asepriteArrayFileData, Func<string, List<SpritesheetProperty>> dataToPropertyConversion)
         {
             ImageName = asepriteArrayFileData.Meta.Image;
             FileInfo info = new FileInfo(ImageName);
@@ -53,7 +61,15 @@ namespace TankEngine.DataStructures.Spritesheet.Aseprite
             catch (Exception)
             {
             }
-            Areas = asepriteArrayFileData.Meta.Slices.SelectMany(slice => slice.GetSpritesheetArea()).ToList();
+            Areas = asepriteArrayFileData.Meta.Slices.SelectMany(slice =>
+            {
+                if (dataToPropertyConversion == null)
+                {
+                    return slice.GetSpritesheetArea();
+                }
+                return slice.GetSpritesheetArea(dataToPropertyConversion);
+            }).ToList();
+
             Frames = asepriteArrayFileData.Frames.Select(frame => frame.GetSpritesheetFrame()).ToList();
             FrameTags = asepriteArrayFileData.Meta.FrameTags.Select(tag => tag.GetSpritesheetFrameTag()).ToList();
         }

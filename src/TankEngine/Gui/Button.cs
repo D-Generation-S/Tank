@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Linq;
 using TankEngine.Commands;
 using TankEngine.DataStructures.Spritesheet;
 
@@ -21,32 +22,32 @@ namespace TankEngine.Gui
         /// <summary>
         /// The normal left button source
         /// </summary>
-        private Rectangle leftButtonSource;
+        private Rectangle leftIdle;
 
         /// <summary>
         /// The normal middle button source
         /// </summary>
-        private Rectangle middleButtonSource;
+        private Rectangle centerIdle;
 
         /// <summary>
         /// The normal right button soruce
         /// </summary>
-        private Rectangle rightButtonSource;
+        private Rectangle rightIdle;
 
         /// <summary>
         /// The hover left button soruce
         /// </summary>
-        private Rectangle leftActiveButtonSource;
+        private Rectangle leftActive;
 
         /// <summary>
         /// The hover middle button source
         /// </summary>
-        private Rectangle middleActiveButtonSource;
+        private Rectangle centerActive;
 
         /// <summary>
         /// The hover right button source
         /// </summary>
-        private Rectangle rightActiveButtonSource;
+        private Rectangle rightActive;
 
         /// <summary>
         /// Is the button clicked
@@ -64,8 +65,8 @@ namespace TankEngine.Gui
         private ICommand command;
 
         /// <inheritdoc/>
-        public Button(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spritebatch)
-            : base(position, width, textureToShow, spritebatch)
+        public Button(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spritebatch)
+            : base(position, width, spritesheetTexture, spritebatch)
         {
             lastMouseState = Mouse.GetState();
         }
@@ -74,10 +75,13 @@ namespace TankEngine.Gui
         protected override void Setup()
         {
             base.Setup();
+            leftIdle = leftPartToDraw;
+            centerIdle = centerPartToDraw;
+            rightIdle = rightPartToDraw;
 
-            currentLeftSource = leftButtonSource;
-            currentMiddleSource = middleButtonSource;
-            currentRightSource = rightButtonSource;
+            leftActive = GetArea(LEFT_TAG, "active").Area;
+            centerActive = GetArea(CENTER_TAG, "active").Area;
+            rightActive = GetArea(RIGHT_TAG, "active").Area;
         }
 
         /// <summary>
@@ -99,16 +103,32 @@ namespace TankEngine.Gui
         }
 
         /// <inheritdoc/>
-        protected override void SetupTextures()
+        protected override SpritesheetArea GetCenterArea()
         {
-            imageSize = textureToShow.GetPatternImageSize("buttonLeft");
-            leftButtonSource = textureToShow.GetAreaFromPattern("ButtonLeft");
-            middleButtonSource = textureToShow.GetAreaFromPattern("ButtonMiddle");
-            rightButtonSource = textureToShow.GetAreaFromPattern("ButtonRight");
+            return GetArea(CENTER_TAG, "idle");
+        }
 
-            leftActiveButtonSource = textureToShow.GetAreaFromPattern("ButtonActiveLeft");
-            middleActiveButtonSource = textureToShow.GetAreaFromPattern("ButtonActiveMiddle");
-            rightActiveButtonSource = textureToShow.GetAreaFromPattern("ButtonActiveRight");
+        /// <inheritdoc/>
+        protected override SpritesheetArea GetLeftArea()
+        {
+            return GetArea(LEFT_TAG, "idle");
+        }
+
+        /// <inheritdoc/>
+        protected override SpritesheetArea GetRightArea()
+        {
+            return GetArea(RIGHT_TAG, "idle");
+        }
+
+        private SpritesheetArea GetArea(string orientation, string state)
+        {
+            return Areas.FirstOrDefault(area => area.ContainsPropertyValue(orientation, false) && area.ContainsPropertyValue(state, false));
+        }
+
+        /// <inheritdoc/>
+        protected override void SetupAreas()
+        {
+            Areas = spritesheetTexture.Areas.Where(area => area.Properties.Any(SearchByPropertyValue("button"))).ToList();
         }
 
         /// <inheritdoc/>
@@ -116,16 +136,16 @@ namespace TankEngine.Gui
         {
             MouseState mouseState = Mouse.GetState();
 
-            currentLeftSource = leftButtonSource;
-            currentMiddleSource = middleButtonSource;
-            currentRightSource = rightButtonSource;
+            leftPartToDraw = leftIdle;
+            centerPartToDraw = centerIdle;
+            rightPartToDraw = rightIdle;
 
             Clicked = false;
             if (collider.Contains(GetMousePosition()))
             {
-                currentLeftSource = leftActiveButtonSource;
-                currentMiddleSource = middleActiveButtonSource;
-                currentRightSource = rightActiveButtonSource;
+                leftPartToDraw = leftActive;
+                centerPartToDraw = centerActive;
+                rightPartToDraw = rightActive;
                 if (hoverSound != null
                     && !collider.Contains(mouseWrapper.GetPosition(lastMouseState.Position))
                     && hoverSoundInstance.State != SoundState.Playing)

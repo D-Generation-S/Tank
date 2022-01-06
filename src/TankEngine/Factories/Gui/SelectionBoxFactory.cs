@@ -11,35 +11,35 @@ namespace TankEngine.Factories.Gui
     /// </summary>
     public class SelectionBoxFactory : AbstractGuiFactory<SelectBox>
     {
+
         /// <inheritdoc/>
-        public SelectionBoxFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch) : base(font, spriteSheet, spriteBatch)
+        public SelectionBoxFactory(SpriteFont font, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, int width)
+            : base(font, spritesheetTexture, spriteBatch, width)
         {
         }
 
         /// <inheritdoc/>
-        public SelectionBoxFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width) : base(font, spriteSheet, spriteBatch, width)
+        public SelectionBoxFactory(SpriteFont font, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, int width, Vector2 position)
+            : base(font, spritesheetTexture, spriteBatch, width, position)
         {
         }
 
         /// <inheritdoc/>
-        public SelectionBoxFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width, Vector2 position) : base(font, spriteSheet, spriteBatch, width, position)
+        public SelectionBoxFactory(SpriteFont font, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound)
+            : base(font, spritesheetTexture, spriteBatch, width, position, clickSound)
         {
         }
 
         /// <inheritdoc/>
-        public SelectionBoxFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound) : base(font, spriteSheet, spriteBatch, width, position, clickSound)
-        {
-        }
-
-        /// <inheritdoc/>
-        public SelectionBoxFactory(SpriteFont font, SpriteSheet spriteSheet, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound, SoundEffect hoverSound) : base(font, spriteSheet, spriteBatch, width, position, clickSound, hoverSound)
+        public SelectionBoxFactory(SpriteFont font, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, int width, Vector2 position, SoundEffect clickSound, SoundEffect hoverSound)
+            : base(font, spritesheetTexture, spriteBatch, width, position, clickSound, hoverSound)
         {
         }
 
         /// <inheritdoc/>
         public override SelectBox GetNewObject()
         {
-            SelectBox returnBox = new SelectBox(Vector2.Zero, width, spriteSheet, spriteBatch);
+            SelectBox returnBox = new SelectBox(Vector2.Zero, width, spritesheetTexture, spriteBatch);
             returnBox.SetTextOffset(10);
             returnBox.SetFont(font);
             returnBox.SetClickEffect(clickSound);

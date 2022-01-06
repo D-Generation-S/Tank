@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using System.Linq;
 using TankEngine.DataStructures.Spritesheet;
 
 namespace TankEngine.Gui
@@ -11,6 +13,11 @@ namespace TankEngine.Gui
     /// </summary>
     public class Checkbox : VisibleUiElement
     {
+        private const string IDLE = "idle";
+        private const string ACTIVE = "active";
+        private const string CHECKED = "checked";
+        private const string UNCHECKED = "unchecked";
+
         /// <summary>
         /// The last known mouse state
         /// </summary>
@@ -22,24 +29,29 @@ namespace TankEngine.Gui
         public bool Checked;
 
         /// <summary>
+        /// The areas for the gui element
+        /// </summary>
+        protected List<SpritesheetArea> Areas;
+
+        /// <summary>
         /// The area to use if not checked and not hovered
         /// </summary>
-        private Rectangle uncheckedSource;
+        private Rectangle idleBox;
 
         /// <summary>
         /// The area to use if not checked but hovered
         /// </summary>
-        private Rectangle uncheckedHoverSource;
+        private Rectangle idleBoxHover;
 
         /// <summary>
         /// The area to use if checked but not hovered
         /// </summary>
-        private Rectangle checkedSource;
+        private Rectangle activeBox;
 
         /// <summary>
         /// The area to use if checked and hovered
         /// </summary>
-        private Rectangle checkedHoverSource;
+        private Rectangle activeBoxHover;
 
         /// <summary>
         /// The current source to draw
@@ -61,9 +73,9 @@ namespace TankEngine.Gui
         /// </summary>
         /// <param name="position">The position to place this element</param>
         /// <param name="width">The width of the element</param>
-        /// <param name="textureToShow">The texture to use</param>
+        /// <param name="spritesheetTexture">The texture to use</param>
         /// <param name="spriteBatch">The spritebatch for drawing call</param>
-        public Checkbox(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch) : base(position, width, textureToShow, spriteBatch)
+        public Checkbox(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch) : base(position, width, spritesheetTexture, spriteBatch)
         {
             boxTextSpace = 10;
         }
@@ -76,15 +88,21 @@ namespace TankEngine.Gui
         }
 
         /// <inheritdoc/>
-        protected override void SetupTextures()
+        protected override void SetupAreas()
         {
-            imageSize = textureToShow.GetPatternImageSize("CheckboxUnchecked");
-            uncheckedSource = textureToShow.GetAreaFromPattern("CheckboxUnchecked");
-            uncheckedHoverSource = textureToShow.GetAreaFromPattern("CheckboxHoverUnchecked");
-            checkedSource = textureToShow.GetAreaFromPattern("CheckboxChecked");
-            checkedHoverSource = textureToShow.GetAreaFromPattern("CheckboxHoverChecked");
+            Areas = spritesheetTexture.Areas.Where(area => area.Properties.Any(SearchByPropertyValue("checkbox"))).ToList();
+            idleBox = GetAreaByValue(IDLE, UNCHECKED);
+            idleBoxHover = GetAreaByValue(ACTIVE, UNCHECKED);
+            activeBox = GetAreaByValue(IDLE, CHECKED);
+            activeBoxHover = GetAreaByValue(ACTIVE, CHECKED);
 
-            sourceToDraw = uncheckedSource;
+            sourceToDraw = idleBox;
+        }
+
+        private Rectangle GetAreaByValue(string value, string state)
+        {
+            SpritesheetArea centerArea = Areas.FirstOrDefault(area => area.ContainsPropertyValue(value, false) && area.ContainsPropertyValue(state, false));
+            return centerArea == null ? Rectangle.Empty : centerArea.Area;
         }
 
         /// <inheritdoc/>
@@ -97,11 +115,11 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
-            sourceToDraw = Checked ? checkedSource : uncheckedSource;
+            sourceToDraw = Checked ? activeBox : idleBox;
 
             if (collider.Contains(GetMousePosition()))
             {
-                sourceToDraw = Checked ? checkedHoverSource : uncheckedHoverSource;
+                sourceToDraw = Checked ? activeBoxHover : idleBoxHover;
                 if (hoverSound != null
                     && !collider.Contains(mouseWrapper.GetPosition(lastMouseState.Position))
                     && hoverSoundInstance.State != SoundState.Playing)
@@ -125,8 +143,9 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
+            /**
             spriteBatch.Draw(
-                textureToShow.CompleteImage,
+                spritesheetTexture.CompleteImage,
                 new Rectangle((int)Position.X, (int)Position.Y, imageSize.X, imageSize.Y),
                 sourceToDraw,
                 Color.White
@@ -140,6 +159,7 @@ namespace TankEngine.Gui
             textPosition.Y += imageSize.Y / 2;
             textPosition.Y -= GetTextLenght(text, font).Y / 2;
             spriteBatch.DrawString(font, text, textPosition, Color.White);
+            **/
         }
     }
 }

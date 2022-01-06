@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using TankEngine.DataStructures.Spritesheet;
 
 namespace TankEngine.Gui
@@ -11,9 +12,24 @@ namespace TankEngine.Gui
     public abstract class VisibleUiElement : UiElement
     {
         /// <summary>
+        /// The tag to search for the left area part
+        /// </summary>
+        protected static string LEFT_TAG = "left";
+
+        /// <summary>
+        /// The tag to search for the center area part
+        /// </summary>
+        protected static string CENTER_TAG = "center";
+
+        /// <summary>
+        /// The tag to search for the right area part
+        /// </summary>
+        protected static string RIGHT_TAG = "right";
+
+        /// <summary>
         /// The texture to use
         /// </summary>
-        protected readonly SpriteSheet textureToShow;
+        protected readonly SpritesheetTexture spritesheetTexture;
 
         /// <summary>
         /// The spritebatch to use for drawing
@@ -70,16 +86,16 @@ namespace TankEngine.Gui
         /// </summary>
         /// <param name="position">The position to place</param>
         /// <param name="width">The width of the element</param>
-        /// <param name="textureToShow">The texture to use</param>
+        /// <param name="spritesheetTexture">The texture to use</param>
         /// <param name="spriteBatch">The spritebatch for drawing</param>
-        public VisibleUiElement(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch) : base(position, width)
+        public VisibleUiElement(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch) : base(position, width)
         {
-            this.textureToShow = textureToShow;
+            this.spritesheetTexture = spritesheetTexture;
             this.spriteBatch = spriteBatch;
             text = string.Empty;
             effectVolume = 1.0f;
 
-            SetupTextures();
+            SetupAreas();
             Setup();
             UpdateCollider();
 
@@ -99,8 +115,18 @@ namespace TankEngine.Gui
             this.renderOffset = renderOffset;
         }
 
+        /// <summary>
+        /// Search data by property value
+        /// </summary>
+        /// <param name="value">The value to search for</param>
+        /// <returns>True if there is any value with the searched value</returns>
+        protected Func<SpritesheetProperty, bool> SearchByPropertyValue(string value)
+        {
+            return property => property.Value.ToLower() == value.ToLower();
+        }
+
         /// <inheritdoc/>
-        protected abstract void SetupTextures();
+        protected abstract void SetupAreas();
 
         /// <inheritdoc/>
         protected abstract void UpdateCollider();
