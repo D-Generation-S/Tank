@@ -106,10 +106,10 @@ namespace Tank.GameStates.States
             startGameButton.SetCommand(startGameCommand);
 
             VerticalStackPanel verticalStackPanel = new VerticalStackPanel(TankGame.PublicViewportAdapter, new Vector2(0, 0), viewportAdapter.VirtualViewport.Width / 6, 15, true);
+            verticalStackPanel.SetMouseWrapper(mouseWrapper);
             verticalStackPanel.AddElement(startGameButton);
             verticalStackPanel.AddElement(openSettings);
             verticalStackPanel.AddElement(exitButton);
-            verticalStackPanel.SetMouseWrapper(mouseWrapper);
 
             elementToDraw = verticalStackPanel;
 

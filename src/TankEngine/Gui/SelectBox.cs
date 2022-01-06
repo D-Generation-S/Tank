@@ -132,12 +132,13 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         public override void SetPosition(Vector2 position)
         {
-            leftButton.SetPosition(position);
-            position.X += leftButton.Size.X;
-            Vector2 rightButtonPosition = position;
-            rightButtonPosition.X += Size.X;
-            rightButton.SetPosition(rightButtonPosition);
-            base.SetPosition(position);
+            Vector2 buttonSize = Vector2.UnitX * leftButton.Size.X;
+            Vector2 centerPosition = position + buttonSize * 2;
+            Vector2 middlePartSize = Vector2.UnitX * completeXSize;
+            leftButton.SetPosition(position + buttonSize);
+            rightButton.SetPosition(position + middlePartSize + buttonSize * 2);
+
+            base.SetPosition(centerPosition);
         }
 
         /// <inheritdoc/>
@@ -181,6 +182,14 @@ namespace TankEngine.Gui
             rightButton.SetText(">>");
         }
 
+        protected override void UpdateCollider()
+        {
+            base.UpdateCollider();
+            float sizeX = leftButton.Size.X + rightButton.Size.X + completeXSize;
+            float sizeY = MathHelper.Max(centerPartToDraw.Y, leftButton.Size.Y);
+            Size = new Vector2(sizeX, sizeY);
+        }
+
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
@@ -206,7 +215,6 @@ namespace TankEngine.Gui
                 return;
             }
             selectionText = data.GetCurrentDataSet().DisplayText;
-
         }
 
         /// <inheritdoc/>

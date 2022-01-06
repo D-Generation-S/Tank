@@ -187,7 +187,7 @@ namespace TankEngine.Gui
         /// <returns>The size of the text</returns>
         protected Vector2 GetTextLenght(string text)
         {
-            return GetTextLenght(text, font);
+            return GetTextLength(text, font);
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace TankEngine.Gui
         /// <param name="text">The text to check</param>
         /// <param name="font">The font to use</param>
         /// <returns>The size of the text</returns>
-        protected Vector2 GetTextLenght(string text, SpriteFont font)
+        protected Vector2 GetTextLength(string text, SpriteFont font)
         {
             if (font == null || text == null)
             {

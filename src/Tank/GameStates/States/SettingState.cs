@@ -148,6 +148,7 @@ namespace Tank.GameStates.States
                 true
                 );
             stackPanel.SetMouseWrapper(mouseWrapper);
+
             stackPanel.AddElement(fullScreen);
             stackPanel.AddElement(resolutionSelection);
             stackPanel.AddElement(masterVolumeSelection);

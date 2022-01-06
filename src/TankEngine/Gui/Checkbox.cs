@@ -108,8 +108,10 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         protected override void UpdateCollider()
         {
-            collider = new Rectangle((int)Position.X, (int)Position.Y, idleBox.Width + boxTextSpace + (int)GetTextLenght(text, font).X, idleBox.Width);
-            Size = collider.Size.ToVector2();
+            float totalSizeX = idleBox.Width + boxTextSpace + GetTextLength(text, font).X;
+            collider = new Rectangle((int)Position.X, (int)Position.Y, (int)totalSizeX, idleBox.Width);
+
+            Size = new Vector2(totalSizeX, MathHelper.Max(GetTextLength(text, font).Y, idleBox.Height));
         }
 
         /// <inheritdoc/>
@@ -156,7 +158,7 @@ namespace TankEngine.Gui
             Vector2 textPosition = Position;
             textPosition.X += idleBox.Width + boxTextSpace;
             textPosition.Y += idleBox.Height / 2;
-            textPosition.Y -= GetTextLenght(text, font).Y / 2;
+            textPosition.Y -= GetTextLength(text, font).Y / 2;
             spriteBatch.DrawString(font, text, textPosition, Color.White);
         }
     }

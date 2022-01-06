@@ -146,7 +146,7 @@ namespace TankEngine.Gui
             Vector2 startPosition = Vector2.UnitY * (verticalCenter - totalHeight / 2);
             for (int i = 0; i < Container.Count; i++)
             {
-                float usedUpSpace = Container.Skip(Container.Count - i).Sum((element => element.Size.Y));
+                float usedUpSpace = Container.Take(i).Sum((element => element.Size.Y));
                 IGuiElement currentElement = Container[i];
 
                 Vector2 position = startPosition;
