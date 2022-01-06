@@ -98,7 +98,6 @@ namespace TankEngine.Gui
             SetupAreas();
             Setup();
             UpdateCollider();
-
         }
 
         /// <inheritdoc/>

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using System;
 using Tank.DataManagement;
 using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
@@ -26,12 +25,6 @@ namespace Tank.GameStates.States
         /// The data loader to use
         /// </summary>
         protected readonly IDataLoader<SpritesheetData> dataLoader;
-
-        /// <summary>
-        /// The gui sprite to use
-        /// </summary>
-        [Obsolete]
-        protected SpriteSheet oldGuiSprite;
 
         ///@TODO: Add new spritesheet for usage
         protected SpritesheetTexture guiSprite;
@@ -130,11 +123,6 @@ namespace Tank.GameStates.States
             guiSprite = new SpritesheetTexture(spriteData, sheet =>
             {
                 return contentWrapper.Load<Texture2D>("Images/Gui", sheet.ImageNameWithoutExtension);
-            });
-            oldGuiSprite = spriteSetManager.LoadData("GuiSpriteSheet", data =>
-            {
-                Texture2D texture = contentWrapper.Load<Texture2D>(data.TextureName);
-                return new SpriteSheet(texture, data.SingleImageSize.GetPoint(), data.DistanceBetweenImages, data.Patterns);
             });
             baseFont = contentWrapper.Load<SpriteFont>("gameFont");
             buttonClick = contentWrapper.Load<SoundEffect>("Sound/Effects/UiClick");

@@ -23,11 +23,6 @@ namespace TankEngine.Gui
         protected int completeXSize;
 
         /// <summary>
-        /// The size of a single image
-        /// </summary>
-        //protected Point imageSize;
-
-        /// <summary>
         /// The areas for the gui element
         /// </summary>
         protected List<SpritesheetArea> Areas;
