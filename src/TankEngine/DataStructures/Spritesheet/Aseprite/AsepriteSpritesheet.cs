@@ -5,20 +5,33 @@ using System.Linq;
 
 namespace TankEngine.DataStructures.Spritesheet.Aseprite
 {
+    /// <summary>
+    /// Spritesheet for aseprite data files
+    /// </summary>
     public class AsepriteSpritesheet : ISpritesheet
     {
+        /// <inheritdoc/>
         public string ImageName { get; }
 
+        /// <inheritdoc/>
         public Point ImageSize { get; }
 
+        /// <inheritdoc/>
         public float ImageScale { get; }
 
+        /// <inheritdoc/>
         public List<SpritesheetArea> Areas { get; }
 
+        /// <inheritdoc/>
         public List<SpritesheetFrame> Frames { get; }
 
+        /// <inheritdoc/>
         public List<SpritesheetFrameTag> FrameTags { get; }
 
+        /// <summary>
+        /// Create a new instance of this class form a aseprite file data set
+        /// </summary>
+        /// <param name="asepriteArrayFileData">The aseprite file data set to use as a base</param>
         public AsepriteSpritesheet(AsepriteArrayFileData asepriteArrayFileData)
         {
             ImageName = asepriteArrayFileData.Meta.Image;
@@ -38,16 +51,21 @@ namespace TankEngine.DataStructures.Spritesheet.Aseprite
             FrameTags = asepriteArrayFileData.Meta.FrameTags.Select(tag => tag.GetSpritesheetFrameTag()).ToList();
         }
 
+        /// <inheritdoc/>
         public IEnumerable<SpritesheetFrame> GetFrames(SpritesheetFrameTag tag)
         {
-            return Frames.Skip(tag.StartFrame).Take(tag.EndFrame - tag.StartFrame);
+            //@TODO The number of returned frames is missing one frame!
+            int frameNumberToTake = (tag.EndFrame - tag.StartFrame) + 1;
+            return Frames.Skip(tag.StartFrame).Take(frameNumberToTake);
         }
 
+        /// <inheritdoc/>
         public SpritesheetFrameTag GetTagByName(string name)
         {
             return FrameTags.FirstOrDefault(tag => tag.Name == name);
         }
 
+        /// <inheritdoc/>
         public IEnumerable<string> GetTagNames()
         {
             return FrameTags.Select(tag => tag.Name);
