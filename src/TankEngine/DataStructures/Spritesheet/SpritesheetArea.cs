@@ -75,7 +75,12 @@ namespace TankEngine.DataStructures.Spritesheet
         /// <returns>True if the name exists</returns>
         public bool ContainsProperty(string name, string value, bool caseSensitive)
         {
-            return ContainsPropertyName(name, caseSensitive) && ContainsPropertyValue(name, caseSensitive);
+            return Properties.Any(property =>
+            {
+                string pName = caseSensitive ? property.Name : property.Name.ToLower();
+                string pValue = caseSensitive ? property.Value : property.Value.ToLower();
+                return pName == name && pValue == value;
+            });
         }
 
         /// <summary>

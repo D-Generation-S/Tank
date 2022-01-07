@@ -9,7 +9,6 @@ using Tank.DataStructure.Settings;
 using Tank.Utils;
 using TankEngine.DataProvider.Loader;
 using TankEngine.DataStructures.Spritesheet;
-using TankEngine.DataStructures.Spritesheet.Aseprite.Loader;
 using TankEngine.Gui;
 using TankEngine.Music;
 using TankEngine.Wrapper;
@@ -26,7 +25,9 @@ namespace Tank.GameStates.States
         /// </summary>
         protected readonly IDataLoader<SpritesheetData> dataLoader;
 
-        ///@TODO: Add new spritesheet for usage
+        /// <summary>
+        /// The spritesheet to use for the gui elements
+        /// </summary>
         protected SpritesheetTexture guiSprite;
 
         /// <summary>
@@ -34,7 +35,6 @@ namespace Tank.GameStates.States
         /// </summary>
         protected SpriteFont baseFont;
 
-        protected IDataLoader<ISpritesheetData> spritesheetDataLoader;
 
         /// <summary>
         /// The amanger to load sprite sheets
@@ -106,7 +106,6 @@ namespace Tank.GameStates.States
         {
             base.Initialize(contentWrapper, spriteBatch);
             spriteSetManager = new DataManager<SpritesheetData>(dataLoader);
-            spritesheetDataLoader = new AsepriteSpritesheetDataLoader();
             if (musicManager == null)
             {
                 musicManager = new MusicManager(contentWrapper, new DataManager<TankEngine.Music.Playlist>(new JsonGameDataLoader<TankEngine.Music.Playlist>("Playlists"), true));

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using Tank.Components;
 using Tank.Interfaces.MapGenerators;
 using TankEngine.DataStructures;
@@ -16,17 +17,12 @@ namespace Tank.Map.Textureizer
         /// <summary>
         /// The spritesheet to use
         /// </summary>
-        private readonly SpriteSheet spriteSheet;
+        private readonly SpritesheetTexture terrainSpritesheet;
 
         /// <summary>
         /// The foreground items to use
         /// </summary>
         private readonly SpriteSheet foregroundItems;
-
-        /// <summary>
-        /// The internal randomizer if nothing was set
-        /// </summary>
-        private Random internalRandomizer;
 
         /// <summary>
         /// The randomizer to use
@@ -47,13 +43,13 @@ namespace Tank.Map.Textureizer
         /// Create a new instance of the class
         /// </summary>
         /// <param name="backgroundTexture">The spritesheet to use</param>
-        public SimpleTexturizer(SpriteSheet backgroundTexture) : this(backgroundTexture, null)
+        public SimpleTexturizer(SpritesheetTexture terrainSpriteSheet) : this(terrainSpriteSheet, null)
         {
         }
 
-        public SimpleTexturizer(SpriteSheet backgroundTexture, SpriteSheet foregroundItems)
+        public SimpleTexturizer(SpritesheetTexture terrainSpriteSheet, SpriteSheet foregroundItems)
         {
-            spriteSheet = backgroundTexture;
+            this.terrainSpritesheet = terrainSpriteSheet;
             this.foregroundItems = foregroundItems;
         }
 
@@ -78,20 +74,20 @@ namespace Tank.Map.Textureizer
             spriteYPosition = 0;
             spriteXPosition = 0;
 
-            this.randomizer = randomizer;
-            internalRandomizer = randomizer == null ? new Random(map.Seed) : null;
-
-            FlattenArray<Color> colors = spriteSheet.GetColorByName("stone");
+            this.randomizer = randomizer ?? new SystemRandomizer();
+            IEnumerable<SpritesheetArea> backgroundAreas = terrainSpritesheet.Areas.Where(area => area.ContainsProperty("type", "background", false));
+            SpritesheetArea areaToUse = backgroundAreas.ElementAt(this.randomizer.GetNewIntNumber(0, backgroundAreas.Count()));
+            FlattenArray<Color> colors = terrainSpritesheet.GetColorFromArea(areaToUse);
 
             for (int x = 0; x < map.Width; x++)
             {
-                if (spriteXPosition > spriteSheet.SingleImageSize.X - 1)
+                if (spriteXPosition > areaToUse.Area.Width - 1)
                 {
                     spriteXPosition = 0;
                 }
                 for (int y = 0; y < map.Height; y++)
                 {
-                    if (spriteYPosition > spriteSheet.SingleImageSize.Y - 1)
+                    if (spriteYPosition > areaToUse.Area.Height - 1)
                     {
                         spriteYPosition = 0;
                     }
@@ -105,22 +101,6 @@ namespace Tank.Map.Textureizer
                 spriteXPosition++;
                 spriteYPosition = 0;
             }
-        }
-
-        /// <summary>
-        /// Get a random number
-        /// </summary>
-        /// <param name="minimum">The minimum number to generate</param>
-        /// <param name="maximum">The maximum number to generate</param>
-        /// <returns>A random float number</returns>
-        private float GetRandomNumber(float minimum, float maximum)
-        {
-            if (randomizer != null)
-            {
-                return randomizer.GetNewNumber(minimum, maximum);
-            }
-
-            return (float)internalRandomizer.NextDouble() * (maximum - minimum) + minimum;
         }
     }
 }

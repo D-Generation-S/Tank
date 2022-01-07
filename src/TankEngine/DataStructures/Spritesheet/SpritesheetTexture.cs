@@ -5,11 +5,25 @@ using System.Collections.Generic;
 
 namespace TankEngine.DataStructures.Spritesheet
 {
+    /// <summary>
+    /// Wrapper class for spritesheet data extendet with texture information
+    /// </summary>
     public class SpritesheetTexture : ISpritesheetData
     {
+        /// <summary>
+        /// The spritesheet data for this texture
+        /// </summary>
         private readonly ISpritesheetData spritesheetData;
 
+        /// <summary>
+        /// The texture the spritesheet data belongs to
+        /// </summary>
         public Texture2D Texture { get; }
+
+        /// <summary>
+        /// The color's from the texture
+        /// </summary>
+        private FlattenArray<Color> imageColors;
 
         public bool Ready => Texture != null && spritesheetData != null;
 
@@ -33,6 +47,8 @@ namespace TankEngine.DataStructures.Spritesheet
 
         /// <inheritdoc/>
         public List<SpritesheetFrameTag> FrameTags => spritesheetData?.FrameTags;
+
+
 
         /// <summary>
         /// Create a new spritesheet texture
@@ -77,6 +93,49 @@ namespace TankEngine.DataStructures.Spritesheet
         public IEnumerable<SpritesheetFrame> GetFrames(SpritesheetFrameTag tag)
         {
             return spritesheetData?.GetFrames(tag);
+        }
+
+        /// <summary>
+        /// Method to load the color map once to make the data available
+        /// </summary>
+        public void PreloadColorMap()
+        {
+            GetImageColors();
+        }
+
+        /// <summary>
+        /// Get the color of the image
+        /// </summary>
+        /// <returns>The color as a flatten array</returns>
+        public FlattenArray<Color> GetImageColors()
+        {
+            if (imageColors == null)
+            {
+                Color[] colors = new Color[Texture.Width * Texture.Height];
+                Texture.GetData(colors);
+                imageColors = new FlattenArray<Color>(colors, Texture.Width);
+            }
+            return imageColors;
+        }
+
+        /// <summary>
+        /// Get the color from a part of the image
+        /// </summary>
+        /// <param name="area">The area to get the data for</param>
+        /// <returns>The part of the texture or null if values are not on the texture grid</returns>
+        public FlattenArray<Color> GetColorFromArea(SpritesheetArea area)
+        {
+            return GetColorFromArea(area.Area);
+        }
+
+        /// <summary>
+        /// Get the color from a part of the image
+        /// </summary>
+        /// <param name="rectangle">The are to get the data for</param>
+        /// <returns>The part of the texture or null if values are not on the texture grid</returns>
+        public FlattenArray<Color> GetColorFromArea(Rectangle rectangle)
+        {
+            return GetImageColors()?.GetArea(rectangle);
         }
     }
 }

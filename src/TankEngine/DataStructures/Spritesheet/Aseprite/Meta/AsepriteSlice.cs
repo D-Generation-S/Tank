@@ -35,7 +35,7 @@ namespace TankEngine.DataStructures.Spritesheet.Aseprite.Meta
                                           .ToList();
 
                 }
-                return new List<SpritesheetProperty>() { new SpritesheetProperty("data", data) };
+                return new List<SpritesheetProperty>() { GetPropertyFromString(data) };
             });
         }
 

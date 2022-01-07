@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TankEngine.Adapter;
+using TankEngine.DataProvider.Loader;
+using TankEngine.DataStructures.Spritesheet;
+using TankEngine.DataStructures.Spritesheet.Aseprite.Loader;
 using TankEngine.GameStates;
 using TankEngine.GameStates.States;
 using TankEngine.Wrapper;
@@ -26,6 +29,11 @@ namespace Tank.GameStates.States
         protected ContentWrapper contentWrapper;
 
         /// <summary>
+        /// The spritesheet data loader
+        /// </summary>
+        protected IDataLoader<ISpritesheetData> spritesheetDataLoader;
+
+        /// <summary>
         /// The viewport adapter
         /// </summary>
         protected IViewportAdapter viewportAdapter => TankGame.PublicViewportAdapter;
@@ -46,6 +54,7 @@ namespace Tank.GameStates.States
             this.contentWrapper = contentWrapper;
             this.spriteBatch = spriteBatch;
             mouseWrapper = new MouseWrapper(viewportAdapter);
+            spritesheetDataLoader = new AsepriteSpritesheetDataLoader();
             Initialized = true;
         }
 

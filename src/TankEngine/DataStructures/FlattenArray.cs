@@ -100,13 +100,57 @@ namespace TankEngine.DataStructures
         /// <returns></returns>
         public T GetValue(int x, int y)
         {
-            int targetPosition = y * width + x;
+            int targetPosition = GetFlattenPosition(x, y);
             if (targetPosition > array.Length || targetPosition < 0)
             {
                 return default;
             }
 
             return array[targetPosition];
+        }
+
+        private int GetFlattenPosition(int x, int y)
+        {
+            return y * width + x;
+        }
+
+        /// <summary>
+        /// Get a part of the flatten array as a new small flatten array
+        /// </summary>
+        /// <param name="rectangle">The area of the grid to get</param>
+        /// <returns>The part of the array if start and end coordinates are in the grid otherwise null</returns>
+        public FlattenArray<T> GetArea(Rectangle rectangle)
+        {
+            return GetArea(rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom);
+        }
+
+        /// <summary>
+        /// Get a part of the flatten array as a new small flatten array
+        /// </summary>
+        /// <param name="x">The x start position</param>
+        /// <param name="y">The y start position</param>
+        /// <param name="endX">The x end position</param>
+        /// <param name="endY">The y end position</param>
+        /// <returns>The part of the array if start and end coordinates are in the grid otherwise null</returns>
+        public FlattenArray<T> GetArea(int x, int y, int endX, int endY)
+        {
+            int indexEndX = endX - 1;
+            int indexEndY = endY - 1;
+            if (!IsInArray(x, y) || !IsInArray(indexEndX, indexEndY))
+            {
+                return default;
+            }
+
+            FlattenArray<T> returnArray = new FlattenArray<T>(endX - x, endY - y);
+            for (int row = x; row < endX; row++)
+            {
+                for (int column = y; column < endY; column++)
+                {
+                    T dataToSet = GetValue(row, column);
+                    returnArray.SetValue(row - x, column - y, dataToSet);
+                }
+            }
+            return returnArray;
         }
 
         /// <summary>
@@ -129,7 +173,7 @@ namespace TankEngine.DataStructures
         /// <returns></returns>
         public bool SetValue(int x, int y, T value)
         {
-            int targetPosition = y * width + x;
+            int targetPosition = GetFlattenPosition(x, y);
             if (targetPosition >= array.Length || targetPosition < 0)
             {
                 return false;
@@ -147,7 +191,7 @@ namespace TankEngine.DataStructures
         /// <returns>True if the position is on the array</returns>
         public bool IsInArray(int x, int y)
         {
-            return IsInArray(y * width + x);
+            return IsInArray(GetFlattenPosition(x, y));
         }
 
         /// <summary>
@@ -172,7 +216,7 @@ namespace TankEngine.DataStructures
         /// <returns>True if the position is on the array</returns>
         public bool IsInArray(int targetPosition)
         {
-            return targetPosition <= array.Length && targetPosition > 0;
+            return targetPosition < array.Length && targetPosition >= 0;
         }
     }
 }
