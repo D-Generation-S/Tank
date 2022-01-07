@@ -7,6 +7,7 @@ using Tank.Interfaces.MapGenerators;
 using TankEngine.DataStructures;
 using TankEngine.DataStructures.Grid;
 using TankEngine.DataStructures.Spritesheet;
+using TankEngine.Loottable;
 using TankEngine.Randomizer;
 
 namespace Tank.Map.Textureizer
@@ -92,21 +93,34 @@ namespace Tank.Map.Textureizer
                     map.ImageData.SetValue(x, y, colorToPlace);
                 }
             }
-            List<SpritesheetArea> foregroundAreas = terrainSpritesheet.Areas.Where(area => area.ContainsProperty("type", "entity", false)).ToList();
+            PlaceEntitesUnderGround(map, validPixels);
+        }
+
+        /// <summary>
+        /// Place some entites on the texturized ground map
+        /// </summary>
+        /// <param name="map">The current map to work on</param>
+        /// <param name="validPixels">The number of valid pixels for the map</param>
+        private void PlaceEntitesUnderGround(MapComponent map, int validPixels)
+        {
+            List<SpritesheetArea> foregroundAreas = terrainSpritesheet.Areas.Where(area => area.ContainsProperty("type", "entity", false) && area.ContainsPropertyName("rarity", false)).ToList();
             int maxEntites = MathHelper.Min(validPixels / (64 * 64), 25);
             int numberOfEntitesToPlace = this.randomizer.GetNewIntNumber(0, maxEntites);
-
             List<EntityArea> regions = new List<EntityArea>();
-            if (map.Height - map.LowestPoint < MIN_REQUIRED_ENTITY_PLACE)
+            if (numberOfEntitesToPlace == 0 || map.Height - map.LowestPoint < MIN_REQUIRED_ENTITY_PLACE)
             {
                 return;
             }
+            ILoottable<SpritesheetArea> loottable = CreateLootTable(foregroundAreas);
             while (regions.Count < numberOfEntitesToPlace)
             {
                 int xPos = this.randomizer.GetNewIntNumber(0, map.Width);
                 int yPos = this.randomizer.GetNewIntNumber((int)map.LowestPoint, map.Height);
-                //@Note loottable required for rarity!
-                SpritesheetArea areaToPlace = foregroundAreas[this.randomizer.GetNewIntNumber(0, foregroundAreas.Count)];
+                SpritesheetArea areaToPlace = loottable.GetItem();
+                if (areaToPlace == null)
+                {
+                    continue;
+                }
                 Rectangle area = new Rectangle(xPos, yPos, areaToPlace.Area.Width, areaToPlace.Area.Height);
                 if (regions.Any(currentArea => currentArea.targetPosition.Intersects(area)))
                 {
@@ -136,6 +150,27 @@ namespace Tank.Map.Textureizer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Create a loottable for all the entites
+        /// </summary>
+        /// <param name="foregroundAreas">All the entites to place in foreground</param>
+        /// <returns>A ready to use loottable</returns>
+        private ILoottable<SpritesheetArea> CreateLootTable(List<SpritesheetArea> foregroundAreas)
+        {
+            ILoottable<SpritesheetArea> loottable = new SimpleLoottable<SpritesheetArea>(randomizer.GetNewIntNumber(5, 50), randomizer);
+            foreach (SpritesheetArea area in foregroundAreas)
+            {
+                SpritesheetProperty rarity = area.Properties.FirstOrDefault(p => p.Name.ToLower() == "rarity");
+                int rarityValue = 0;
+                if (!int.TryParse(rarity.Value, out rarityValue))
+                {
+                    continue;
+                }
+                loottable.AddItem(area, rarityValue);
+            }
+            return loottable;
         }
 
         internal struct EntityArea
