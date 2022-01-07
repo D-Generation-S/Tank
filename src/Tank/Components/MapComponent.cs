@@ -31,6 +31,11 @@ namespace Tank.Components
         public float HighestPoint;
 
         /// <summary>
+        /// The lowest point of the map
+        /// </summary>
+        public float LowestPoint;
+
+        /// <summary>
         /// Current used image data
         /// </summary>
         public FlattenArray<Color> ImageData;
@@ -49,6 +54,7 @@ namespace Tank.Components
         /// All the not solid colors of the map
         /// </summary>
         public HashSet<Color> NotSolidColors;
+
 
         /// <inheritdoc/>
         public override void Init()

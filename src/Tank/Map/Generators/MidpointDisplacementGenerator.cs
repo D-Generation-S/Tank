@@ -145,13 +145,13 @@ namespace Tank.Map.Generators
             }
 
             float[] points = GeneratePoints(size, new Random(seed));
-            float highestPoint = GetHighestPoint(points);
             MapComponent returnMap = new MapComponent()
             {
                 ImageData = new FlattenArray<Color>(size.X, size.Y, () => new Color()),
                 ChangedImageData = new FlattenArray<Color>(size.X, size.Y, () => new Color()),
                 NotSolidColors = notSolidColors,
-                HighestPoint = highestPoint,
+                HighestPoint = GetHighestPoint(points),
+                LowestPoint = getLowestPoint(points),
                 Seed = seed,
                 Width = size.X,
                 Height = size.Y
@@ -205,6 +205,16 @@ namespace Tank.Map.Generators
         private float GetHighestPoint(float[] points)
         {
             return points.Min();
+        }
+
+        /// <summary>
+        /// Get the lowest point of the curve
+        /// </summary>
+        /// <param name="points">All the points</param>
+        /// <returns>THe lowest point</returns>
+        private float getLowestPoint(float[] points)
+        {
+            return points.Max();
         }
 
         /// <summary>

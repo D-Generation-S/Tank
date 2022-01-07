@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tank.Components;
 using Tank.Interfaces.MapGenerators;
 using TankEngine.DataStructures;
+using TankEngine.DataStructures.Grid;
 using TankEngine.DataStructures.Spritesheet;
 using TankEngine.Randomizer;
 
@@ -14,6 +16,8 @@ namespace Tank.Map.Textureizer
     /// </summary>
     class SimpleTexturizer : IMapTexturizer
     {
+        private const int MIN_REQUIRED_ENTITY_PLACE = 32;
+
         /// <summary>
         /// The spritesheet to use
         /// </summary>
@@ -68,28 +72,82 @@ namespace Tank.Map.Textureizer
             IEnumerable<SpritesheetArea> backgroundAreas = terrainSpritesheet.Areas.Where(area => area.ContainsProperty("type", "background", false));
             SpritesheetArea areaToUse = backgroundAreas.ElementAt(this.randomizer.GetNewIntNumber(0, backgroundAreas.Count()));
             FlattenArray<Color> colors = terrainSpritesheet.GetColorFromArea(areaToUse);
-
+            int validPixels = 0;
+            int gridWidth = (int)Math.Ceiling((double)map.Width / areaToUse.Area.Width);
+            int gridHeight = (int)Math.Ceiling((double)map.Height / areaToUse.Area.Height);
+            Grid<int> imageGrid = new Grid<int>(gridWidth, gridHeight, areaToUse.Area.Width, Vector2.Zero, (x, y) => y * gridWidth + x);
             for (int x = 0; x < map.Width; x++)
             {
-                if (spriteXPosition > areaToUse.Area.Width - 1)
-                {
-                    spriteXPosition = 0;
-                }
                 for (int y = 0; y < map.Height; y++)
                 {
-                    if (spriteYPosition > areaToUse.Area.Height - 1)
+                    if (map.ImageData.GetValue(x, y) != generatorFillColor)
                     {
-                        spriteYPosition = 0;
+                        continue;
                     }
+                    validPixels++;
+                    Point grid = imageGrid.GetPositionInGrid(new Vector2(x, y));
+                    int xStart = x - (grid.X * areaToUse.Area.Width);
+                    int yStart = y - (grid.Y * areaToUse.Area.Height);
+                    Color colorToPlace = colors.GetValue(xStart, yStart);
+                    map.ImageData.SetValue(x, y, colorToPlace);
+                }
+            }
+            List<SpritesheetArea> foregroundAreas = terrainSpritesheet.Areas.Where(area => area.ContainsProperty("type", "entity", false)).ToList();
+            int maxEntites = MathHelper.Min(validPixels / (64 * 64), 25);
+            int numberOfEntitesToPlace = this.randomizer.GetNewIntNumber(0, maxEntites);
 
-                    if (map.ImageData.GetValue(x, y) == generatorFillColor)
+            List<EntityArea> regions = new List<EntityArea>();
+            if (map.Height - map.LowestPoint < MIN_REQUIRED_ENTITY_PLACE)
+            {
+                return;
+            }
+            while (regions.Count < numberOfEntitesToPlace)
+            {
+                int xPos = this.randomizer.GetNewIntNumber(0, map.Width);
+                int yPos = this.randomizer.GetNewIntNumber((int)map.LowestPoint, map.Height);
+                //@Note loottable required for rarity!
+                SpritesheetArea areaToPlace = foregroundAreas[this.randomizer.GetNewIntNumber(0, foregroundAreas.Count)];
+                Rectangle area = new Rectangle(xPos, yPos, areaToPlace.Area.Width, areaToPlace.Area.Height);
+                if (regions.Any(currentArea => currentArea.targetPosition.Intersects(area)))
+                {
+                    continue;
+                }
+                regions.Add(new EntityArea(area, areaToPlace));
+            }
+
+            foreach (EntityArea area in regions)
+            {
+                FlattenArray<Color> partData = terrainSpritesheet.GetColorFromArea(area.sourceTexture);
+                for (int x = 0; x < area.sourceTexture.Area.Width; x++)
+                {
+                    for (int y = 0; y < area.sourceTexture.Area.Height; y++)
                     {
-                        map.ImageData.SetValue(x, y, colors.GetValue(spriteXPosition, spriteYPosition));
-                        spriteYPosition++;
+                        int xWorldPos = area.targetPosition.X + x;
+                        int yWorldPos = area.targetPosition.Y + y;
+                        Color replaceColor = partData.GetValue(x, y);
+                        if (replaceColor == Color.Transparent)
+                        {
+                            continue;
+                        }
+                        map.ImageData.SetValue(
+                            xWorldPos,
+                            yWorldPos,
+                            partData.GetValue(x, y));
                     }
                 }
-                spriteXPosition++;
-                spriteYPosition = 0;
+            }
+        }
+
+        internal struct EntityArea
+        {
+            public Rectangle targetPosition { get; }
+
+            public SpritesheetArea sourceTexture { get; }
+
+            public EntityArea(Rectangle targetPosition, SpritesheetArea sourceTexture)
+            {
+                this.targetPosition = targetPosition;
+                this.sourceTexture = sourceTexture;
             }
         }
     }
