@@ -173,12 +173,26 @@ namespace Tank.Map.Textureizer
             return loottable;
         }
 
+        /// <summary>
+        /// Internal structure to conbine world position with spritesheet area
+        /// </summary>
         internal struct EntityArea
         {
+            /// <summary>
+            /// The target position in the world
+            /// </summary>
             public Rectangle targetPosition { get; }
 
+            /// <summary>
+            /// The position on the texture
+            /// </summary>
             public SpritesheetArea sourceTexture { get; }
 
+            /// <summary>
+            /// Create a new instance of this class
+            /// </summary>
+            /// <param name="targetPosition">The target position in the world</param>
+            /// <param name="sourceTexture">The position on the texture</param>
             public EntityArea(Rectangle targetPosition, SpritesheetArea sourceTexture)
             {
                 this.targetPosition = targetPosition;
