@@ -20,11 +20,6 @@ namespace Tank.Map.Textureizer
         private readonly SpritesheetTexture terrainSpritesheet;
 
         /// <summary>
-        /// The foreground items to use
-        /// </summary>
-        private readonly SpriteSheet foregroundItems;
-
-        /// <summary>
         /// The randomizer to use
         /// </summary>
         private IRandomizer randomizer;
@@ -43,14 +38,9 @@ namespace Tank.Map.Textureizer
         /// Create a new instance of the class
         /// </summary>
         /// <param name="backgroundTexture">The spritesheet to use</param>
-        public SimpleTexturizer(SpritesheetTexture terrainSpriteSheet) : this(terrainSpriteSheet, null)
+        public SimpleTexturizer(SpritesheetTexture backgroundTexture)
         {
-        }
-
-        public SimpleTexturizer(SpritesheetTexture terrainSpriteSheet, SpriteSheet foregroundItems)
-        {
-            this.terrainSpritesheet = terrainSpriteSheet;
-            this.foregroundItems = foregroundItems;
+            terrainSpritesheet = backgroundTexture;
         }
 
         /// <summary>

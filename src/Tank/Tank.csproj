@@ -57,9 +57,6 @@
     <None Update="GameData\Spritesheets\HealthBarSheet.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="GameData\Spritesheets\MoistContinentalSpritesheet.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="GameData\Spritesheets\WindowSpriteSheet.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
