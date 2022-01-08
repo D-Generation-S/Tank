@@ -13,6 +13,11 @@ namespace TankEngine.Gui
     public class TextArea : VisibleUiElement
     {
         /// <summary>
+        /// The default search filter to use for getting the ui visibles
+        /// </summary>
+        private const string DEFAULT_FILTER = "textarea";
+
+        /// <summary>
         /// The number of middle parts
         /// </summary>
         protected int middlePartCount;
@@ -42,9 +47,28 @@ namespace TankEngine.Gui
         /// </summary>
         protected Rectangle rightPartToDraw;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Create a new text area element
+        /// </summary>
+        /// <param name="position">The position of the element</param>
+        /// <param name="width">The width of the element</param>
+        /// <param name="spritesheetTexture">Ther spritesheet texture to use</param>
+        /// <param name="spriteBatch">The spritebatch used for drawing the texture</param>
         public TextArea(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch)
-            : base(position, width, spritesheetTexture, spriteBatch)
+            : this(position, width, spritesheetTexture, spriteBatch, DEFAULT_FILTER)
+        {
+        }
+
+        /// <summary>
+        /// Create a new text area element
+        /// </summary>
+        /// <param name="position">The position of the element</param>
+        /// <param name="width">The width of the element</param>
+        /// <param name="spritesheetTexture">Ther spritesheet texture to use</param>
+        /// <param name="spriteBatch">The spritebatch used for drawing the texture</param>
+        /// <param name="baseFilter">The filter to use for getting the areas for the element on the spritesheet</param>
+        public TextArea(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, string baseFilter)
+            : base(position, width, spritesheetTexture, spriteBatch, baseFilter)
         {
         }
 
@@ -118,6 +142,7 @@ namespace TankEngine.Gui
             DrawText();
         }
 
+        /// <inheritdoc/>
         protected virtual void DrawBackground()
         {
 

@@ -15,6 +15,11 @@ namespace TankEngine.Gui
     public class Button : TextArea
     {
         /// <summary>
+        /// The default search filter to use for getting the ui visibles
+        /// </summary>
+        private const string DEFAULT_FILTER = "button";
+
+        /// <summary>
         /// The last mouse state
         /// </summary>
         private MouseState lastMouseState;
@@ -64,9 +69,28 @@ namespace TankEngine.Gui
         /// </summary>
         private ICommand command;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Create a new instance of this gui element
+        /// </summary>
+        /// <param name="position">The position of the element</param>
+        /// <param name="width">The width of the element</param>
+        /// <param name="spritesheetTexture">The spritesheet to use for the element</param>
+        /// <param name="spritebatch">The spritebatch used for drawing</param>
         public Button(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spritebatch)
-            : base(position, width, spritesheetTexture, spritebatch)
+            : this(position, width, spritesheetTexture, spritebatch, DEFAULT_FILTER)
+        {
+        }
+
+        /// <summary>
+        /// Create a new instance of this gui element
+        /// </summary>
+        /// <param name="position">The position of the element</param>
+        /// <param name="width">The width of the element</param>
+        /// <param name="spritesheetTexture">The spritesheet to use for the element</param>
+        /// <param name="spritebatch">The spritebatch used for drawing</param>
+        /// <param name="baseFilter">The base filter used to get the right areas for the button</param>
+        public Button(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spritebatch, string baseFilter)
+            : base(position, width, spritesheetTexture, spritebatch, baseFilter)
         {
             lastMouseState = Mouse.GetState();
         }

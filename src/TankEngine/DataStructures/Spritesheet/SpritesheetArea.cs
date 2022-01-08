@@ -4,16 +4,38 @@ using System.Linq;
 
 namespace TankEngine.DataStructures.Spritesheet
 {
+    /// <summary>
+    /// A area of the spritesheet with tagged data in it
+    /// </summary>
     public class SpritesheetArea
     {
+        /// <summary>
+        /// The name of the area
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The properties assigned to the area
+        /// </summary>
         public List<SpritesheetProperty> Properties { get; }
 
+        /// <summary>
+        /// The frame index this tagged data belongs to
+        /// </summary>
         public int FrameNumber { get; }
 
+        /// <summary>
+        /// The area which is tagged on the spritesheet
+        /// </summary>
         public Rectangle Area { get; }
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="name">The name of the area</param>
+        /// <param name="properties">The properties assigned to the area</param>
+        /// <param name="frameNumber">The frame index this area belongs to</param>
+        /// <param name="area">The area marked on the spritesheet</param>
         public SpritesheetArea(string name, List<SpritesheetProperty> properties, int frameNumber, Rectangle area)
         {
             Name = name;

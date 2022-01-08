@@ -57,7 +57,8 @@ namespace TankEngine.Gui
         /// <param name="width">The width to use</param>
         /// <param name="spritesheetTexture">The texture to show</param>
         /// <param name="spriteBatch">The spritebatch to use</param>
-        public SelectBox(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch) : base(position, width, spritesheetTexture, spriteBatch)
+        public SelectBox(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch)
+            : base(position, width, spritesheetTexture, spriteBatch)
         {
             textOffset = Vector2.Zero;
         }
@@ -182,6 +183,7 @@ namespace TankEngine.Gui
             rightButton.SetText(">>");
         }
 
+        /// <inheritdoc/>
         protected override void UpdateCollider()
         {
             base.UpdateCollider();

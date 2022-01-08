@@ -22,11 +22,6 @@ namespace TankEngine.Gui
         private readonly float verticalCenter;
 
         /// <summary>
-        /// The viewport adapter used by the game
-        /// </summary>
-        private readonly IViewportAdapter viewport;
-
-        /// <summary>
         /// Space between the elements
         /// </summary>
         private readonly int elementSpace;
@@ -88,7 +83,6 @@ namespace TankEngine.Gui
         {
             horizontalCenter = width / 2;
             verticalCenter = viewport.VirtualHeight / 2;
-            this.viewport = viewport;
             this.elementSpace = elementSpace;
             this.centerVertical = centerVertical;
             this.centerHorizontal = centerHorizontal;

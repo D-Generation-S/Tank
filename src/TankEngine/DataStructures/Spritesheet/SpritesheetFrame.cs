@@ -18,6 +18,9 @@ namespace TankEngine.DataStructures.Spritesheet
         /// </summary>
         public Rectangle SpriteSize { get; }
 
+        /// <summary>
+        /// The size of the frame content
+        /// </summary>
         public Point SourceSize { get; }
 
         /// <summary>

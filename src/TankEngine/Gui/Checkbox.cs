@@ -13,9 +13,29 @@ namespace TankEngine.Gui
     /// </summary>
     public class Checkbox : VisibleUiElement
     {
+        /// <summary>
+        /// The default filter to use to get checkbox areas
+        /// </summary>
+        private const string DEFAULT_FILTER = "checkbox";
+
+        /// <summary>
+        /// Search value for image of idle checkbox
+        /// </summary>
         private const string IDLE = "idle";
+
+        /// <summary>
+        /// Search value for image of activ checkbox
+        /// </summary>
         private const string ACTIVE = "active";
+
+        /// <summary>
+        /// Search value for image of checked textbox
+        /// </summary>
         private const string CHECKED = "checked";
+
+        /// <summary>
+        /// Search value for image of unchcked textbox
+        /// </summary>
         private const string UNCHECKED = "unchecked";
 
         /// <summary>
@@ -64,9 +84,16 @@ namespace TankEngine.Gui
         private readonly int boxTextSpace;
 
         /// <summary>
-        /// The size of a single image
+        /// Create a new instance of this class
         /// </summary>
-        //private Point imageSize;
+        /// <param name="position">The position to place this element</param>
+        /// <param name="width">The width of the element</param>
+        /// <param name="spritesheetTexture">The texture to use</param>
+        /// <param name="spriteBatch">The spritebatch for drawing call</param>
+        public Checkbox(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch)
+            : this(position, width, spritesheetTexture, spriteBatch, DEFAULT_FILTER)
+        {
+        }
 
         /// <summary>
         /// Create a new instance of this class
@@ -75,7 +102,9 @@ namespace TankEngine.Gui
         /// <param name="width">The width of the element</param>
         /// <param name="spritesheetTexture">The texture to use</param>
         /// <param name="spriteBatch">The spritebatch for drawing call</param>
-        public Checkbox(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch) : base(position, width, spritesheetTexture, spriteBatch)
+        /// <param name="baseFilter">The base filter used to get the areas for this element</param>
+        public Checkbox(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, string baseFilter)
+            : base(position, width, spritesheetTexture, spriteBatch, baseFilter)
         {
             boxTextSpace = 10;
         }
@@ -90,7 +119,7 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         protected override void SetupAreas()
         {
-            Areas = spritesheetTexture.Areas.Where(area => area.Properties.Any(SearchByPropertyValue("checkbox"))).ToList();
+            Areas = spritesheetTexture.Areas.Where(area => area.Properties.Any(SearchByPropertyValue(baseFilter))).ToList();
             idleBox = GetAreaByValue(IDLE, UNCHECKED);
             idleBoxHover = GetAreaByValue(ACTIVE, UNCHECKED);
             activeBox = GetAreaByValue(IDLE, CHECKED);

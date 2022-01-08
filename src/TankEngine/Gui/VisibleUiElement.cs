@@ -82,18 +82,24 @@ namespace TankEngine.Gui
         protected float effectVolume;
 
         /// <summary>
+        /// The base filter to use for searching areas in spritesheet
+        /// </summary>
+        protected readonly string baseFilter;
+
+        /// <summary>
         /// Create a new instance
         /// </summary>
         /// <param name="position">The position to place</param>
         /// <param name="width">The width of the element</param>
         /// <param name="spritesheetTexture">The texture to use</param>
         /// <param name="spriteBatch">The spritebatch for drawing</param>
-        public VisibleUiElement(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch) : base(position, width)
+        public VisibleUiElement(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, string baseFilter) : base(position, width)
         {
             this.spritesheetTexture = spritesheetTexture;
             this.spriteBatch = spriteBatch;
             text = string.Empty;
             effectVolume = 1.0f;
+            this.baseFilter = baseFilter;
 
             SetupAreas();
             Setup();

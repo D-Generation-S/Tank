@@ -100,15 +100,19 @@ namespace TankEngine.DataStructures
         /// <returns></returns>
         public T GetValue(int x, int y)
         {
-            int targetPosition = GetFlattenPosition(x, y);
-            if (targetPosition > array.Length || targetPosition < 0)
+            if (!IsInArray(x, y))
             {
                 return default;
             }
-
-            return array[targetPosition];
+            return array[GetFlattenPosition(x, y)];
         }
 
+        /// <summary>
+        /// Get the position inside of the flatten array
+        /// </summary>
+        /// <param name="x">The x position</param>
+        /// <param name="y">The y position</param>
+        /// <returns>The int number of the index in the flatten array</returns>
         private int GetFlattenPosition(int x, int y)
         {
             return y * width + x;
@@ -173,12 +177,11 @@ namespace TankEngine.DataStructures
         /// <returns></returns>
         public bool SetValue(int x, int y, T value)
         {
-            int targetPosition = GetFlattenPosition(x, y);
-            if (targetPosition >= array.Length || targetPosition < 0)
+            if (!IsInArray(x, y))
             {
-                return false;
+                return default;
             }
-            array[targetPosition] = value;
+            array[GetFlattenPosition(x, y)] = value;
 
             return true;
         }
@@ -204,9 +207,14 @@ namespace TankEngine.DataStructures
             return IsInArray(point.X, point.Y);
         }
 
-        public bool IsInArray(Vector2 point)
+        /// <summary>
+        /// Check if a point is part of the array
+        /// </summary>
+        /// <param name="vector">The vector to check</param>
+        /// <returns>True if the position is on the array</returns>
+        public bool IsInArray(Vector2 vector)
         {
-            return IsInArray((int)point.X, (int)point.Y);
+            return IsInArray((int)vector.X, (int)vector.Y);
         }
 
         /// <summary>
