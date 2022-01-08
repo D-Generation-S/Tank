@@ -17,8 +17,6 @@ namespace Tank.Map.Textureizer
     /// </summary>
     class SimpleTexturizer : IMapTexturizer
     {
-        private const int MIN_REQUIRED_ENTITY_PLACE = 32;
-
         /// <summary>
         /// The spritesheet to use
         /// </summary>
