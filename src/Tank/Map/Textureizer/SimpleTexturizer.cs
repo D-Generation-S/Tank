@@ -71,7 +71,8 @@ namespace Tank.Map.Textureizer
 
             this.randomizer = randomizer ?? new SystemRandomizer();
             IEnumerable<SpritesheetArea> backgroundAreas = terrainSpritesheet.Areas.Where(area => area.ContainsProperty("type", "background", false));
-            SpritesheetArea areaToUse = backgroundAreas.ElementAt(this.randomizer.GetNewIntNumber(0, backgroundAreas.Count()));
+            ILoottable<SpritesheetArea> backgroundLoot = CreateLootTable(backgroundAreas, 0);
+            SpritesheetArea areaToUse = backgroundLoot.GetItem();
             FlattenArray<Color> colors = terrainSpritesheet.GetColorFromArea(areaToUse);
             int validPixels = 0;
             int gridWidth = (int)Math.Ceiling((double)map.Width / areaToUse.Area.Width);
@@ -93,7 +94,7 @@ namespace Tank.Map.Textureizer
                     map.ImageData.SetValue(x, y, colorToPlace);
                 }
             }
-            PlaceEntitesUnderGround(map, validPixels);
+            PlaceEntitesUnderGround(map, validPixels, areaToUse.Name);
         }
 
         /// <summary>
@@ -101,17 +102,30 @@ namespace Tank.Map.Textureizer
         /// </summary>
         /// <param name="map">The current map to work on</param>
         /// <param name="validPixels">The number of valid pixels for the map</param>
-        private void PlaceEntitesUnderGround(MapComponent map, int validPixels)
+        private void PlaceEntitesUnderGround(MapComponent map, int validPixels, string textureName)
         {
             List<SpritesheetArea> foregroundAreas = terrainSpritesheet.Areas.Where(area => area.ContainsProperty("type", "entity", false) && area.ContainsPropertyName("rarity", false)).ToList();
             int maxEntites = MathHelper.Min(validPixels / (64 * 64), 25);
             int numberOfEntitesToPlace = this.randomizer.GetNewIntNumber(0, maxEntites);
             List<EntityArea> regions = new List<EntityArea>();
-            if (numberOfEntitesToPlace == 0 || map.Height - map.LowestPoint < MIN_REQUIRED_ENTITY_PLACE)
+            int placeLeft = map.Height - (int)map.LowestPoint;
+            if (numberOfEntitesToPlace == 0)
             {
                 return;
             }
-            ILoottable<SpritesheetArea> loottable = CreateLootTable(foregroundAreas);
+            ILoottable<SpritesheetArea> loottable = CreateLootTable(foregroundAreas.Where(area =>
+            {
+                SpritesheetProperty property = area.Properties.FirstOrDefault(property => property.Name.ToLower() == "forbidden");
+                if (property == null)
+                {
+                    return true;
+                }
+                return !GetForbiddenList(property).Contains(textureName.ToLower());
+            }).Where(area => area.Area.Height < placeLeft));
+            if (loottable.ItemCount == 0)
+            {
+                return;
+            }
             while (regions.Count < numberOfEntitesToPlace)
             {
                 int xPos = this.randomizer.GetNewIntNumber(0, map.Width);
@@ -119,6 +133,7 @@ namespace Tank.Map.Textureizer
                 SpritesheetArea areaToPlace = loottable.GetItem();
                 if (areaToPlace == null)
                 {
+                    numberOfEntitesToPlace--;
                     continue;
                 }
                 Rectangle area = new Rectangle(xPos, yPos, areaToPlace.Area.Width, areaToPlace.Area.Height);
@@ -129,6 +144,16 @@ namespace Tank.Map.Textureizer
                 regions.Add(new EntityArea(area, areaToPlace));
             }
 
+            PlaceEntitesOnMap(map, regions);
+        }
+
+        /// <summary>
+        /// Place the entites on the map
+        /// </summary>
+        /// <param name="map">The map to place the entites on</param>
+        /// <param name="regions">The regions to place the entites in</param>
+        private void PlaceEntitesOnMap(MapComponent map, List<EntityArea> regions)
+        {
             foreach (EntityArea area in regions)
             {
                 FlattenArray<Color> partData = terrainSpritesheet.GetColorFromArea(area.sourceTexture);
@@ -153,20 +178,50 @@ namespace Tank.Map.Textureizer
         }
 
         /// <summary>
+        /// Get a list with all the forbidden textures for the entites
+        /// </summary>
+        /// <param name="property">The property to use</param>
+        /// <returns>A list with forbidden textures</returns>
+        private List<string> GetForbiddenList(SpritesheetProperty property)
+        {
+            List<string> forbiddenNames = new List<string>();
+            if (property.Value.Contains("|"))
+            {
+                foreach (string value in property.Value.Split('|'))
+                {
+                    forbiddenNames.Add(value.ToLower());
+                }
+                return forbiddenNames;
+            }
+            forbiddenNames.Add(property.Value.ToLower());
+            return forbiddenNames;
+        }
+
+        /// <summary>
         /// Create a loottable for all the entites
         /// </summary>
         /// <param name="foregroundAreas">All the entites to place in foreground</param>
         /// <returns>A ready to use loottable</returns>
-        private ILoottable<SpritesheetArea> CreateLootTable(List<SpritesheetArea> foregroundAreas)
+        private ILoottable<SpritesheetArea> CreateLootTable(IEnumerable<SpritesheetArea> foregroundAreas)
         {
-            ILoottable<SpritesheetArea> loottable = new SimpleLoottable<SpritesheetArea>(randomizer.GetNewIntNumber(5, 50), randomizer);
-            foreach (SpritesheetArea area in foregroundAreas)
+            return CreateLootTable(foregroundAreas, randomizer.GetNewIntNumber(5, 50));
+        }
+
+        /// <summary>
+        /// Create a loottable for all the entites
+        /// </summary>
+        /// <param name="areasForTable">All the entites to place in foreground</param>
+        /// <returns>A ready to use loottable</returns>
+        private ILoottable<SpritesheetArea> CreateLootTable(IEnumerable<SpritesheetArea> areasForTable, int emptyPercentage)
+        {
+            ILoottable<SpritesheetArea> loottable = new SimpleLoottable<SpritesheetArea>(emptyPercentage, randomizer);
+            foreach (SpritesheetArea area in areasForTable)
             {
                 SpritesheetProperty rarity = area.Properties.FirstOrDefault(p => p.Name.ToLower() == "rarity");
-                int rarityValue = 0;
-                if (!int.TryParse(rarity.Value, out rarityValue))
+                int rarityValue = 1;
+                if (rarity != null)
                 {
-                    continue;
+                    int.TryParse(rarity.Value, out rarityValue);
                 }
                 loottable.AddItem(area, rarityValue);
             }

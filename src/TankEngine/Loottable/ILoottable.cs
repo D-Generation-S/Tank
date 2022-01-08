@@ -7,6 +7,11 @@
     public interface ILoottable<T>
     {
         /// <summary>
+        /// The number of items on the loottable which could be dropped
+        /// </summary>
+        int ItemCount { get; }
+
+        /// <summary>
         /// Add a new item to the lotttable which can be looted
         /// </summary>
         /// <param name="item">The item to lott</param>

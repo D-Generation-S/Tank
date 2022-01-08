@@ -24,12 +24,12 @@
    { "name": "entities", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
-   { "name": "Stone", "color": "#0000ffff", "data": "type=Background", "keys": [{ "frame": 0, "bounds": {"x": 0, "y": 0, "w": 32, "h": 32 } }] },
-   { "name": "Dirt", "color": "#0000ffff", "data": "type=Background", "keys": [{ "frame": 0, "bounds": {"x": 0, "y": 32, "w": 32, "h": 32 } }] },
-   { "name": "Sword", "color": "#0000ffff", "data": "type=Entity,Rarity=2", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 16, "w": 16, "h": 16 } }] },
-   { "name": "Broken_Sword", "color": "#0000ffff", "data": "type=Entity,Rarity=5", "keys": [{ "frame": 0, "bounds": {"x": 80, "y": 16, "w": 16, "h": 16 } }] },
+   { "name": "Stone", "color": "#0000ffff", "data": "type=Background,Rarity=20", "keys": [{ "frame": 0, "bounds": {"x": 0, "y": 0, "w": 32, "h": 32 } }] },
+   { "name": "Dirt", "color": "#0000ffff", "data": "type=Background,Rarity=20", "keys": [{ "frame": 0, "bounds": {"x": 0, "y": 32, "w": 32, "h": 32 } }] },
+   { "name": "Sword", "color": "#0000ffff", "data": "type=Entity,Rarity=2,Forbidden=Stone", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 16, "w": 16, "h": 16 } }] },
+   { "name": "Broken_Sword", "color": "#0000ffff", "data": "type=Entity,Rarity=5,Forbidden=Stone", "keys": [{ "frame": 0, "bounds": {"x": 80, "y": 16, "w": 16, "h": 16 } }] },
    { "name": "Diamond", "color": "#0000ffff", "data": "type=Entity,Rarity=1", "keys": [{ "frame": 0, "bounds": {"x": 80, "y": 0, "w": 16, "h": 16 } }] },
-   { "name": "Pot", "color": "#0000ffff", "data": "type=Entity,Rarity=10", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 0, "w": 16, "h": 16 } }] }
+   { "name": "Pot", "color": "#0000ffff", "data": "type=Entity,Rarity=10,Forbidden=Dirt", "keys": [{ "frame": 0, "bounds": {"x": 64, "y": 0, "w": 16, "h": 16 } }] }
   ]
  }
 }

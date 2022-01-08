@@ -26,6 +26,9 @@ namespace TankEngine.Loottable
         /// </summary>
         private readonly IRandomizer randomizer;
 
+        /// <inheritdoc>
+        public int ItemCount => items.Count - 1;
+
         /// <summary>
         /// Create a new instance of this class
         /// </summary>
@@ -56,6 +59,10 @@ namespace TankEngine.Loottable
             {
                 table.Add(index);
             }
+            if (emptyPercentage == 0)
+            {
+                return;
+            }
             table.RemoveAll(nullItem => nullItem == 0);
             float itemPercentage = 100 - emptyPercentage;
             float count = table.Count;
@@ -75,7 +82,7 @@ namespace TankEngine.Loottable
         /// <inheritdoc/>
         public T GetItem(int rollModifier)
         {
-            int selection = randomizer.GetNewIntNumber(0, table.Count - 1);
+            int selection = randomizer.GetNewIntNumber(0, table.Count);
             selection += rollModifier;
             selection = selection >= table.Count ? table.Count - 1 : selection;
             int itemNumber = table[selection];
