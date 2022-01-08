@@ -16,7 +16,7 @@ namespace TankEngine.Gui
         public Vector2 Size { get; protected set; }
 
         /// <summary>
-        /// The widht of the elment
+        /// The widht of the element
         /// </summary>
         protected readonly int width;
 

@@ -25,7 +25,7 @@ namespace Tank.GameStates.States
         /// <summary>
         /// The width for each button element
         /// </summary>
-        private const int ELEMENT_WIDTH = 150;
+        private const int ELEMENT_WIDTH = 170;
 
         /// <summary>
         /// The command to use to close the setting page
@@ -144,9 +144,11 @@ namespace Tank.GameStates.States
                 new Vector2(viewportAdapter.Center.X, 0),
                 TankGame.PublicViewportAdapter.VirtualWidth,
                 16,
+                true,
                 true
                 );
             stackPanel.SetMouseWrapper(mouseWrapper);
+
             stackPanel.AddElement(fullScreen);
             stackPanel.AddElement(resolutionSelection);
             stackPanel.AddElement(masterVolumeSelection);

@@ -1,9 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Tank.Components;
 using Tank.Interfaces.MapGenerators;
 using TankEngine.DataStructures;
+using TankEngine.DataStructures.Grid;
 using TankEngine.DataStructures.Spritesheet;
+using TankEngine.Loottable;
 using TankEngine.Randomizer;
 
 namespace Tank.Map.Textureizer
@@ -16,17 +20,7 @@ namespace Tank.Map.Textureizer
         /// <summary>
         /// The spritesheet to use
         /// </summary>
-        private readonly SpriteSheet spriteSheet;
-
-        /// <summary>
-        /// The foreground items to use
-        /// </summary>
-        private readonly SpriteSheet foregroundItems;
-
-        /// <summary>
-        /// The internal randomizer if nothing was set
-        /// </summary>
-        private Random internalRandomizer;
+        private readonly SpritesheetTexture terrainSpritesheet;
 
         /// <summary>
         /// The randomizer to use
@@ -47,14 +41,9 @@ namespace Tank.Map.Textureizer
         /// Create a new instance of the class
         /// </summary>
         /// <param name="backgroundTexture">The spritesheet to use</param>
-        public SimpleTexturizer(SpriteSheet backgroundTexture) : this(backgroundTexture, null)
+        public SimpleTexturizer(SpritesheetTexture backgroundTexture)
         {
-        }
-
-        public SimpleTexturizer(SpriteSheet backgroundTexture, SpriteSheet foregroundItems)
-        {
-            spriteSheet = backgroundTexture;
-            this.foregroundItems = foregroundItems;
+            terrainSpritesheet = backgroundTexture;
         }
 
         /// <summary>
@@ -78,49 +67,190 @@ namespace Tank.Map.Textureizer
             spriteYPosition = 0;
             spriteXPosition = 0;
 
-            this.randomizer = randomizer;
-            internalRandomizer = randomizer == null ? new Random(map.Seed) : null;
-
-            FlattenArray<Color> colors = spriteSheet.GetColorByName("stone");
-
+            this.randomizer = randomizer ?? new SystemRandomizer();
+            IEnumerable<SpritesheetArea> backgroundAreas = terrainSpritesheet.Areas.Where(area => area.ContainsProperty("type", "background", false));
+            ILoottable<SpritesheetArea> backgroundLoot = CreateLootTable(backgroundAreas, 0);
+            SpritesheetArea areaToUse = backgroundLoot.GetItem();
+            FlattenArray<Color> colors = terrainSpritesheet.GetColorFromArea(areaToUse);
+            int validPixels = 0;
+            int gridWidth = (int)Math.Ceiling((double)map.Width / areaToUse.Area.Width);
+            int gridHeight = (int)Math.Ceiling((double)map.Height / areaToUse.Area.Height);
+            Grid<int> imageGrid = new Grid<int>(gridWidth, gridHeight, areaToUse.Area.Width, Vector2.Zero, (x, y) => y * gridWidth + x);
             for (int x = 0; x < map.Width; x++)
             {
-                if (spriteXPosition > spriteSheet.SingleImageSize.X - 1)
-                {
-                    spriteXPosition = 0;
-                }
                 for (int y = 0; y < map.Height; y++)
                 {
-                    if (spriteYPosition > spriteSheet.SingleImageSize.Y - 1)
+                    if (map.ImageData.GetValue(x, y) != generatorFillColor)
                     {
-                        spriteYPosition = 0;
+                        continue;
                     }
+                    validPixels++;
+                    Point grid = imageGrid.GetPositionInGrid(new Vector2(x, y));
+                    int xStart = x - (grid.X * areaToUse.Area.Width);
+                    int yStart = y - (grid.Y * areaToUse.Area.Height);
+                    Color colorToPlace = colors.GetValue(xStart, yStart);
+                    map.ImageData.SetValue(x, y, colorToPlace);
+                }
+            }
+            PlaceEntitesUnderGround(map, validPixels, areaToUse.Name);
+        }
 
-                    if (map.ImageData.GetValue(x, y) == generatorFillColor)
+        /// <summary>
+        /// Place some entites on the texturized ground map
+        /// </summary>
+        /// <param name="map">The current map to work on</param>
+        /// <param name="validPixels">The number of valid pixels for the map</param>
+        private void PlaceEntitesUnderGround(MapComponent map, int validPixels, string textureName)
+        {
+            List<SpritesheetArea> foregroundAreas = terrainSpritesheet.Areas.Where(area => area.ContainsProperty("type", "entity", false) && area.ContainsPropertyName("rarity", false)).ToList();
+            int maxEntites = MathHelper.Min(validPixels / (64 * 64), 25);
+            int numberOfEntitesToPlace = this.randomizer.GetNewIntNumber(0, maxEntites);
+            List<EntityArea> regions = new List<EntityArea>();
+            int placeLeft = map.Height - (int)map.LowestPoint;
+            if (numberOfEntitesToPlace == 0)
+            {
+                return;
+            }
+            ILoottable<SpritesheetArea> loottable = CreateLootTable(foregroundAreas.Where(area =>
+            {
+                SpritesheetProperty property = area.Properties.FirstOrDefault(property => property.Name.ToLower() == "forbidden");
+                if (property == null)
+                {
+                    return true;
+                }
+                return !GetForbiddenList(property).Contains(textureName.ToLower());
+            }).Where(area => area.Area.Height < placeLeft));
+            if (loottable.ItemCount == 0)
+            {
+                return;
+            }
+            while (regions.Count < numberOfEntitesToPlace)
+            {
+                int xPos = this.randomizer.GetNewIntNumber(0, map.Width);
+                int yPos = this.randomizer.GetNewIntNumber((int)map.LowestPoint, map.Height);
+                SpritesheetArea areaToPlace = loottable.GetItem();
+                if (areaToPlace == null)
+                {
+                    numberOfEntitesToPlace--;
+                    continue;
+                }
+                Rectangle area = new Rectangle(xPos, yPos, areaToPlace.Area.Width, areaToPlace.Area.Height);
+                if (regions.Any(currentArea => currentArea.targetPosition.Intersects(area)))
+                {
+                    continue;
+                }
+                regions.Add(new EntityArea(area, areaToPlace));
+            }
+
+            PlaceEntitesOnMap(map, regions);
+        }
+
+        /// <summary>
+        /// Place the entites on the map
+        /// </summary>
+        /// <param name="map">The map to place the entites on</param>
+        /// <param name="regions">The regions to place the entites in</param>
+        private void PlaceEntitesOnMap(MapComponent map, List<EntityArea> regions)
+        {
+            foreach (EntityArea area in regions)
+            {
+                FlattenArray<Color> partData = terrainSpritesheet.GetColorFromArea(area.sourceTexture);
+                for (int x = 0; x < area.sourceTexture.Area.Width; x++)
+                {
+                    for (int y = 0; y < area.sourceTexture.Area.Height; y++)
                     {
-                        map.ImageData.SetValue(x, y, colors.GetValue(spriteXPosition, spriteYPosition));
-                        spriteYPosition++;
+                        int xWorldPos = area.targetPosition.X + x;
+                        int yWorldPos = area.targetPosition.Y + y;
+                        Color replaceColor = partData.GetValue(x, y);
+                        if (replaceColor == Color.Transparent)
+                        {
+                            continue;
+                        }
+                        map.ImageData.SetValue(
+                            xWorldPos,
+                            yWorldPos,
+                            partData.GetValue(x, y));
                     }
                 }
-                spriteXPosition++;
-                spriteYPosition = 0;
             }
         }
 
         /// <summary>
-        /// Get a random number
+        /// Get a list with all the forbidden textures for the entites
         /// </summary>
-        /// <param name="minimum">The minimum number to generate</param>
-        /// <param name="maximum">The maximum number to generate</param>
-        /// <returns>A random float number</returns>
-        private float GetRandomNumber(float minimum, float maximum)
+        /// <param name="property">The property to use</param>
+        /// <returns>A list with forbidden textures</returns>
+        private List<string> GetForbiddenList(SpritesheetProperty property)
         {
-            if (randomizer != null)
+            List<string> forbiddenNames = new List<string>();
+            if (property.Value.Contains("|"))
             {
-                return randomizer.GetNewNumber(minimum, maximum);
+                foreach (string value in property.Value.Split('|'))
+                {
+                    forbiddenNames.Add(value.ToLower());
+                }
+                return forbiddenNames;
             }
+            forbiddenNames.Add(property.Value.ToLower());
+            return forbiddenNames;
+        }
 
-            return (float)internalRandomizer.NextDouble() * (maximum - minimum) + minimum;
+        /// <summary>
+        /// Create a loottable for all the entites
+        /// </summary>
+        /// <param name="foregroundAreas">All the entites to place in foreground</param>
+        /// <returns>A ready to use loottable</returns>
+        private ILoottable<SpritesheetArea> CreateLootTable(IEnumerable<SpritesheetArea> foregroundAreas)
+        {
+            return CreateLootTable(foregroundAreas, randomizer.GetNewIntNumber(5, 50));
+        }
+
+        /// <summary>
+        /// Create a loottable for all the entites
+        /// </summary>
+        /// <param name="areasForTable">All the entites to place in foreground</param>
+        /// <returns>A ready to use loottable</returns>
+        private ILoottable<SpritesheetArea> CreateLootTable(IEnumerable<SpritesheetArea> areasForTable, int emptyPercentage)
+        {
+            ILoottable<SpritesheetArea> loottable = new SimpleLoottable<SpritesheetArea>(emptyPercentage, randomizer);
+            foreach (SpritesheetArea area in areasForTable)
+            {
+                SpritesheetProperty rarity = area.Properties.FirstOrDefault(p => p.Name.ToLower() == "rarity");
+                int rarityValue = 1;
+                if (rarity != null)
+                {
+                    int.TryParse(rarity.Value, out rarityValue);
+                }
+                loottable.AddItem(area, rarityValue);
+            }
+            return loottable;
+        }
+
+        /// <summary>
+        /// Internal structure to conbine world position with spritesheet area
+        /// </summary>
+        internal struct EntityArea
+        {
+            /// <summary>
+            /// The target position in the world
+            /// </summary>
+            public Rectangle targetPosition { get; }
+
+            /// <summary>
+            /// The position on the texture
+            /// </summary>
+            public SpritesheetArea sourceTexture { get; }
+
+            /// <summary>
+            /// Create a new instance of this class
+            /// </summary>
+            /// <param name="targetPosition">The target position in the world</param>
+            /// <param name="sourceTexture">The position on the texture</param>
+            public EntityArea(Rectangle targetPosition, SpritesheetArea sourceTexture)
+            {
+                this.targetPosition = targetPosition;
+                this.sourceTexture = sourceTexture;
+            }
         }
     }
 }

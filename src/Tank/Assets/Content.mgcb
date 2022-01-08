@@ -164,6 +164,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/SplashScreens/MonoGame_Logo.png
 
+#begin Images/Textures/BackgroundSpriteSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Textures/BackgroundSpriteSheet.png
+
 #begin Images/Textures/DefaultMapSprites.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -187,18 +199,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/Textures/DefaultMapSpritesNew.png
-
-#begin Images/Textures/MoistContinentalSpritesheet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Images/Textures/MoistContinentalSpritesheet.png
 
 #begin Shaders/Default.fx
 /importer:EffectImporter

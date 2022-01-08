@@ -66,7 +66,7 @@ namespace Tank.GameStates.States
         /// <summary>
         /// The spritesheet to use for the map
         /// </summary>
-        private SpriteSheet spritesheetToUse;
+        private SpritesheetTexture spritesheetToUse;
 
         /// <summary>
         /// Is loading complete
@@ -196,7 +196,16 @@ namespace Tank.GameStates.States
                 Texture2D texture = contentWrapper.Load<Texture2D>(sheet.TextureName);
                 return new SpriteSheet(texture, sheet.SingleImageSize.GetPoint(), sheet.DistanceBetweenImages, sheet.Patterns);
             };
-            spritesheetToUse = spriteSetManager.LoadData(gameSettings.SpriteSetName, conversionFunc);
+
+            Func<ISpritesheetData, Texture2D> spriteLoadMethod = sheet => contentWrapper.Load<Texture2D>("Images/Textures", sheet.ImageNameWithoutExtension);
+
+
+            DefaultFolderUtils folderUtils = new DefaultFolderUtils();
+            string fileName = folderUtils.GetGameDataFolder("Spritesheets", "BackgroundSpriteSheet");
+            ISpritesheetData spriteData = spritesheetDataLoader.LoadData(fileName);
+            spritesheetToUse = new SpritesheetTexture(spriteData, spriteLoadMethod);
+            spritesheetToUse.PreloadColorMap();
+
             healthBarSprite = spriteSetManager.LoadData("HealthBarSheet", conversionFunc);
             powerBarSprite = spriteSetManager.LoadData("StrengthMeterSheet", conversionFunc);
             defaultShader = contentWrapper.Load<Effect>("Shaders/Default");
@@ -215,6 +224,7 @@ namespace Tank.GameStates.States
         public override void SetActive()
         {
             base.SetActive();
+
             Task<MapComponent> mapCreatingTask = mapGenerator.AsyncGenerateNewMap(
                 new Point(viewportAdapter.VirtualWidth, viewportAdapter.VirtualHeight),
                 new SimpleTexturizer(spritesheetToUse),

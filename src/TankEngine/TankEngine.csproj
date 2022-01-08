@@ -3,12 +3,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Systems\**" />
+    <EmbeddedResource Remove="Systems\**" />
+    <None Remove="Systems\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Text.Json" Version="6.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Systems\" />
   </ItemGroup>
 </Project>

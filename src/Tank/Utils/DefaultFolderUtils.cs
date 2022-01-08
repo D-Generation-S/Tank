@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 
 namespace Tank.Utils
 {
@@ -40,5 +41,39 @@ namespace Tank.Utils
         {
             return Path.Combine(GetApplicationFolder(), "TankGame");
         }
+
+        /// <summary>
+        /// Get the game data folder
+        /// </summary>
+        /// <returns></returns>
+        public string GetGameDataFolder()
+        {
+            string assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            FileInfo fileInfo = new FileInfo(assemblyLocation);
+            return Path.Combine(fileInfo.DirectoryName, "GameData");
+        }
+
+        /// <summary>
+        /// Get the game data folder with a given subfolder
+        /// </summary>
+        /// <param name="subFolder">The subfolder to use</param>
+        /// <returns>The path with the given subfolder</returns>
+        public string GetGameDataFolder(string subFolder)
+        {
+            return Path.Combine(GetGameDataFolder(), subFolder);
+        }
+
+
+        /// <summary>
+        /// Get the game data folder with a given subfolder and a specific file
+        /// </summary>
+        /// <param name="subFolder">The subfolder to use</param>
+        /// <param name="fileName">The filename to use</param>
+        /// <returns>The path with the given subfolder and file</returns>
+        public string GetGameDataFolder(string subFolder, string fileName)
+        {
+            return Path.Combine(GetGameDataFolder(subFolder), fileName);
+        }
+
     }
 }

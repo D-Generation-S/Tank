@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using TankEngine.DataStructures.Spritesheet;
 
 namespace TankEngine.Gui
@@ -11,9 +12,24 @@ namespace TankEngine.Gui
     public abstract class VisibleUiElement : UiElement
     {
         /// <summary>
+        /// The tag to search for the left area part
+        /// </summary>
+        protected static string LEFT_TAG = "left";
+
+        /// <summary>
+        /// The tag to search for the center area part
+        /// </summary>
+        protected static string CENTER_TAG = "center";
+
+        /// <summary>
+        /// The tag to search for the right area part
+        /// </summary>
+        protected static string RIGHT_TAG = "right";
+
+        /// <summary>
         /// The texture to use
         /// </summary>
-        protected readonly SpriteSheet textureToShow;
+        protected readonly SpritesheetTexture spritesheetTexture;
 
         /// <summary>
         /// The spritebatch to use for drawing
@@ -66,23 +82,28 @@ namespace TankEngine.Gui
         protected float effectVolume;
 
         /// <summary>
+        /// The base filter to use for searching areas in spritesheet
+        /// </summary>
+        protected readonly string baseFilter;
+
+        /// <summary>
         /// Create a new instance
         /// </summary>
         /// <param name="position">The position to place</param>
         /// <param name="width">The width of the element</param>
-        /// <param name="textureToShow">The texture to use</param>
+        /// <param name="spritesheetTexture">The texture to use</param>
         /// <param name="spriteBatch">The spritebatch for drawing</param>
-        public VisibleUiElement(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch) : base(position, width)
+        public VisibleUiElement(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, string baseFilter) : base(position, width)
         {
-            this.textureToShow = textureToShow;
+            this.spritesheetTexture = spritesheetTexture;
             this.spriteBatch = spriteBatch;
             text = string.Empty;
             effectVolume = 1.0f;
+            this.baseFilter = baseFilter;
 
-            SetupTextures();
+            SetupAreas();
             Setup();
             UpdateCollider();
-
         }
 
         /// <inheritdoc/>
@@ -99,8 +120,18 @@ namespace TankEngine.Gui
             this.renderOffset = renderOffset;
         }
 
+        /// <summary>
+        /// Search data by property value
+        /// </summary>
+        /// <param name="value">The value to search for</param>
+        /// <returns>True if there is any value with the searched value</returns>
+        protected Func<SpritesheetProperty, bool> SearchByPropertyValue(string value)
+        {
+            return property => property.Value.ToLower() == value.ToLower();
+        }
+
         /// <inheritdoc/>
-        protected abstract void SetupTextures();
+        protected abstract void SetupAreas();
 
         /// <inheritdoc/>
         protected abstract void UpdateCollider();
@@ -162,7 +193,7 @@ namespace TankEngine.Gui
         /// <returns>The size of the text</returns>
         protected Vector2 GetTextLenght(string text)
         {
-            return GetTextLenght(text, font);
+            return GetTextLength(text, font);
         }
 
         /// <summary>
@@ -171,7 +202,7 @@ namespace TankEngine.Gui
         /// <param name="text">The text to check</param>
         /// <param name="font">The font to use</param>
         /// <returns>The size of the text</returns>
-        protected Vector2 GetTextLenght(string text, SpriteFont font)
+        protected Vector2 GetTextLength(string text, SpriteFont font)
         {
             if (font == null || text == null)
             {

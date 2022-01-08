@@ -100,13 +100,61 @@ namespace TankEngine.DataStructures
         /// <returns></returns>
         public T GetValue(int x, int y)
         {
-            int targetPosition = y * width + x;
-            if (targetPosition > array.Length || targetPosition < 0)
+            if (!IsInArray(x, y))
+            {
+                return default;
+            }
+            return array[GetFlattenPosition(x, y)];
+        }
+
+        /// <summary>
+        /// Get the position inside of the flatten array
+        /// </summary>
+        /// <param name="x">The x position</param>
+        /// <param name="y">The y position</param>
+        /// <returns>The int number of the index in the flatten array</returns>
+        private int GetFlattenPosition(int x, int y)
+        {
+            return y * width + x;
+        }
+
+        /// <summary>
+        /// Get a part of the flatten array as a new small flatten array
+        /// </summary>
+        /// <param name="rectangle">The area of the grid to get</param>
+        /// <returns>The part of the array if start and end coordinates are in the grid otherwise null</returns>
+        public FlattenArray<T> GetArea(Rectangle rectangle)
+        {
+            return GetArea(rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom);
+        }
+
+        /// <summary>
+        /// Get a part of the flatten array as a new small flatten array
+        /// </summary>
+        /// <param name="x">The x start position</param>
+        /// <param name="y">The y start position</param>
+        /// <param name="endX">The x end position</param>
+        /// <param name="endY">The y end position</param>
+        /// <returns>The part of the array if start and end coordinates are in the grid otherwise null</returns>
+        public FlattenArray<T> GetArea(int x, int y, int endX, int endY)
+        {
+            int indexEndX = endX - 1;
+            int indexEndY = endY - 1;
+            if (!IsInArray(x, y) || !IsInArray(indexEndX, indexEndY))
             {
                 return default;
             }
 
-            return array[targetPosition];
+            FlattenArray<T> returnArray = new FlattenArray<T>(endX - x, endY - y);
+            for (int row = x; row < endX; row++)
+            {
+                for (int column = y; column < endY; column++)
+                {
+                    T dataToSet = GetValue(row, column);
+                    returnArray.SetValue(row - x, column - y, dataToSet);
+                }
+            }
+            return returnArray;
         }
 
         /// <summary>
@@ -129,12 +177,11 @@ namespace TankEngine.DataStructures
         /// <returns></returns>
         public bool SetValue(int x, int y, T value)
         {
-            int targetPosition = y * width + x;
-            if (targetPosition >= array.Length || targetPosition < 0)
+            if (!IsInArray(x, y))
             {
                 return false;
             }
-            array[targetPosition] = value;
+            array[GetFlattenPosition(x, y)] = value;
 
             return true;
         }
@@ -147,7 +194,7 @@ namespace TankEngine.DataStructures
         /// <returns>True if the position is on the array</returns>
         public bool IsInArray(int x, int y)
         {
-            return IsInArray(y * width + x);
+            return IsInArray(GetFlattenPosition(x, y));
         }
 
         /// <summary>
@@ -160,9 +207,14 @@ namespace TankEngine.DataStructures
             return IsInArray(point.X, point.Y);
         }
 
-        public bool IsInArray(Vector2 point)
+        /// <summary>
+        /// Check if a point is part of the array
+        /// </summary>
+        /// <param name="vector">The vector to check</param>
+        /// <returns>True if the position is on the array</returns>
+        public bool IsInArray(Vector2 vector)
         {
-            return IsInArray((int)point.X, (int)point.Y);
+            return IsInArray((int)vector.X, (int)vector.Y);
         }
 
         /// <summary>
@@ -172,7 +224,7 @@ namespace TankEngine.DataStructures
         /// <returns>True if the position is on the array</returns>
         public bool IsInArray(int targetPosition)
         {
-            return targetPosition <= array.Length && targetPosition > 0;
+            return targetPosition < array.Length && targetPosition >= 0;
         }
     }
 }

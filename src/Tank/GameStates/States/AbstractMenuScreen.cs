@@ -6,6 +6,7 @@ using Tank.DataManagement;
 using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
 using Tank.DataStructure.Settings;
+using Tank.Utils;
 using TankEngine.DataProvider.Loader;
 using TankEngine.DataStructures.Spritesheet;
 using TankEngine.Gui;
@@ -25,14 +26,15 @@ namespace Tank.GameStates.States
         protected readonly IDataLoader<SpritesheetData> dataLoader;
 
         /// <summary>
-        /// The gui sprite to use
+        /// The spritesheet to use for the gui elements
         /// </summary>
-        protected SpriteSheet guiSprite;
+        protected SpritesheetTexture guiSprite;
 
         /// <summary>
         /// The font to use for text
         /// </summary>
         protected SpriteFont baseFont;
+
 
         /// <summary>
         /// The amanger to load sprite sheets
@@ -114,10 +116,12 @@ namespace Tank.GameStates.States
         /// <inheritdoc/>
         public override void LoadContent()
         {
-            guiSprite = spriteSetManager.LoadData("GuiSpriteSheet", data =>
+            DefaultFolderUtils folderUtils = new DefaultFolderUtils();
+            string fileName = folderUtils.GetGameDataFolder("Spritesheets", "WindowSpriteSheet");
+            ISpritesheetData spriteData = spritesheetDataLoader.LoadData(fileName);
+            guiSprite = new SpritesheetTexture(spriteData, sheet =>
             {
-                Texture2D texture = contentWrapper.Load<Texture2D>(data.TextureName);
-                return new SpriteSheet(texture, data.SingleImageSize.GetPoint(), data.DistanceBetweenImages, data.Patterns);
+                return contentWrapper.Load<Texture2D>("Images/Gui", sheet.ImageNameWithoutExtension);
             });
             baseFont = contentWrapper.Load<SpriteFont>("gameFont");
             buttonClick = contentWrapper.Load<SoundEffect>("Sound/Effects/UiClick");

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
+using System.Linq;
 using TankEngine.Adapter;
 using TankEngine.Wrapper;
 
@@ -10,14 +12,14 @@ namespace TankEngine.Gui
     public class VerticalStackPanel : Panel
     {
         /// <summary>
-        /// Center of the stack panel
+        /// The horizontal center of the stack panel
         /// </summary>
-        private readonly float center;
+        private readonly float horizontalCenter;
 
         /// <summary>
-        /// The viewport adapter used by the game
+        /// The vertical center of the stack panel
         /// </summary>
-        private readonly IViewportAdapter viewport;
+        private readonly float verticalCenter;
 
         /// <summary>
         /// Space between the elements
@@ -30,12 +32,17 @@ namespace TankEngine.Gui
         private readonly bool centerVertical;
 
         /// <summary>
+        /// Center the element on the horizonal
+        /// </summary>
+        private readonly bool centerHorizontal;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         /// <param name="width">The width of the class</param>
         /// <param name="elementSpace">The space between the elements</param>
         public VerticalStackPanel(IViewportAdapter viewport, int width, int elementSpace)
-    : this(viewport, Vector2.Zero, width, elementSpace)
+            : this(viewport, Vector2.Zero, width, elementSpace)
         {
         }
 
@@ -57,12 +64,28 @@ namespace TankEngine.Gui
         /// <param name="width">The width of the class</param>
         /// <param name="elementSpace">The space between the elements</param>
         /// <param name="centerVertical">Should place elements on vertical middle</param>
-        public VerticalStackPanel(IViewportAdapter viewport, Vector2 position, int width, int elementSpace, bool centerVertical) : base(position, width)
+        public VerticalStackPanel(IViewportAdapter viewport, Vector2 position, int width, int elementSpace, bool centerVertical)
+            : this(viewport, position, width, elementSpace, centerVertical, false)
         {
-            center = width / 2;
-            this.viewport = viewport;
+
+        }
+
+
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="position">The position of the panel</param>
+        /// <param name="width">The width of the class</param>
+        /// <param name="elementSpace">The space between the elements</param>
+        /// <param name="centerVertical">Should place elements on vertical middle</param>
+        public VerticalStackPanel(IViewportAdapter viewport, Vector2 position, int width, int elementSpace, bool centerVertical, bool centerHorizontal)
+            : base(position, width)
+        {
+            horizontalCenter = width / 2;
+            verticalCenter = viewport.VirtualHeight / 2;
             this.elementSpace = elementSpace;
             this.centerVertical = centerVertical;
+            this.centerHorizontal = centerHorizontal;
         }
 
         /// <inheritdoc/>
@@ -81,33 +104,60 @@ namespace TankEngine.Gui
             elementToAdd.SetMouseWrapper(mouseWrapper);
             if (centerVertical)
             {
-                base.AddElement(elementToAdd);
-
-                Vector2 center = Vector2.UnitY * viewport.VirtualViewport.Height / 2;
-                float totalHeight = 0;
-                foreach (IGuiElement element in Container)
-                {
-                    totalHeight += element.Size.Y;
-                }
-                if (Container.Count > 0)
-                {
-                    totalHeight += elementSpace * Container.Count - 1;
-                }
-
-                Vector2 firstPosition = center;
-                firstPosition.Y -= totalHeight / 2;
-                Vector2 lastBottom = firstPosition;
-                for (int i = 0; i < Container.Count; i++)
-                {
-                    IGuiElement currentElement = Container[i];
-                    currentElement.SetPosition(lastBottom);
-                    lastBottom.Y += currentElement.Size.Y + elementSpace;
-                }
+                AddElementAtCenter(elementToAdd);
                 return;
             }
+            AddElementToLeft(elementToAdd);
+        }
 
+        /// <summary>
+        /// Center all the elements horizontally
+        /// </summary>
+        private void CenterHorizontal()
+        {
+            if (!centerHorizontal)
+            {
+                return;
+            }
+            foreach (IGuiElement guiElement in Container)
+            {
+                Vector2 position = guiElement.Position;
+                position.X = horizontalCenter - guiElement.Size.X;
+                guiElement.SetPosition(position);
+            }
+        }
+
+        /// <summary>
+        /// Add a element vertically centered
+        /// </summary>
+        /// <param name="elementToAdd">The element to add</param>
+        private void AddElementAtCenter(IGuiElement elementToAdd)
+        {
+            base.AddElement(elementToAdd);
+
+            int containerCount = Math.Max(1, Container.Count - 1);
+            float totalHeight = Container.Sum(element => element.Size.Y) + elementSpace * containerCount;
+            Vector2 startPosition = Vector2.UnitY * (verticalCenter - totalHeight / 2);
+            for (int i = 0; i < Container.Count; i++)
+            {
+                float usedUpSpace = Container.Take(i).Sum((element => element.Size.Y));
+                IGuiElement currentElement = Container[i];
+
+                Vector2 position = startPosition;
+                position.Y += (elementSpace * i) + usedUpSpace;
+                currentElement.SetPosition(position);
+            }
+            CenterHorizontal();
+        }
+
+        /// <summary>
+        /// Add a element to the panel on the left side
+        /// </summary>
+        /// <param name="elementToAdd">The element to add</param>
+        private void AddElementToLeft(IGuiElement elementToAdd)
+        {
             Vector2 position = Position;
-            position += Vector2.UnitX * center;
+            position += Vector2.UnitX * horizontalCenter;
             position.X -= elementToAdd.Size.X / 2;
 
             if (Container.Count != 0)
@@ -119,6 +169,7 @@ namespace TankEngine.Gui
 
             base.AddElement(elementToAdd);
             elementToAdd.SetPosition(position);
+            CenterHorizontal();
         }
     }
 }

@@ -48,7 +48,7 @@
     <None Update="GameData\Playlists\MenuMusic.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="GameData\Spritesheets\GuiSpriteSheet.json">
+    <None Update="GameData\Spritesheets\BackgroundSpriteSheet.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="GameData\Spritesheets\StrengthMeterSheet.json">
@@ -57,7 +57,7 @@
     <None Update="GameData\Spritesheets\HealthBarSheet.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="GameData\Spritesheets\MoistContinentalSpritesheet.json">
+    <None Update="GameData\Spritesheets\WindowSpriteSheet.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

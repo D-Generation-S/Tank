@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TankEngine.DataStructures.Spritesheet;
 
 namespace TankEngine.Gui
@@ -10,6 +12,11 @@ namespace TankEngine.Gui
     /// </summary>
     public class TextArea : VisibleUiElement
     {
+        /// <summary>
+        /// The default search filter to use for getting the ui visibles
+        /// </summary>
+        private const string DEFAULT_FILTER = "textarea";
+
         /// <summary>
         /// The number of middle parts
         /// </summary>
@@ -21,53 +28,110 @@ namespace TankEngine.Gui
         protected int completeXSize;
 
         /// <summary>
-        /// The size of a single image
+        /// The areas for the gui element
         /// </summary>
-        protected Point imageSize;
+        protected List<SpritesheetArea> Areas;
 
         /// <summary>
         /// The current left part to draw
         /// </summary>
-        protected Rectangle currentLeftSource;
+        protected Rectangle leftPartToDraw;
 
         /// <summary>
         /// The current middle part to draw
         /// </summary>
-        protected Rectangle currentMiddleSource;
+        protected Rectangle centerPartToDraw;
 
         /// <summary>
         /// The current right part to draw
         /// </summary>
-        protected Rectangle currentRightSource;
+        protected Rectangle rightPartToDraw;
 
-        /// <inheritdoc/>
-        public TextArea(Vector2 position, int width, SpriteSheet textureToShow, SpriteBatch spriteBatch) : base(position, width, textureToShow, spriteBatch)
+        /// <summary>
+        /// Create a new text area element
+        /// </summary>
+        /// <param name="position">The position of the element</param>
+        /// <param name="width">The width of the element</param>
+        /// <param name="spritesheetTexture">Ther spritesheet texture to use</param>
+        /// <param name="spriteBatch">The spritebatch used for drawing the texture</param>
+        public TextArea(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch)
+            : this(position, width, spritesheetTexture, spriteBatch, DEFAULT_FILTER)
+        {
+        }
+
+        /// <summary>
+        /// Create a new text area element
+        /// </summary>
+        /// <param name="position">The position of the element</param>
+        /// <param name="width">The width of the element</param>
+        /// <param name="spritesheetTexture">Ther spritesheet texture to use</param>
+        /// <param name="spriteBatch">The spritebatch used for drawing the texture</param>
+        /// <param name="baseFilter">The filter to use for getting the areas for the element on the spritesheet</param>
+        public TextArea(Vector2 position, int width, SpritesheetTexture spritesheetTexture, SpriteBatch spriteBatch, string baseFilter)
+            : base(position, width, spritesheetTexture, spriteBatch, baseFilter)
         {
         }
 
         /// <inheritdoc/>
         protected override void Setup()
         {
-            middlePartCount = (int)Math.Round((float)width / textureToShow.SingleImageSize.X);
-            middlePartCount = middlePartCount == 0 ? 1 : middlePartCount;
+            //@Note: This is properly not always correct since there could be multiple areas with the same tag!
+            SpritesheetArea centerArea = GetCenterArea();
+            SpritesheetArea leftArea = GetLeftArea();
+            SpritesheetArea rightArea = GetRightArea();
 
-            completeXSize = imageSize.X * 2;
-            completeXSize += imageSize.X * middlePartCount;
+            if (centerArea == null || leftArea == null || rightArea == null)
+            {
+                return;
+            }
+
+            centerPartToDraw = centerArea.Area;
+            leftPartToDraw = leftArea.Area;
+            rightPartToDraw = rightArea.Area;
+
+            middlePartCount = (int)Math.Round((float)width / centerPartToDraw.Width);
+            middlePartCount = middlePartCount == 0 ? 1 : middlePartCount;
+            completeXSize = leftPartToDraw.Width + rightPartToDraw.Width;
+            completeXSize += centerPartToDraw.Width * middlePartCount;
+        }
+
+        /// <summary>
+        /// Get the left area for inital setup
+        /// </summary>
+        /// <returns>The left area to use</returns>
+        protected virtual SpritesheetArea GetCenterArea()
+        {
+            return Areas.FirstOrDefault(area => area.ContainsPropertyValue(CENTER_TAG, false));
+        }
+
+        /// <summary>
+        /// Get the left area for inital setup
+        /// </summary>
+        /// <returns>The left area to use</returns>
+        protected virtual SpritesheetArea GetLeftArea()
+        {
+            return Areas.FirstOrDefault(area => area.ContainsPropertyValue(LEFT_TAG, false));
+        }
+
+        /// <summary>
+        /// Get the right area for inital setup
+        /// </summary>
+        /// <returns>The right area to use</returns>
+        protected virtual SpritesheetArea GetRightArea()
+        {
+            return Areas.FirstOrDefault(area => area.ContainsPropertyValue(RIGHT_TAG, false));
         }
 
         /// <inheritdoc/>
-        protected override void SetupTextures()
+        protected override void SetupAreas()
         {
-            imageSize = textureToShow.GetPatternImageSize("buttonLeft");
-            currentLeftSource = textureToShow.GetAreaFromPattern("ButtonLeft");
-            currentMiddleSource = textureToShow.GetAreaFromPattern("ButtonMiddle");
-            currentRightSource = textureToShow.GetAreaFromPattern("ButtonRight");
+            Areas = spritesheetTexture.Areas.Where(area => area.Properties.Any(SearchByPropertyValue(baseFilter))).ToList();
         }
 
         /// <inheritdoc/>
         protected override void UpdateCollider()
         {
-            collider = new Rectangle((int)Position.X, (int)Position.Y, completeXSize, imageSize.Y);
+            collider = new Rectangle((int)Position.X, (int)Position.Y, completeXSize, centerPartToDraw.Height);
             Size = collider.Size.ToVector2();
         }
 
@@ -78,32 +142,34 @@ namespace TankEngine.Gui
             DrawText();
         }
 
+        /// <inheritdoc/>
         protected virtual void DrawBackground()
         {
+
             spriteBatch.Draw(
-                textureToShow.CompleteImage,
-                new Rectangle((int)Position.X, (int)Position.Y, imageSize.X, imageSize.Y),
-                currentLeftSource,
+                spritesheetTexture.Texture,
+                new Rectangle((int)Position.X, (int)Position.Y, leftPartToDraw.Width, leftPartToDraw.Height),
+                leftPartToDraw,
                 Color.White
                 );
-
             for (int i = 0; i < middlePartCount; i++)
             {
-                int index = i + 1;
+                int xCenterPosition = (int)(Position.X + leftPartToDraw.Width);
+                xCenterPosition += centerPartToDraw.Width * i;
                 spriteBatch.Draw(
-                    textureToShow.CompleteImage,
-                    new Rectangle((int)Position.X + imageSize.X * index, (int)Position.Y, imageSize.X, imageSize.Y),
-                    currentMiddleSource,
+                    spritesheetTexture.Texture,
+                    new Rectangle(xCenterPosition, (int)Position.Y, centerPartToDraw.Width, centerPartToDraw.Height),
+                    centerPartToDraw,
                     Color.White
                     );
             }
 
-            int xPosition = (int)Position.X + imageSize.X * 2;
-            xPosition += imageSize.X * (middlePartCount - 1);
+            int xPosition = (int)(Position.X + leftPartToDraw.Width);
+            xPosition += centerPartToDraw.Width * (middlePartCount);
             spriteBatch.Draw(
-                textureToShow.CompleteImage,
-                new Rectangle(xPosition, (int)Position.Y, imageSize.X, imageSize.Y),
-                currentRightSource,
+                spritesheetTexture.Texture,
+                new Rectangle(xPosition, (int)Position.Y, rightPartToDraw.Width, rightPartToDraw.Height),
+                rightPartToDraw,
                 Color.White
                 );
         }
@@ -132,9 +198,9 @@ namespace TankEngine.Gui
             Vector2 startPosition = Position;
 
             Vector2 textSize = GetTextLenght(textToUse);
-            float middleSize = imageSize.X * middlePartCount;
+            float middleSize = centerPartToDraw.Width * middlePartCount;
 
-            startPosition += Vector2.UnitX * imageSize.X;
+            startPosition += Vector2.UnitX * leftPartToDraw.Width;
             startPosition += Vector2.UnitX * (middleSize / 2);
             startPosition -= Vector2.UnitX * (textSize.X / 2);
 
