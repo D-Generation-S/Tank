@@ -152,7 +152,7 @@ namespace TankEngine.Gui
         /// <inheritdoc/>
         protected override void SetupAreas()
         {
-            Areas = spritesheetTexture.Areas.Where(area => area.Properties.Any(SearchByPropertyValue("button"))).ToList();
+            Areas = spritesheetTexture.Areas.Where(area => area.Properties.Any(SearchByPropertyValue(baseFilter))).ToList();
         }
 
         /// <inheritdoc/>
