@@ -128,6 +128,12 @@ namespace TankEngine.Gui
             sourceToDraw = idleBox;
         }
 
+        /// <summary>
+        /// Get a area by a specific value
+        /// </summary>
+        /// <param name="value">The value to search for</param>
+        /// <param name="state">The state to search for</param>
+        /// <returns>The rectangular area</returns>
         private Rectangle GetAreaByValue(string value, string state)
         {
             SpritesheetArea centerArea = Areas.FirstOrDefault(area => area.ContainsPropertyValue(value, false) && area.ContainsPropertyValue(state, false));
