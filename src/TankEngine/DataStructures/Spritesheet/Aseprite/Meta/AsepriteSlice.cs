@@ -5,17 +5,32 @@ using System.Text.Json.Serialization;
 
 namespace TankEngine.DataStructures.Spritesheet.Aseprite.Meta
 {
+    /// <summary>
+    /// Class to represent a aseprite slice 
+    /// </summary>
     public class AsepriteSlice
     {
+        /// <summary>
+        /// The name of the slice
+        /// </summary>
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
+        /// <summary>
+        /// The color the slice got in aseprite
+        /// </summary>
         [JsonPropertyName("color")]
         public string Color { get; set; }
 
+        /// <summary>
+        /// Any data assigned to the slice
+        /// </summary>
         [JsonPropertyName("data")]
         public string Data { get; set; }
 
+        /// <summary>
+        /// All the keys for the slice
+        /// </summary>
         [JsonPropertyName("keys")]
         public List<AsperiteKey> Keys { get; set; }
 
