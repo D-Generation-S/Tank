@@ -179,7 +179,7 @@ namespace TankEngine.DataStructures
         {
             if (!IsInArray(x, y))
             {
-                return default;
+                return false;
             }
             array[GetFlattenPosition(x, y)] = value;
 
