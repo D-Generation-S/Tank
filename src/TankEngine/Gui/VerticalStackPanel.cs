@@ -12,7 +12,7 @@ namespace TankEngine.Gui
     public class VerticalStackPanel : Panel
     {
         /// <summary>
-        /// Center of the stack panel
+        /// The horizontal center of the stack panel
         /// </summary>
         private readonly float horizontalCenter;
 
