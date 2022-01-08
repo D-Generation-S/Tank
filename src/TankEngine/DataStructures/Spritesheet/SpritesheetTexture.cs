@@ -48,8 +48,6 @@ namespace TankEngine.DataStructures.Spritesheet
         /// <inheritdoc/>
         public List<SpritesheetFrameTag> FrameTags => spritesheetData?.FrameTags;
 
-
-
         /// <summary>
         /// Create a new spritesheet texture
         /// </summary>
