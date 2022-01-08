@@ -25,6 +25,9 @@ namespace TankEngine.DataStructures.Spritesheet
         /// </summary>
         private FlattenArray<Color> imageColors;
 
+        /// <summary>
+        /// Is the sheet texture ready to use
+        /// </summary>
         public bool Ready => Texture != null && spritesheetData != null;
 
         /// <inheritdoc/>
