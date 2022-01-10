@@ -103,6 +103,11 @@ namespace Tank.Systems
             FireEvent(addEntiyEvent);
         }
 
+        /// <summary>
+        /// Damage a game object with a given value
+        /// </summary>
+        /// <param name="damageComponent">The damage component to use</param>
+        /// <param name="collisionEvent">The collision event</param>
         private void DamageGameObjects(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
         {
             List<uint> objects = entityManager.GetEntitiesWithComponent<GameObjectTag>();
@@ -138,12 +143,13 @@ namespace Tank.Systems
                 points.Add(new Point(collisionArea.Left, collisionArea.Y));
                 points.Add(new Point(collisionArea.Right, collisionArea.Y));
                 points.Add(collisionArea.Center);
-                bool doesCollide = points.Any(dot => damageComponent.DamageArea.IsInInCircle(dot));
-                if (!doesCollide)
+                Point collisionPoint = points.Where(dot => damageComponent.DamageArea.IsInInCircle(dot))
+                                             .OrderBy(dot => Vector2.Distance(dot.ToVector2(), damageComponent.DamageArea.Center))
+                                             .FirstOrDefault();
+                if (collisionPoint == Point.Zero)
                 {
                     continue;
                 }
-
 
                 float armor = gameObjectData.Properties.ContainsKey("Armor") ? gameObjectData.Properties["Armor"] : 0;
                 float damageToTake = damageComponent.CenterDamageValue;
@@ -183,3 +189,4 @@ namespace Tank.Systems
         }
     }
 }
+
