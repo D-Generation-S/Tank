@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Tags;
@@ -102,6 +103,11 @@ namespace Tank.Systems
             FireEvent(addEntiyEvent);
         }
 
+        /// <summary>
+        /// Damage a game object with a given value
+        /// </summary>
+        /// <param name="damageComponent">The damage component to use</param>
+        /// <param name="collisionEvent">The collision event</param>
         private void DamageGameObjects(DamageComponent damageComponent, MapCollisionEvent collisionEvent)
         {
             List<uint> objects = entityManager.GetEntitiesWithComponent<GameObjectTag>();
@@ -110,23 +116,37 @@ namespace Tank.Systems
             PlayerStatisticComponent playerStatisticComponent = null;
             if (projectileBindComponent != null)
             {
-                foreach (uint entityId in entityManager.GetEntitiesWithComponent<PlayerStatisticComponent>())
-                {
-                    BindComponent playerBindComponent = entityManager.GetComponent<BindComponent>(entityId);
-                    if (playerBindComponent.BoundEntityId == projectileBindComponent.BoundEntityId)
-                    {
-                        playerStatisticComponent = entityManager.GetComponent<PlayerStatisticComponent>(entityId);
-                        break;
-                    }
-                }
+                entityManager.GetEntitiesWithComponent<PlayerStatisticComponent>()
+                             .Select(id => entityManager.GetComponent<BindComponent>(id))
+                             .Where(bind => bind != null)
+                             .Where(bindComponent => bindComponent.BoundEntityId == projectileBindComponent.BoundEntityId)
+                             .Select(bindComponent => entityManager.GetComponent<PlayerStatisticComponent>(bindComponent.EntityId))
+                             .FirstOrDefault();
             }
 
             foreach (uint gameObject in objects)
             {
                 PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(gameObject);
+                ColliderComponent collider = entityManager.GetComponent<ColliderComponent>(gameObject);
+                Rectangle collisionArea = collider == null ? Rectangle.Empty : collider.Collider;
                 GameObjectData gameObjectData = entityManager.GetComponent<GameObjectData>(gameObject);
 
-                if (placeableComponent == null || gameObjectData == null || !damageComponent.DamageArea.IsInInCircle(placeableComponent.Position))
+                if (placeableComponent == null || collider == null || gameObjectData == null)
+                {
+                    continue;
+                }
+
+                collisionArea.Location += placeableComponent.Position.ToPoint();
+                List<Point> points = new List<Point>();
+                points.Add(new Point(collisionArea.Center.X, collisionArea.Top));
+                points.Add(new Point(collisionArea.Center.X, collisionArea.Bottom));
+                points.Add(new Point(collisionArea.Left, collisionArea.Y));
+                points.Add(new Point(collisionArea.Right, collisionArea.Y));
+                points.Add(collisionArea.Center);
+                Point collisionPoint = points.Where(dot => damageComponent.DamageArea.IsInInCircle(dot))
+                                             .OrderBy(dot => Vector2.Distance(dot.ToVector2(), damageComponent.DamageArea.Center))
+                                             .FirstOrDefault();
+                if (collisionPoint == Point.Zero)
                 {
                     continue;
                 }
@@ -169,3 +189,4 @@ namespace Tank.Systems
         }
     }
 }
+
