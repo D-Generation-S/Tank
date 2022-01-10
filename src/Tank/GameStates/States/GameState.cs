@@ -245,7 +245,7 @@ namespace Tank.GameStates.States
             {
                 ticksToFire--;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2))
+            if (Keyboard.GetState().IsKeyDown(Keys.F2) && !previousState.IsKeyDown(Keys.F2) && debugOn)
             {
                 /**
                 uint debriId = engine.EntityManager.CreateEntity(false);
@@ -287,7 +287,7 @@ namespace Tank.GameStates.States
                 }
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F5) && !previousState.IsKeyDown(Keys.F5))
+            if (Keyboard.GetState().IsKeyDown(Keys.F5) && !previousState.IsKeyDown(Keys.F5) && debugOn)
             {
                 IState gameLoading = new GameLoadingScreen(
                     new MidpointDisplacementGenerator(
@@ -298,7 +298,7 @@ namespace Tank.GameStates.States
                 gameStateManager.Replace(gameLoading);
             }
 
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released && debugOn)
             {
                 uint explosion = engine.EntityManager.CreateEntity();
 
