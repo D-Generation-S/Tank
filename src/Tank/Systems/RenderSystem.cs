@@ -200,17 +200,25 @@ namespace Tank.Systems
         }
 
         /// <summary>
-        /// Create a screenshot async
+        /// Create a screenshot
         /// </summary>
         /// <param name="renderTarget">The rendertarget to save the screenshot from</param>
         /// <param name="path">The path to save to</param>
         /// <returns>true after saving was done</returns>
-        private async Task<bool> TakeScreenshot(RenderTarget2D renderTarget, string path)
+        private bool TakeScreenshot(RenderTarget2D renderTarget, string path)
         {
-            using (StreamWriter writer = new StreamWriter(screenshotPath))
+            try
             {
-                renderTarget.SaveAsPng(writer.BaseStream, renderTarget.Width, renderTarget.Height);
+                using (StreamWriter writer = new StreamWriter(screenshotPath))
+                {
+                    renderTarget.SaveAsPng(writer.BaseStream, renderTarget.Width, renderTarget.Height);
+                }
             }
+            catch (Exception)
+            {
+                return false;
+            }
+
             return true;
         }
 
