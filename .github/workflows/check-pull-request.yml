@@ -1,6 +1,7 @@
 name: Check pull request
 
-on: push#[pull_request]
+on: push
+#[pull_request]
 
 jobs:
    checkWindowsGameBuild:
