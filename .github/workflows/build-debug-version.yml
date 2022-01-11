@@ -6,7 +6,7 @@ on:
       - develop
 
 env:
-  VERSION_SUFFIX: latest-test-build-
+  VERSION_SUFFIX: latest-unstable-
 
 jobs:
    createWindowsGameBuild:
@@ -191,7 +191,7 @@ jobs:
        - name: Read folder content
          run: ls -la releases
        - name: Replace part of tag
-         run: echo "custom_tag=latest-unstable" >> $GITHUB_ENV
+         run: echo "custom_tag=${{env.VERSION_SUFFIX}}" >> $GITHUB_ENV
        - name: Create last unstable Release
          uses: softprops/action-gh-release@v1
          with:
