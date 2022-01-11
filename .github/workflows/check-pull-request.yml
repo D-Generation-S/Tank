@@ -3,6 +3,9 @@ name: Check pull request
 on: push
 #[pull_request]
 
+env:
+  VERSION_SUFFIX: latest-test-build-
+
 jobs:
    checkWindowsGameBuild:
      name: Check build for Windows
@@ -15,8 +18,8 @@ jobs:
          shell: powershell
        - name: Set Version
          run: |
-          echo latest-test-build-${GITHUB.RUN_NUMBER}
-          echo latest-test-build-${GITHUB.RUN_NUMBER} > .\src\Tank\Assets\Resources\Version.txt
+          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER}
+          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER} > .\src\Tank\Assets\Resources\Version.txt
           cat .\src\Tank\Assets\Resources\Version.txt
          shell: powershell
        - name: Build project Windows
@@ -33,8 +36,8 @@ jobs:
          shell: powershell
        - name: Set Version
          run: |
-          echo latest-test-build-${GITHUB.RUN_NUMBER}
-          echo latest-test-build-${GITHUB.RUN_NUMBER} > .\src\Tank\Assets\Resources\Version.txt
+          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER}
+          echo $OUTPUT_SUFFIX${GITHUB.RUN_NUMBER} > .\src\Tank\Assets\Resources\Version.txt
           cat .\src\Tank\Assets\Resources\Version.txt
          shell: powershell
        - name: Build project Linux
@@ -51,8 +54,8 @@ jobs:
          shell: powershell
        - name: Set Version
          run: |
-          echo latest-test-build-${GITHUB.RUN_NUMBER}
-          echo latest-test-build-${GITHUB.RUN_NUMBER} > .\src\Tank\Assets\Resources\Version.txt
+          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER}
+          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER} > .\src\Tank\Assets\Resources\Version.txt
           cat .\src\Tank\Assets\Resources\Version.txt
          shell: powershell  
        - name: Build project Mac OS
