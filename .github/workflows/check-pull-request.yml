@@ -1,7 +1,6 @@
 name: Check pull request
 
-on: push
-#[pull_request]
+on: [pull_request]
 
 env:
   VERSION_SUFFIX: latest-test-build-
