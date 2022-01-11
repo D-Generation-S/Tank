@@ -1,0 +1,108 @@
+﻿{
+  "Name": "mainMenu",
+  "BackgroundTextureName": "Images/Backgrounds/Tank_Background_Distort_Shadow",
+  "BackgroundColor": "#000",
+  "Buttons": [
+    {
+      "Name": "Button_StartGame",
+      "Width": 265,
+      "Height": 64,
+      "ClickEvent": "StartGame_Click",
+      "VerticalAlignment": "Middle",
+      "HorizontalAlignment": "Center",
+      "Margin": [ 100, 0, 0, 0 ],
+      "Text": "Start Game",
+      "TextureName": "Images/GUI/ProgressFront",
+      "HoverTextureName": "Images/GUI/ProgressBackground"
+    },
+    {
+      "Name": "Button_Options",
+      "Width": 265,
+      "Height": 64,
+      "ClickEvent": "GameSettings_Click",
+      "VerticalAlignment": "Middle",
+      "HorizontalAlignment": "Center",
+      "Margin": [ 200, 0, 0, 0 ],
+      "Text": "Game Settings",
+      "TextureName": "Images/GUI/ProgressFront",
+      "HoverTextureName": "Images/GUI/ProgressBackground"
+    },
+    {
+      "Name": "Button_Exit",
+      "Width": 265,
+      "Height": 64,
+      "ClickEvent": "ExitGame_Click",
+      "VerticalAlignment": "Middle",
+      "HorizontalAlignment": "Center",
+      "Margin": [ 300, 0, 0, 0 ],
+      "Text": "Exit",
+      "TextureName": "Images/GUI/ProgressFront",
+      "HoverTextureName": "Images/GUI/ProgressBackground"
+    },
+    {
+      "Name": "Button_Twitter",
+      "Width": 32,
+      "Height": 32,
+      "ClickEvent": "Link_Click",
+      "VerticalAlignment": "Bottom",
+      "HorizontalAlignment": "Right",
+      "Margin": [ 0, 37, 25, 0 ],
+      "Text": "",
+      "TextureName": "Images/GUI/twitter",
+      "HoverTextureName": null,
+      "InternalData":  "https://twitter.com/dgenerationnet"
+    },
+    {
+      "Name": "Button_Facebook",
+      "Width": 32,
+      "Height": 32,
+      "ClickEvent": "Link_Click",
+      "VerticalAlignment": "Bottom",
+      "HorizontalAlignment": "Right",
+      "Margin": [ 0, 69, 25, 0 ],
+      "Text": "",
+      "TextureName": "Images/GUI/facebook",
+      "HoverTextureName": null,
+      "InternalData":  "https://www.facebook.com/dgenerationnet"
+    },
+    {
+      "Name": "Button_Youtube",
+      "Width": 32,
+      "Height": 32,
+      "ClickEvent": "Link_Click",
+      "VerticalAlignment": "Bottom",
+      "HorizontalAlignment": "Right",
+      "Margin": [ 0, 101, 25, 0 ],
+      "Text": "",
+      "TextureName": "Images/GUI/youtube",
+      "HoverTextureName": null,
+      "InternalData":  "https://www.youtube.com/channel/UCCZFiK3-BwVKx-R3crqpYRw"
+    },
+    {
+      "Name": "Button_GooglePlus",
+      "Width": 32,
+      "Height": 32,
+      "ClickEvent": "Link_Click",
+      "VerticalAlignment": "Bottom",
+      "HorizontalAlignment": "Right",
+      "Margin": [ 0, 133, 25, 0 ],
+      "Text": "",
+      "TextureName": "Images/GUI/googleplus",
+      "HoverTextureName": null,
+      "InternalData":  "https://plus.google.com/103676267898904946882/videos"
+    },
+    {
+      "Name": "Button_Tumblr",
+      "Width": 32,
+      "Height": 32,
+      "ClickEvent": "Link_Click",
+      "VerticalAlignment": "Bottom",
+      "HorizontalAlignment": "Right",
+      "Margin": [ 0, 165, 25, 0 ],
+      "Text": "",
+      "TextureName": "Images/GUI/tumblr",
+      "HoverTextureName": null,
+      "InternalData":  "https://d-generation-net.tumblr.com/"
+    }
+  ]
+}
