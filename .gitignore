@@ -3,10 +3,6 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Visual Studio Code
-.vscode/
-.vs/
-
 # User-specific files
 *.rsuser
 *.suo
@@ -355,7 +351,3 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-
-
-#Specific files
-src/Tank/Assets/Fonts/VT323*.ttf

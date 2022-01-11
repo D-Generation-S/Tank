@@ -1,0 +1,22 @@
+﻿{
+  "ID": 0,
+  "Name": "Splash Screen",
+  "Class": "Tank.Code.Screenmanager.SplashScreen",
+  "TrackType": "Menu",
+  "BackgroundImage": null,
+  "BackgroundColor": "#000000",
+  "SplashList": [
+    {
+      "Name": "Monogame",
+      "Image": "Images/Backgrounds/MonoGame_Logo",
+      "Duration": 5000,
+      "Effect": null
+    },
+    {
+      "Name": "D-Generation",
+      "Image": "Images/Backgrounds/blog_teaser",
+      "Duration": 5000,
+      "Effect": null
+    }
+  ]
+}

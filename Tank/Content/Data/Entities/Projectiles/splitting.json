@@ -1,0 +1,12 @@
+﻿{
+  "ID": 0,
+  "Name": "Basic Projectile",
+  "Description": "This projectile does moderate damage.",
+  "Damage": 10,
+  "AreaOfEffect": 25,
+  "Speed": 100,
+  "Sprite": "BasicMunitionSprite",
+  "ShootSound": "Basic_Shoot",
+  "HitSound": "Basic_Hit",
+  "Cost": 0
+}
