@@ -64,9 +64,14 @@ namespace Tank.GameStates.States
         protected MusicManager musicManager;
 
         /// <summary>
-        /// A custom draw performed if required
+        /// A list with custom draws which are getting performed
         /// </summary>
         private List<Action<GameTime>> customDraws;
+
+        /// <summary>
+        /// A list with custom updates which are getting performed
+        /// </summary>
+        private List<Action<GameTime>> customUpdates;
 
         /// <summary>
         /// Create a new instance of this class
@@ -107,6 +112,7 @@ namespace Tank.GameStates.States
             this.dataLoader = dataLoader;
             this.musicManager = musicManager;
             customDraws = new List<Action<GameTime>>();
+            customUpdates = new List<Action<GameTime>>();
         }
 
         /// <inheritdoc/>
@@ -189,6 +195,20 @@ namespace Tank.GameStates.States
             }
         }
 
+
+        /// <summary>
+        /// Add a additional custom draw to the menu screen, will be executed after drawing the element to draw
+        /// </summary>
+        /// <param name="customUpdate">The method to perform</param>
+        protected void AddCustomUpdate(Action<GameTime> customUpdate)
+        {
+            if (customUpdate == null)
+            {
+                return;
+            }
+            customUpdates.Add(customUpdate);
+        }
+
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
@@ -202,6 +222,10 @@ namespace Tank.GameStates.States
                 return;
             }
             elementToDraw.Update(gameTime);
+            foreach (Action<GameTime> customUpdate in customUpdates)
+            {
+                customUpdate(gameTime);
+            }
         }
 
         /// <summary>
@@ -214,7 +238,7 @@ namespace Tank.GameStates.States
             {
                 return;
             }
-            this.customDraws.Add(customDraw);
+            customDraws.Add(customDraw);
         }
 
         /// <inheritdoc/>

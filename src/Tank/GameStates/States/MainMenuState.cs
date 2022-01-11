@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Tank.Builders;
 using Tank.Commands.GameManager;
 using Tank.Enums;
@@ -28,9 +29,19 @@ namespace Tank.GameStates.States
         private const string VERSION_PATH = "Tank.Assets.Resources.Version.txt";
 
         /// <summary>
+        /// The path to the file where the version is saved into
+        /// </summary>
+        private const string ISSUE_URL = "Tank.Assets.Resources.GithubIssueLink.txt";
+
+        /// <summary>
         /// The version of the game
         /// </summary>
         private string version;
+
+        /// <summary>
+        /// The url used to open up the issues
+        /// </summary>
+        private string issueUrl;
 
         /// <summary>
         /// The close game command
@@ -57,6 +68,7 @@ namespace Tank.GameStates.States
             startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
             ResourceStringDataLoader resourceLoader = new ResourceStringDataLoader();
             version = resourceLoader.LoadData(VERSION_PATH).Trim();
+            issueUrl = resourceLoader.LoadData(ISSUE_URL).Trim();
         }
 
         /// <summary>
@@ -125,7 +137,7 @@ namespace Tank.GameStates.States
 
             elementToDraw = verticalStackPanel;
 
-            if (version != string.Empty && baseFont != null)
+            if (version != null && version != string.Empty && baseFont != null)
             {
                 AddCustomDraw(gametime =>
                 {
@@ -141,6 +153,30 @@ namespace Tank.GameStates.States
                     spriteBatch.DrawString(baseFont, versionText, versionPosition, Color.White);
                 });
             }
+
+            if (issueUrl == null || issueUrl == string.Empty)
+            {
+                return;
+            }
+            Button issueButton = new Button(Vector2.UnitX * viewportAdapter.VirtualWidth - Vector2.UnitX * 170, 150, guiSprite, spriteBatch);
+            issueButton.SetFont(baseFont);
+            issueButton.SetText("Report bug");
+            issueButton.SetMouseWrapper(mouseWrapper);
+            issueButton.SetCommand(() =>
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo()
+                {
+                    UseShellExecute = true,
+                    FileName = issueUrl
+                };
+                Process.Start(startInfo);
+            });
+            AddCustomDraw(gametime =>
+            {
+                issueButton.Draw(gametime);
+            });
+            AddCustomUpdate(gametime => issueButton.Update(gametime));
+
 
             //UpdateUiEffects(settings.EffectVolume);
         }
