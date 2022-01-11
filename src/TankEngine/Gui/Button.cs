@@ -189,7 +189,7 @@ namespace TankEngine.Gui
                 }
             }
 
-            if (waitForSound && clickSoundInstance.State == SoundState.Stopped)
+            if ((waitForSound && clickSoundInstance.State == SoundState.Stopped) || (Clicked && !waitForSound))
             {
                 waitForSound = false;
                 if (command != null && command.CanExecute())
