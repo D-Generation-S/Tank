@@ -1,0 +1,24 @@
+﻿{
+  "TextureName": "Images/Entities/StrengthMeter",
+  "DistanceBetweenImages": 0,
+  "SingleImageSize": {
+    "X": 384,
+    "Y": 96
+  },
+  "Patterns": [
+    {
+      "Name": "background",
+      "Position": {
+        "X": 0,
+        "Y": 0
+      }
+    },
+    {
+      "Name": "foreground",
+      "Position": {
+        "X": 0,
+        "Y": 1
+      }
+    }
+  ]
+}
