@@ -56,7 +56,7 @@ namespace Tank.GameStates.States
             openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState(musicManager), false);
             startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
             ResourceStringDataLoader resourceLoader = new ResourceStringDataLoader();
-            version = resourceLoader.LoadData(VERSION_PATH);
+            version = resourceLoader.LoadData(VERSION_PATH).Trim();
         }
 
         /// <summary>
