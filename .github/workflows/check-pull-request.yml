@@ -18,8 +18,8 @@ jobs:
          shell: powershell
        - name: Set Version
          run: |
-          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER}
-          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER} > .\src\Tank\Assets\Resources\Version.txt
+          echo ${{env.VERSION_SUFFIX}}${{GITHUB.RUN_NUMBER}}
+          echo ${{env.VERSION_SUFFIX}}${{GITHUB.RUN_NUMBER}} > .\src\Tank\Assets\Resources\Version.txt
           cat .\src\Tank\Assets\Resources\Version.txt
          shell: powershell
        - name: Build project Windows
@@ -36,8 +36,8 @@ jobs:
          shell: powershell
        - name: Set Version
          run: |
-          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER}
-          echo $OUTPUT_SUFFIX${GITHUB.RUN_NUMBER} > .\src\Tank\Assets\Resources\Version.txt
+          echo ${{env.VERSION_SUFFIX}}${{GITHUB.RUN_NUMBER}}
+          echo ${{env.VERSION_SUFFIX}}${{GITHUB.RUN_NUMBER}} > .\src\Tank\Assets\Resources\Version.txt
           cat .\src\Tank\Assets\Resources\Version.txt
          shell: powershell
        - name: Build project Linux
@@ -54,8 +54,8 @@ jobs:
          shell: powershell
        - name: Set Version
          run: |
-          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER}
-          echo $VERSION_SUFFIX${GITHUB.RUN_NUMBER} > .\src\Tank\Assets\Resources\Version.txt
+          echo ${{env.VERSION_SUFFIX}}${{GITHUB.RUN_NUMBER}}
+          echo ${{env.VERSION_SUFFIX}}${{GITHUB.RUN_NUMBER}} > .\src\Tank\Assets\Resources\Version.txt
           cat .\src\Tank\Assets\Resources\Version.txt
          shell: powershell  
        - name: Build project Mac OS
