@@ -1,6 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Text.Json;
+﻿using TankEngine.DataProvider.Converters;
+using TankEngine.DataProvider.Loader.String;
 
 namespace TankEngine.DataProvider.Loader
 {
@@ -8,35 +7,25 @@ namespace TankEngine.DataProvider.Loader
     /// Class to load json files
     /// </summary>
     /// <typeparam name="T">The type of data to load</typeparam>
-    public class JsonDataLoader<T> : AbstractDataLoader<T>
+    public class JsonDataLoader<T> : DynamicDataLoader<T, string>
     {
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        public JsonDataLoader()
+            : base(new StreamReaderLoader(), new JsonConverter<T>())
+        {
+        }
+
         /// <inheritdoc/>
         public override T LoadData(string fileName)
         {
-            T returnData = default(T);
             fileName = fileName.Trim();
             if (!fileName.EndsWith(".json"))
             {
                 fileName += ".json";
             }
-
-            if (!File.Exists(fileName))
-            {
-                return returnData;
-            }
-
-            using (StreamReader reader = new StreamReader(fileName))
-            {
-                try
-                {
-                    returnData = JsonSerializer.Deserialize<T>(reader.ReadToEnd());
-                }
-                catch (Exception)
-                {
-                    return returnData;
-                }
-            }
-            return returnData;
+            return base.LoadData(fileName);
         }
     }
 }

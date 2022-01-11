@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using System;
+using System.Collections.Generic;
 using Tank.DataManagement;
 using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
@@ -62,6 +64,16 @@ namespace Tank.GameStates.States
         protected MusicManager musicManager;
 
         /// <summary>
+        /// A list with custom draws which are getting performed
+        /// </summary>
+        private List<Action<GameTime>> customDraws;
+
+        /// <summary>
+        /// A list with custom updates which are getting performed
+        /// </summary>
+        private List<Action<GameTime>> customUpdates;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         public AbstractMenuScreen()
@@ -99,6 +111,8 @@ namespace Tank.GameStates.States
         {
             this.dataLoader = dataLoader;
             this.musicManager = musicManager;
+            customDraws = new List<Action<GameTime>>();
+            customUpdates = new List<Action<GameTime>>();
         }
 
         /// <inheritdoc/>
@@ -181,6 +195,20 @@ namespace Tank.GameStates.States
             }
         }
 
+
+        /// <summary>
+        /// Add a additional custom draw to the menu screen, will be executed after drawing the element to draw
+        /// </summary>
+        /// <param name="customUpdate">The method to perform</param>
+        protected void AddCustomUpdate(Action<GameTime> customUpdate)
+        {
+            if (customUpdate == null)
+            {
+                return;
+            }
+            customUpdates.Add(customUpdate);
+        }
+
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
@@ -194,6 +222,23 @@ namespace Tank.GameStates.States
                 return;
             }
             elementToDraw.Update(gameTime);
+            foreach (Action<GameTime> customUpdate in customUpdates)
+            {
+                customUpdate(gameTime);
+            }
+        }
+
+        /// <summary>
+        /// Add a additional custom draw to the menu screen, will be executed after drawing the element to draw
+        /// </summary>
+        /// <param name="customDraw">The method to perform</param>
+        protected void AddCustomDraw(Action<GameTime> customDraw)
+        {
+            if (customDraw == null)
+            {
+                return;
+            }
+            customDraws.Add(customDraw);
         }
 
         /// <inheritdoc/>
@@ -214,6 +259,10 @@ namespace Tank.GameStates.States
                 GetScaleMatrix()
                 );
             elementToDraw.Draw(gameTime);
+            foreach (Action<GameTime> customDrawMethod in customDraws)
+            {
+                customDrawMethod(gameTime);
+            }
             spriteBatch.End();
         }
     }

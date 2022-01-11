@@ -1,0 +1,1 @@
+﻿https://github.com/D-Generation-S/Tank/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D
