@@ -20,6 +20,7 @@
     <None Remove="Assets\Images\Pixel.png" />
     <None Remove="Assets\Images\SplashScreens\DGeneratonS.png" />
     <None Remove="Assets\Images\SplashScreens\MonoGame_Logo.png" />
+    <None Remove="Assets\Resources\Version.txt" />
     <None Remove="Assets\Sound\Effects\Explosion1.wav" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +31,9 @@
     <Content Include="Assets\Images\SplashScreens\DGeneratonS.png" />
     <Content Include="Assets\Images\SplashScreens\MonoGame_Logo.png" />
     <Content Include="Assets\Sound\Effects\Explosion1.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Resources\Version.txt" />
   </ItemGroup>
   <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />

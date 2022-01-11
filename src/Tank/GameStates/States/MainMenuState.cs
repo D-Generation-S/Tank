@@ -7,6 +7,7 @@ using Tank.Enums;
 using Tank.GameStates.Data;
 using Tank.Map.Generators;
 using TankEngine.Commands;
+using TankEngine.DataProvider.Loader.String;
 using TankEngine.Factories;
 using TankEngine.Factories.Gui;
 using TankEngine.GameStates.States;
@@ -21,6 +22,15 @@ namespace Tank.GameStates.States
     /// </summary>
     class MainMenuState : AbstractMenuScreen
     {
+        /// <summary>
+        /// The path to the file where the version is saved into
+        /// </summary>
+        private const string VERSION_PATH = "Tank.Assets.Resources.Version.txt";
+
+        /// <summary>
+        /// The version of the game
+        /// </summary>
+        private string version;
 
         /// <summary>
         /// The close game command
@@ -45,6 +55,8 @@ namespace Tank.GameStates.States
             IState stateToReplace = PlaceholderGameSetup(contentWrapper);
             openSettingCommand = new OpenAdditionalStateCommand(gameStateManager, new SettingState(musicManager), false);
             startGameCommand = new ReplaceStateCommand(gameStateManager, stateToReplace);
+            ResourceStringDataLoader resourceLoader = new ResourceStringDataLoader();
+            version = resourceLoader.LoadData(VERSION_PATH);
         }
 
         /// <summary>
@@ -112,6 +124,23 @@ namespace Tank.GameStates.States
             verticalStackPanel.AddElement(exitButton);
 
             elementToDraw = verticalStackPanel;
+
+            if (version != string.Empty && baseFont != null)
+            {
+                AddCustomDraw(gametime =>
+                {
+                    string versionText = string.Format("Game version: {0}", version);
+                    Vector2 textSize = baseFont.MeasureString(versionText);
+                    Vector2 versionPosition = new Vector2(viewportAdapter.VirtualWidth, viewportAdapter.VirtualHeight) - textSize;
+                    if (viewportAdapter.VirtualWidth == viewportAdapter.Viewport.Width)
+                    {
+                        //@Note this is a dirty fix to get the version on the screen if game runs on native resolution
+                        versionPosition.Y -= 30;
+                        versionPosition.X -= 10;
+                    }
+                    spriteBatch.DrawString(baseFont, versionText, versionPosition, Color.White);
+                });
+            }
 
             //UpdateUiEffects(settings.EffectVolume);
         }

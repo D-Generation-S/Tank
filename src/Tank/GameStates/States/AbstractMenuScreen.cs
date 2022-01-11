@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using System;
+using System.Collections.Generic;
 using Tank.DataManagement;
 using Tank.DataManagement.Data;
 using Tank.DataManagement.Loader;
@@ -62,6 +64,11 @@ namespace Tank.GameStates.States
         protected MusicManager musicManager;
 
         /// <summary>
+        /// A custom draw performed if required
+        /// </summary>
+        private List<Action<GameTime>> customDraws;
+
+        /// <summary>
         /// Create a new instance of this class
         /// </summary>
         public AbstractMenuScreen()
@@ -99,6 +106,7 @@ namespace Tank.GameStates.States
         {
             this.dataLoader = dataLoader;
             this.musicManager = musicManager;
+            customDraws = new List<Action<GameTime>>();
         }
 
         /// <inheritdoc/>
@@ -196,6 +204,19 @@ namespace Tank.GameStates.States
             elementToDraw.Update(gameTime);
         }
 
+        /// <summary>
+        /// Add a additional custom draw to the menu screen, will be executed after drawing the element to draw
+        /// </summary>
+        /// <param name="customDraw">The method to perform</param>
+        protected void AddCustomDraw(Action<GameTime> customDraw)
+        {
+            if (customDraw == null)
+            {
+                return;
+            }
+            this.customDraws.Add(customDraw);
+        }
+
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
@@ -214,6 +235,10 @@ namespace Tank.GameStates.States
                 GetScaleMatrix()
                 );
             elementToDraw.Draw(gameTime);
+            foreach (Action<GameTime> customDrawMethod in customDraws)
+            {
+                customDrawMethod(gameTime);
+            }
             spriteBatch.End();
         }
     }
