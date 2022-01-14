@@ -32,10 +32,9 @@ namespace Tank
         {
             base.Initialize();
             ContentWrapper contentWrapper = new ContentWrapper(Content);
+            PublicGraphicsDevice = GraphicsDevice;
             ApplicationSettingsSingelton.Instance.Load();
             InitResolution(ApplicationSettingsSingelton.Instance.Resolution.X, ApplicationSettingsSingelton.Instance.Resolution.Y, ApplicationSettingsSingelton.Instance.FullScreen);
-
-            PublicGraphicsDevice = GraphicsDevice;
             PublicContentManager = Content;
             PublicViewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, ApplicationSettingsSingelton.Instance.FullScreen, 1920, 1080);
             PublicViewportAdapter.Reset();
