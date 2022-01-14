@@ -6,9 +6,7 @@ using System.IO;
 using System.Linq;
 using Tank.Settings;
 using Tank.Utils;
-using TankEngine.DataProvider.Converters;
 using TankEngine.DataProvider.Loader;
-using TankEngine.DataProvider.Loader.String;
 using TankEngine.DataProvider.Saver;
 using TankEngine.DataStructures.Serializeable;
 
@@ -118,16 +116,14 @@ namespace Tank.DataStructure.Settings
             MasterVolumePercent = 100;
             MusicVolumePercent = 40;
             EffectVolumePercent = 70;
-            Resolution = GetAvailableResolutions().OrderBy(r1 => r1.W * r1.H)
-                                                  .Select(resolution => resolution.GetPoint())
-                                                  .First();
+            IEnumerable<Point> validResolutions = GetAvailableResolutions();
+            int maxWidth = validResolutions.Max(resolution => resolution.X);
+            Resolution = validResolutions.FirstOrDefault(resolution => resolution.X == maxWidth);
             FullScreen = false;
             instance = null;
             folderUtils = new DefaultFolderUtils();
-
             dataLoader = new JsonDataLoader<SerializeableSettings>();
             dataSaver = new JsonDataSaver<SerializeableSettings>();
-
         }
 
         /// <summary>
@@ -178,11 +174,9 @@ namespace Tank.DataStructure.Settings
         /// <summary>
         /// Get all the available resolutions for the game
         /// </summary>
-        public List<SDimension> GetAvailableResolutions()
+        public IEnumerable<Point> GetAvailableResolutions()
         {
-            resolutionLoader = resolutionLoader ?? new DynamicDataLoader<List<SDimension>, string>(new ResourceStringDataLoader(), new JsonConverter<List<SDimension>>());
-            List<SDimension> resolutions = resolutionLoader.LoadData("Tank.Assets.Resources.Resolutions.txt");
-            return resolutions;
+            return TankGame.PublicGraphicsDevice.Adapter.SupportedDisplayModes.Select(data => new Point(data.Width, data.Height));
         }
 
         /// <summary>
