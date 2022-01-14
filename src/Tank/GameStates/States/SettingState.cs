@@ -180,8 +180,9 @@ namespace Tank.GameStates.States
         /// <returns></returns>
         private List<SelectionDataSet> GetResolutions()
         {
-            return ApplicationSettingsSingelton.Instance.GetAvailableResolutions().Select(resolution => new SelectionDataSet(string.Format("{0}x{1}", resolution.W, resolution.H), resolution.GetPoint()))
-                                                                                  .ToList();
+            return ApplicationSettingsSingelton.Instance.GetAvailableResolutions()
+                                                        .Select(resolution => new SelectionDataSet(string.Format("{0}x{1}", resolution.W, resolution.H), resolution.GetPoint()))
+                                                        .ToList();
         }
 
         /// <inheritdoc/>
