@@ -1,10 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Tank.Settings;
 using Tank.Utils;
+using TankEngine.DataProvider.Converters;
 using TankEngine.DataProvider.Loader;
+using TankEngine.DataProvider.Loader.String;
 using TankEngine.DataProvider.Saver;
 using TankEngine.DataStructures.Serializeable;
 
@@ -20,6 +24,11 @@ namespace Tank.DataStructure.Settings
         /// The name of the settings file
         /// </summary>
         private const string SETTING_FILE_NAME = "settings.json";
+
+        /// <summary>
+        /// Resolution loader
+        /// </summary>
+        private IDataLoader<List<SDimension>> resolutionLoader;
 
         /// <summary>
         /// Is the application in fullscreen
@@ -107,9 +116,11 @@ namespace Tank.DataStructure.Settings
         private ApplicationSettingsSingelton()
         {
             MasterVolumePercent = 100;
-            MusicVolumePercent = 100;
-            EffectVolumePercent = 100;
-            Resolution = new Point(1280, 720);
+            MusicVolumePercent = 40;
+            EffectVolumePercent = 70;
+            Resolution = GetAvailableResolutions().OrderBy(r1 => r1.W * r1.H)
+                                                  .Select(resolution => resolution.GetPoint())
+                                                  .First();
             FullScreen = false;
             instance = null;
             folderUtils = new DefaultFolderUtils();
@@ -162,6 +173,16 @@ namespace Tank.DataStructure.Settings
                 MusicVolumePercent = MusicVolumePercent
             };
             return dataSaver.SaveData(settings, GetSettingFileName());
+        }
+
+        /// <summary>
+        /// Get all the available resolutions for the game
+        /// </summary>
+        public List<SDimension> GetAvailableResolutions()
+        {
+            resolutionLoader = resolutionLoader ?? new DynamicDataLoader<List<SDimension>, string>(new ResourceStringDataLoader(), new JsonConverter<List<SDimension>>());
+            List<SDimension> resolutions = resolutionLoader.LoadData("Tank.Assets.Resources.Resolutions.txt");
+            return resolutions;
         }
 
         /// <summary>

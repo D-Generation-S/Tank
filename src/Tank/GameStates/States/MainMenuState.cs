@@ -144,12 +144,6 @@ namespace Tank.GameStates.States
                     string versionText = string.Format("Game version: {0}", version);
                     Vector2 textSize = baseFont.MeasureString(versionText);
                     Vector2 versionPosition = new Vector2(viewportAdapter.VirtualWidth, viewportAdapter.VirtualHeight) - textSize;
-                    if (viewportAdapter.VirtualWidth == viewportAdapter.Viewport.Width)
-                    {
-                        //@Note this is a dirty fix to get the version on the screen if game runs on native resolution
-                        versionPosition.Y -= 30;
-                        versionPosition.X -= 10;
-                    }
                     spriteBatch.DrawString(baseFont, versionText, versionPosition, Color.White);
                 });
             }

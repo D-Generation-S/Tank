@@ -23,6 +23,11 @@ namespace Tank.GameStates.States
     abstract class AbstractMenuScreen : BaseAbstractState
     {
         /// <summary>
+        /// The render target to draw the scene to first
+        /// </summary>
+        private RenderTarget2D renderTarget;
+
+        /// <summary>
         /// The data loader to use
         /// </summary>
         protected readonly IDataLoader<SpritesheetData> dataLoader;
@@ -36,7 +41,6 @@ namespace Tank.GameStates.States
         /// The font to use for text
         /// </summary>
         protected SpriteFont baseFont;
-
 
         /// <summary>
         /// The amanger to load sprite sheets
@@ -125,6 +129,8 @@ namespace Tank.GameStates.States
                 musicManager = new MusicManager(contentWrapper, new DataManager<TankEngine.Music.Playlist>(new JsonGameDataLoader<TankEngine.Music.Playlist>("Playlists"), true));
             }
             MediaPlayer.Volume = ApplicationSettingsSingelton.Instance.MusicVolume;
+
+            renderTarget = new RenderTarget2D(TankGame.PublicGraphicsDevice, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
         }
 
         /// <inheritdoc/>
@@ -248,6 +254,7 @@ namespace Tank.GameStates.States
             {
                 return;
             }
+            TankGame.PublicGraphicsDevice.SetRenderTarget(renderTarget);
             TankGame.PublicGraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,
@@ -256,13 +263,25 @@ namespace Tank.GameStates.States
                 null,
                 null,
                 null,
-                GetScaleMatrix()
-                );
+                GetScaleMatrix());
             elementToDraw.Draw(gameTime);
             foreach (Action<GameTime> customDrawMethod in customDraws)
             {
                 customDrawMethod(gameTime);
             }
+            spriteBatch.End();
+            TankGame.PublicGraphicsDevice.SetRenderTarget(null);
+            viewportAdapter.Reset();
+            TankGame.PublicGraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(
+                SpriteSortMode.Deferred,
+                null,
+                null,
+                null,
+                null,
+                null,
+                GetScaleMatrix());
+            spriteBatch.Draw(renderTarget, new Rectangle(0, 0, viewportAdapter.VirtualWidth, viewportAdapter.VirtualHeight), Color.White);
             spriteBatch.End();
         }
     }

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Tank.Commands.GameManager;
 using Tank.DataStructure.Settings;
@@ -173,24 +174,20 @@ namespace Tank.GameStates.States
 
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Get the resolutions as selection data sets
+        /// </summary>
+        /// <returns></returns>
         private List<SelectionDataSet> GetResolutions()
         {
-            List<SelectionDataSet> returnData = new List<SelectionDataSet>();
-            returnData.Add(new SelectionDataSet("1280x720", new Point(1280, 720)));
-            returnData.Add(new SelectionDataSet("1920x1080", new Point(1920, 1080)));
-            return returnData;
+            return ApplicationSettingsSingelton.Instance.GetAvailableResolutions().Select(resolution => new SelectionDataSet(string.Format("{0}x{1}", resolution.W, resolution.H), resolution.GetPoint()))
+                                                                                  .ToList();
         }
 
         /// <inheritdoc/>
         private int GetSelectedResolution(List<SelectionDataSet> dataSet, Point savedResolution)
         {
-            int returnIndex = dataSet.FindIndex(item =>
-            {
-                Point data = item.GetData<Point>();
-                return data.X == savedResolution.X && data.Y == savedResolution.Y;
-            });
-            return returnIndex == -1 ? 0 : returnIndex;
+            return dataSet.FindIndex(item => item.GetData<Point>() == savedResolution);
         }
 
         /// <summary>

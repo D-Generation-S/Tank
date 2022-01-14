@@ -21,6 +21,7 @@
     <None Remove="Assets\Images\SplashScreens\DGeneratonS.png" />
     <None Remove="Assets\Images\SplashScreens\MonoGame_Logo.png" />
     <None Remove="Assets\Resources\GithubIssueLink.txt" />
+    <None Remove="Assets\Resources\Resolutions.txt" />
     <None Remove="Assets\Resources\Version.txt" />
     <None Remove="Assets\Sound\Effects\Explosion1.wav" />
   </ItemGroup>
@@ -35,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Resources\GithubIssueLink.txt" />
+    <EmbeddedResource Include="Assets\Resources\Resolutions.txt" />
     <EmbeddedResource Include="Assets\Resources\Version.txt" />
   </ItemGroup>
   <ItemGroup>
