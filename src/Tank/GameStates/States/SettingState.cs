@@ -177,7 +177,7 @@ namespace Tank.GameStates.States
         /// <summary>
         /// Get the resolutions as selection data sets
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A list with all the resolutions which are selectable in the options</returns>
         private List<SelectionDataSet> GetResolutions()
         {
             return ApplicationSettingsSingelton.Instance.GetAvailableResolutions()
