@@ -9,6 +9,7 @@ using Tank.Interfaces.Builders;
 using Tank.Register;
 using Tank.Validator;
 using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Systems;
 
@@ -29,7 +30,7 @@ namespace Tank.Systems
         {
             foreach (uint entityId in watchedEntities)
             {
-                PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
+                PositionComponent placeableComponent = entityManager.GetComponent<PositionComponent>(entityId);
                 ProjectileSpawnComponent spawnComponent = entityManager.GetComponent<ProjectileSpawnComponent>(entityId);
 
                 if (placeableComponent == null || spawnComponent == null)
@@ -55,7 +56,7 @@ namespace Tank.Systems
                 IGameObjectBuilder builder = register.GetValue(spawnComponent.ProjectileToSpawn);
                 List<IComponent> components = builder.BuildGameComponents();
 
-                PlaceableComponent position = (PlaceableComponent)components.Find(component => component.Type == typeof(PlaceableComponent));
+                PositionComponent position = (PositionComponent)components.Find(component => component.Type == typeof(PositionComponent));
                 MoveableComponent moveableComponent = (MoveableComponent)components.Find(component => component.Type == typeof(MoveableComponent));
 
                 position.Position = GetSpawnPosition(placeableComponent, spawnComponent);
@@ -83,18 +84,18 @@ namespace Tank.Systems
             }
         }
 
-        private Vector2 GetSpawnPosition(PlaceableComponent placeableComponent, ProjectileSpawnComponent spawnComponent)
+        private Vector2 GetSpawnPosition(PositionComponent placeableComponent, ProjectileSpawnComponent spawnComponent)
         {
             Vector2 returnPosition = spawnComponent.UseParentEntity ? GetReferingPosition(placeableComponent, spawnComponent) : GetSimplePosition(placeableComponent);
             return returnPosition;
         }
 
-        private Vector2 GetSimplePosition(PlaceableComponent placeableComponent)
+        private Vector2 GetSimplePosition(PositionComponent placeableComponent)
         {
             return placeableComponent.Position;
         }
 
-        private Vector2 GetReferingPosition(PlaceableComponent placeableComponent, ProjectileSpawnComponent spawnComponent)
+        private Vector2 GetReferingPosition(PositionComponent placeableComponent, ProjectileSpawnComponent spawnComponent)
         {
             Debug.WriteLine("Not implemented!");
             return GetSimplePosition(placeableComponent);

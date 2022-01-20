@@ -6,12 +6,19 @@ using TankEngine.Adapter;
 using TankEngine.DataStructures.Pools;
 using TankEngine.EntityComponentSystem.Components.Rendering;
 using TankEngine.EntityComponentSystem.Components.World;
+using TankEngine.EntityComponentSystem.Validator;
 using TankEngine.EntityComponentSystem.Validator.Base;
+using TankEngine.EntityComponentSystem.Validator.LogicValidators;
 
 namespace TankEngine.EntityComponentSystem.Systems.Rendering
 {
     public class SimpleRenderSystem : AbstractSystem
     {
+        /// <summary>
+        /// The max number of layers
+        /// </summary>
+        private const float MAX_LAYER_COUNT = 1000f;
+
         /// <summary>
         /// The spritebatch used for drawing
         /// </summary>
@@ -32,6 +39,9 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// </summary>
         protected readonly GraphicsDevice graphicsDevice;
 
+        /// <summary>
+        /// The pool for render containers
+        /// </summary>
         protected IObjectPool<TextureRenderContainer> renderContainerPool;
 
         /// <summary>
@@ -54,8 +64,8 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             renderContainerPool = new ConcurrentObjectPool<TextureRenderContainer>(() => new TextureRenderContainer(), 10);
             CreateSceneRenderTarget();
 
-
-            validators.Add(new TextureRenderingValidator());
+            IValidatable orValidator = new OrValidator(new TextureRenderingValidator(), new TextRenderingValidator());
+            validators.Add(orValidator);
         }
 
         /// <summary>
@@ -115,9 +125,12 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         protected virtual void DrawGameObjects()
         {
             graphicsDevice.SetRenderTarget(sceneRenderTarget);
-            foreach (TextureRenderContainer container in GetContainers())
+            graphicsDevice.Clear(Color.CornflowerBlue);
+            foreach (TextureRenderContainer container in GetTextureContainers())
             {
                 Vector2 position = container.PositionComponent.Position + container.TextureComponent.DrawOffset;
+                float layerDepth = MathHelper.Clamp(container.TextureComponent.DrawLayer / MAX_LAYER_COUNT, 0f, MAX_LAYER_COUNT);
+
                 spriteBatch.Draw(
                     container.TextureComponent.Texture,
                     position,
@@ -127,7 +140,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
                     container.TextureComponent.RotationCenter,
                     container.TextureComponent.Scale,
                     container.TextureComponent.SpriteEffect,
-                    container.TextureComponent.DrawLayer
+                    layerDepth
                     );
                 renderContainerPool.Return(container);
             }
@@ -137,12 +150,12 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// Get the container to render
         /// </summary>
         /// <returns></returns>
-        protected virtual IEnumerable<TextureRenderContainer> GetContainers()
+        protected virtual IEnumerable<TextureRenderContainer> GetTextureContainers()
         {
             return watchedEntities.Where(entityId => !entitiesToRemove.Contains(entityId))
-                                  .Select(entityId => CreateContainer(entityId))
+                                  .Where(entityId => entityManager.HasComponent<PositionComponent>(entityId) && entityManager.HasComponent<TextureComponent>(entityId))
+                                  .Select(entityId => CreateTextureContainer(entityId))
                                   .Where(container => container != null)
-                                  //.OrderBy(container => container.TextureComponent.DrawLayer)
                                   .OrderBy(container => container.TextureComponent.Texture.Name);
         }
 
@@ -151,7 +164,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// </summary>
         /// <param name="entityId">The entity id to use</param>
         /// <returns>The texture render container</returns>
-        protected virtual TextureRenderContainer CreateContainer(uint entityId)
+        protected virtual TextureRenderContainer CreateTextureContainer(uint entityId)
         {
             PositionComponent positionComponent = entityManager.GetComponent<PositionComponent>(entityId);
             TextureComponent textureComponent = entityManager.GetComponent<TextureComponent>(entityId);
@@ -182,14 +195,13 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         protected virtual void BeginDraw()
         {
             spriteBatch.Begin(
-                SpriteSortMode.Immediate,
+                SpriteSortMode.FrontToBack,
                 BlendState.NonPremultiplied,
                 null,
                 null,
                 null,
                 defaultEffekt,
                 viewportAdapter.GetScaleMatrix());
-            graphicsDevice.Clear(Color.CornflowerBlue);
         }
 
         /// <summary>

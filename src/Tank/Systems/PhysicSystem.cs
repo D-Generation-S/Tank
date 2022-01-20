@@ -5,6 +5,7 @@ using Tank.Components;
 using Tank.Events.PhysicBased;
 using Tank.Utils;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
 using TankEngine.EntityComponentSystem.Systems;
@@ -99,7 +100,7 @@ namespace Tank.Systems
         {
             Vector2 oldPosition = Vector2.Zero;
             Vector2 bottomCenter = Vector2.Zero;
-            PlaceableComponent placeComponent = entityManager.GetComponent<PlaceableComponent>(entityId);
+            PositionComponent placeComponent = entityManager.GetComponent<PositionComponent>(entityId);
             MoveableComponent moveComponent = entityManager.GetComponent<MoveableComponent>(entityId);
             ColliderComponent colliderComponent = entityManager.GetComponent<ColliderComponent>(entityId);
 

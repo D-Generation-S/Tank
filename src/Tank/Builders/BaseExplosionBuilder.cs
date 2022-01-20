@@ -2,11 +2,12 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using Tank.Components;
 using Tank.Components.Forces;
 using Tank.Components.Rendering;
 using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components.Rendering;
 using TankEngine.EntityComponentSystem.Components.Sound;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.Factories;
 using TankEngine.Randomizer;
 
@@ -108,16 +109,16 @@ namespace Tank.Builders
             float rotation = randomizer.GetNewNumber(0, 360);
 
 
-            VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
+            TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Texture = spriteSheet;
             visibleComponent.Source = animationFrames[0];
-            visibleComponent.Destination = animationFrames[0];
-            visibleComponent.SingleTextureSize = animationFrames[0];
+            //visibleComponent.Destination = animationFrames[0];
+            //visibleComponent.SingleTextureSize = animationFrames[0];
             visibleComponent.RotationCenter = rotationCenter;
 
-            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
+            PositionComponent placeableComponent = entityManager.CreateComponent<PositionComponent>();
             placeableComponent.Position = position;
-            placeableComponent.Rotation = MathHelper.ToRadians(rotation);
+            //placeableComponent.Rotation = MathHelper.ToRadians(rotation);
 
             AnimationComponent animation = entityManager.CreateComponent<AnimationComponent>();
             animation.FrameSeconds = 0.03f;

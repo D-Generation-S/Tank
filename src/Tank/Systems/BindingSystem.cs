@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Tank.Components;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Systems;
 
@@ -55,14 +56,14 @@ namespace Tank.Systems
             entitesToRemove.Clear();
             foreach (uint entity in watchedEntities)
             {
-                PlaceableComponent basePosition = entityManager.GetComponent<PlaceableComponent>(entity);
+                PositionComponent basePosition = entityManager.GetComponent<PositionComponent>(entity);
                 BindComponent binding = entityManager.GetComponent<BindComponent>(entity);
-                if (binding == null || !binding.PositionBound || !entityManager.HasComponent(binding.BoundEntityId, typeof(PlaceableComponent)))
+                if (binding == null || !binding.PositionBound || !entityManager.HasComponent<PositionComponent>(binding.BoundEntityId))
                 {
                     continue;
                 }
 
-                PlaceableComponent bindingPosition = entityManager.GetComponent<PlaceableComponent>(binding.BoundEntityId);
+                PositionComponent bindingPosition = entityManager.GetComponent<PositionComponent>(binding.BoundEntityId);
                 if (binding.Source)
                 {
                     basePosition.Position = bindingPosition.Position + binding.Offset;

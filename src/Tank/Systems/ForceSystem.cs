@@ -9,6 +9,7 @@ using Tank.Events.PhysicBased;
 using Tank.Validator;
 using TankEngine.DataStructures.Geometrics;
 using TankEngine.DataStructures.Quadtree;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Systems;
 using TankEngine.EntityComponentSystem.Validator;
 
@@ -78,7 +79,7 @@ namespace Tank.Systems
             for (int i = 0; i < allTargets.Count; i++)
             {
                 uint entityId = allTargets[i];
-                PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(entityId);
+                PositionComponent placeable = entityManager.GetComponent<PositionComponent>(entityId);
                 if (placeable == null)
                 {
                     return;
@@ -91,7 +92,7 @@ namespace Tank.Systems
             foreach (uint entityId in watchedEntities)
             {
                 ForceComponent force = entityManager.GetComponent<ForceComponent>(entityId);
-                PlaceableComponent placeable = entityManager.GetComponent<PlaceableComponent>(entityId);
+                PositionComponent placeable = entityManager.GetComponent<PositionComponent>(entityId);
                 ApplyForces(entityId, force, placeable);
             }
 
@@ -108,7 +109,7 @@ namespace Tank.Systems
         /// <param name="entityId">The entity id to get the forces from</param>
         /// <param name="force">The force component</param>
         /// <param name="origin">The origin of the entity to apply forces from</param>
-        private void ApplyForces(uint entityId, ForceComponent force, PlaceableComponent origin)
+        private void ApplyForces(uint entityId, ForceComponent force, PositionComponent origin)
         {
             if (force == null || origin == null)
             {
@@ -123,7 +124,7 @@ namespace Tank.Systems
                     continue;
                 }
 
-                PlaceableComponent targetPosition = entityManager.GetComponent<PlaceableComponent>(targetId);
+                PositionComponent targetPosition = entityManager.GetComponent<PositionComponent>(targetId);
                 if (targetPosition == null || !IsInCircle(origin.Position, force.ForceRadius, targetPosition.Position))
                 {
                     continue;
@@ -160,7 +161,7 @@ namespace Tank.Systems
         /// <param name="origin">The position of the object</param>
         /// <param name="targetPosition">The position of the target</param>
         /// <returns>The force to apply on the target</returns>
-        private Vector2 GetPushForce(ForceComponent force, PlaceableComponent origin, PlaceableComponent targetPosition)
+        private Vector2 GetPushForce(ForceComponent force, PositionComponent origin, PositionComponent targetPosition)
         {
             return GetPullForce(force, origin, targetPosition) * -1;
         }
@@ -172,7 +173,7 @@ namespace Tank.Systems
         /// <param name="origin">The position of the object</param>
         /// <param name="targetPosition">The position of the target</param>
         /// <returns>The force to apply on the target</returns>
-        private Vector2 GetPullForce(ForceComponent force, PlaceableComponent origin, PlaceableComponent targetPosition)
+        private Vector2 GetPullForce(ForceComponent force, PositionComponent origin, PositionComponent targetPosition)
         {
             Vector2 direction = origin.Position - targetPosition.Position;
             float powerPercentage = direction.Length();

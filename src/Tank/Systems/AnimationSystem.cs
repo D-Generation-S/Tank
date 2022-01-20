@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Tank.Components.Rendering;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Components.Rendering;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Systems;
 
@@ -36,7 +37,11 @@ namespace Tank.Systems
                 animation.TimeThreshold += currentTime / 1000;
                 if (animation.TimeThreshold > animation.FrameSeconds)
                 {
-                    VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
+                    TextureComponent visibleComponent = entityManager.GetComponent<TextureComponent>(entityId);
+                    if (visibleComponent == null)
+                    {
+                        return;
+                    }
                     animation.TimeThreshold = animation.TimeThreshold - animation.FrameSeconds;
                     animation.CurrentIndex += animation.ForwardDirection ? 1 : -1;
                     if (animation.CurrentIndex > animation.SpriteSources.Count - 1)
@@ -64,11 +69,11 @@ namespace Tank.Systems
                         animation.ForwardDirection = true;
                     }
                     Rectangle spriteSource = animation.SpriteSources[animation.CurrentIndex];
-                    spriteSource.Width -= visibleComponent.CutoffRight;
-                    Rectangle destination = visibleComponent.Destination;
-                    destination.Width = visibleComponent.SingleTextureSize.Width - visibleComponent.CutoffRight;
+                    //spriteSource.Width -= visibleComponent.CutoffRight;
+                    //Rectangle destination = visibleComponent.Destination;
+                    //destination.Width = visibleComponent.SingleTextureSize.Width - visibleComponent.CutoffRight;
 
-                    visibleComponent.Destination = destination;
+                    //visibleComponent.Destination = destination;
                     visibleComponent.Source = spriteSource;
                 }
             }

@@ -7,6 +7,7 @@ using Tank.Events.PhysicBased;
 using Tank.Events.TerrainEvents;
 using Tank.Validator;
 using TankEngine.DataStructures.Geometrics;
+using TankEngine.EntityComponentSystem.Components.Rendering;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
 using TankEngine.EntityComponentSystem.Systems;
@@ -140,8 +141,8 @@ namespace Tank.Systems
             }
             map.ImageData = map.ChangedImageData;
 
-            VisibleComponent visible = entityManager.GetEntitiesWithComponent<MapComponent>()
-                                                    .Select(id => entityManager.GetComponent<VisibleComponent>(id))
+            TextureComponent visible = entityManager.GetEntitiesWithComponent<MapComponent>()
+                                                    .Select(id => entityManager.GetComponent<TextureComponent>(id))
                                                     .FirstOrDefault();
             if (visible == null)
             {

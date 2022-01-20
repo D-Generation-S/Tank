@@ -4,6 +4,7 @@ using Tank.Components;
 using Tank.Components.GameObject;
 using Tank.Components.Rendering;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Components.Rendering;
 using TankEngine.EntityComponentSystem.Systems;
 
 namespace Tank.Systems
@@ -24,22 +25,23 @@ namespace Tank.Systems
             updatedEntites = new List<uint>();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.Draw(gameTime);
             foreach (uint entityId in watchedEntities)
             {
                 AttributeDisplayComponent attributeDisplayComponent = entityManager.GetComponent<AttributeDisplayComponent>(entityId);
-                VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(entityId);
+                TextureComponent visibleComponent = entityManager.GetComponent<TextureComponent>(entityId);
+                AttributeDisplayBaseSize size = entityManager.GetComponent<AttributeDisplayBaseSize>(entityId);
                 BindComponent bindComponent = entityManager.GetComponent<BindComponent>(entityId);
 
-                if (bindComponent == null || attributeDisplayComponent == null || visibleComponent == null)
+                if (bindComponent == null || attributeDisplayComponent == null || visibleComponent == null || size == null)
                 {
                     continue;
                 }
 
                 GameObjectData data = entityManager.GetComponent<GameObjectData>(bindComponent.BoundEntityId);
-                if (data == null || !data.DataChanged || !attributeDisplayComponent.MaxAttributePresent)
+                if (data == null || !attributeDisplayComponent.MaxAttributePresent)
                 {
                     continue;
                 }
@@ -53,12 +55,12 @@ namespace Tank.Systems
                 float attributeVal = data.Properties[attributeToDisplay];
                 float maxAttributeVal = data.Properties[maxAttributeToDisplay];
 
-
                 float percentage = attributeVal / maxAttributeVal;
-                int leftWidth = (int)(visibleComponent.SingleTextureSize.Width * percentage);
-                int cutoff = visibleComponent.SingleTextureSize.Width - leftWidth;
+                int leftWidth = (int)(size.BaseSize.Width * percentage);
+                int cutoff = size.BaseSize.Width - leftWidth;
+                Rectangle newSize = new Rectangle(size.BaseSize.X, size.BaseSize.Y, size.BaseSize.Width - cutoff, size.BaseSize.Height);
+                visibleComponent.Source = newSize;
 
-                visibleComponent.CutoffRight = cutoff;
                 if (!updatedEntites.Contains(bindComponent.BoundEntityId))
                 {
                     updatedEntites.Add(bindComponent.BoundEntityId);

@@ -16,14 +16,6 @@ namespace TankEngine.EntityComponentSystem.Validator.LogicValidators
 
         /// <summary>
         /// Create a new instance of this class
-        /// </summary>
-        public BaseLogicValidator()
-        {
-            validatables = new List<IValidatable>();
-        }
-
-        /// <summary>
-        /// Create a new instance of this class
         /// <paramref name="validatables">A list with the validators to use</paramref>
         /// </summary>
         public BaseLogicValidator(List<IValidatable> validatables)
@@ -32,10 +24,22 @@ namespace TankEngine.EntityComponentSystem.Validator.LogicValidators
         }
 
         /// <summary>
+        /// Create a new instance of this class
+        /// <paramref name="validatables">A list with the validators to use</paramref>
+        /// </summary>
+        public BaseLogicValidator(params IValidatable[] validators)
+        {
+            foreach (IValidatable validator in validators)
+            {
+                Add(validator);
+            }
+        }
+
+        /// <summary>
         /// Add a new validateable
         /// </summary>
         /// <param name="validatableToAdd"></param>
-        protected void Add(IValidatable validatableToAdd)
+        public void Add(IValidatable validatableToAdd)
         {
             if (validatables.Any(data => data.GetType() == validatableToAdd.GetType()))
             {

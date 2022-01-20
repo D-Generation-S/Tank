@@ -3,10 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tank.Components;
 using Tank.Components.GameObject;
-using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.Systems.Data;
 using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components.Rendering;
+using TankEngine.EntityComponentSystem.Components.World;
 
 namespace Tank.Builders
 {
@@ -98,14 +99,15 @@ namespace Tank.Builders
             gameObjectData.Properties.Add("Armor", 10f);
             gameObjectData.Properties.Add("Accuracy", 1f);
             gameObjectData.DataChanged = true;
-            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
+            PositionComponent placeableComponent = entityManager.CreateComponent<PositionComponent>();
             placeableComponent.Position = startPosition + new Vector2(spriteSheet.Width, spriteSheet.Height) * -1;
-            VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
+
+            TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Color = Color.White;
             visibleComponent.Source = animationFrames[0];
-            visibleComponent.Destination = animationFrames[0];
+            //visibleComponent.Destination = animationFrames[0];
             visibleComponent.Texture = spriteSheet;
-            visibleComponent.ShaderEffect = effect;
+            //visibleComponent.ShaderEffect = effect;
             visibleComponent.RotationCenter = RotationCenter;
             MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
             moveable.Mass = 15;
