@@ -19,11 +19,6 @@ namespace TankEngine.EntityComponentSystem.Components.Rendering
         public Rectangle Source { get; set; }
 
         /// <summary>
-        /// The offset to use for drawing relative to the entity position
-        /// </summary>
-        public Vector2 DrawOffset { get; set; }
-
-        /// <summary>
         /// The scale of the image to use
         /// </summary>
         public float Scale;
@@ -34,7 +29,6 @@ namespace TankEngine.EntityComponentSystem.Components.Rendering
             base.Init();
             Texture = null;
             Source = Rectangle.Empty;
-            DrawOffset = Vector2.Zero;
             Scale = 1.0f;
         }
     }

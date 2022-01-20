@@ -30,6 +30,11 @@ namespace TankEngine.EntityComponentSystem.Components.Rendering
         /// </summary>
         public Vector2 RotationCenter { get; set; }
 
+        /// <summary>
+        /// The offset to use for drawing relative to the entity position
+        /// </summary>
+        public Vector2 DrawOffset { get; set; }
+
         /// <inheritdoc/>
         public override void Init()
         {
@@ -38,6 +43,7 @@ namespace TankEngine.EntityComponentSystem.Components.Rendering
             SpriteEffect = SpriteEffects.None;
             DrawLayer = 0;
             RotationCenter = Vector2.Zero;
+            DrawOffset = Vector2.Zero;
         }
     }
 }

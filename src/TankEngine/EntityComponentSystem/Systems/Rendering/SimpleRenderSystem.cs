@@ -40,9 +40,14 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         protected readonly GraphicsDevice graphicsDevice;
 
         /// <summary>
-        /// The pool for render containers
+        /// The pool for render texture containers
         /// </summary>
-        protected IObjectPool<TextureRenderContainer> renderContainerPool;
+        protected IObjectPool<TextureRenderContainer> textureRenderContainerPool;
+
+        /// <summary>
+        /// The pool for render text containers
+        /// </summary>
+        protected IObjectPool<TextRenderContainer> textRenderContainerPool;
 
         /// <summary>
         /// The render target to draw the scene on
@@ -61,7 +66,8 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             this.defaultEffekt = defaultEffekt;
             this.viewportAdapter = viewportAdapter;
             this.graphicsDevice = graphicsDevice;
-            renderContainerPool = new ConcurrentObjectPool<TextureRenderContainer>(() => new TextureRenderContainer(), 10);
+            textureRenderContainerPool = new ConcurrentObjectPool<TextureRenderContainer>(() => new TextureRenderContainer(), 10);
+            textRenderContainerPool = new ConcurrentObjectPool<TextRenderContainer>(() => new TextRenderContainer(), 10);
             CreateSceneRenderTarget();
 
             IValidatable orValidator = new OrValidator(new TextureRenderingValidator(), new TextRenderingValidator());
@@ -142,14 +148,31 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
                     container.TextureComponent.SpriteEffect,
                     layerDepth
                     );
-                renderContainerPool.Return(container);
+                textureRenderContainerPool.Return(container);
+            }
+            foreach (TextRenderContainer container in GetTextContainers())
+            {
+                Vector2 position = container.PositionComponent.Position + container.TextComponent.DrawOffset;
+                float layerDepth = MathHelper.Clamp(container.TextComponent.DrawLayer / MAX_LAYER_COUNT, 0f, MAX_LAYER_COUNT);
+                spriteBatch.DrawString(
+                    container.TextComponent.Font,
+                    container.TextComponent.Text,
+                    position,
+                    container.TextComponent.Color,
+                    container.PositionComponent.Rotation,
+                    container.TextComponent.RotationCenter,
+                    container.TextComponent.Scale,
+                    container.TextComponent.SpriteEffect,
+                    layerDepth
+                    );
+                textRenderContainerPool.Return(container);
             }
         }
 
         /// <summary>
-        /// Get the container to render
+        /// Get the texture container to render
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A IEnumerable with all the texture containers</returns>
         protected virtual IEnumerable<TextureRenderContainer> GetTextureContainers()
         {
             return watchedEntities.Where(entityId => !entitiesToRemove.Contains(entityId))
@@ -160,7 +183,50 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         }
 
         /// <summary>
-        /// Create a new container based on the entityId
+        /// Get the Text container to render
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IEnumerable<TextRenderContainer> GetTextContainers()
+        {
+            return watchedEntities.Where(entityId => !entitiesToRemove.Contains(entityId))
+                                  .Where(entityId => entityManager.HasComponent<PositionComponent>(entityId) && entityManager.HasComponent<TextComponent>(entityId))
+                                  .Select(entityId => CreateTextContainer(entityId))
+                                  .Where(container => container != null)
+                                  .OrderBy(container => container.TextComponent.Font);
+        }
+
+        /// <summary>
+        /// Create a new text container based on the entityId
+        /// </summary>
+        /// <param name="entityId">The entity id to use</param>
+        /// <returns>The texture render container</returns>
+        private TextRenderContainer CreateTextContainer(uint entityId)
+        {
+            PositionComponent positionComponent = entityManager.GetComponent<PositionComponent>(entityId);
+            TextComponent textComponent = entityManager.GetComponent<TextComponent>(entityId);
+            return CreateTextContainer(positionComponent, textComponent);
+        }
+
+        /// <summary>
+        /// Create a new text container based on the given component
+        /// </summary>
+        /// <param name="positionComponent">The position component</param>
+        /// <param name="textComponent">The text component</param>
+        /// <returns>A useable texture render container</returns>
+        private TextRenderContainer CreateTextContainer(PositionComponent positionComponent, TextComponent textComponent)
+        {
+            if (positionComponent == null || textComponent == null)
+            {
+                return null;
+            }
+            TextRenderContainer returnContainer = textRenderContainerPool.Get();
+            returnContainer.PositionComponent = positionComponent;
+            returnContainer.TextComponent = textComponent;
+            return returnContainer;
+        }
+
+        /// <summary>
+        /// Create a new texture container based on the entityId
         /// </summary>
         /// <param name="entityId">The entity id to use</param>
         /// <returns>The texture render container</returns>
@@ -168,22 +234,22 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         {
             PositionComponent positionComponent = entityManager.GetComponent<PositionComponent>(entityId);
             TextureComponent textureComponent = entityManager.GetComponent<TextureComponent>(entityId);
-            return CreateContainer(positionComponent, textureComponent);
+            return CreateTextureContainer(positionComponent, textureComponent);
         }
 
         /// <summary>
-        /// Create a new container based on the given component
+        /// Create a new texture container based on the given component
         /// </summary>
         /// <param name="positionComponent">The position component</param>
         /// <param name="textureComponent">The texture component</param>
         /// <returns>A useable texture render container</returns>
-        protected virtual TextureRenderContainer CreateContainer(PositionComponent positionComponent, TextureComponent textureComponent)
+        protected virtual TextureRenderContainer CreateTextureContainer(PositionComponent positionComponent, TextureComponent textureComponent)
         {
             if (positionComponent == null || textureComponent == null)
             {
                 return null;
             }
-            TextureRenderContainer returnContainer = renderContainerPool.Get();
+            TextureRenderContainer returnContainer = textureRenderContainerPool.Get();
             returnContainer.PositionComponent = positionComponent;
             returnContainer.TextureComponent = textureComponent;
             return returnContainer;

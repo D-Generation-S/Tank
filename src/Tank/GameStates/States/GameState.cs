@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Tank.Builders;
 using Tank.Components;
-using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.Events.PhysicBased;
 using Tank.Events.StateEvents;
@@ -19,6 +18,7 @@ using Tank.Interfaces.Builders;
 using Tank.Map.Generators;
 using TankEngine.DataStructures.Geometrics;
 using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components.Rendering;
 using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
@@ -178,9 +178,9 @@ namespace Tank.GameStates.States
         private void GenerateDebugEntity()
         {
             entityCounter = engine.EntityManager.CreateEntity(false);
-            PlaceableComponent placeableComponent = engine.EntityManager.CreateComponent<PlaceableComponent>();
+            PositionComponent placeableComponent = engine.EntityManager.CreateComponent<PositionComponent>();
             placeableComponent.Position = Vector2.Zero;
-            VisibleTextComponent VisibleTextComponent = engine.EntityManager.CreateComponent<VisibleTextComponent>();
+            TextComponent VisibleTextComponent = engine.EntityManager.CreateComponent<TextComponent>();
             VisibleTextComponent.Font = gameFont;
 
             engine.EntityManager.AddComponent(entityCounter, placeableComponent);
@@ -316,7 +316,7 @@ namespace Tank.GameStates.States
                     GenerateDebugEntity();
                     debugIdGenerated = true;
                 }
-                VisibleTextComponent entityCounterText = engine.EntityManager.GetComponent<VisibleTextComponent>(entityCounter);
+                TextComponent entityCounterText = engine.EntityManager.GetComponent<TextComponent>(entityCounter);
                 if (entityCounterText != null)
                 {
                     entityCounterText.Text = "Fps: " + fps;

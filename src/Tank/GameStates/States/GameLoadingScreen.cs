@@ -426,8 +426,8 @@ namespace Tank.GameStates.States
         {
             uint newText = entityManager.CreateEntity();
             entityManager.CreateComponent<PositionComponent>(newText);
-            VisibleTextComponent textComponent = entityManager.CreateComponent<VisibleTextComponent>(newText);
-            textComponent.ShaderEffect = defaultShader;
+            TextComponent textComponent = entityManager.CreateComponent<TextComponent>(newText);
+            //textComponent.ShaderEffect = defaultShader;
             textComponent.Text = text;
             textComponent.Color = color;
             textComponent.Font = gameFont;

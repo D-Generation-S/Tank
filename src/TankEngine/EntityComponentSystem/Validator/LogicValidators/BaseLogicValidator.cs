@@ -29,6 +29,7 @@ namespace TankEngine.EntityComponentSystem.Validator.LogicValidators
         /// </summary>
         public BaseLogicValidator(params IValidatable[] validators)
         {
+            validatables = new List<IValidatable>();
             foreach (IValidatable validator in validators)
             {
                 Add(validator);

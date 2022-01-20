@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Tank.Components.Rendering
 {
     /// <summary>
     /// Text render component
     /// </summary>
+    [Obsolete("Use the TextComponent instead")]
     class VisibleTextComponent : BaseVisibleComponent
     {
         /// <summary>
