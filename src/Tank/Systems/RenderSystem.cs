@@ -152,7 +152,6 @@ namespace Tank.Systems
             DefaultFolderUtils folderUtils = new DefaultFolderUtils();
             screenshotBasePath = folderUtils.GetGameFolder();
             screenshotBasePath = Path.Combine(screenshotBasePath, "Screenshots");
-
         }
 
         public override void Initialize(IGameEngine gameEngine)

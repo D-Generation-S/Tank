@@ -5,7 +5,7 @@ using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
 using TankEngine.Music;
 
-namespace TankEngine.EntityComponentSystem.Systems
+namespace TankEngine.EntityComponentSystem.Systems.Sound
 {
     /// <summary>
     /// A system to play music in the game

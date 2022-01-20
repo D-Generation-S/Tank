@@ -30,7 +30,7 @@ using TankEngine.DataStructures.Spritesheet;
 using TankEngine.EntityComponentSystem;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
-using TankEngine.EntityComponentSystem.Systems;
+using TankEngine.EntityComponentSystem.Systems.Sound;
 using TankEngine.GameStates.States;
 using TankEngine.Music;
 using TankEngine.Randomizer;
