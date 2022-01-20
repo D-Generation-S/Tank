@@ -6,6 +6,7 @@ using TankEngine.Adapter;
 using TankEngine.DataStructures.Pools;
 using TankEngine.EntityComponentSystem.Components.Rendering;
 using TankEngine.EntityComponentSystem.Components.World;
+using TankEngine.EntityComponentSystem.Validator.Base;
 
 namespace TankEngine.EntityComponentSystem.Systems.Rendering
 {
@@ -52,6 +53,9 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             this.graphicsDevice = graphicsDevice;
             renderContainerPool = new ConcurrentObjectPool<TextureRenderContainer>(() => new TextureRenderContainer(), 10);
             CreateSceneRenderTarget();
+
+
+            validators.Add(new TextureRenderingValidator());
         }
 
         /// <summary>
@@ -110,6 +114,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// </summary>
         protected virtual void DrawGameObjects()
         {
+            graphicsDevice.SetRenderTarget(sceneRenderTarget);
             foreach (TextureRenderContainer container in GetContainers())
             {
                 Vector2 position = container.PositionComponent.Position + container.TextureComponent.DrawOffset;
@@ -124,6 +129,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
                     container.TextureComponent.SpriteEffect,
                     container.TextureComponent.DrawLayer
                     );
+                renderContainerPool.Return(container);
             }
         }
 
