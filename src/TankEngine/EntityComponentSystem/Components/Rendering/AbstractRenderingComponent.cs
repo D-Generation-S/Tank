@@ -21,6 +21,11 @@ namespace TankEngine.EntityComponentSystem.Components.Rendering
         public SpriteEffects SpriteEffect { get; set; }
 
         /// <summary>
+        /// A shader effect to use for the given render component
+        /// </summary>
+        public Effect ShaderEffect { get; set; }
+
+        /// <summary>
         /// The layer to draw the sprite on must be between 0 and 1000
         /// </summary>
         public int DrawLayer { get; set; }

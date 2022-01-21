@@ -107,7 +107,7 @@ namespace Tank.Builders
             visibleComponent.Source = animationFrames[0];
             //visibleComponent.Destination = animationFrames[0];
             visibleComponent.Texture = spriteSheet;
-            //visibleComponent.ShaderEffect = effect;
+            visibleComponent.ShaderEffect = effect;
             visibleComponent.RotationCenter = RotationCenter;
             MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
             moveable.Mass = 15;

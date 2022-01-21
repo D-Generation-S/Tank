@@ -12,13 +12,11 @@ using TankEngine.EntityComponentSystem.Validator.LogicValidators;
 
 namespace TankEngine.EntityComponentSystem.Systems.Rendering
 {
+    /// <summary>
+    /// Simple render system which will render from 0,0 of the world to the end of the viewport
+    /// </summary>
     public class SimpleRenderSystem : AbstractSystem
     {
-        /// <summary>
-        /// The max number of layers
-        /// </summary>
-        private const float MAX_LAYER_COUNT = 1000f;
-
         /// <summary>
         /// The spritebatch used for drawing
         /// </summary>
@@ -27,7 +25,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// <summary>
         /// The default effekt to use if non is set
         /// </summary>
-        protected readonly Effect defaultEffekt;
+        protected readonly Effect defaultEffect;
 
         /// <summary>
         /// The viewport adapter to use
@@ -42,12 +40,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// <summary>
         /// The pool for render texture containers
         /// </summary>
-        protected IObjectPool<TextureRenderContainer> textureRenderContainerPool;
-
-        /// <summary>
-        /// The pool for render text containers
-        /// </summary>
-        protected IObjectPool<TextRenderContainer> textRenderContainerPool;
+        protected IObjectPool<RenderObjectContainer> renderObjectContainerPool;
 
         /// <summary>
         /// The render target to draw the scene on
@@ -63,11 +56,10 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         public SimpleRenderSystem(SpriteBatch spriteBatch, Effect defaultEffekt, IViewportAdapter viewportAdapter, GraphicsDevice graphicsDevice)
         {
             this.spriteBatch = spriteBatch;
-            this.defaultEffekt = defaultEffekt;
+            this.defaultEffect = defaultEffekt;
             this.viewportAdapter = viewportAdapter;
             this.graphicsDevice = graphicsDevice;
-            textureRenderContainerPool = new ConcurrentObjectPool<TextureRenderContainer>(() => new TextureRenderContainer(), 10);
-            textRenderContainerPool = new ConcurrentObjectPool<TextRenderContainer>(() => new TextRenderContainer(), 10);
+            renderObjectContainerPool = new ConcurrentObjectPool<RenderObjectContainer>(() => new RenderObjectContainer(), 20);
             CreateSceneRenderTarget();
 
             IValidatable orValidator = new OrValidator(new TextureRenderingValidator(), new TextRenderingValidator());
@@ -90,7 +82,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         public override void Draw(GameTime gameTime)
         {
             drawLocked = true;
-            BeginDraw();
+            BeginDraw(defaultEffect);
             DrawGameObjects();
             EndDraw();
             DrawCompletedScene(sceneRenderTarget);
@@ -112,7 +104,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
                 null,
                 null,
                 null,
-                defaultEffekt,
+                defaultEffect,
                 viewportAdapter.GetScaleMatrix()
             );
 
@@ -130,69 +122,137 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// </summary>
         protected virtual void DrawGameObjects()
         {
+            Effect currentEffect = defaultEffect;
             graphicsDevice.SetRenderTarget(sceneRenderTarget);
             graphicsDevice.Clear(Color.CornflowerBlue);
-            foreach (TextureRenderContainer container in GetTextureContainers())
+            foreach (RenderObjectContainer container in GetRenderContainers())
             {
-                Vector2 position = container.PositionComponent.Position + container.TextureComponent.DrawOffset;
-                float layerDepth = MathHelper.Clamp(container.TextureComponent.DrawLayer / MAX_LAYER_COUNT, 0f, MAX_LAYER_COUNT);
+                currentEffect = BeginDrawGameObject(container.ShaderEffect, currentEffect);
+                if (container.ContainerType == RenderContainerType.Texture)
+                {
+                    DrawTextureContainer(container);
+                    continue;
+                }
+                DrawTextContainer(container);
 
-                spriteBatch.Draw(
-                    container.TextureComponent.Texture,
-                    position,
-                    container.TextureComponent.Source,
-                    container.TextureComponent.Color,
-                    container.PositionComponent.Rotation,
-                    container.TextureComponent.RotationCenter,
-                    container.TextureComponent.Scale,
-                    container.TextureComponent.SpriteEffect,
-                    layerDepth
-                    );
-                textureRenderContainerPool.Return(container);
+                renderObjectContainerPool.Return(container);
             }
-            foreach (TextRenderContainer container in GetTextContainers())
+        }
+
+        /// <summary>
+        /// Begin new draw call if required for rendering of game objects
+        /// </summary>
+        /// <param name="containerEffect">The effect of the current container</param>
+        /// <param name="currentEffect">The last used effect by the last render call</param>
+        /// <returns></returns>
+        protected Effect BeginDrawGameObject(Effect containerEffect, Effect currentEffect)
+        {
+            containerEffect = containerEffect ?? defaultEffect;
+            if (containerEffect != currentEffect)
             {
-                Vector2 position = container.PositionComponent.Position + container.TextComponent.DrawOffset;
-                float layerDepth = MathHelper.Clamp(container.TextComponent.DrawLayer / MAX_LAYER_COUNT, 0f, MAX_LAYER_COUNT);
-                spriteBatch.DrawString(
-                    container.TextComponent.Font,
-                    container.TextComponent.Text,
-                    position,
-                    container.TextComponent.Color,
-                    container.PositionComponent.Rotation,
-                    container.TextComponent.RotationCenter,
-                    container.TextComponent.Scale,
-                    container.TextComponent.SpriteEffect,
-                    layerDepth
-                    );
-                textRenderContainerPool.Return(container);
+                EndDraw();
+                BeginDraw(containerEffect);
             }
+            return containerEffect;
+        }
+
+        /// <summary>
+        /// Draw a texture container
+        /// </summary>
+        /// <param name="container">The texture container to draw</param>
+        private void DrawTextureContainer(RenderObjectContainer container)
+        {
+            Vector2 position = GetBaseDrawPosition(container.PositionComponent) + container.TextureComponent.DrawOffset;
+            int width = (int)(container.TextureComponent.Source.Width * container.TextureComponent.Scale);
+            int height = (int)(container.TextureComponent.Source.Height * container.TextureComponent.Scale);
+            Rectangle targetDrawArea = new Rectangle((int)position.X, (int)position.Y, width, height);
+            if (!IsInRendeArea(targetDrawArea))
+            {
+                return;
+            }
+            spriteBatch.Draw(
+                container.TextureComponent.Texture,
+                position,
+                container.TextureComponent.Source,
+                container.TextureComponent.Color,
+                container.PositionComponent.Rotation,
+                container.TextureComponent.RotationCenter,
+                container.TextureComponent.Scale,
+                container.TextureComponent.SpriteEffect,
+                0
+                );
+        }
+
+        /// <summary>
+        /// Draw a single text container
+        /// </summary>
+        /// <param name="container">The text container to draw</param>
+        private void DrawTextContainer(RenderObjectContainer container)
+        {
+            Vector2 position = GetBaseDrawPosition(container.PositionComponent) + container.TextComponent.DrawOffset;
+            Vector2 fontSize = container.TextComponent.Font.MeasureString(container.TextComponent.Text) * container.TextComponent.Scale;
+            Rectangle targetDrawArea = new Rectangle((int)position.X, (int)position.Y, (int)fontSize.X, (int)fontSize.Y);
+            if (!IsInRendeArea(targetDrawArea))
+            {
+                return;
+            }
+            spriteBatch.DrawString(
+                container.TextComponent.Font,
+                container.TextComponent.Text,
+                position,
+                container.TextComponent.Color,
+                container.PositionComponent.Rotation,
+                container.TextComponent.RotationCenter,
+                container.TextComponent.Scale,
+                container.TextComponent.SpriteEffect,
+                0
+                );
+        }
+
+        protected bool IsInRendeArea(Rectangle targetDrawArea)
+        {
+            return viewportAdapter.Viewport.Bounds.Intersects(targetDrawArea);
+        }
+
+        /// <summary>
+        /// Get the base draw position for the given texture
+        /// </summary>
+        /// <param name="positionComponent">The position component of the entity</param>
+        /// <returns>The vector where to draw the dataset</returns>
+        protected Vector2 GetBaseDrawPosition(PositionComponent positionComponent)
+        {
+            return positionComponent.Position;
         }
 
         /// <summary>
         /// Get the texture container to render
         /// </summary>
         /// <returns>A IEnumerable with all the texture containers</returns>
-        protected virtual IEnumerable<TextureRenderContainer> GetTextureContainers()
+        protected virtual IEnumerable<RenderObjectContainer> GetRenderContainers()
         {
             return watchedEntities.Where(entityId => !entitiesToRemove.Contains(entityId))
-                                  .Where(entityId => entityManager.HasComponent<PositionComponent>(entityId) && entityManager.HasComponent<TextureComponent>(entityId))
-                                  .Select(entityId => CreateTextureContainer(entityId))
-                                  .Where(container => container != null)
-                                  .OrderBy(container => container.TextureComponent.Texture.Name);
+                                  .Where(entityId => entityManager.HasComponent<PositionComponent>(entityId) && (entityManager.HasComponent<TextureComponent>(entityId) || entityManager.HasComponent<TextComponent>(entityId)))
+                                  .Select(entityId => CreateRenderContainer(entityId))
+                                  .Where(container => container != null && container.ContainerType != RenderContainerType.Unknown)
+                                  .OrderBy(container => container.DrawLayer)
+                                  .ThenBy(container => container.Name)
+                                  .ThenBy(container => container.EffectName);
         }
 
         /// <summary>
-        /// Get the Text container to render
+        /// Create render container from given entity id
         /// </summary>
-        /// <returns></returns>
-        protected virtual IEnumerable<TextRenderContainer> GetTextContainers()
+        /// <param name="entityId">The entity id to create the container from</param>
+        /// <returns>A render container ready to use, can be null</returns>
+        public RenderObjectContainer CreateRenderContainer(uint entityId)
         {
-            return watchedEntities.Where(entityId => !entitiesToRemove.Contains(entityId))
-                                  .Where(entityId => entityManager.HasComponent<PositionComponent>(entityId) && entityManager.HasComponent<TextComponent>(entityId))
-                                  .Select(entityId => CreateTextContainer(entityId))
-                                  .Where(container => container != null)
-                                  .OrderBy(container => container.TextComponent.Font);
+            PositionComponent positionComponent = entityManager.GetComponent<PositionComponent>(entityId);
+            TextureComponent textureComponent = entityManager.GetComponent<TextureComponent>(entityId);
+            if (textureComponent != null)
+            {
+                return CreateTextureContainer(positionComponent, textureComponent);
+            }
+            return CreateTextContainer(positionComponent, entityManager.GetComponent<TextComponent>(entityId));
         }
 
         /// <summary>
@@ -200,7 +260,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// </summary>
         /// <param name="entityId">The entity id to use</param>
         /// <returns>The texture render container</returns>
-        private TextRenderContainer CreateTextContainer(uint entityId)
+        private RenderObjectContainer CreateTextContainer(uint entityId)
         {
             PositionComponent positionComponent = entityManager.GetComponent<PositionComponent>(entityId);
             TextComponent textComponent = entityManager.GetComponent<TextComponent>(entityId);
@@ -213,15 +273,16 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// <param name="positionComponent">The position component</param>
         /// <param name="textComponent">The text component</param>
         /// <returns>A useable texture render container</returns>
-        private TextRenderContainer CreateTextContainer(PositionComponent positionComponent, TextComponent textComponent)
+        private RenderObjectContainer CreateTextContainer(PositionComponent positionComponent, TextComponent textComponent)
         {
             if (positionComponent == null || textComponent == null)
             {
                 return null;
             }
-            TextRenderContainer returnContainer = textRenderContainerPool.Get();
+            RenderObjectContainer returnContainer = renderObjectContainerPool.Get();
             returnContainer.PositionComponent = positionComponent;
             returnContainer.TextComponent = textComponent;
+            returnContainer.ContainerType = RenderContainerType.Text;
             return returnContainer;
         }
 
@@ -230,7 +291,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// </summary>
         /// <param name="entityId">The entity id to use</param>
         /// <returns>The texture render container</returns>
-        protected virtual TextureRenderContainer CreateTextureContainer(uint entityId)
+        protected virtual RenderObjectContainer CreateTextureContainer(uint entityId)
         {
             PositionComponent positionComponent = entityManager.GetComponent<PositionComponent>(entityId);
             TextureComponent textureComponent = entityManager.GetComponent<TextureComponent>(entityId);
@@ -243,30 +304,31 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// <param name="positionComponent">The position component</param>
         /// <param name="textureComponent">The texture component</param>
         /// <returns>A useable texture render container</returns>
-        protected virtual TextureRenderContainer CreateTextureContainer(PositionComponent positionComponent, TextureComponent textureComponent)
+        protected virtual RenderObjectContainer CreateTextureContainer(PositionComponent positionComponent, TextureComponent textureComponent)
         {
             if (positionComponent == null || textureComponent == null)
             {
                 return null;
             }
-            TextureRenderContainer returnContainer = textureRenderContainerPool.Get();
+            RenderObjectContainer returnContainer = renderObjectContainerPool.Get();
             returnContainer.PositionComponent = positionComponent;
             returnContainer.TextureComponent = textureComponent;
+            returnContainer.ContainerType = RenderContainerType.Texture;
             return returnContainer;
         }
 
         /// <summary>
         /// Begin the main draw loop
         /// </summary>
-        protected virtual void BeginDraw()
+        protected virtual void BeginDraw(Effect effect)
         {
             spriteBatch.Begin(
-                SpriteSortMode.FrontToBack,
+                SpriteSortMode.Immediate,
                 BlendState.NonPremultiplied,
                 null,
                 null,
                 null,
-                defaultEffekt,
+                effect,
                 viewportAdapter.GetScaleMatrix());
         }
 
