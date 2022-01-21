@@ -128,7 +128,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             foreach (RenderObjectContainer container in GetRenderContainers())
             {
                 currentEffect = BeginDrawGameObject(container.ShaderEffect, currentEffect);
-                if (container.ContainerType == RenderContainerType.Texture)
+                if (container.ContainerType == RenderContainerTypeEnum.Texture)
                 {
                     DrawTextureContainer(container);
                     continue;
@@ -233,7 +233,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             return watchedEntities.Where(entityId => !entitiesToRemove.Contains(entityId))
                                   .Where(entityId => entityManager.HasComponent<PositionComponent>(entityId) && (entityManager.HasComponent<TextureComponent>(entityId) || entityManager.HasComponent<TextComponent>(entityId)))
                                   .Select(entityId => CreateRenderContainer(entityId))
-                                  .Where(container => container != null && container.ContainerType != RenderContainerType.Unknown)
+                                  .Where(container => container != null && container.ContainerType != RenderContainerTypeEnum.Unknown)
                                   .OrderBy(container => container.DrawLayer)
                                   .ThenBy(container => container.Name)
                                   .ThenBy(container => container.EffectName);
@@ -282,7 +282,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             RenderObjectContainer returnContainer = renderObjectContainerPool.Get();
             returnContainer.PositionComponent = positionComponent;
             returnContainer.TextComponent = textComponent;
-            returnContainer.ContainerType = RenderContainerType.Text;
+            returnContainer.ContainerType = RenderContainerTypeEnum.Text;
             return returnContainer;
         }
 
@@ -313,7 +313,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             RenderObjectContainer returnContainer = renderObjectContainerPool.Get();
             returnContainer.PositionComponent = positionComponent;
             returnContainer.TextureComponent = textureComponent;
-            returnContainer.ContainerType = RenderContainerType.Texture;
+            returnContainer.ContainerType = RenderContainerTypeEnum.Texture;
             return returnContainer;
         }
 

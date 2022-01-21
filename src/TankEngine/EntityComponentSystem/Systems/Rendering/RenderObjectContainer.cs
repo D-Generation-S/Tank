@@ -12,7 +12,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// <summary>
         /// Type of the render container
         /// </summary>
-        public RenderContainerType ContainerType { get; set; }
+        public RenderContainerTypeEnum ContainerType { get; set; }
 
         /// <summary>
         /// The position component used for getting the position
@@ -36,11 +36,11 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         {
             get
             {
-                if (ContainerType == RenderContainerType.Texture && TextureComponent != null)
+                if (ContainerType == RenderContainerTypeEnum.Texture && TextureComponent != null)
                 {
                     return TextureComponent.DrawLayer;
                 }
-                if (ContainerType == RenderContainerType.Text && TextComponent != null)
+                if (ContainerType == RenderContainerTypeEnum.Text && TextComponent != null)
                 {
                     return TextComponent.DrawLayer;
                 }
@@ -55,7 +55,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         {
             get
             {
-                if (ContainerType == RenderContainerType.Texture && TextureComponent != null)
+                if (ContainerType == RenderContainerTypeEnum.Texture && TextureComponent != null)
                 {
                     return TextureComponent.Texture.Name;
                 }
@@ -75,11 +75,11 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         {
             get
             {
-                if (ContainerType == RenderContainerType.Texture && TextureComponent != null && TextureComponent.ShaderEffect != null)
+                if (ContainerType == RenderContainerTypeEnum.Texture && TextureComponent != null && TextureComponent.ShaderEffect != null)
                 {
                     return TextureComponent.ShaderEffect;
                 }
-                if (ContainerType == RenderContainerType.Text && TextComponent != null && TextComponent.ShaderEffect != null)
+                if (ContainerType == RenderContainerTypeEnum.Text && TextComponent != null && TextComponent.ShaderEffect != null)
                 {
                     return TextComponent.ShaderEffect;
                 }
@@ -103,7 +103,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             PositionComponent = null;
             TextureComponent = null;
             TextComponent = null;
-            ContainerType = RenderContainerType.Unknown;
+            ContainerType = RenderContainerTypeEnum.Unknown;
         }
     }
 }

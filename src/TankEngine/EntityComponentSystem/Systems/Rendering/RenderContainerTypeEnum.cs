@@ -3,7 +3,7 @@
     /// <summary>
     /// Type of a render container
     /// </summary>
-    public enum RenderContainerType
+    public enum RenderContainerTypeEnum
     {
         Unknown,
         Texture,
