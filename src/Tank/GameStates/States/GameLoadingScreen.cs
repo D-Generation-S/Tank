@@ -293,14 +293,6 @@ namespace Tank.GameStates.States
             engine.AddSystem(new SoundEffectSystem(ApplicationSettingsSingelton.Instance.EffectVolume));
             engine.AddSystem(new AnimationAttributeDisplaySystem());
             engine.AddSystem(new FadeInFadeOutSystem());
-            /**
-            engine.AddSystem(new RenderSystem(
-                 spriteBatch,
-                 gameFont,
-                 defaultShader//,
-                              //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
-             ));
-            **/
             DefaultFolderUtils folderUtils = new DefaultFolderUtils();
             string screenshotBasePath = folderUtils.GetGameFolder();
             screenshotBasePath = Path.Combine(screenshotBasePath, "Screenshots");

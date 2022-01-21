@@ -78,7 +78,6 @@ namespace Tank.Systems
                     {
                         activeCamera.TakeScreenshot = true;
                     }
-                    //FireEvent(eventManager.CreateEvent<TakeScreenshotEvent>());
                 }
 
                 if (keyboardState.IsKeyDown(keyboardController.BarrelLeft))
