@@ -112,13 +112,10 @@ namespace Tank.Builders
             TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Texture = spriteSheet;
             visibleComponent.Source = animationFrames[0];
-            //visibleComponent.Destination = animationFrames[0];
-            //visibleComponent.SingleTextureSize = animationFrames[0];
             visibleComponent.RotationCenter = rotationCenter;
 
             PositionComponent placeableComponent = entityManager.CreateComponent<PositionComponent>();
             placeableComponent.Position = position;
-            //placeableComponent.Rotation = MathHelper.ToRadians(rotation);
 
             AnimationComponent animation = entityManager.CreateComponent<AnimationComponent>();
             animation.FrameSeconds = 0.03f;

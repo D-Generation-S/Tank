@@ -105,7 +105,6 @@ namespace Tank.Builders
             TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Color = Color.White;
             visibleComponent.Source = animationFrames[0];
-            //visibleComponent.Destination = animationFrames[0];
             visibleComponent.Texture = spriteSheet;
             visibleComponent.ShaderEffect = effect;
             visibleComponent.RotationCenter = RotationCenter;
