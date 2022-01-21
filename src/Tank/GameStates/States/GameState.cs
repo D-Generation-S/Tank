@@ -319,6 +319,7 @@ namespace Tank.GameStates.States
                 TextComponent entityCounterText = engine.EntityManager.GetComponent<TextComponent>(entityCounter);
                 if (entityCounterText != null)
                 {
+                    entityCounterText.DrawLayer = 999;
                     entityCounterText.Text = "Fps: " + fps;
                     entityCounterText.Text += "\nUpdate ms: " + gameTime.ElapsedGameTime.TotalMilliseconds;
                     entityCounterText.Text += "\nEntities: " + engine.GetEntityCount();

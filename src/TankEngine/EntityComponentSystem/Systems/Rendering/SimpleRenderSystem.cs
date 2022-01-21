@@ -45,7 +45,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// <summary>
         /// The render target to draw the scene on
         /// </summary>
-        private RenderTarget2D sceneRenderTarget;
+        protected RenderTarget2D sceneRenderTarget;
 
         /// <summary>
         /// Create a new instance of this render system
@@ -53,6 +53,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// <param name="spriteBatch">The spritebatch to use</param>
         /// <param name="defaultEffekt">The default effekt to use</param>
         /// <param name="viewportAdapter">The viewport adapter to use</param>
+        /// <param name="graphicsDevice">The graphics device used to generate render targets</param>
         public SimpleRenderSystem(SpriteBatch spriteBatch, Effect defaultEffekt, IViewportAdapter viewportAdapter, GraphicsDevice graphicsDevice)
         {
             this.spriteBatch = spriteBatch;
@@ -145,7 +146,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// <param name="containerEffect">The effect of the current container</param>
         /// <param name="currentEffect">The last used effect by the last render call</param>
         /// <returns></returns>
-        protected Effect BeginDrawGameObject(Effect containerEffect, Effect currentEffect)
+        protected virtual Effect BeginDrawGameObject(Effect containerEffect, Effect currentEffect)
         {
             containerEffect = containerEffect ?? defaultEffect;
             if (containerEffect != currentEffect)
@@ -166,7 +167,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             int width = (int)(container.TextureComponent.Source.Width * container.TextureComponent.Scale);
             int height = (int)(container.TextureComponent.Source.Height * container.TextureComponent.Scale);
             Rectangle targetDrawArea = new Rectangle((int)position.X, (int)position.Y, width, height);
-            if (!IsInRendeArea(targetDrawArea))
+            if (!IsInRenderArea(targetDrawArea))
             {
                 return;
             }
@@ -192,7 +193,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             Vector2 position = GetBaseDrawPosition(container.PositionComponent) + container.TextComponent.DrawOffset;
             Vector2 fontSize = container.TextComponent.Font.MeasureString(container.TextComponent.Text) * container.TextComponent.Scale;
             Rectangle targetDrawArea = new Rectangle((int)position.X, (int)position.Y, (int)fontSize.X, (int)fontSize.Y);
-            if (!IsInRendeArea(targetDrawArea))
+            if (!IsInRenderArea(targetDrawArea))
             {
                 return;
             }
@@ -209,7 +210,12 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
                 );
         }
 
-        protected bool IsInRendeArea(Rectangle targetDrawArea)
+        /// <summary>
+        /// Is the current thing to draw in the render area
+        /// </summary>
+        /// <param name="targetDrawArea">The are the texture or text is getting drawn to</param>
+        /// <returns>True if inside of the render area</returns>
+        protected virtual bool IsInRenderArea(Rectangle targetDrawArea)
         {
             return viewportAdapter.Viewport.Bounds.Intersects(targetDrawArea);
         }
@@ -219,7 +225,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// </summary>
         /// <param name="positionComponent">The position component of the entity</param>
         /// <returns>The vector where to draw the dataset</returns>
-        protected Vector2 GetBaseDrawPosition(PositionComponent positionComponent)
+        protected virtual Vector2 GetBaseDrawPosition(PositionComponent positionComponent)
         {
             return positionComponent.Position;
         }
@@ -244,7 +250,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// </summary>
         /// <param name="entityId">The entity id to create the container from</param>
         /// <returns>A render container ready to use, can be null</returns>
-        public RenderObjectContainer CreateRenderContainer(uint entityId)
+        protected virtual RenderObjectContainer CreateRenderContainer(uint entityId)
         {
             PositionComponent positionComponent = entityManager.GetComponent<PositionComponent>(entityId);
             TextureComponent textureComponent = entityManager.GetComponent<TextureComponent>(entityId);
@@ -253,18 +259,6 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
                 return CreateTextureContainer(positionComponent, textureComponent);
             }
             return CreateTextContainer(positionComponent, entityManager.GetComponent<TextComponent>(entityId));
-        }
-
-        /// <summary>
-        /// Create a new text container based on the entityId
-        /// </summary>
-        /// <param name="entityId">The entity id to use</param>
-        /// <returns>The texture render container</returns>
-        private RenderObjectContainer CreateTextContainer(uint entityId)
-        {
-            PositionComponent positionComponent = entityManager.GetComponent<PositionComponent>(entityId);
-            TextComponent textComponent = entityManager.GetComponent<TextComponent>(entityId);
-            return CreateTextContainer(positionComponent, textComponent);
         }
 
         /// <summary>

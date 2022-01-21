@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Tank.Components.DataLookup;
 using Tank.Components.GameObject;
 using Tank.Components.Input;
@@ -72,7 +73,12 @@ namespace Tank.Systems
 
                 if (previousState.IsKeyUp(keyboardController.Screenshot) && keyboardState.IsKeyDown(keyboardController.Screenshot))
                 {
-                    FireEvent(eventManager.CreateEvent<TakeScreenshotEvent>());
+                    CameraComponent activeCamera = gameEngine.EntityManager.GetComponents<CameraComponent>().Where(component => component.Active).OrderBy(component => component.Priority).FirstOrDefault();
+                    if (activeCamera != null)
+                    {
+                        activeCamera.TakeScreenshot = true;
+                    }
+                    //FireEvent(eventManager.CreateEvent<TakeScreenshotEvent>());
                 }
 
                 if (keyboardState.IsKeyDown(keyboardController.BarrelLeft))

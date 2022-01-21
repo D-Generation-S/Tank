@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Tank.Builders;
@@ -255,6 +256,16 @@ namespace Tank.GameStates.States
                 engine.EntityManager.AddComponent(entity, map);
                 SpawnPlayers(component.Result);
 
+                uint camera = engine.EntityManager.CreateEntity();
+                PositionComponent cameraPosition = engine.EntityManager.CreateComponent<PositionComponent>(camera);
+                cameraPosition.Position = viewportAdapter.Viewport.Bounds.Center.ToVector2();
+
+                CameraComponent cameraData = engine.EntityManager.CreateComponent<CameraComponent>();
+                cameraData.Priority = 1000;
+                cameraData.Active = true;
+
+                engine.EntityManager.AddComponent(camera, cameraData);
+
                 loadingComplete = true;
             });
         }
@@ -290,11 +301,16 @@ namespace Tank.GameStates.States
                               //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
              ));
             **/
-            engine.AddSystem(new SimpleRenderSystem(
+            DefaultFolderUtils folderUtils = new DefaultFolderUtils();
+            string screenshotBasePath = folderUtils.GetGameFolder();
+            screenshotBasePath = Path.Combine(screenshotBasePath, "Screenshots");
+            engine.AddSystem(new CameraRenderSystem(
                 spriteBatch,
                 defaultShader,
                 viewportAdapter,
-                TankGame.PublicGraphicsDevice));
+                TankGame.PublicGraphicsDevice,
+                screenshotBasePath
+                ));
 
             MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Playlist>(new JsonGameDataLoader<Playlist>("Playlists")));
             engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", ApplicationSettingsSingelton.Instance.MusicVolume));
