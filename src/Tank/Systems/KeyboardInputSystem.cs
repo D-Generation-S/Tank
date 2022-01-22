@@ -50,8 +50,6 @@ namespace Tank.Systems
                     continue;
                 }
 
-
-
                 KeyboardControllerComponent keyboardController = entityManager.GetComponent<KeyboardControllerComponent>(entityId);
                 ControllableGameObject controllableGameObject = entityManager.GetComponent<ControllableGameObject>(entityId);
                 GameObjectData gameObjectData = entityManager.GetComponent<GameObjectData>(entityId);
@@ -64,8 +62,6 @@ namespace Tank.Systems
                 {
                     newState = false;
                 }
-                Debug.WriteLine("Barrel pos " + controllableGameObject.BarrelRotationDegree);
-                Debug.WriteLine("Strenght pos " + controllableGameObject.Strength);
                 if (!newState && keyboardState.IsKeyDown(keyboardController.Menu))
                 {
                     FireEvent(eventManager.CreateEvent<OpenMenuEvent>());
@@ -82,7 +78,6 @@ namespace Tank.Systems
 
                 if (keyboardState.IsKeyDown(keyboardController.BarrelLeft))
                 {
-                    Debug.WriteLine(entityId + " Barrel left");
                     controllableGameObject.BarrelRotationDegree -= ControlStaticValues.BARREL_ROTATION_DEGREE;
                     if (controllableGameObject.BarrelRotationDegree < ControlStaticValues.MAX_BARREL_LEFT)
                     {
@@ -91,7 +86,6 @@ namespace Tank.Systems
                 }
                 if (keyboardState.IsKeyDown(keyboardController.BarrelRight))
                 {
-                    Debug.WriteLine(entityId + " Barrel right");
                     controllableGameObject.BarrelRotationDegree += ControlStaticValues.BARREL_ROTATION_DEGREE;
                     if (controllableGameObject.BarrelRotationDegree > ControlStaticValues.MAX_BARREL_RIGHT)
                     {
@@ -121,7 +115,6 @@ namespace Tank.Systems
 
                 if (previousState.IsKeyUp(keyboardController.NextProjectile) && keyboardState.IsKeyDown(keyboardController.NextProjectile))
                 {
-                    Debug.WriteLine(entityId + " Next projectile");
                     int nextRegister = controllableGameObject.SelectedProjectile;
                     nextRegister++;
                     if (projectileRegister.Contains(nextRegister))
@@ -137,7 +130,6 @@ namespace Tank.Systems
 
                 if (previousState.IsKeyUp(keyboardController.PreviousProjectile) && keyboardState.IsKeyDown(keyboardController.PreviousProjectile))
                 {
-                    Debug.WriteLine(entityId + " previous projectile");
                     int nextRegister = controllableGameObject.SelectedProjectile;
                     nextRegister--;
                     if (projectileRegister.Contains(nextRegister))
