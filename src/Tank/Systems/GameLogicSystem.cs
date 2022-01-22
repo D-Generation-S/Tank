@@ -309,6 +309,5 @@ namespace Tank.Systems
             stateChanged.EntityId = currentPlayerId;
             FireEvent(stateChanged);
         }
-
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using TankEngine.Adapter;
 using TankEngine.DataStructures.Pools;
 using TankEngine.EntityComponentSystem.Components.Rendering;
@@ -201,24 +203,78 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
             {
                 return false;
             }
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-            path = Path.Combine(path, DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_GameScreenshot.png");
+
+            MemoryStream memoryStream = new MemoryStream();
+            TaskAwaiter<bool> screenshotSaver;
             try
             {
-                using (StreamWriter writer = new StreamWriter(path))
+
+                renderTarget.SaveAsPng(memoryStream, renderTarget.Width, renderTarget.Height);
+                screenshotSaver = SaveScreenshotAsync(memoryStream, path).GetAwaiter();
+                screenshotSaver.OnCompleted(() =>
                 {
-                    renderTarget.SaveAsPng(writer.BaseStream, renderTarget.Width, renderTarget.Height);
-                }
+                    if (memoryStream != null)
+                    {
+                        memoryStream.Dispose();
+                        memoryStream = null;
+                    }
+                });
+
             }
             catch (Exception)
             {
                 return false;
             }
+            finally
+            {
+                if (screenshotSaver.IsCompleted)
+                {
+                    if (memoryStream != null)
+                    {
+                        memoryStream.Dispose();
+                        memoryStream = null;
+                    }
+                }
+            }
 
             return true;
+        }
+
+        /// <summary>
+        /// Write screenshot async to disc
+        /// </summary>
+        /// <param name="dataStream">The datastream with the data to save</param>
+        /// <param name="path">The path to save the data to</param>
+        /// <returns>True if saving was successful</returns>
+        private async Task<bool> SaveScreenshotAsync(MemoryStream dataStream, string path)
+        {
+            return await Task.Run(() =>
+                        {
+                            if (!dataStream.CanRead)
+                            {
+                                return false;
+                            }
+                            if (!Directory.Exists(path))
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+                            path = Path.Combine(path, DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_GameScreenshot.png");
+                            try
+                            {
+
+                                using (FileStream fs = new FileStream(path, FileMode.Create))
+                                {
+                                    dataStream.Position = 0;
+                                    dataStream.CopyTo(fs);
+                                    fs.Flush();
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                return false;
+                            }
+                            return true;
+                        });
         }
     }
 }
