@@ -100,6 +100,7 @@ namespace Tank.Builders
             TextureComponent visuals = entityManager.CreateComponent<TextureComponent>();
             visuals.Texture = texture;
             visuals.Source = source;
+            visuals.Scale = 0.5f;
             visuals.DrawOffset = source.Center.ToVector2();
             visuals.RotationCenter = rotationCenter;
             MapColliderTag colliderTag = entityManager.CreateComponent<MapColliderTag>();
