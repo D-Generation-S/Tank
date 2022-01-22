@@ -5,7 +5,7 @@ using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
 using TankEngine.EntityComponentSystem.Validator;
 
-namespace TankEngine.EntityComponentSystem.Systems
+namespace TankEngine.EntityComponentSystem.Systems.Sound
 {
     /// <summary>
     /// This system will play sound effects 

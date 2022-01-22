@@ -6,6 +6,8 @@ using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using TankEngine.DataStructures.Geometrics;
 using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components.Rendering;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.Factories;
 
 namespace Tank.Builders
@@ -85,7 +87,7 @@ namespace Tank.Builders
             {
                 return returnComponents;
             }
-            PlaceableComponent position = entityManager.CreateComponent<PlaceableComponent>();
+            PositionComponent position = entityManager.CreateComponent<PositionComponent>();
             position.Position = Vector2.Zero;
 
             MoveableComponent moveable = entityManager.CreateComponent<MoveableComponent>();
@@ -95,12 +97,11 @@ namespace Tank.Builders
             moveable.Mass = 7;
 
 
-            VisibleComponent visuals = entityManager.CreateComponent<VisibleComponent>();
+            TextureComponent visuals = entityManager.CreateComponent<TextureComponent>();
             visuals.Texture = texture;
             visuals.Source = source;
-            visuals.Destination = collider;
-            visuals.SingleTextureSize = collider;
-            //visuals.DrawMiddle = true;
+            visuals.Scale = 0.5f;
+            visuals.DrawOffset = source.Center.ToVector2();
             visuals.RotationCenter = rotationCenter;
             MapColliderTag colliderTag = entityManager.CreateComponent<MapColliderTag>();
 

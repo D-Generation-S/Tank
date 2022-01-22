@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Tank.Builders;
@@ -28,9 +29,12 @@ using TankEngine.DataProvider.Loader;
 using TankEngine.DataStructures.Geometrics;
 using TankEngine.DataStructures.Spritesheet;
 using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components.Rendering;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
-using TankEngine.EntityComponentSystem.Systems;
+using TankEngine.EntityComponentSystem.Systems.Rendering;
+using TankEngine.EntityComponentSystem.Systems.Sound;
 using TankEngine.GameStates.States;
 using TankEngine.Music;
 using TankEngine.Randomizer;
@@ -241,17 +245,26 @@ namespace Tank.GameStates.States
                 map.RenderRequired = true;
                 map.ChangedImageData = component.Result.ImageData;
 
-                VisibleComponent mapRenderer = engine.EntityManager.CreateComponent<VisibleComponent>(entity);
-                mapRenderer.SingleTextureSize = new Rectangle(0, 0, component.Result.Width, component.Result.Height);
-                mapRenderer.Texture = new Texture2D(TankGame.PublicGraphicsDevice, component.Result.Width, component.Result.Height);
-                mapRenderer.Texture.Name = "GeneratedMap";
-                mapRenderer.Source = new Rectangle(0, 0, map.Width, map.Height);
-                mapRenderer.Destination = new Rectangle(0, 0, map.Width, map.Height);
+                PositionComponent position = engine.EntityManager.CreateComponent<PositionComponent>(entity);
+                position.Position = Vector2.Zero;
 
-                PlaceableComponent positionComponent = engine.EntityManager.CreateComponent<PlaceableComponent>(entity);
-                positionComponent.Position = Vector2.Zero;
+                TextureComponent textureComponent = engine.EntityManager.CreateComponent<TextureComponent>(entity);
+                textureComponent.Texture = new Texture2D(TankGame.PublicGraphicsDevice, component.Result.Width, component.Result.Height);
+                textureComponent.Texture.Name = "GeneratedMap";
+                textureComponent.Source = new Rectangle(0, 0, map.Width, map.Height);
+
                 engine.EntityManager.AddComponent(entity, map);
                 SpawnPlayers(component.Result);
+
+                uint camera = engine.EntityManager.CreateEntity();
+                PositionComponent cameraPosition = engine.EntityManager.CreateComponent<PositionComponent>(camera);
+                cameraPosition.Position = viewportAdapter.Viewport.Bounds.Center.ToVector2();
+
+                CameraComponent cameraData = engine.EntityManager.CreateComponent<CameraComponent>();
+                cameraData.Priority = 1000;
+                cameraData.Active = true;
+
+                engine.EntityManager.AddComponent(camera, cameraData);
 
                 loadingComplete = true;
             });
@@ -280,12 +293,16 @@ namespace Tank.GameStates.States
             engine.AddSystem(new SoundEffectSystem(ApplicationSettingsSingelton.Instance.EffectVolume));
             engine.AddSystem(new AnimationAttributeDisplaySystem());
             engine.AddSystem(new FadeInFadeOutSystem());
-            engine.AddSystem(new RenderSystem(
-                 spriteBatch,
-                 gameFont,
-                 defaultShader//,
-                              //new List<Effect>() { contentWrapper.Load<Effect>("Shaders/Postprocessing/Sepia"), contentWrapper.Load<Effect>("Shaders/Inverted") }
-             ));
+            DefaultFolderUtils folderUtils = new DefaultFolderUtils();
+            string screenshotBasePath = folderUtils.GetGameFolder();
+            screenshotBasePath = Path.Combine(screenshotBasePath, "Screenshots");
+            engine.AddSystem(new CameraRenderSystem(
+                spriteBatch,
+                defaultShader,
+                viewportAdapter,
+                TankGame.PublicGraphicsDevice,
+                screenshotBasePath
+                ));
 
             MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Playlist>(new JsonGameDataLoader<Playlist>("Playlists")));
             engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", ApplicationSettingsSingelton.Instance.MusicVolume));
@@ -416,9 +433,9 @@ namespace Tank.GameStates.States
         private uint AddPlayerBoundText(int yOffset, string text, uint targetEntity, Color color)
         {
             uint newText = entityManager.CreateEntity();
-            entityManager.CreateComponent<PlaceableComponent>(newText);
-            VisibleTextComponent textComponent = entityManager.CreateComponent<VisibleTextComponent>(newText);
-            textComponent.ShaderEffect = defaultShader;
+            entityManager.CreateComponent<PositionComponent>(newText);
+            TextComponent textComponent = entityManager.CreateComponent<TextComponent>(newText);
+            //textComponent.ShaderEffect = defaultShader;
             textComponent.Text = text;
             textComponent.Color = color;
             textComponent.Font = gameFont;
@@ -438,16 +455,16 @@ namespace Tank.GameStates.States
         private List<IComponent> AddPlayerHealthBarBackground(int yOffset, uint targetEntity)
         {
             List<IComponent> components = new List<IComponent>();
-            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
+            PositionComponent placeableComponent = entityManager.CreateComponent<PositionComponent>();
             placeableComponent.Position = Vector2.Zero;
 
-            VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
+            TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Texture = healthBarSprite.CompleteImage;
             Rectangle backgroundFrame1 = healthBarSprite.GetAreaFromPattern("bFrame1");
-            visibleComponent.Destination = backgroundFrame1;
+            //visibleComponent.Destination = backgroundFrame1;
             visibleComponent.Source = backgroundFrame1;
-            visibleComponent.SingleTextureSize = backgroundFrame1;
-            visibleComponent.LayerDepth = 0;
+            //visibleComponent.SingleTextureSize = backgroundFrame1;
+            visibleComponent.DrawLayer = 1;
 
 
             AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>();
@@ -479,19 +496,17 @@ namespace Tank.GameStates.States
             Rectangle backgroundFrame1 = powerBarSprite.GetAreaFromPattern("background");
 
             List<IComponent> components = new List<IComponent>();
-            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
-            Vector2 position = Vector2.UnitY * (viewportAdapter.VirtualHeight);
+            PositionComponent placeableComponent = entityManager.CreateComponent<PositionComponent>();
+            Vector2 position = Vector2.UnitY * (viewportAdapter.VirtualHeight - 1);
             position += Vector2.UnitX * (viewportAdapter.VirtualWidth - backgroundFrame1.Height);
             placeableComponent.Position = position;
             placeableComponent.Rotation = MathHelper.ToRadians(270);
 
-            VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
+            TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Texture = powerBarSprite.CompleteImage;
-            visibleComponent.Destination = backgroundFrame1;
             visibleComponent.Source = backgroundFrame1;
-            visibleComponent.SingleTextureSize = backgroundFrame1;
-            visibleComponent.LayerDepth = 0;
-            visibleComponent.Hidden = true;
+            visibleComponent.DrawLayer = 1;
+            visibleComponent.Visible = false;
 
             AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>();
             animationComponent.FrameSeconds = .25f;
@@ -517,30 +532,31 @@ namespace Tank.GameStates.States
         private List<IComponent> AddPlayerHealthBarForeground(int yOffset, uint targetEntity)
         {
             List<IComponent> components = new List<IComponent>();
-            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
+            PositionComponent placeableComponent = entityManager.CreateComponent<PositionComponent>();
             placeableComponent.Position = Vector2.Zero;
 
-            VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
+            TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Texture = healthBarSprite.CompleteImage;
-            Rectangle backgroundFrame1 = healthBarSprite.GetAreaFromPattern("fFrame1");
-            visibleComponent.Destination = backgroundFrame1;
-            visibleComponent.Source = backgroundFrame1;
-            visibleComponent.SingleTextureSize = backgroundFrame1;
-            visibleComponent.LayerDepth = 1;
+            Rectangle foregroundFrame1 = healthBarSprite.GetAreaFromPattern("fFrame1");
+            visibleComponent.Source = foregroundFrame1;
+            visibleComponent.DrawLayer = 200;
+
+            AttributeDisplayBaseSize sourceSize = entityManager.CreateComponent<AttributeDisplayBaseSize>();
+            sourceSize.BaseSize = foregroundFrame1;
 
             AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>();
             animationComponent.FrameSeconds = .25f;
             animationComponent.Loop = true;
             animationComponent.SpriteSources = new List<Rectangle>()
             {
-                backgroundFrame1,
+                foregroundFrame1,
                 healthBarSprite.GetAreaFromPattern("fFrame2")
             };
 
             BindComponent bindingComponent = entityManager.CreateComponent<BindComponent>();
             bindingComponent.PositionBound = true;
             bindingComponent.Offset = Vector2.UnitY * yOffset;
-            bindingComponent.Offset -= Vector2.UnitX * backgroundFrame1.Width / 2;
+            bindingComponent.Offset -= Vector2.UnitX * foregroundFrame1.Width / 2;
             bindingComponent.Source = true;
             bindingComponent.BoundEntityId = targetEntity;
             bindingComponent.DeleteIfParentGone = true;
@@ -551,6 +567,7 @@ namespace Tank.GameStates.States
 
             components.Add(placeableComponent);
             components.Add(visibleComponent);
+            components.Add(sourceSize);
             components.Add(animationComponent);
             components.Add(bindingComponent);
             components.Add(attributeDisplayComponent);
@@ -558,29 +575,30 @@ namespace Tank.GameStates.States
         }
         private List<IComponent> AddPowerBarForegroundSprite(uint targetEntity)
         {
-            Rectangle backgroundFrame1 = powerBarSprite.GetAreaFromPattern("foreground");
+            Rectangle foregroundFrame = powerBarSprite.GetAreaFromPattern("foreground");
 
             List<IComponent> components = new List<IComponent>();
-            PlaceableComponent placeableComponent = entityManager.CreateComponent<PlaceableComponent>();
-            Vector2 position = Vector2.UnitY * (viewportAdapter.VirtualHeight);
-            position += Vector2.UnitX * (viewportAdapter.VirtualWidth - backgroundFrame1.Height);
+            PositionComponent placeableComponent = entityManager.CreateComponent<PositionComponent>();
+            Vector2 position = Vector2.UnitY * (viewportAdapter.VirtualHeight - 1);
+            position += Vector2.UnitX * (viewportAdapter.VirtualWidth - foregroundFrame.Height);
             placeableComponent.Position = position;
             placeableComponent.Rotation = MathHelper.ToRadians(270);
 
-            VisibleComponent visibleComponent = entityManager.CreateComponent<VisibleComponent>();
+            TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Texture = powerBarSprite.CompleteImage;
-            visibleComponent.Destination = backgroundFrame1;
-            visibleComponent.Source = backgroundFrame1;
-            visibleComponent.SingleTextureSize = backgroundFrame1;
-            visibleComponent.LayerDepth = 1;
-            visibleComponent.Hidden = true;
+            visibleComponent.Source = foregroundFrame;
+            visibleComponent.DrawLayer = 200;
+            visibleComponent.Visible = false;
+
+            AttributeDisplayBaseSize sourceSize = entityManager.CreateComponent<AttributeDisplayBaseSize>();
+            sourceSize.BaseSize = foregroundFrame;
 
             AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>();
             animationComponent.FrameSeconds = .25f;
             animationComponent.Loop = true;
             animationComponent.SpriteSources = new List<Rectangle>()
             {
-                backgroundFrame1,
+                foregroundFrame,
             };
 
             AttributeDisplayComponent attributeDisplayComponent = entityManager.CreateComponent<AttributeDisplayComponent>();
@@ -594,6 +612,7 @@ namespace Tank.GameStates.States
 
             components.Add(placeableComponent);
             components.Add(visibleComponent);
+            components.Add(sourceSize);
             components.Add(animationComponent);
             components.Add(bindingComponent);
             components.Add(attributeDisplayComponent);

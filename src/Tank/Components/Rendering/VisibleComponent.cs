@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Tank.Components.Rendering
 {
     /// <summary>
     /// This component will make a component visible in the gameworld
     /// </summary>
+    [Obsolete("Use core library TextureComponent")]
     class VisibleComponent : BaseVisibleComponent
     {
         /// <summary>

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Tank.Builders;
 using Tank.Components;
-using Tank.Components.Rendering;
 using Tank.Components.Tags;
 using Tank.Events.PhysicBased;
 using Tank.Events.StateEvents;
@@ -19,6 +18,8 @@ using Tank.Interfaces.Builders;
 using Tank.Map.Generators;
 using TankEngine.DataStructures.Geometrics;
 using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components.Rendering;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
 using TankEngine.GameStates.States;
@@ -121,28 +122,6 @@ namespace Tank.GameStates.States
             engine.EventManager.SubscribeEvent(this, typeof(OpenMenuEvent));
         }
 
-        private void AddEntites()
-        {
-            mapId = engine.EntityManager.CreateEntity();
-            engine.EntityManager.AddComponent(mapId, new PlaceableComponent()
-            {
-                Position = new Vector2(0, 0)
-            });
-            /**
-            engine.EntityManager.AddComponent(mapId, new VisibleComponent()
-            {
-                Texture = mapToUse.Image,
-                Source = new Rectangle(0, 0, mapToUse.Width, mapToUse.Height),
-                Destination = new Rectangle(0, 0, mapToUse.Width, mapToUse.Height)
-            });
-            MapComponent mapComponent = new MapComponent()
-            {
-                Map = mapToUse
-            };
-            **/
-            //engine.EntityManager.AddComponent(mapId, mapComponent);
-        }
-
         /// <inheritdoc/>
         public override void LoadContent()
         {
@@ -194,16 +173,14 @@ namespace Tank.GameStates.States
                 builder.Init(engine);
             }
             randomCloudFactory = new RandomEntityBuilderFactory(cloudBuilders, randomizer);
-
-            AddEntites();
         }
 
         private void GenerateDebugEntity()
         {
             entityCounter = engine.EntityManager.CreateEntity(false);
-            PlaceableComponent placeableComponent = engine.EntityManager.CreateComponent<PlaceableComponent>();
+            PositionComponent placeableComponent = engine.EntityManager.CreateComponent<PositionComponent>();
             placeableComponent.Position = Vector2.Zero;
-            VisibleTextComponent VisibleTextComponent = engine.EntityManager.CreateComponent<VisibleTextComponent>();
+            TextComponent VisibleTextComponent = engine.EntityManager.CreateComponent<TextComponent>();
             VisibleTextComponent.Font = gameFont;
 
             engine.EntityManager.AddComponent(entityCounter, placeableComponent);
@@ -305,9 +282,8 @@ namespace Tank.GameStates.States
                 foreach (IComponent component in randomExplosionFactory.GetNewObject())
                 {
                     Circle circle = null;
-                    if (component is PlaceableComponent)
+                    if (component is PositionComponent placeableComponent)
                     {
-                        PlaceableComponent placeableComponent = (PlaceableComponent)component;
                         placeableComponent.Position = mouseWrapper.GetMouseVectorPosition();
                         circle = new Circle(mouseWrapper.GetMouseVectorPosition(), 16);
                     }
@@ -340,9 +316,10 @@ namespace Tank.GameStates.States
                     GenerateDebugEntity();
                     debugIdGenerated = true;
                 }
-                VisibleTextComponent entityCounterText = engine.EntityManager.GetComponent<VisibleTextComponent>(entityCounter);
+                TextComponent entityCounterText = engine.EntityManager.GetComponent<TextComponent>(entityCounter);
                 if (entityCounterText != null)
                 {
+                    entityCounterText.DrawLayer = 999;
                     entityCounterText.Text = "Fps: " + fps;
                     entityCounterText.Text += "\nUpdate ms: " + gameTime.ElapsedGameTime.TotalMilliseconds;
                     entityCounterText.Text += "\nEntities: " + engine.GetEntityCount();

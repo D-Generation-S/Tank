@@ -9,6 +9,7 @@ using Tank.Events.TerrainEvents;
 using Tank.Validator;
 using TankEngine.DataStructures.Geometrics;
 using TankEngine.EntityComponentSystem;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
 using TankEngine.EntityComponentSystem.Systems;
@@ -93,7 +94,7 @@ namespace Tank.Systems
             List<IComponent> components = damageComponent.EffectFactory.GetNewObject();
             foreach (IComponent component in components)
             {
-                if (component is PlaceableComponent placeable)
+                if (component is PositionComponent placeable)
                 {
                     placeable.Position = collisionEvent.Position;
                 }
@@ -126,7 +127,7 @@ namespace Tank.Systems
 
             foreach (uint gameObject in objects)
             {
-                PlaceableComponent placeableComponent = entityManager.GetComponent<PlaceableComponent>(gameObject);
+                PositionComponent placeableComponent = entityManager.GetComponent<PositionComponent>(gameObject);
                 ColliderComponent collider = entityManager.GetComponent<ColliderComponent>(gameObject);
                 Rectangle collisionArea = collider == null ? Rectangle.Empty : collider.Collider;
                 GameObjectData gameObjectData = entityManager.GetComponent<GameObjectData>(gameObject);

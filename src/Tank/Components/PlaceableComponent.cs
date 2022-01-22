@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using TankEngine.EntityComponentSystem.Components;
 
 namespace Tank.Components
@@ -6,6 +7,7 @@ namespace Tank.Components
     /// <summary>
     /// Allow the entity to be placed in the world
     /// </summary>
+    [Obsolete("Use the Position Component from the core engine")]
     class PlaceableComponent : BaseComponent
     {
         /// <summary>

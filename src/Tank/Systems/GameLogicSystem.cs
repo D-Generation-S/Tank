@@ -12,6 +12,8 @@ using Tank.Events.Data;
 using Tank.Events.StateEvents;
 using Tank.GameStates.Data;
 using Tank.Validator;
+using TankEngine.EntityComponentSystem.Components.Rendering;
+using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
 using TankEngine.EntityComponentSystem.Systems;
@@ -83,7 +85,7 @@ namespace Tank.Systems
             eventManager.SubscribeEvent(this, typeof(RemoveEntityEvent));
 
             arrowEntity = entityManager.CreateEntity(false);
-            entityManager.CreateComponent<PlaceableComponent>(arrowEntity);
+            entityManager.CreateComponent<PositionComponent>(arrowEntity);
 
             AnimationComponent animationComponent = entityManager.CreateComponent<AnimationComponent>(arrowEntity);
             animationComponent.FrameSeconds = 0.15f;
@@ -101,12 +103,10 @@ namespace Tank.Systems
             };
 
 
-            VisibleComponent arrowVisible = entityManager.CreateComponent<VisibleComponent>(arrowEntity);
+            TextureComponent arrowVisible = entityManager.CreateComponent<TextureComponent>(arrowEntity);
             arrowVisible.Texture = contentManager.Load<Texture2D>("Images/Entities/SelectionArrow");
-            arrowVisible.DrawMiddle = true;
-            arrowVisible.Destination = animationComponent.SpriteSources[0];
+            arrowVisible.DrawOffset = -animationComponent.SpriteSources[0].Center.ToVector2();
             arrowVisible.Source = animationComponent.SpriteSources[0];
-            arrowVisible.SingleTextureSize = animationComponent.SpriteSources[0];
 
             ComponentChangedEvent componentChangedEvent = eventManager.CreateEvent<ComponentChangedEvent>();
             componentChangedEvent.EntityId = arrowEntity;
@@ -196,12 +196,12 @@ namespace Tank.Systems
                     }
                     if (elementBinding.BoundEntityId == currentPlayerId)
                     {
-                        VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(roundDependingEntity);
+                        TextureComponent visibleComponent = entityManager.GetComponent<TextureComponent>(roundDependingEntity);
                         if (visibleComponent == null)
                         {
                             continue;
                         }
-                        visibleComponent.Hidden = false;
+                        visibleComponent.Visible = true;
                     }
                 }
                 BindComponent bindComponent = entityManager.CreateComponent<BindComponent>();
@@ -282,19 +282,19 @@ namespace Tank.Systems
                     continue;
                 }
 
-                VisibleComponent visibleComponent = entityManager.GetComponent<VisibleComponent>(roundDependingEntity);
-                bool hidden = true;
+                TextureComponent visibleComponent = entityManager.GetComponent<TextureComponent>(roundDependingEntity);
+                bool visible = true;
                 if (binding.BoundEntityId == currentPlayerId)
                 {
-                    hidden = false;
+                    visible = true;
                 }
                 if (binding.BoundEntityId == oldPlayerId)
                 {
-                    hidden = true;
+                    visible = false;
                 }
                 if (visibleComponent != null)
                 {
-                    visibleComponent.Hidden = hidden;
+                    visibleComponent.Visible = visible;
                 }
             }
 
@@ -309,6 +309,5 @@ namespace Tank.Systems
             stateChanged.EntityId = currentPlayerId;
             FireEvent(stateChanged);
         }
-
     }
 }

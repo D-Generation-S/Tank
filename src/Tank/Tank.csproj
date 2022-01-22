@@ -14,6 +14,14 @@
     <Exec Command="powershell -File &quot;..\..\buildScripts\fontInstall.ps1&quot;" />
   </Target>
   <ItemGroup>
+    <Compile Remove="Events\ComponentBased\**" />
+    <Compile Remove="Events\EntityBased\**" />
+    <EmbeddedResource Remove="Events\ComponentBased\**" />
+    <EmbeddedResource Remove="Events\EntityBased\**" />
+    <None Remove="Events\ComponentBased\**" />
+    <None Remove="Events\EntityBased\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Assets\Images\Effects\Explosion132x32-Sheet.png" />
     <None Remove="Assets\Images\Entities\BasicMunitionSprite.png" />
     <None Remove="Assets\Images\Entities\BasicTank.png" />
@@ -66,10 +74,6 @@
     <None Update="GameData\Spritesheets\WindowSpriteSheet.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Events\ComponentBased\" />
-    <Folder Include="Events\EntityBased\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TankEngine\TankEngine.csproj" />

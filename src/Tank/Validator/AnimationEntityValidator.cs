@@ -1,4 +1,5 @@
 ﻿using Tank.Components.Rendering;
+using TankEngine.EntityComponentSystem.Components.Rendering;
 using TankEngine.EntityComponentSystem.Manager;
 using TankEngine.EntityComponentSystem.Validator;
 
@@ -13,7 +14,7 @@ namespace Tank.Validator
         public bool IsValidEntity(uint entityId, IEntityManager entityManager)
         {
             bool valid = entityManager.HasComponent(entityId, typeof(AnimationComponent));
-            valid &= entityManager.HasComponent(entityId, typeof(VisibleComponent));
+            valid &= entityManager.HasComponent<TextureComponent>(entityId);
             return valid;
         }
     }
