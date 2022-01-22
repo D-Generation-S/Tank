@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TankEngine.EntityComponentSystem.Components.Rendering
 {
+    /// <summary>
+    /// Base class for rendering containers
+    /// </summary>
     public class AbstractRenderingComponent : BaseComponent
     {
         /// <summary>
