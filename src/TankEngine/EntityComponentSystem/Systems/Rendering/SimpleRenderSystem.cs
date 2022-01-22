@@ -213,7 +213,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// <summary>
         /// Is the current thing to draw in the render area
         /// </summary>
-        /// <param name="targetDrawArea">The are the texture or text is getting drawn to</param>
+        /// <param name="targetDrawArea">The area the texture or text is getting drawn on screen!</param>
         /// <returns>True if inside of the render area</returns>
         protected virtual bool IsInRenderArea(Rectangle targetDrawArea)
         {

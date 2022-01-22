@@ -497,16 +497,14 @@ namespace Tank.GameStates.States
 
             List<IComponent> components = new List<IComponent>();
             PositionComponent placeableComponent = entityManager.CreateComponent<PositionComponent>();
-            Vector2 position = Vector2.UnitY * (viewportAdapter.VirtualHeight);
+            Vector2 position = Vector2.UnitY * (viewportAdapter.VirtualHeight - 1);
             position += Vector2.UnitX * (viewportAdapter.VirtualWidth - backgroundFrame1.Height);
             placeableComponent.Position = position;
             placeableComponent.Rotation = MathHelper.ToRadians(270);
 
             TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Texture = powerBarSprite.CompleteImage;
-            //visibleComponent.Destination = backgroundFrame1;
             visibleComponent.Source = backgroundFrame1;
-            //visibleComponent.SingleTextureSize = backgroundFrame1;
             visibleComponent.DrawLayer = 1;
             visibleComponent.Visible = false;
 
@@ -540,9 +538,7 @@ namespace Tank.GameStates.States
             TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Texture = healthBarSprite.CompleteImage;
             Rectangle foregroundFrame1 = healthBarSprite.GetAreaFromPattern("fFrame1");
-            //visibleComponent.Destination = backgroundFrame1;
             visibleComponent.Source = foregroundFrame1;
-            //visibleComponent.SingleTextureSize = backgroundFrame1;
             visibleComponent.DrawLayer = 200;
 
             AttributeDisplayBaseSize sourceSize = entityManager.CreateComponent<AttributeDisplayBaseSize>();
@@ -583,16 +579,14 @@ namespace Tank.GameStates.States
 
             List<IComponent> components = new List<IComponent>();
             PositionComponent placeableComponent = entityManager.CreateComponent<PositionComponent>();
-            Vector2 position = Vector2.UnitY * (viewportAdapter.VirtualHeight);
+            Vector2 position = Vector2.UnitY * (viewportAdapter.VirtualHeight - 1);
             position += Vector2.UnitX * (viewportAdapter.VirtualWidth - foregroundFrame.Height);
             placeableComponent.Position = position;
             placeableComponent.Rotation = MathHelper.ToRadians(270);
 
             TextureComponent visibleComponent = entityManager.CreateComponent<TextureComponent>();
             visibleComponent.Texture = powerBarSprite.CompleteImage;
-            //visibleComponent.Destination = backgroundFrame1;
             visibleComponent.Source = foregroundFrame;
-            //visibleComponent.SingleTextureSize = backgroundFrame1;
             visibleComponent.DrawLayer = 200;
             visibleComponent.Visible = false;
 

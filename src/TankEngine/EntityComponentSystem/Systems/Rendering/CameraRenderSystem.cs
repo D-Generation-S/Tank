@@ -111,18 +111,20 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         }
 
         /// <inheritdoc/>
-        protected override bool IsInRenderArea(Rectangle targetDrawArea)
-        {
-            Vector2 TopLeftPosition = cameraPosition - viewportAdapter.Viewport.Bounds.Center.ToVector2();
-            Rectangle visibleArea = new Rectangle((int)TopLeftPosition.X, (int)TopLeftPosition.Y, viewportAdapter.Viewport.Width, viewportAdapter.Viewport.Height);
-            return visibleArea.Intersects(targetDrawArea);
-        }
-
-        /// <inheritdoc/>
         protected override Vector2 GetBaseDrawPosition(PositionComponent positionComponent)
         {
-            Vector2 cameraOffset = cameraPosition - viewportAdapter.Viewport.Bounds.Center.ToVector2();
-            return base.GetBaseDrawPosition(positionComponent) + cameraOffset;
+            return WorldPositionToScreenPosition(positionComponent.Position);
+        }
+
+        /// <summary>
+        /// Convert the world position of an object into a screen position
+        /// </summary>
+        /// <param name="worldPosition">The world position of an object</param>
+        /// <returns>The screen position of the object</returns>
+        private Vector2 WorldPositionToScreenPosition(Vector2 worldPosition)
+        {
+            Vector2 cameraWorldTopLeftPosition = cameraPosition - viewportAdapter.Center.ToVector2();
+            return (cameraWorldTopLeftPosition * -1 + worldPosition);
         }
 
         /// <inheritdoc/>
@@ -278,3 +280,4 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         }
     }
 }
+
