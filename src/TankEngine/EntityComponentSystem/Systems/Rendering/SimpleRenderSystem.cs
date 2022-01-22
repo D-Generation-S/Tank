@@ -145,7 +145,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
         /// </summary>
         /// <param name="containerEffect">The effect of the current container</param>
         /// <param name="currentEffect">The last used effect by the last render call</param>
-        /// <returns></returns>
+        /// <returns>The effect which is getting used right now</returns>
         protected virtual Effect BeginDrawGameObject(Effect containerEffect, Effect currentEffect)
         {
             containerEffect = containerEffect ?? defaultEffect;
