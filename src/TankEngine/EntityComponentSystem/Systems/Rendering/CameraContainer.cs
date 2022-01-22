@@ -8,12 +8,22 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
     /// </summary>
     public class CameraContainer
     {
-        public PositionComponent Position { get; set; }
+        /// <summary>
+        /// The position of the camera in the world
+        /// </summary>
+        public PositionComponent WorldPosition { get; set; }
+
+        /// <summary>
+        /// The camera element with information for rendering
+        /// </summary>
         public CameraComponent Camera { get; set; }
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
         public CameraContainer()
         {
-            Position = null;
+            WorldPosition = null;
             Camera = null;
         }
     }

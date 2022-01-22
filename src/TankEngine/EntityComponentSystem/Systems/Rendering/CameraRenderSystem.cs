@@ -90,7 +90,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
                 return;
             }
             cameraFound = true;
-            cameraPosition = cameraToUse.Position.Position;
+            cameraPosition = cameraToUse.WorldPosition.Position;
             postProcessingEffects = cameraToUse.Camera.PostProcessingEffects;
             if (cameraToUse.Camera.TakeScreenshot)
             {
@@ -137,7 +137,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Rendering
                 return null;
             }
             CameraContainer returnContainer = cameraContainerPool.Get();
-            returnContainer.Position = position;
+            returnContainer.WorldPosition = position;
             returnContainer.Camera = camera;
             return returnContainer;
         }
