@@ -1,11 +1,10 @@
-﻿using DebugFramework.DataTypes;
-using System;
-using System.IO.Pipes;
+﻿using System.IO.Pipes;
 
 namespace DebugFramework.Streaming.Conversion
 {
     public class LambdaResponseAction<S> : IRequestResponseAction<S> where S : PipeStream
     {
+        /**
         private readonly Func<Type, BaseDataType, S, StreamCommunicator<S>, bool> responseAction;
 
         public LambdaResponseAction(Func<Type, BaseDataType, S, StreamCommunicator<S>, bool> responseAction)
@@ -17,5 +16,6 @@ namespace DebugFramework.Streaming.Conversion
         {
             return responseAction == null ? false : responseAction(dataType, requestData, pipeStream, communicator);
         }
+        */
     }
 }

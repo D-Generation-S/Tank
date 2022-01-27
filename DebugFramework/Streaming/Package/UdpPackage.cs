@@ -101,6 +101,10 @@ namespace DebugFramework.Streaming.Package
 
         private string CreateChecksum(string dataToCheck)
         {
+            if (dataToCheck == null)
+            {
+                return null;
+            }
             string returnChecksum = string.Empty;
             using (MD5 md5 = MD5.Create())
             {
@@ -132,7 +136,9 @@ namespace DebugFramework.Streaming.Package
 
         public O GetPayload<O>() where O : BaseDataType
         {
-            return JsonSerializer.Deserialize<O>(GetPayloadString());
+            string payloadString = GetPayloadString();
+
+            return payloadString == null ? default : JsonSerializer.Deserialize<O>(GetPayloadString());
         }
     }
 }

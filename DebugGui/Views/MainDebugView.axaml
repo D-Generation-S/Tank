@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DebugGui.Views.MainDebugView">
+	<Grid RowDefinitions="auto, *">
+		<StackPanel Orientation="Horizontal">
+			<ComboBox Items="{Binding AvailableGameInstancs}" SelectedItem="{Binding SelectedGameDebugInstance}" IsVisible="{Binding !IsConnected}"/>
+			<Button Content="Connect" Command="{Binding ConnectCommand}" IsVisible="{Binding !IsConnected}"/>
+			<Button Content="Disconnect" Command="{Binding DisconnectCommand}" IsVisible="{Binding IsConnected}"/>
+		</StackPanel>
+		<Grid ColumnDefinitions="auto, *" Grid.Row="1">
+			<ScrollViewer MinWidth="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+				<ListBox VerticalAlignment="Stretch" Items="{Binding CurrentEntites}"/>
+			</ScrollViewer>
+		</Grid>
+	</Grid>
+
+</UserControl>

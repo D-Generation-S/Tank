@@ -1,4 +1,6 @@
-﻿namespace DebugFramework.DataTypes
+﻿using System;
+
+namespace DebugFramework.DataTypes
 {
     /// <summary>
     /// Base data for the pipe streaming communication
@@ -16,6 +18,11 @@
         public BaseDataType()
         {
             AssemblyQualifiedName = GetType().AssemblyQualifiedName;
+        }
+
+        public Type GetRealType()
+        {
+            return Type.GetType(AssemblyQualifiedName);
         }
     }
 }

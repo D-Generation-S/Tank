@@ -1,6 +1,4 @@
-﻿using DebugFramework.DataTypes;
-using System;
-using System.IO.Pipes;
+﻿using System.IO.Pipes;
 
 namespace DebugFramework.Streaming.Conversion
 {
@@ -10,6 +8,6 @@ namespace DebugFramework.Streaming.Conversion
     /// <typeparam name="S">The stream type to use for the response</typeparam>
     public interface IRequestResponseAction<S> where S : PipeStream
     {
-        bool ResponseToRequest(Type dataType, BaseDataType requestData, S pipeStream, StreamCommunicator<S> communicator);
+        //bool ResponseToRequest(Type dataType, BaseDataType requestData, S pipeStream, StreamCommunicator<S> communicator);
     }
 }

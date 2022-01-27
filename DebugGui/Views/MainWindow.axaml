@@ -6,12 +6,36 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DebugGui.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="DebugGui">
+        Title="DebugGui"
+		TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Button Content="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding TestCommand}"/>
+
+	<Panel>
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
+					BackgroundSource="Digger"
+					TintColor="Black"
+					TintOpacity="1"
+					MaterialOpacity="0.65" />
+			</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
+		<Grid RowDefinitions="40, *">
+			<Grid ColumnDefinitions="auto, *" Grid.Row="0">
+				<Image Margin="5" Source="/Assets/avalonia-logo.ico"></Image>
+				<TextBlock VerticalAlignment="Center" Text="DebugGui" Grid.Column="1"/>
+			</Grid>
+			<Panel Grid.Row="1" Margin="5,0,5,5">
+				<ContentControl Content="{Binding WindowContent}"/>
+			</Panel>
+		</Grid>
+	</Panel>
+    
 
 </Window>

@@ -3,8 +3,10 @@
     public enum DataIdentifier
     {
         Login,
-        Update,
         Logout,
-        Request
+        Update,
+        Request,
+        Response,
+        Broadcast
     }
 }
