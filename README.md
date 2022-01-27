@@ -2,6 +2,7 @@
 
 [![Latest unstable build](https://github.com/D-Generation-S/Tank/actions/workflows/build-debug-version.yml/badge.svg)](https://github.com/D-Generation-S/Tank/actions/workflows/build-debug-version.yml)
 [![Latest release](https://badgen.net/github/release/D-Generation-S/Tank)](https://github.com/D-Generation-S/Tank/releases)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FD-Generation-S%2FTank.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FD-Generation-S%2FTank?ref=badge_shield)
 
 
 [![GitHub license](https://img.shields.io/github/license/D-Generation-S/Tank.svg)](https://github.com/D-Generation-S/Tank/blob/main/LICENSE)
@@ -53,6 +54,9 @@ The settings for the game will be saved in your `Application folder`. It will cr
 ## License
 
 The project is licensed with the [MIT][license].
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FD-Generation-S%2FTank.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FD-Generation-S%2FTank?ref=badge_large)
 
 # Contributors
 ![GitHub Contributors Image](https://contrib.rocks/image?repo=D-Generation-S/Tank)
