@@ -33,6 +33,7 @@ using TankEngine.EntityComponentSystem.Components.Rendering;
 using TankEngine.EntityComponentSystem.Components.World;
 using TankEngine.EntityComponentSystem.Events;
 using TankEngine.EntityComponentSystem.Manager;
+using TankEngine.EntityComponentSystem.Systems.Debugging;
 using TankEngine.EntityComponentSystem.Systems.Rendering;
 using TankEngine.EntityComponentSystem.Systems.Sound;
 using TankEngine.GameStates.States;
@@ -303,6 +304,9 @@ namespace Tank.GameStates.States
                 TankGame.PublicGraphicsDevice,
                 screenshotBasePath
                 ));
+#if DEBUG
+            engine.AddSystem(new PipeDebugSystem());
+#endif
 
             MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Playlist>(new JsonGameDataLoader<Playlist>("Playlists")));
             engine.AddSystem(new MusicSystem(musicManager, "IngameMusic", ApplicationSettingsSingelton.Instance.MusicVolume));

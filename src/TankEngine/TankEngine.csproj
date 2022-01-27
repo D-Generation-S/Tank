@@ -13,4 +13,7 @@
     </PackageReference>
     <PackageReference Include="System.Text.Json" Version="6.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DebugFramework\DebugFramework.csproj" />
+  </ItemGroup>
 </Project>
