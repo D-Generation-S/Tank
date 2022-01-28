@@ -19,35 +19,21 @@ namespace DebugGui.ViewModels
         public MainWindowViewModel()
         {
             UdpBroadcastServer<BroadcastData> broadcastClient = new UdpBroadcastServer<BroadcastData>(Configuration.BROADCAST_IP);
-            List<int> ports = broadcastClient.GetFreePort(1024, 49150, 2);
+            List<int> ports = broadcastClient.GetFreePort(1024, 49150, 3);
             BroadcastData data = new BroadcastData()
             {
                 ServerName = Environment.MachineName,
                 IpAddress = broadcastClient.GetClientIp().ToString(),
                 UpdatePort = ports[0],
-                CommunicationPort = ports[1]
+                CommunicationRecievePort = ports[1],
+                CommunicationSendPort = ports[2]
             };
             broadcastClient.StartBroadcast(new UdpPackage<BroadcastData>(), data);
             WindowContent = new MainDebugViewModel();
 
             Task.Run(async () =>
             {
-                UdpSendClient<BroadcastData> client = new UdpSendClient<BroadcastData>();
-                UdpPackage<BroadcastData> testPackage = new UdpPackage<BroadcastData>();
-                testPackage.Init(0, DataIdentifier.Login, new BroadcastData());
-                while (true)
-                {
-                    client.SendTo(new IPEndPoint(IPAddress.Parse(data.IpAddress), data.UpdatePort), testPackage);
-                    Task.Delay(500);
-                }
-
-            });
-
-            Task.Run(async () =>
-            {
-                UdpRecieveClient<BroadcastData> client = new UdpRecieveClient<BroadcastData>(IPAddress.Parse(data.IpAddress), data.CommunicationPort);
-                //UdpPackage<BroadcastData> testPackage = new UdpPackage<BroadcastData>();
-                //testPackage.Init(0, DataIdentifier.Login, new BroadcastData());
+                UdpCommunicationClient<BroadcastData> client = new UdpCommunicationClient<BroadcastData>(IPAddress.Any, data.CommunicationRecievePort, data.CommunicationSendPort);
                 while (true)
                 {
                     CommunicationPackage<BroadcastData> internalData = await client.RecieveCommunicationPackageAsync();

@@ -6,6 +6,7 @@
 
         public string IpAddress { get; set; }
         public int UpdatePort { get; set; }
-        public int CommunicationPort { get; set; }
+        public int CommunicationRecievePort { get; set; }
+        public int CommunicationSendPort { get; set; }
     }
 }

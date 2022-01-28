@@ -57,12 +57,13 @@ namespace DebugGui.ViewModels
                     }
                     _ = Task.Run(async () =>
                       {
+                          UdpCommunicationClient<BroadcastData> requestClient = new UdpCommunicationClient<BroadcastData>(IPAddress.Parse(data.IpAddress), data.CommunicationSendPort, false);
                           UdpSendClient<BroadcastData> sendClient = new UdpSendClient<BroadcastData>();
                           while (true)
                           {
                               UdpRecieveClient<BroadcastData> internalTestListner = new UdpRecieveClient<BroadcastData>(IPAddress.Parse(data.IpAddress), data.UpdatePort);
                               CommunicationPackage<BroadcastData> internalData = await internalTestListner.RecieveCommunicationPackageAsync();
-                              sendClient.SendTo(new IPEndPoint(internalData.Sender.Address, data.CommunicationPort), internalData.UdpPackage);
+                              sendClient.SendTo(new IPEndPoint(internalData.Sender.Address, data.CommunicationRecievePort), internalData.UdpPackage);
                               await Task.Delay(100);
                           }
                       });

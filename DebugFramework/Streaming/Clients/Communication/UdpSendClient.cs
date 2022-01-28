@@ -1,17 +1,27 @@
 ﻿using DebugFramework.DataTypes;
 using DebugFramework.Streaming.Package;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public class UdpSendClient<T> : BaseUdpCommunicationClient<T> where T : BaseDataType
+    public class UdpSendClient<T> : BaseUdpCommunicationClient<T>, IUdpSendClient<T> where T : BaseDataType
     {
         public UdpSendClient() : base()
         {
 
         }
         public UdpSendClient(IPAddress defaultTargetIp, int defaultTargetPort) : base(defaultTargetIp, defaultTargetPort)
+        {
+        }
+
+        public UdpSendClient(IPAddress defaultTargetIp, int defaultTargetPort, UdpClient clientToUse)
+            : base(clientToUse, new IPEndPoint(defaultTargetIp, defaultTargetPort))
+        {
+        }
+
+        public UdpSendClient(UdpClient clientToUse) : base(clientToUse)
         {
         }
 

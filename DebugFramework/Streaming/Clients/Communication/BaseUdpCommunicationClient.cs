@@ -9,15 +9,26 @@ namespace DebugFramework.Streaming.Clients.Communication
         protected readonly UdpClient communicationClient;
         protected readonly IPEndPoint usedEndpoint;
 
-        public BaseUdpCommunicationClient()
+
+
+        public BaseUdpCommunicationClient() : this(new UdpClient())
         {
-            communicationClient = new UdpClient();
         }
 
         public BaseUdpCommunicationClient(IPAddress listenIp, int listenPort)
+            : this(new UdpClient(listenPort, AddressFamily.InterNetwork), new IPEndPoint(listenIp, listenPort))
         {
-            communicationClient = new UdpClient(listenPort, AddressFamily.InterNetwork);
-            usedEndpoint = new IPEndPoint(listenIp, listenPort);
+
+        }
+
+        public BaseUdpCommunicationClient(UdpClient clientToUse) : this(clientToUse, null)
+        {
+        }
+
+        protected BaseUdpCommunicationClient(UdpClient clientToUse, IPEndPoint endpoint)
+        {
+            communicationClient = clientToUse;
+            usedEndpoint = endpoint;
         }
     }
 
