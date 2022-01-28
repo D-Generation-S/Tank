@@ -36,6 +36,10 @@ namespace DebugFramework.Streaming.Package
 
         public void Init(byte[] dataStream)
         {
+            if (dataStream.Length < HEADER_SIZE)
+            {
+                return;
+            }
             packageNumber = BitConverter.ToUInt32(dataStream, 0);
             int identifier = BitConverter.ToInt32(dataStream, 4);
             isCompressed = BitConverter.ToBoolean(dataStream, 8);

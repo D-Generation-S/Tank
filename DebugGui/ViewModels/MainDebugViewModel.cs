@@ -1,10 +1,11 @@
-﻿using DebugFramework.DataTypes;
-using DebugFramework.DataTypes.Responses;
+﻿using DebugFramework.DataTypes.Responses;
 using DebugFramework.Streaming;
+using DebugFramework.Streaming.Clients.Communication;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -12,7 +13,7 @@ namespace DebugGui.ViewModels
 {
     public class MainDebugViewModel : ViewModelBase
     {
-        private readonly UdpListener listener;
+        private readonly UdpRecieveClient<BroadcastData> listener;
 
         private object gameInstanceLock = new object();
 
@@ -37,7 +38,7 @@ namespace DebugGui.ViewModels
 
         public MainDebugViewModel()
         {
-            listener = new UdpListener();
+            listener = new UdpRecieveClient<BroadcastData>(Configuration.BROADCAST_IP);
             AvailableGameInstancs = new ObservableCollection<GameDebugInstanceViewModel>();
             IsConnected = false;
 
@@ -45,7 +46,7 @@ namespace DebugGui.ViewModels
             {
                 while (true)
                 {
-                    BroadcastData data = await listener.ListenForBroadcastAsync();
+                    BroadcastData data = await listener.RecieveMessageAsync();
                     lock (gameInstanceLock)
                     {
                         if (AvailableGameInstancs.Any(instance => instance.IpAddress == data.IpAddress && instance.Port == data.UpdatePort))
@@ -54,9 +55,22 @@ namespace DebugGui.ViewModels
                         }
                         AvailableGameInstancs.Add(new GameDebugInstanceViewModel(data));
                     }
+                    _ = Task.Run(async () =>
+                      {
+                          UdpSendClient<BroadcastData> sendClient = new UdpSendClient<BroadcastData>();
+                          while (true)
+                          {
+                              UdpRecieveClient<BroadcastData> internalTestListner = new UdpRecieveClient<BroadcastData>(IPAddress.Parse(data.IpAddress), data.UpdatePort);
+                              CommunicationPackage<BroadcastData> internalData = await internalTestListner.RecieveCommunicationPackageAsync();
+                              sendClient.SendTo(new IPEndPoint(internalData.Sender.Address, data.CommunicationPort), internalData.UdpPackage);
+                              await Task.Delay(100);
+                          }
+                      });
                     await Task.Delay(100);
                 }
             });
+
+
 
             IObservable<bool> canConnect = this.WhenAnyValue(
                                                     x => x.SelectedGameDebugInstance,
@@ -72,6 +86,7 @@ namespace DebugGui.ViewModels
                IsConnected = true;
                while (IsConnected)
                {
+                   /**
                    await Task.Delay(16);
                    BaseDataType returnData = await listener.ListenForUpdatesAsync(SelectedGameDebugInstance.IpAddress, SelectedGameDebugInstance.Port, (package, type) =>
                    {
@@ -81,6 +96,7 @@ namespace DebugGui.ViewModels
                        }
                        return null;
                    });
+                   */
                }
 
            }, canConnect);
