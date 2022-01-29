@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace DebugFramework.Streaming.Package
 {
-    public class UdpPackage<T> where T : BaseDataType
+    public class UdpPackage
     {
         private const int HEADER_SIZE = 17;
 
@@ -24,7 +24,7 @@ namespace DebugFramework.Streaming.Package
         private string checksum;
         private string payload;
 
-        public virtual void Init(uint packageNumber, DataIdentifier identifier, T payload)
+        public virtual void Init<T>(uint packageNumber, DataIdentifier identifier, T payload) where T : BaseDataType
         {
             this.packageNumber = packageNumber;
             dataIdentifier = identifier;

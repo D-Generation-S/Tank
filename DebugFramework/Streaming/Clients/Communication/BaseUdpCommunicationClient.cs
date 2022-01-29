@@ -1,10 +1,9 @@
-﻿using DebugFramework.DataTypes;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public class BaseUdpCommunicationClient<T> : BaseUdpClient where T : BaseDataType
+    public class BaseUdpCommunicationClient : BaseUdpClient
     {
         protected readonly UdpClient communicationClient;
         protected readonly IPEndPoint usedEndpoint;

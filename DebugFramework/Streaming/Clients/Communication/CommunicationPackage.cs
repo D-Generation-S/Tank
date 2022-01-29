@@ -1,18 +1,38 @@
 ﻿using DebugFramework.DataTypes;
 using DebugFramework.Streaming.Package;
+using System;
 using System.Net;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public class CommunicationPackage<T> where T : BaseDataType
+    public class CommunicationPackage
     {
         public IPEndPoint Sender { get; }
-        public UdpPackage<T> UdpPackage { get; }
+        public UdpPackage UdpPackage { get; }
 
-        public CommunicationPackage(IPEndPoint sender, UdpPackage<T> udpPackage)
+        public CommunicationPackage(IPEndPoint sender, UdpPackage udpPackage)
         {
             Sender = sender;
             UdpPackage = udpPackage;
+        }
+
+        public Type GetPackageType()
+        {
+            if (UdpPackage == null)
+            {
+                return null;
+            }
+            BaseDataType baseData = UdpPackage.GetBasePayload();
+            return baseData == null ? null : baseData.GetRealType();
+        }
+
+        public T GetPackageContent<T>() where T : BaseDataType
+        {
+            if (UdpPackage == null)
+            {
+                return default;
+            }
+            return UdpPackage.GetPayload<T>();
         }
     }
 }

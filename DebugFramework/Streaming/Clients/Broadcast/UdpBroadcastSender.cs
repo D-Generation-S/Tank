@@ -21,12 +21,12 @@ namespace DebugFramework.Streaming.Clients.Broadcast
             broadcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         }
 
-        public async Task SendMessageAsync(UdpPackage<T> dataPackage)
+        public async Task SendMessageAsync(UdpPackage dataPackage)
         {
             await Task.Run(() => SendMessage(dataPackage));
         }
 
-        public void SendMessage(UdpPackage<T> dataPackage)
+        public void SendMessage(UdpPackage dataPackage)
         {
             byte[] dataToSend = dataPackage.GetDataStream();
             broadcastSocket.SendTo(dataToSend, broadcastEndpoint);

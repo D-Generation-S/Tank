@@ -1,4 +1,5 @@
-﻿using DebugFramework.DataTypes.Responses;
+﻿using DebugFramework.DataTypes;
+using DebugFramework.DataTypes.Responses;
 using DebugFramework.Streaming;
 using DebugFramework.Streaming.Clients.Communication;
 using ReactiveUI;
@@ -13,11 +14,13 @@ namespace DebugGui.ViewModels
 {
     public class MainDebugViewModel : ViewModelBase
     {
-        private readonly UdpRecieveClient<BroadcastData> listener;
+        private readonly UdpRecieveClient listener;
 
         private object gameInstanceLock = new object();
 
         public ObservableCollection<GameDebugInstanceViewModel> AvailableGameInstancs { get; }
+
+        public ObservableCollection<EntityViewModel> CurrentEntites { get; }
 
         public GameDebugInstanceViewModel SelectedGameDebugInstance
         {
@@ -33,20 +36,21 @@ namespace DebugGui.ViewModels
         }
         private bool isConnected;
 
-        public ICommand ConnectCommand { get; set; }
-        public ICommand DisconnedtCommand { get; set; }
+        public ICommand ConnectCommand { get; }
+        public ICommand DisconnectCommand { get; }
 
         public MainDebugViewModel()
         {
-            listener = new UdpRecieveClient<BroadcastData>(Configuration.BROADCAST_IP);
+            listener = new UdpRecieveClient(Configuration.BROADCAST_IP);
             AvailableGameInstancs = new ObservableCollection<GameDebugInstanceViewModel>();
+            CurrentEntites = new ObservableCollection<EntityViewModel>();
             IsConnected = false;
 
             Task.Run(async () =>
             {
                 while (true)
                 {
-                    BroadcastData data = await listener.RecieveMessageAsync();
+                    BroadcastData data = await listener.RecieveMessageAsync<BroadcastData>();
                     lock (gameInstanceLock)
                     {
                         if (AvailableGameInstancs.Any(instance => instance.IpAddress == data.IpAddress && instance.Port == data.UpdatePort))
@@ -55,18 +59,6 @@ namespace DebugGui.ViewModels
                         }
                         AvailableGameInstancs.Add(new GameDebugInstanceViewModel(data));
                     }
-                    _ = Task.Run(async () =>
-                      {
-                          UdpCommunicationClient<BroadcastData> requestClient = new UdpCommunicationClient<BroadcastData>(IPAddress.Parse(data.IpAddress), data.CommunicationSendPort, false);
-                          UdpSendClient<BroadcastData> sendClient = new UdpSendClient<BroadcastData>();
-                          while (true)
-                          {
-                              UdpRecieveClient<BroadcastData> internalTestListner = new UdpRecieveClient<BroadcastData>(IPAddress.Parse(data.IpAddress), data.UpdatePort);
-                              CommunicationPackage<BroadcastData> internalData = await internalTestListner.RecieveCommunicationPackageAsync();
-                              sendClient.SendTo(new IPEndPoint(internalData.Sender.Address, data.CommunicationRecievePort), internalData.UdpPackage);
-                              await Task.Delay(100);
-                          }
-                      });
                     await Task.Delay(100);
                 }
             });
@@ -78,29 +70,40 @@ namespace DebugGui.ViewModels
                                                     (GameDebugInstanceViewModel instance) => instance != null
                                                 );
 
-            ConnectCommand = ReactiveCommand.Create(async () =>
-           {
-               if (SelectedGameDebugInstance == null)
-               {
-                   return;
-               }
-               IsConnected = true;
-               while (IsConnected)
-               {
-                   /**
-                   await Task.Delay(16);
-                   BaseDataType returnData = await listener.ListenForUpdatesAsync(SelectedGameDebugInstance.IpAddress, SelectedGameDebugInstance.Port, (package, type) =>
-                   {
-                       if (type == typeof(EntitesDump))
-                       {
-                           return package.GetPayload<EntitesDump>();
-                       }
-                       return null;
-                   });
-                   */
-               }
+            IObservable<bool> canDisconnect = this.WhenAnyValue(
+                                        x => x.IsConnected,
+                                        (bool connection) =>
+                                        {
+                                            return connection;
+                                        });
 
-           }, canConnect);
+            ConnectCommand = ReactiveCommand.Create(async () =>
+            {
+                if (SelectedGameDebugInstance == null)
+                {
+                    return;
+                }
+                IsConnected = true;
+                UdpRecieveClient updateListner = new UdpRecieveClient(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port);
+
+                while (IsConnected)
+                {
+                    await Task.Delay(16);
+                    CommunicationPackage returnData = await updateListner.RecieveCommunicationPackageAsync();
+                    BaseDataType packageData = returnData.UdpPackage?.GetBasePayload();
+                    if (packageData?.GetRealType() == typeof(EntitesDump))
+                    {
+                        EntitesDump dump = returnData.GetPackageContent<EntitesDump>();
+                    }
+
+                }
+
+            }, canConnect);
+
+            DisconnectCommand = ReactiveCommand.Create(async () =>
+            {
+                IsConnected = false;
+            }, canDisconnect);
         }
     }
 }

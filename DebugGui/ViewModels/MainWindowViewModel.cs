@@ -1,11 +1,11 @@
+using DebugFramework.DataTypes;
 using DebugFramework.DataTypes.Responses;
+using DebugFramework.DataTypes.SubTypes;
 using DebugFramework.Streaming;
 using DebugFramework.Streaming.Clients.Broadcast;
-using DebugFramework.Streaming.Clients.Communication;
 using DebugFramework.Streaming.Package;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace DebugGui.ViewModels
@@ -28,19 +28,46 @@ namespace DebugGui.ViewModels
                 CommunicationRecievePort = ports[1],
                 CommunicationSendPort = ports[2]
             };
-            broadcastClient.StartBroadcast(new UdpPackage<BroadcastData>(), data);
+            UdpPackage udpPackage = new UdpPackage();
+            udpPackage.Init(0, DataIdentifier.Broadcast, data);
+            broadcastClient.StartBroadcast(new UdpPackage(), data);
             WindowContent = new MainDebugViewModel();
 
             Task.Run(async () =>
             {
-                UdpCommunicationClient<BroadcastData> client = new UdpCommunicationClient<BroadcastData>(IPAddress.Any, data.CommunicationRecievePort, data.CommunicationSendPort);
+                UdpBroadcastServer<BaseDataType> updateClient = new UdpBroadcastServer<BaseDataType>(data.UpdatePort);
+                UdpPackage broadcastPackage = new UdpPackage();
+                uint packageNumber = 0;
                 while (true)
                 {
-                    CommunicationPackage<BroadcastData> internalData = await client.RecieveCommunicationPackageAsync();
-                    await Task.Delay(100);
-                }
+                    EntitesDump dump = new EntitesDump();
+                    dump.Entites = new List<EntityContainer>() { new EntityContainer()
+                    {
+                        entityId = 0,
+                        EntityComponents = new List<Component>()
+                        {
+                            new Component("Test")
+                            {
+                                Arguments = new List<ComponentArgument>()
+                                {
+                                    new ComponentArgument()
+                                    {
+                                        Name = "Texture",
+                                        Value = "Some/texture/path"
+                                    }
+                                }
+                            }
+                        }
+                    } };
 
+                    broadcastPackage.Init(packageNumber, DataIdentifier.Update, dump);
+
+                    updateClient.SendBroadcast(broadcastPackage);
+                    packageNumber++;
+                    await Task.Delay(16);
+                }
             });
         }
     }
 }
+

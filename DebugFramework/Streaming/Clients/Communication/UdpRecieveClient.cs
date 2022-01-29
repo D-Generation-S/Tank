@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public class UdpRecieveClient<T> : BaseUdpCommunicationClient<T>, IUdpRecieveClient<T> where T : BaseDataType
+    public class UdpRecieveClient : BaseUdpCommunicationClient, IUdpRecieveClient
     {
         public UdpRecieveClient()
         {
@@ -25,25 +25,42 @@ namespace DebugFramework.Streaming.Clients.Communication
         {
         }
 
-        public T RecieveMessage()
+        public BaseDataType RecieveMessage()
+        {
+            return RecieveCommunicationPackage().UdpPackage?.GetBasePayload();
+        }
+
+        public T RecieveMessage<T>() where T : BaseDataType
         {
             return RecieveCommunicationPackage().UdpPackage?.GetPayload<T>();
         }
 
-        public CommunicationPackage<T> RecieveCommunicationPackage()
+        public async Task<BaseDataType> RecieveMessageAsync()
+        {
+            CommunicationPackage returnPackage = await RecieveCommunicationPackageAsync();
+            return returnPackage.UdpPackage.GetBasePayload();
+        }
+
+        public async Task<T> RecieveMessageAsync<T>() where T : BaseDataType
+        {
+            CommunicationPackage returnPackage = await RecieveCommunicationPackageAsync();
+            return returnPackage.UdpPackage.GetPayload<T>();
+        }
+
+        public CommunicationPackage RecieveCommunicationPackage()
         {
             if (usedEndpoint == null)
             {
                 return default;
             }
             IPEndPoint recieveEndpoint = usedEndpoint;
-            UdpPackage<T> recievedPackage = new UdpPackage<T>();
+            UdpPackage recievedPackage = new UdpPackage();
             byte[] recievedData = communicationClient.Receive(ref recieveEndpoint);
             recievedPackage.Init(recievedData);
-            return new CommunicationPackage<T>(usedEndpoint, recievedPackage);
+            return new CommunicationPackage(usedEndpoint, recievedPackage);
         }
 
-        public async Task<CommunicationPackage<T>> RecieveCommunicationPackageAsync()
+        public async Task<CommunicationPackage> RecieveCommunicationPackageAsync()
         {
             return await Task.Run(() =>
             {
@@ -52,23 +69,16 @@ namespace DebugFramework.Streaming.Clients.Communication
                 {
                     return null;
                 }
-                CommunicationPackage<T> communicationPackage = null;
-                UdpPackage<T> udpPackage = new UdpPackage<T>();
+                CommunicationPackage communicationPackage = null;
+                UdpPackage udpPackage = new UdpPackage();
                 while (!udpPackage.PackageIsComplete() || !udpPackage.PayloadIsFine())
                 {
                     byte[] recievedData = communicationClient.Receive(ref recieveEndpoint);
                     udpPackage.Init(recievedData);
-                    communicationPackage = new CommunicationPackage<T>(usedEndpoint, udpPackage);
+                    communicationPackage = new CommunicationPackage(usedEndpoint, udpPackage);
                 }
                 return communicationPackage;
             });
-        }
-
-
-        public async Task<T> RecieveMessageAsync()
-        {
-            CommunicationPackage<T> returnPackage = await RecieveCommunicationPackageAsync();
-            return returnPackage.UdpPackage.GetPayload<T>();
         }
     }
 }

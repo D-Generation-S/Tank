@@ -1,9 +1,15 @@
 ﻿using System.Net;
+using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Broadcast
 {
     public abstract class BroadcastClient : BaseUdpClient
     {
+        protected async Task<IPAddress> GetBroadcastAddressAsync(IPAddress ipAddress, IPAddress subnetMask)
+        {
+            return await Task.Run(() => GetBroadcastAddress(ipAddress, subnetMask));
+        }
+
         protected IPAddress GetBroadcastAddress(IPAddress ipAddress, IPAddress subnetMask)
         {
             byte[] ipAddressBytes = ipAddress.GetAddressBytes();

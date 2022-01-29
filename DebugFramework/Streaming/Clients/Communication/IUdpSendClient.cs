@@ -1,15 +1,14 @@
-﻿using DebugFramework.DataTypes;
-using DebugFramework.Streaming.Package;
+﻿using DebugFramework.Streaming.Package;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public interface IUdpSendClient<T> where T : BaseDataType
+    public interface IUdpSendClient
     {
-        void SendMessage(UdpPackage<T> udpPackage);
-        Task SendMessageAsync(UdpPackage<T> dataPackage);
-        void SendTo(CommunicationPackage<T> communicationPackage);
-        void SendTo(IPEndPoint endPoint, UdpPackage<T> udpPackage);
+        void SendMessage(UdpPackage udpPackage);
+        Task SendMessageAsync(UdpPackage dataPackage);
+        void SendTo(CommunicationPackage communicationPackage);
+        void SendTo(IPEndPoint endPoint, UdpPackage udpPackage);
     }
 }

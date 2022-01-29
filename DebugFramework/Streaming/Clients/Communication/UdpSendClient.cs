@@ -1,12 +1,11 @@
-﻿using DebugFramework.DataTypes;
-using DebugFramework.Streaming.Package;
+﻿using DebugFramework.Streaming.Package;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public class UdpSendClient<T> : BaseUdpCommunicationClient<T>, IUdpSendClient<T> where T : BaseDataType
+    public class UdpSendClient : BaseUdpCommunicationClient, IUdpSendClient
     {
         public UdpSendClient() : base()
         {
@@ -25,12 +24,12 @@ namespace DebugFramework.Streaming.Clients.Communication
         {
         }
 
-        public async Task SendMessageAsync(UdpPackage<T> dataPackage)
+        public async Task SendMessageAsync(UdpPackage dataPackage)
         {
             await Task.Run(() => SendMessage(dataPackage));
         }
 
-        public void SendMessage(UdpPackage<T> udpPackage)
+        public void SendMessage(UdpPackage udpPackage)
         {
             if (usedEndpoint == null)
             {
@@ -39,12 +38,12 @@ namespace DebugFramework.Streaming.Clients.Communication
             SendTo(usedEndpoint, udpPackage);
         }
 
-        public void SendTo(CommunicationPackage<T> communicationPackage)
+        public void SendTo(CommunicationPackage communicationPackage)
         {
             SendTo(communicationPackage.Sender, communicationPackage.UdpPackage);
         }
 
-        public void SendTo(IPEndPoint endPoint, UdpPackage<T> udpPackage)
+        public void SendTo(IPEndPoint endPoint, UdpPackage udpPackage)
         {
             byte[] dataToSend = udpPackage.GetDataStream();
             communicationClient.Send(dataToSend, dataToSend.Length, endPoint);

@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public class UdpCommunicationClient<T> : BaseUdpClient, IUdpCommunicationClient<T> where T : BaseDataType
+    public class UdpCommunicationClient : BaseUdpClient, IUdpCommunicationClient
     {
-        private readonly UdpRecieveClient<T> recieveClient;
-        private readonly UdpSendClient<T> sendClient;
+        private readonly UdpRecieveClient recieveClient;
+        private readonly UdpSendClient sendClient;
 
         public UdpCommunicationClient(IPAddress listenIp)
         {
             int portToUse = GetFreePort(1024, 49150);
             UdpClient udpClient = new UdpClient(portToUse, AddressFamily.InterNetwork);
 
-            recieveClient = new UdpRecieveClient<T>(listenIp, portToUse, udpClient);
-            sendClient = new UdpSendClient<T>(udpClient);
+            recieveClient = new UdpRecieveClient(listenIp, portToUse, udpClient);
+            sendClient = new UdpSendClient(udpClient);
         }
 
         public UdpCommunicationClient(IPAddress listenIp, int listenAndSendPort)
@@ -25,16 +25,16 @@ namespace DebugFramework.Streaming.Clients.Communication
         {
             UdpClient udpClient = new UdpClient(listenAndSendPort, AddressFamily.InterNetwork);
 
-            recieveClient = new UdpRecieveClient<T>(listenIp, listenAndSendPort, udpClient);
-            sendClient = new UdpSendClient<T>(udpClient);
+            recieveClient = new UdpRecieveClient(listenIp, listenAndSendPort, udpClient);
+            sendClient = new UdpSendClient(udpClient);
         }
 
         public UdpCommunicationClient(IPAddress listenIp, int listenPort, bool sameSendPort)
         {
             UdpClient udpClient = new UdpClient(listenPort, AddressFamily.InterNetwork);
 
-            recieveClient = new UdpRecieveClient<T>(listenIp, listenPort, udpClient);
-            sendClient = sameSendPort ? new UdpSendClient<T>(udpClient) : new UdpSendClient<T>(new UdpClient(GetFreePort(1024, 49150), AddressFamily.InterNetwork));
+            recieveClient = new UdpRecieveClient(listenIp, listenPort, udpClient);
+            sendClient = sameSendPort ? new UdpSendClient(udpClient) : new UdpSendClient(new UdpClient(GetFreePort(1024, 49150), AddressFamily.InterNetwork));
         }
 
         public UdpCommunicationClient(IPAddress listenIp, int listenPort, int sendPort)
@@ -42,46 +42,46 @@ namespace DebugFramework.Streaming.Clients.Communication
             UdpClient listenClient = new UdpClient(listenPort, AddressFamily.InterNetwork);
             UdpClient sendClientToUse = new UdpClient(sendPort, AddressFamily.InterNetwork);
 
-            recieveClient = new UdpRecieveClient<T>(listenIp, listenPort, listenClient);
-            sendClient = new UdpSendClient<T>(sendClientToUse);
+            recieveClient = new UdpRecieveClient(listenIp, listenPort, listenClient);
+            sendClient = new UdpSendClient(sendClientToUse);
         }
 
-        public CommunicationPackage<T> RecieveCommunicationPackage()
+        public CommunicationPackage RecieveCommunicationPackage()
         {
             return recieveClient?.RecieveCommunicationPackage();
         }
 
-        public async Task<CommunicationPackage<T>> RecieveCommunicationPackageAsync()
+        public async Task<CommunicationPackage> RecieveCommunicationPackageAsync()
         {
             return await recieveClient?.RecieveCommunicationPackageAsync();
         }
 
-        public T RecieveMessage()
+        public BaseDataType RecieveMessage()
         {
             return recieveClient?.RecieveMessage();
         }
 
-        public async Task<T> RecieveMessageAsync()
+        public async Task<BaseDataType> RecieveMessageAsync()
         {
             return await recieveClient?.RecieveMessageAsync();
         }
 
-        public void SendMessage(UdpPackage<T> udpPackage)
+        public void SendMessage(UdpPackage udpPackage)
         {
             sendClient?.SendMessage(udpPackage);
         }
 
-        public async Task SendMessageAsync(UdpPackage<T> dataPackage)
+        public async Task SendMessageAsync(UdpPackage dataPackage)
         {
             await sendClient.SendMessageAsync(dataPackage);
         }
 
-        public void SendTo(CommunicationPackage<T> communicationPackage)
+        public void SendTo(CommunicationPackage communicationPackage)
         {
             sendClient.SendTo(communicationPackage);
         }
 
-        public void SendTo(IPEndPoint endPoint, UdpPackage<T> udpPackage)
+        public void SendTo(IPEndPoint endPoint, UdpPackage udpPackage)
         {
             sendClient.SendTo(endPoint, udpPackage);
         }
