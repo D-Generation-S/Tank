@@ -11,8 +11,11 @@
 			<Button Content="Disconnect" Command="{Binding DisconnectCommand}" IsVisible="{Binding IsConnected}"/>
 		</StackPanel>
 		<Grid ColumnDefinitions="auto, *" Grid.Row="1">
-			<ScrollViewer MinWidth="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
-				<ListBox VerticalAlignment="Stretch" Items="{Binding CurrentEntites}"/>
+			<ScrollViewer MinWidth="150" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				<ListBox VerticalAlignment="Stretch" Items="{Binding CurrentEntites}" SelectedItem="{Binding SelectedEntity}"/>
+			</ScrollViewer>
+			<ScrollViewer Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				<ContentControl Content="{Binding SelectedEntityView}"></ContentControl>
 			</ScrollViewer>
 		</Grid>
 	</Grid>

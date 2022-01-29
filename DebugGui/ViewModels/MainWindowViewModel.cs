@@ -43,7 +43,7 @@ namespace DebugGui.ViewModels
                     EntitesDump dump = new EntitesDump();
                     dump.Entites = new List<EntityContainer>() { new EntityContainer()
                     {
-                        entityId = 0,
+                        EntityId = 0,
                         EntityComponents = new List<Component>()
                         {
                             new Component("Test")

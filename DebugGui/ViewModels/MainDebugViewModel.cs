@@ -4,6 +4,7 @@ using DebugFramework.Streaming;
 using DebugFramework.Streaming.Clients.Communication;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
@@ -21,6 +22,21 @@ namespace DebugGui.ViewModels
         public ObservableCollection<GameDebugInstanceViewModel> AvailableGameInstancs { get; }
 
         public ObservableCollection<EntityViewModel> CurrentEntites { get; }
+
+        public ViewModelBase SelectedEntityView
+        {
+            get => selectedEntityView;
+            set => this.RaiseAndSetIfChanged(ref selectedEntityView, value);
+        }
+        private ViewModelBase selectedEntityView;
+
+        public EntityViewModel SelectedEntity
+        {
+            get => selectedEntity;
+            set => this.RaiseAndSetIfChanged(ref selectedEntity, value);
+        }
+
+        private EntityViewModel selectedEntity;
 
         public GameDebugInstanceViewModel SelectedGameDebugInstance
         {
@@ -94,6 +110,33 @@ namespace DebugGui.ViewModels
                     if (packageData?.GetRealType() == typeof(EntitesDump))
                     {
                         EntitesDump dump = returnData.GetPackageContent<EntitesDump>();
+
+                        List<EntityContainer> updatedEntites = dump.Entites;
+
+                        IEnumerable<EntityContainer> newEntities = updatedEntites.Where(newEntity => !CurrentEntites.Any(cEntity => cEntity.EntityId == newEntity.EntityId));
+                        IEnumerable<uint> removedEntityIds = CurrentEntites.Where(cEntity => !updatedEntites.Any(newEntity => newEntity.EntityId == cEntity.EntityId))
+                                                                            .Select(container => container.EntityId);
+                        IEnumerable<EntityViewModel> entitesToUpdate = CurrentEntites.Where(cEntity => updatedEntites.Any(newEntity => newEntity.EntityId == cEntity.EntityId));
+
+                        for (int i = CurrentEntites.Count; i > 0; i--)
+                        {
+                            int index = i - 1;
+                            if (removedEntityIds.Contains(CurrentEntites[index].EntityId))
+                            {
+                                CurrentEntites.RemoveAt(index);
+                            }
+                        }
+
+                        foreach (EntityContainer container in newEntities)
+                        {
+                            CurrentEntites.Add(new EntityViewModel(container.EntityId, container.EntityComponents));
+                        }
+
+                        foreach (EntityViewModel container in entitesToUpdate)
+                        {
+                            EntityContainer updateBase = updatedEntites?.FirstOrDefault(uEntity => uEntity.EntityId == container.EntityId);
+                            container?.UpdateComponents(updateBase?.EntityComponents);
+                        }
                     }
 
                 }
@@ -104,6 +147,9 @@ namespace DebugGui.ViewModels
             {
                 IsConnected = false;
             }, canDisconnect);
+
+            this.WhenAnyValue(x => x.SelectedEntity)
+                .Subscribe(entity => SelectedEntityView = entity?.ComponentView);
         }
     }
 }

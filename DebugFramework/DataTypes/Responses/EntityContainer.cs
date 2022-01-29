@@ -5,7 +5,7 @@ namespace DebugFramework.DataTypes
 {
     public class EntityContainer : BaseDataType
     {
-        public uint entityId { get; set; }
+        public uint EntityId { get; set; }
 
         public List<Component> EntityComponents { get; set; }
 
