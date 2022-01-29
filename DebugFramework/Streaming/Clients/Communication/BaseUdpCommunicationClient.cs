@@ -1,14 +1,13 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public class BaseUdpCommunicationClient : BaseUdpClient
+    public class BaseUdpCommunicationClient : BaseUdpClient, IDisposable
     {
         protected readonly UdpClient communicationClient;
         protected readonly IPEndPoint usedEndpoint;
-
-
 
         public BaseUdpCommunicationClient() : this(new UdpClient())
         {
@@ -28,6 +27,11 @@ namespace DebugFramework.Streaming.Clients.Communication
         {
             communicationClient = clientToUse;
             usedEndpoint = endpoint;
+        }
+
+        public void Dispose()
+        {
+            communicationClient.Dispose();
         }
     }
 

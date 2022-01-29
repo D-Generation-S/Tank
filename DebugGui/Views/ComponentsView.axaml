@@ -5,6 +5,10 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DebugGui.Views.ComponentsView">
 	<StackPanel>
-		<ListBox Items="{Binding Components}"></ListBox>
+		<ListBox Items="{Binding Components}" SelectedItem="{Binding SelectedComponentView}"/>
+		<StackPanel Orientation="Horizontal">
+			<Button Content="Collapse All" Command="{Binding CollapseAllCommand}"/>
+			<Button Content="Expand All" Command="{Binding ExpandAllCommand}"/>
+		</StackPanel>
 	</StackPanel>
 </UserControl>

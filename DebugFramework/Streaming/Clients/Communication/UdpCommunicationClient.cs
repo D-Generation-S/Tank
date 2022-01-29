@@ -46,6 +46,12 @@ namespace DebugFramework.Streaming.Clients.Communication
             sendClient = new UdpSendClient(sendClientToUse);
         }
 
+        public void Dispose()
+        {
+            sendClient?.Dispose();
+            recieveClient?.Dispose();
+        }
+
         public CommunicationPackage RecieveCommunicationPackage()
         {
             return recieveClient?.RecieveCommunicationPackage();

@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="DebugGui.Views.ComponentView">
-	<StackPanel>
-		<TextBlock Text="{Binding ComponentName}"/>
-		<ScrollViewer  IsVisible="{Binding Selected}">
-			<ListBox IsEnabled="False" Items="{Binding FieldArguments}" Background="Transparent"/>
-		</ScrollViewer>
-	</StackPanel>
+             x:Class="DebugGui.Views.ComponentFieldView">
+	<Grid ColumnDefinitions="auto, *" RowDefinitions="auto, auto">
+		<TextBlock Margin="0,0,5,0" Text="Name:"/>
+		<TextBlock Grid.Row="1" Margin="0,0,5,0"  Text="Value:"/>
+		<TextBlock Grid.Column="1" Text="{Binding Name}"/>
+		<TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding FieldValue}"/>
+	</Grid>
 </UserControl>

@@ -49,6 +49,9 @@ namespace DebugFramework.Streaming.Clients.Communication
             communicationClient.Send(dataToSend, dataToSend.Length, endPoint);
         }
 
-
+        public void Dispose()
+        {
+            base.Dispose();
+        }
     }
 }

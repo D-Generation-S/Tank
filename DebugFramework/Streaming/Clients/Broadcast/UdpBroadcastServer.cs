@@ -45,12 +45,15 @@ namespace DebugFramework.Streaming.Clients.Broadcast
                     {
                         packageToBroadcast.Init(packageNumber, DataIdentifier.Broadcast, this.broadcastData);
                     }
-                    lock (broadcastClientLock)
+                    if (serverRunning)
                     {
-                        broadcastClient.SendTo(broadcastEndPoint, packageToBroadcast);
+                        lock (broadcastClientLock)
+                        {
+                            broadcastClient.SendTo(broadcastEndPoint, packageToBroadcast);
+                        }
+                        await Task.Delay(1000);
+                        packageNumber++;
                     }
-                    await Task.Delay(1000);
-                    packageNumber++;
                 }
             });
         }
@@ -81,6 +84,7 @@ namespace DebugFramework.Streaming.Clients.Broadcast
         public void Dispose()
         {
             StopBroadcast();
+            broadcastClient.Dispose();
         }
     }
 }

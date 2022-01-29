@@ -80,5 +80,10 @@ namespace DebugFramework.Streaming.Clients.Communication
                 return communicationPackage;
             });
         }
+
+        public void Dispose()
+        {
+            base.Dispose();
+        }
     }
 }

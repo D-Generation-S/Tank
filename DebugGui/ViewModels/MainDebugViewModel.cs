@@ -100,7 +100,7 @@ namespace DebugGui.ViewModels
                     return;
                 }
                 IsConnected = true;
-                UdpRecieveClient updateListner = new UdpRecieveClient(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port);
+                IUdpRecieveClient updateListner = new UdpRecieveClient(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port);
 
                 while (IsConnected)
                 {
@@ -110,6 +110,11 @@ namespace DebugGui.ViewModels
                     if (packageData?.GetRealType() == typeof(EntitesDump))
                     {
                         EntitesDump dump = returnData.GetPackageContent<EntitesDump>();
+                        if (!IsConnected)
+                        {
+                            updateListner.Dispose();
+                            return;
+                        }
 
                         List<EntityContainer> updatedEntites = dump.Entites;
 
@@ -137,15 +142,19 @@ namespace DebugGui.ViewModels
                             EntityContainer updateBase = updatedEntites?.FirstOrDefault(uEntity => uEntity.EntityId == container.EntityId);
                             container?.UpdateComponents(updateBase?.EntityComponents);
                         }
-                    }
 
+                        CurrentEntites.OrderBy(entites => entites.EntityId);
+                    }
                 }
+                updateListner.Dispose();
 
             }, canConnect);
 
             DisconnectCommand = ReactiveCommand.Create(async () =>
             {
                 IsConnected = false;
+                CurrentEntites.Clear();
+                SelectedEntity = null;
             }, canDisconnect);
 
             this.WhenAnyValue(x => x.SelectedEntity)

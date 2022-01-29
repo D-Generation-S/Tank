@@ -41,24 +41,76 @@ namespace DebugGui.ViewModels
                 while (true)
                 {
                     EntitesDump dump = new EntitesDump();
-                    dump.Entites = new List<EntityContainer>() { new EntityContainer()
-                    {
-                        EntityId = 0,
-                        EntityComponents = new List<Component>()
+                    dump.Entites = new List<EntityContainer>() {
+                        new EntityContainer()
                         {
-                            new Component("Test")
+                            EntityId = 0,
+                            EntityComponents = new List<Component>()
                             {
-                                Arguments = new List<ComponentArgument>()
+                                new Component("Test")
                                 {
-                                    new ComponentArgument()
+                                    Arguments = new List<ComponentArgument>()
                                     {
-                                        Name = "Texture",
-                                        Value = "Some/texture/path"
+                                        new ComponentArgument()
+                                        {
+                                            Name = "Texture",
+                                            Value = "Some/texture/path"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        new EntityContainer()
+                        {
+                            EntityId = 1,
+                            EntityComponents = new List<Component>()
+                            {
+                                new Component("TextureComponent")
+                                {
+                                    Arguments = new List<ComponentArgument>()
+                                    {
+                                        new ComponentArgument()
+                                        {
+                                            Name = "Texture",
+                                            Value = "Some/texture/path"
+                                        }
+                                    }
+                                },
+                                new Component("PositionComponent")
+                                {
+                                    Arguments = new List<ComponentArgument>()
+                                    {
+                                        new ComponentArgument()
+                                        {
+                                            Name = "Position",
+                                            Value = "X: 100, Y: 200"
+                                        },
+                                        new ComponentArgument()
+                                        {
+                                            Name = "Rotation",
+                                            Value = "0.5186461861"
+                                        }
+                                    }
+                                },
+                                new Component("ColliderComponent")
+                                {
+                                    Arguments = new List<ComponentArgument>()
+                                    {
+                                        new ComponentArgument()
+                                        {
+                                            Name = "IsTrigger",
+                                            Value = "False"
+                                        },
+                                        new ComponentArgument()
+                                        {
+                                            Name = "Collider",
+                                            Value = "X: 0, Y: 0, W: 100, H: 100"
+                                        }
                                     }
                                 }
                             }
                         }
-                    } };
+                    };
 
                     broadcastPackage.Init(packageNumber, DataIdentifier.Update, dump);
 
