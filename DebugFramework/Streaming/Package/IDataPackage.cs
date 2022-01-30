@@ -6,6 +6,14 @@ namespace DebugFramework.Streaming.Package
     {
         void Init(byte[] dataStream);
 
+        bool ParseHeader(byte[] headerBytes);
+
+        int GetHeaderSize();
+
+        int GetPayloadSize();
+
+        int GetCompletePackageSize();
+
         byte[] GetDataStream();
 
         bool IsPayloadFine();

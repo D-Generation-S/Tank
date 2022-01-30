@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Udp.Broadcast
 {
-    public abstract class BroadcastClient : BaseUdpClient
+    public abstract class BroadcastClient : BaseNetworkClient
     {
         protected async Task<IPAddress> GetBroadcastAddressAsync(IPAddress ipAddress, IPAddress subnetMask)
         {

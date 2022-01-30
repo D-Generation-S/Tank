@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients
 {
-    public class BaseUdpClient
+    public class BaseNetworkClient
     {
         public List<int> GetFreePort(int startRange, int endRange, int number)
         {

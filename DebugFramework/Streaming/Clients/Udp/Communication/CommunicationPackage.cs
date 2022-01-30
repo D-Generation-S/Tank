@@ -8,31 +8,31 @@ namespace DebugFramework.Streaming.Clients.Udp.Communication
     public class CommunicationPackage
     {
         public IPEndPoint Sender { get; }
-        public UdpPackage UdpPackage { get; }
+        public IDataPackage dataPackage { get; }
 
-        public CommunicationPackage(IPEndPoint sender, UdpPackage udpPackage)
+        public CommunicationPackage(IPEndPoint sender, IDataPackage udpPackage)
         {
             Sender = sender;
-            UdpPackage = udpPackage;
+            dataPackage = udpPackage;
         }
 
         public Type GetPackageType()
         {
-            if (UdpPackage == null)
+            if (dataPackage == null)
             {
                 return null;
             }
-            BaseDataType baseData = UdpPackage.GetPayload();
+            BaseDataType baseData = dataPackage.GetPayload();
             return baseData == null ? null : baseData.GetRealType();
         }
 
         public T GetPackageContent<T>() where T : BaseDataType
         {
-            if (UdpPackage == null)
+            if (dataPackage == null)
             {
                 return default;
             }
-            return UdpPackage.GetPayload<T>();
+            return dataPackage.GetPayload<T>();
         }
     }
 }

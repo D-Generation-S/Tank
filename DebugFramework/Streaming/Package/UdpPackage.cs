@@ -10,7 +10,7 @@ namespace DebugFramework.Streaming.Package
 
         private uint packageNumber;
 
-        protected override int GetCustomHeaderSizeInBytes()
+        protected override int GetCustomHeaderSizeInNumberOfBytes()
         {
             return CUSTOM_HEADER_SIZE;
         }
@@ -22,9 +22,14 @@ namespace DebugFramework.Streaming.Package
             return dataStream.ToArray();
         }
 
-        protected override void ParseCustomHeader(byte[] customHeaderBytes)
+        protected override bool ParseCustomHeader(byte[] customHeaderBytes)
         {
+            if (customHeaderBytes.Length != CUSTOM_HEADER_SIZE)
+            {
+                return false;
+            }
             packageNumber = BitConverter.ToUInt32(customHeaderBytes, 0);
+            return true;
         }
 
         public void Init<T>(uint packageNumber, DataIdentifier identifier, T payload) where T : BaseDataType

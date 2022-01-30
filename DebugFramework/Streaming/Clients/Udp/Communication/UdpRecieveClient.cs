@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Udp.Communication
 {
-    public class UdpRecieveClient : BaseUdpCommunicationClient, IUdpRecieveClient
+    public class UdpRecieveClient : BaseUdpCommunicationClient, INetworkRecieveClient
     {
         public UdpRecieveClient()
         {
@@ -28,24 +28,24 @@ namespace DebugFramework.Streaming.Clients.Udp.Communication
 
         public BaseDataType RecieveMessage()
         {
-            return RecieveCommunicationPackage().UdpPackage?.GetPayload();
+            return RecieveCommunicationPackage().dataPackage?.GetPayload();
         }
 
         public T RecieveMessage<T>() where T : BaseDataType
         {
-            return RecieveCommunicationPackage().UdpPackage?.GetPayload<T>();
+            return RecieveCommunicationPackage().dataPackage?.GetPayload<T>();
         }
 
         public async Task<BaseDataType> RecieveMessageAsync()
         {
             CommunicationPackage returnPackage = await RecieveCommunicationPackageAsync();
-            return returnPackage.UdpPackage.GetPayload();
+            return returnPackage.dataPackage.GetPayload();
         }
 
         public async Task<T> RecieveMessageAsync<T>() where T : BaseDataType
         {
             CommunicationPackage returnPackage = await RecieveCommunicationPackageAsync();
-            return returnPackage.UdpPackage.GetPayload<T>();
+            return returnPackage.dataPackage.GetPayload<T>();
         }
 
         public CommunicationPackage RecieveCommunicationPackage()

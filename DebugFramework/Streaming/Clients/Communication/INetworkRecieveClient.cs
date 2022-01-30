@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public interface IUdpRecieveClient : IDisposable
+    public interface INetworkRecieveClient : IDisposable
     {
         CommunicationPackage RecieveCommunicationPackage();
         Task<CommunicationPackage> RecieveCommunicationPackageAsync();

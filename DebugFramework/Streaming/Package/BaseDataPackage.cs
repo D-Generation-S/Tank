@@ -38,7 +38,7 @@ namespace DebugFramework.Streaming.Package
         {
             isPackageComplete = false;
 
-            int headerSize = BASE_HEADER_SIZE + GetCustomHeaderSizeInBytes();
+            int headerSize = BASE_HEADER_SIZE + GetCustomHeaderSizeInNumberOfBytes();
             byte[] headerBytes = dataStream.Take(headerSize).ToArray();
             ParseHeader(headerBytes);
 
@@ -111,7 +111,8 @@ namespace DebugFramework.Streaming.Package
             return dataStream.ToArray();
         }
 
-        protected abstract int GetCustomHeaderSizeInBytes();
+
+        protected abstract int GetCustomHeaderSizeInNumberOfBytes();
 
         protected abstract byte[] GetCustomHeader();
 
@@ -140,11 +141,11 @@ namespace DebugFramework.Streaming.Package
             return hash;
         }
 
-        protected virtual void ParseHeader(byte[] headerBytes)
+        public virtual bool ParseHeader(byte[] headerBytes)
         {
-            if (headerBytes.Length != BASE_HEADER_SIZE + GetCustomHeaderSizeInBytes())
+            if (headerBytes.Length != GetHeaderSize())
             {
-                return;
+                return false;
             }
 
             int identifier = BitConverter.ToInt32(headerBytes, 0);
@@ -154,10 +155,25 @@ namespace DebugFramework.Streaming.Package
             checksumLength = BitConverter.ToInt32(headerBytes, 5);
             payloadLength = BitConverter.ToInt32(headerBytes, 9);
 
-            ParseCustomHeader(headerBytes.Skip(BASE_HEADER_SIZE).ToArray());
+            return ParseCustomHeader(headerBytes.Skip(BASE_HEADER_SIZE).ToArray());
         }
 
-        protected abstract void ParseCustomHeader(byte[] customHeaderBytes);
+        public int GetPayloadSize()
+        {
+            return checksumLength + payloadLength;
+        }
+
+        public int GetCompletePackageSize()
+        {
+            return GetHeaderSize() + GetPayloadSize();
+        }
+
+        public int GetHeaderSize()
+        {
+            return BASE_HEADER_SIZE + GetCustomHeaderSizeInNumberOfBytes();
+        }
+
+        protected abstract bool ParseCustomHeader(byte[] customHeaderBytes);
 
         public BaseDataType GetPayload()
         {
@@ -176,5 +192,7 @@ namespace DebugFramework.Streaming.Package
             }
             return JsonSerializer.Deserialize<T>(payload);
         }
+
+
     }
 }

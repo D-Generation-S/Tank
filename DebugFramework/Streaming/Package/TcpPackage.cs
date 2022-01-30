@@ -11,14 +11,14 @@ namespace DebugFramework.Streaming.Package
             return new byte[0];
         }
 
-        protected override int GetCustomHeaderSizeInBytes()
+        protected override int GetCustomHeaderSizeInNumberOfBytes()
         {
             return CUSTOM_HEADER_SIZE;
         }
 
-        protected override void ParseCustomHeader(byte[] customHeaderBytes)
+        protected override bool ParseCustomHeader(byte[] customHeaderBytes)
         {
-            return;
+            return true;
         }
 
         public new void Init<T>(DataIdentifier identifier, T payload) where T : BaseDataType

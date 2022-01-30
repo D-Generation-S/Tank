@@ -64,6 +64,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
             argumentConversion.Add(typeof(TextComponent), (component) =>
             {
                 List<ComponentArgument> arguments = new List<ComponentArgument>();
+                return arguments;
                 if (component is TextComponent textComponent)
                 {
                     arguments.AddRange(GetRenderingComponentBase(textComponent));
@@ -77,6 +78,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
             argumentConversion.Add(typeof(TextureComponent), (component) =>
             {
                 List<ComponentArgument> arguments = new List<ComponentArgument>();
+                return arguments;
                 if (component is TextureComponent textureComponent)
                 {
                     arguments.AddRange(GetRenderingComponentBase(textureComponent));
@@ -85,6 +87,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
                 }
                 return arguments;
             });
+
         }
 
         private List<ComponentArgument> GetRenderingComponentBase(AbstractRenderingComponent renderingComponent)

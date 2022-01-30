@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Udp.Communication
 {
-    public class UdpCommunicationClient : BaseUdpClient, IUdpCommunicationClient
+    public class UdpCommunicationClient : BaseNetworkClient, INetworkCommunicationClient
     {
         private readonly UdpRecieveClient recieveClient;
         private readonly UdpSendClient sendClient;
@@ -73,12 +73,12 @@ namespace DebugFramework.Streaming.Clients.Udp.Communication
             return await recieveClient?.RecieveMessageAsync();
         }
 
-        public void SendMessage(UdpPackage udpPackage)
+        public void SendMessage(IDataPackage udpPackage)
         {
             sendClient?.SendMessage(udpPackage);
         }
 
-        public async Task SendMessageAsync(UdpPackage dataPackage)
+        public async Task SendMessageAsync(IDataPackage dataPackage)
         {
             await sendClient.SendMessageAsync(dataPackage);
         }
@@ -88,7 +88,7 @@ namespace DebugFramework.Streaming.Clients.Udp.Communication
             sendClient.SendTo(communicationPackage);
         }
 
-        public void SendTo(IPEndPoint endPoint, UdpPackage udpPackage)
+        public void SendTo(IPEndPoint endPoint, IDataPackage udpPackage)
         {
             sendClient.SendTo(endPoint, udpPackage);
         }

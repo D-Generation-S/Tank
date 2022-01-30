@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace DebugFramework.Streaming.Clients.Udp.Communication
 {
-    public class BaseUdpCommunicationClient : BaseUdpClient, IDisposable
+    public class BaseUdpCommunicationClient : BaseNetworkClient, IDisposable
     {
         protected readonly UdpClient communicationClient;
         protected readonly IPEndPoint usedEndpoint;

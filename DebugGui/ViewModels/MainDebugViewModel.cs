@@ -114,13 +114,13 @@ namespace DebugGui.ViewModels
                     return;
                 }
                 IsConnected = true;
-                IUdpRecieveClient updateListner = new UdpRecieveClient(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port);
+                INetworkRecieveClient updateListner = new UdpRecieveClient(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port);
 
                 while (IsConnected)
                 {
                     await Task.Delay(16);
                     CommunicationPackage returnData = await updateListner.RecieveCommunicationPackageAsync();
-                    BaseDataType packageData = returnData.UdpPackage?.GetPayload();
+                    BaseDataType packageData = returnData.dataPackage?.GetPayload();
                     if (packageData?.GetRealType() == typeof(EntitesDump))
                     {
                         EntitesDump dump = returnData.GetPackageContent<EntitesDump>();

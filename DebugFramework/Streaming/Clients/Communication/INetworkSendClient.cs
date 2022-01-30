@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Communication
 {
-    public interface IUdpSendClient : IDisposable
+    public interface INetworkSendClient : IDisposable
     {
-        void SendMessage(UdpPackage udpPackage);
-        Task SendMessageAsync(UdpPackage dataPackage);
+        void SendMessage(IDataPackage udpPackage);
+        Task SendMessageAsync(IDataPackage dataPackage);
         void SendTo(CommunicationPackage communicationPackage);
-        void SendTo(IPEndPoint endPoint, UdpPackage udpPackage);
+        void SendTo(IPEndPoint endPoint, IDataPackage udpPackage);
     }
 }
