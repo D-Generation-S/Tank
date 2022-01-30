@@ -14,9 +14,13 @@ namespace DebugFramework
             dataStorage = new List<BaseDataType>();
         }
 
-        public T GetPipeBaseData<T>() where T : BaseDataType
+        public T GetDataType<T>() where T : BaseDataType
         {
             T data = (T)dataStorage.FirstOrDefault(baseData => baseData.GetType() == typeof(T));
+            if (data != null)
+            {
+                dataStorage.Remove(data);
+            }
             return data == null ? Activator.CreateInstance<T>() : data;
 
         }

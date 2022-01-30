@@ -23,7 +23,7 @@ namespace DebugGui.ViewModels
 
         public void UpdateComponents(IEnumerable<ComponentData> components)
         {
-
+            ComponentView?.UpdateComponents(components);
         }
     }
 }

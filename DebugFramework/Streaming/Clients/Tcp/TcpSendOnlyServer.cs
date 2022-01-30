@@ -1,6 +1,7 @@
 ﻿using DebugFramework.Streaming.Package;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace DebugFramework.Streaming.Clients.Tcp
 
         private object connectedClientLock;
         private List<TcpClient> connectedClients;
+
+        private bool sendingRightNow;
 
         public TcpSendOnlyServer(int port)
         {
@@ -52,10 +55,29 @@ namespace DebugFramework.Streaming.Clients.Tcp
                     if (client.Connected && client.GetStream().CanWrite)
                     {
                         byte[] dataToWrite = tcpPackage.GetDataStream();
-                        client.GetStream().Write(dataToWrite, 0, dataToWrite.Length);
+                        Debug.WriteLine(dataToWrite.Length);
+                        try
+                        {
+                            client.GetStream().Write(dataToWrite, 0, dataToWrite.Length);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
                     }
                 }
             }
+        }
+
+        public async Task SendDataAsync(TcpPackage tcpPackage)
+        {
+            if (sendingRightNow)
+            {
+                return;
+            }
+            sendingRightNow = true;
+            await Task.Run(() => SendData(tcpPackage));
+            sendingRightNow = false;
         }
 
         public void Dispose()

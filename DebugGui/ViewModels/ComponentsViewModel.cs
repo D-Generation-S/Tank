@@ -1,9 +1,13 @@
-﻿using DebugFramework.DataTypes.SubTypes;
+﻿using Avalonia.Threading;
+using DebugFramework.DataTypes.SubTypes;
+using DynamicData;
+using DynamicData.Binding;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Windows.Input;
 
 namespace DebugGui.ViewModels
@@ -11,7 +15,11 @@ namespace DebugGui.ViewModels
     public class ComponentsViewModel : ViewModelBase
     {
         public int ComponentCount => Components.Count;
-        public ObservableCollection<ComponentViewModel> Components { get; set; }
+        public ReadOnlyObservableCollection<ComponentViewModel> Components => components;
+
+        private readonly ReadOnlyObservableCollection<ComponentViewModel> components;
+
+        private readonly SourceList<ComponentViewModel> allComponents;
 
         public ComponentViewModel SelectedComponentView
         {
@@ -26,7 +34,18 @@ namespace DebugGui.ViewModels
 
         public ComponentsViewModel(List<ComponentData> components)
         {
-            Components = new ObservableCollection<ComponentViewModel>(components.Select(component => new ComponentViewModel(component)));
+            allComponents = new SourceList<ComponentViewModel>();
+            allComponents.Connect()
+                  .Sort(SortExpressionComparer<ComponentViewModel>.Ascending(viewModel => viewModel.ComponentName))
+                  .ObserveOn(AvaloniaScheduler.Instance)
+                  .Bind(out this.components)
+                  .Subscribe();
+
+            foreach (ComponentViewModel viewModel in components.Select(component => new ComponentViewModel(component)))
+            {
+                allComponents.Add(viewModel);
+            }
+
             this.WhenAnyValue(x => x.SelectedComponentView)
                 .Subscribe(view =>
                 {
@@ -55,9 +74,31 @@ namespace DebugGui.ViewModels
             });
         }
 
-        public void UpdateComponents(List<ComponentData> components)
+        public void UpdateComponents(IEnumerable<ComponentData> components)
         {
+            IEnumerable<ComponentData> newComponents = components.Where(component => !Components.Any(cComponent => cComponent.ComponentName == component.ComponentType));
+            IEnumerable<string> removedComponents = Components.Where(cComponent => !components.Any(nComponent => nComponent.ComponentType == cComponent.ComponentName)).Select(component => component.ComponentName);
+            IEnumerable<ComponentViewModel> updatedComponents = Components.Where(cComponent => components.Any(nComponent => nComponent.ComponentType == cComponent.ComponentName));
 
+
+            for (int i = Components.Count; i > 0; i--)
+            {
+                if (removedComponents.Contains(Components[0].ComponentName))
+                {
+                    allComponents.RemoveAt(i);
+                }
+            }
+
+            foreach (ComponentViewModel newView in newComponents.Select(component => new ComponentViewModel(component)))
+            {
+                allComponents.Add(newView);
+            }
+
+            foreach (ComponentViewModel updatedComponent in updatedComponents)
+            {
+                ComponentData component = components.FirstOrDefault(component => component.ComponentType == updatedComponent.ComponentName);
+                updatedComponent.UpdateArguments(component?.Arguments);
+            }
         }
     }
 }

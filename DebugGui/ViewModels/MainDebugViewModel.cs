@@ -118,6 +118,7 @@ namespace DebugGui.ViewModels
                 TcpRecieverClient updateListner = new TcpRecieverClient(new IPEndPoint(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port));
                 //INetworkRecieveClient updateListner = new UdpRecieveClient(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port);
 
+                bool updateingRightNow = false;
                 while (IsConnected)
                 {
                     await Task.Delay(16);
@@ -130,7 +131,11 @@ namespace DebugGui.ViewModels
                             updateListner.Dispose();
                             return;
                         }
-
+                        if (updateingRightNow)
+                        {
+                            continue;
+                        }
+                        updateingRightNow = true;
                         List<EntityContainer> updatedEntites = dump.Entites;
 
                         IEnumerable<EntityContainer> newEntities = updatedEntites.Where(newEntity => !CurrentEntities.Any(cEntity => cEntity.EntityId == newEntity.EntityId));
@@ -158,6 +163,7 @@ namespace DebugGui.ViewModels
                             container?.UpdateComponents(updateBase?.EntityComponents);
                         }
                         this.RaisePropertyChanged(nameof(allCurrentEntities));
+                        updateingRightNow = false;
                     }
                 }
                 updateListner.Dispose();
