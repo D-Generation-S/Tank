@@ -7,19 +7,41 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Tcp
 {
+    /// <summary>
+    /// Class for a tcp reciever client (listner)
+    /// </summary>
     public class TcpRecieverClient : BaseNetworkClient, IDisposable
     {
+        /// <summary>
+        /// The client to use for listening
+        /// </summary>
         private readonly TcpClient recieverClient;
+
+        /// <summary>
+        /// The default endpoint used to connect to and get data from
+        /// </summary>
         private readonly IPEndPoint defaultEndpoint;
 
+        /// <summary>
+        /// The current used endpoint
+        /// </summary>
         private IPEndPoint currentEndpoint;
 
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="defaultEndpoint">The default endpoint to use for the connection</param>
         public TcpRecieverClient(IPEndPoint defaultEndpoint)
         {
             recieverClient = new TcpClient();
             this.defaultEndpoint = defaultEndpoint;
         }
 
+        /// <summary>
+        /// Connect the client to a specific endpoint
+        /// </summary>
+        /// <param name="endpointToConnect">The endpoint to connect the client to</param>
+        /// <returns>True if connection was successful</returns>
         private bool ConnectClient(IPEndPoint endpointToConnect)
         {
             if (endpointToConnect == currentEndpoint && recieverClient.Connected)
@@ -42,6 +64,11 @@ namespace DebugFramework.Streaming.Clients.Tcp
             return false;
         }
 
+        /// <summary>
+        /// Recieve a tcp package from a given address
+        /// </summary>
+        /// <param name="remoteAddress">The remote address to recieve data from</param>
+        /// <returns>A tcp package to use</returns>
         private TcpPackage RecieveDataPackage(IPEndPoint remoteAddress)
         {
             if (!recieverClient.Connected)
@@ -75,8 +102,17 @@ namespace DebugFramework.Streaming.Clients.Tcp
             return package;
         }
 
+        /// <summary>
+        /// Recieve a tcp package from a given address asynchronous
+        /// </summary>
+        /// <returns>A tcp package to wait for</returns>
         public async Task<TcpPackage> RecieveDataPackageAsync() => await RecieveDataPackageAsync(defaultEndpoint);
 
+        /// <summary>
+        /// Recieve a tcp package from a given address asynchronous
+        /// </summary>
+        /// <param name="remoteAddress">The specific endpoint to get the data package from</param>
+        /// <returns>A tcp package to wait for</returns>
         public async Task<TcpPackage> RecieveDataPackageAsync(IPEndPoint remoteAddress)
         {
             return await Task.Run(() => RecieveDataPackage(remoteAddress));

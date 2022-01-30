@@ -104,7 +104,14 @@ namespace DebugGui.ViewModels
                         });
 
                     }
-                    AvailableGameInstancs.RemoveAt(index);
+                    try
+                    {
+                        AvailableGameInstancs.RemoveAt(index);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
             });
 

@@ -1,5 +1,4 @@
-﻿using DebugFramework.Streaming.Clients.Communication;
-using DebugFramework.Streaming.Package;
+﻿using DebugFramework.Streaming.Package;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
