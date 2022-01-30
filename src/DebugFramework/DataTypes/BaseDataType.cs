@@ -9,7 +9,7 @@ namespace DebugFramework.DataTypes
     public class BaseDataType
     {
         /// <summary>
-        /// The 
+        /// The type which can be castest to a type object
         /// </summary>
         [JsonPropertyName("aQName")]
         public string AssemblyQualifiedName { get; set; }
@@ -22,6 +22,10 @@ namespace DebugFramework.DataTypes
             AssemblyQualifiedName = GetType().AssemblyQualifiedName;
         }
 
+        /// <summary>
+        /// Get the real type of this data set
+        /// </summary>
+        /// <returns></returns>
         public Type GetRealType()
         {
             return Type.GetType(AssemblyQualifiedName);

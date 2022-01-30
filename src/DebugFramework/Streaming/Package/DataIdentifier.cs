@@ -1,9 +1,10 @@
 ﻿namespace DebugFramework.Streaming.Package
 {
+    /// <summary>
+    /// Identifier to get type of data
+    /// </summary>
     public enum DataIdentifier
     {
-        Login,
-        Logout,
         Update,
         Request,
         Response,

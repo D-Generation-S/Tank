@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tank", "src\Tank\Tank.cspro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TankEngine", "src\TankEngine\TankEngine.csproj", "{1CE6E1B6-3B18-4BF5-8E47-0636D5CFA134}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugFramework", "DebugFramework\DebugFramework.csproj", "{35D4E5EC-157F-441A-A7CA-D38C45D1F2BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugFramework", "src\DebugFramework\DebugFramework.csproj", "{35D4E5EC-157F-441A-A7CA-D38C45D1F2BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugGui", "DebugGui\DebugGui.csproj", "{3D242C59-824D-4F77-A2F6-C4DBE893CDF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugGui", "src\DebugGui\DebugGui.csproj", "{3D242C59-824D-4F77-A2F6-C4DBE893CDF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
