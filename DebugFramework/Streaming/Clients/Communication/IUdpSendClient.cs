@@ -1,4 +1,5 @@
-﻿using DebugFramework.Streaming.Package;
+﻿using DebugFramework.Streaming.Clients.Udp.Communication;
+using DebugFramework.Streaming.Package;
 using System;
 using System.Net;
 using System.Threading.Tasks;

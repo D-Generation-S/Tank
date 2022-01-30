@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 
-namespace DebugFramework.Streaming.Clients.Broadcast
+namespace DebugFramework.Streaming.Clients.Udp.Broadcast
 {
     public abstract class BroadcastClient : BaseUdpClient
     {

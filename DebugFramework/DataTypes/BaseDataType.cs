@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace DebugFramework.DataTypes
 {
@@ -10,6 +11,7 @@ namespace DebugFramework.DataTypes
         /// <summary>
         /// The 
         /// </summary>
+        [JsonPropertyName("aQName")]
         public string AssemblyQualifiedName { get; set; }
 
         /// <summary>

@@ -7,11 +7,11 @@ namespace DebugFramework.DataTypes
     {
         public uint EntityId { get; set; }
 
-        public List<Component> EntityComponents { get; set; }
+        public List<ComponentData> EntityComponents { get; set; }
 
         public EntityContainer()
         {
-            EntityComponents = new List<Component>();
+            EntityComponents = new List<ComponentData>();
         }
     }
 }

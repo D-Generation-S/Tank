@@ -3,7 +3,7 @@ using DebugFramework.Streaming.Package;
 using System;
 using System.Net;
 
-namespace DebugFramework.Streaming.Clients.Communication
+namespace DebugFramework.Streaming.Clients.Udp.Communication
 {
     public class CommunicationPackage
     {
@@ -22,7 +22,7 @@ namespace DebugFramework.Streaming.Clients.Communication
             {
                 return null;
             }
-            BaseDataType baseData = UdpPackage.GetBasePayload();
+            BaseDataType baseData = UdpPackage.GetPayload();
             return baseData == null ? null : baseData.GetRealType();
         }
 

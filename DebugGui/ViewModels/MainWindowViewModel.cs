@@ -1,13 +1,3 @@
-using DebugFramework.DataTypes;
-using DebugFramework.DataTypes.Responses;
-using DebugFramework.DataTypes.SubTypes;
-using DebugFramework.Streaming;
-using DebugFramework.Streaming.Clients.Broadcast;
-using DebugFramework.Streaming.Package;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace DebugGui.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
@@ -18,6 +8,8 @@ namespace DebugGui.ViewModels
 
         public MainWindowViewModel()
         {
+            WindowContent = new MainDebugViewModel();
+            /**
             UdpBroadcastServer<BroadcastData> broadcastClient = new UdpBroadcastServer<BroadcastData>(Configuration.BROADCAST_IP);
             List<int> ports = broadcastClient.GetFreePort(1024, 49150, 3);
             BroadcastData data = new BroadcastData()
@@ -31,7 +23,7 @@ namespace DebugGui.ViewModels
             UdpPackage udpPackage = new UdpPackage();
             udpPackage.Init(0, DataIdentifier.Broadcast, data);
             broadcastClient.StartBroadcast(new UdpPackage(), data);
-            WindowContent = new MainDebugViewModel();
+            
 
             Task.Run(async () =>
             {
@@ -119,6 +111,7 @@ namespace DebugGui.ViewModels
                     await Task.Delay(16);
                 }
             });
+            */
         }
     }
 }

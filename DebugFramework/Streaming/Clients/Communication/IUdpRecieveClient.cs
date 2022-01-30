@@ -1,4 +1,5 @@
 ﻿using DebugFramework.DataTypes;
+using DebugFramework.Streaming.Clients.Udp.Communication;
 using System;
 using System.Threading.Tasks;
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TankEngine.Wrapper;
@@ -107,6 +108,10 @@ namespace TankEngine.EntityComponentSystem.Manager
 
         public void RemoveSystem(ISystem systemToRemove)
         {
+            if (systemToRemove is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
             systems.RemoveAll(system => system.SystemId == systemToRemove.SystemId);
         }
 

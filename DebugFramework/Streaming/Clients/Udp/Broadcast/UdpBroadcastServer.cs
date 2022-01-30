@@ -1,5 +1,5 @@
 ﻿using DebugFramework.DataTypes;
-using DebugFramework.Streaming.Clients.Communication;
+using DebugFramework.Streaming.Clients.Udp.Communication;
 using DebugFramework.Streaming.Package;
 using System;
 using System.Net;
@@ -7,7 +7,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace DebugFramework.Streaming.Clients.Broadcast
+namespace DebugFramework.Streaming.Clients.Udp.Broadcast
 {
     public class UdpBroadcastServer<T> : BroadcastClient, IDisposable where T : BaseDataType
     {

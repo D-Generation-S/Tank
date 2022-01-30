@@ -1,9 +1,10 @@
-﻿using DebugFramework.Streaming.Package;
+﻿using DebugFramework.Streaming.Clients.Communication;
+using DebugFramework.Streaming.Package;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace DebugFramework.Streaming.Clients.Communication
+namespace DebugFramework.Streaming.Clients.Udp.Communication
 {
     public class UdpSendClient : BaseUdpCommunicationClient, IUdpSendClient
     {

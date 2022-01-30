@@ -19,7 +19,7 @@ namespace DebugGui.ViewModels
 
         public ObservableCollection<ComponentFieldViewModel> FieldArguments { get; set; }
 
-        public ComponentViewModel(Component component)
+        public ComponentViewModel(ComponentData component)
         {
             ComponentName = component.ComponentType;
             FieldArguments = new ObservableCollection<ComponentFieldViewModel>(component.Arguments.Select(argument => new ComponentFieldViewModel(argument)));

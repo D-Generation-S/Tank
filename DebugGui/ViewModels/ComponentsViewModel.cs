@@ -24,7 +24,7 @@ namespace DebugGui.ViewModels
         public ICommand ExpandAllCommand { get; }
 
 
-        public ComponentsViewModel(List<Component> components)
+        public ComponentsViewModel(List<ComponentData> components)
         {
             Components = new ObservableCollection<ComponentViewModel>(components.Select(component => new ComponentViewModel(component)));
             this.WhenAnyValue(x => x.SelectedComponentView)
@@ -55,7 +55,7 @@ namespace DebugGui.ViewModels
             });
         }
 
-        public void UpdateComponents(List<Component> components)
+        public void UpdateComponents(List<ComponentData> components)
         {
 
         }

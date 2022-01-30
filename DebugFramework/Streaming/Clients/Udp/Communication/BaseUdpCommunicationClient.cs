@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace DebugFramework.Streaming.Clients.Communication
+namespace DebugFramework.Streaming.Clients.Udp.Communication
 {
     public class BaseUdpCommunicationClient : BaseUdpClient, IDisposable
     {

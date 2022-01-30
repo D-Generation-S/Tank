@@ -1,10 +1,11 @@
 ﻿using DebugFramework.DataTypes;
+using DebugFramework.Streaming.Clients.Communication;
 using DebugFramework.Streaming.Package;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace DebugFramework.Streaming.Clients.Communication
+namespace DebugFramework.Streaming.Clients.Udp.Communication
 {
     public class UdpRecieveClient : BaseUdpCommunicationClient, IUdpRecieveClient
     {
@@ -27,7 +28,7 @@ namespace DebugFramework.Streaming.Clients.Communication
 
         public BaseDataType RecieveMessage()
         {
-            return RecieveCommunicationPackage().UdpPackage?.GetBasePayload();
+            return RecieveCommunicationPackage().UdpPackage?.GetPayload();
         }
 
         public T RecieveMessage<T>() where T : BaseDataType
@@ -38,7 +39,7 @@ namespace DebugFramework.Streaming.Clients.Communication
         public async Task<BaseDataType> RecieveMessageAsync()
         {
             CommunicationPackage returnPackage = await RecieveCommunicationPackageAsync();
-            return returnPackage.UdpPackage.GetBasePayload();
+            return returnPackage.UdpPackage.GetPayload();
         }
 
         public async Task<T> RecieveMessageAsync<T>() where T : BaseDataType
@@ -71,7 +72,7 @@ namespace DebugFramework.Streaming.Clients.Communication
                 }
                 CommunicationPackage communicationPackage = null;
                 UdpPackage udpPackage = new UdpPackage();
-                while (!udpPackage.PackageIsComplete() || !udpPackage.PayloadIsFine())
+                while (!udpPackage.IsPackageComplete() || !udpPackage.IsPayloadFine())
                 {
                     byte[] recievedData = communicationClient.Receive(ref recieveEndpoint);
                     udpPackage.Init(recievedData);

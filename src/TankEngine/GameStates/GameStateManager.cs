@@ -136,6 +136,10 @@ namespace TankEngine.GameStates
         /// </summary>
         public void Clear()
         {
+            while (stateStack.Count > 0)
+            {
+                stateStack.Pop().Destruct();
+            }
             stateStack.Clear();
         }
 

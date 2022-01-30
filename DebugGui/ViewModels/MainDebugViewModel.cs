@@ -1,13 +1,18 @@
-﻿using DebugFramework.DataTypes;
+﻿using Avalonia.Threading;
+using DebugFramework.DataTypes;
 using DebugFramework.DataTypes.Responses;
 using DebugFramework.Streaming;
 using DebugFramework.Streaming.Clients.Communication;
+using DebugFramework.Streaming.Clients.Udp.Communication;
+using DynamicData;
+using DynamicData.Binding;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -21,7 +26,11 @@ namespace DebugGui.ViewModels
 
         public ObservableCollection<GameDebugInstanceViewModel> AvailableGameInstancs { get; }
 
-        public ObservableCollection<EntityViewModel> CurrentEntites { get; }
+        public ReadOnlyObservableCollection<EntityViewModel> CurrentEntities => currentEntities;
+
+        private readonly ReadOnlyObservableCollection<EntityViewModel> currentEntities;
+
+        private readonly SourceList<EntityViewModel> allCurrentEntities;
 
         public ViewModelBase SelectedEntityView
         {
@@ -59,7 +68,7 @@ namespace DebugGui.ViewModels
         {
             listener = new UdpRecieveClient(Configuration.BROADCAST_IP);
             AvailableGameInstancs = new ObservableCollection<GameDebugInstanceViewModel>();
-            CurrentEntites = new ObservableCollection<EntityViewModel>();
+            allCurrentEntities = new();
             IsConnected = false;
 
             Task.Run(async () =>
@@ -79,6 +88,11 @@ namespace DebugGui.ViewModels
                 }
             });
 
+            allCurrentEntities.Connect()
+                              .Sort(SortExpressionComparer<EntityViewModel>.Ascending(g => g.EntityId))
+                              .ObserveOn(AvaloniaScheduler.Instance)
+                              .Bind(out currentEntities)
+                              .Subscribe();
 
 
             IObservable<bool> canConnect = this.WhenAnyValue(
@@ -106,7 +120,7 @@ namespace DebugGui.ViewModels
                 {
                     await Task.Delay(16);
                     CommunicationPackage returnData = await updateListner.RecieveCommunicationPackageAsync();
-                    BaseDataType packageData = returnData.UdpPackage?.GetBasePayload();
+                    BaseDataType packageData = returnData.UdpPackage?.GetPayload();
                     if (packageData?.GetRealType() == typeof(EntitesDump))
                     {
                         EntitesDump dump = returnData.GetPackageContent<EntitesDump>();
@@ -118,23 +132,23 @@ namespace DebugGui.ViewModels
 
                         List<EntityContainer> updatedEntites = dump.Entites;
 
-                        IEnumerable<EntityContainer> newEntities = updatedEntites.Where(newEntity => !CurrentEntites.Any(cEntity => cEntity.EntityId == newEntity.EntityId));
-                        IEnumerable<uint> removedEntityIds = CurrentEntites.Where(cEntity => !updatedEntites.Any(newEntity => newEntity.EntityId == cEntity.EntityId))
+                        IEnumerable<EntityContainer> newEntities = updatedEntites.Where(newEntity => !CurrentEntities.Any(cEntity => cEntity.EntityId == newEntity.EntityId));
+                        IEnumerable<uint> removedEntityIds = CurrentEntities.Where(cEntity => !updatedEntites.Any(newEntity => newEntity.EntityId == cEntity.EntityId))
                                                                             .Select(container => container.EntityId);
-                        IEnumerable<EntityViewModel> entitesToUpdate = CurrentEntites.Where(cEntity => updatedEntites.Any(newEntity => newEntity.EntityId == cEntity.EntityId));
+                        IEnumerable<EntityViewModel> entitesToUpdate = CurrentEntities.Where(cEntity => updatedEntites.Any(newEntity => newEntity.EntityId == cEntity.EntityId));
 
-                        for (int i = CurrentEntites.Count; i > 0; i--)
+                        for (int i = CurrentEntities.Count; i > 0; i--)
                         {
                             int index = i - 1;
-                            if (removedEntityIds.Contains(CurrentEntites[index].EntityId))
+                            if (removedEntityIds.Contains(CurrentEntities[index].EntityId))
                             {
-                                CurrentEntites.RemoveAt(index);
+                                allCurrentEntities.RemoveAt(index);
                             }
                         }
 
                         foreach (EntityContainer container in newEntities)
                         {
-                            CurrentEntites.Add(new EntityViewModel(container.EntityId, container.EntityComponents));
+                            allCurrentEntities.Add(new EntityViewModel(container.EntityId, container.EntityComponents));
                         }
 
                         foreach (EntityViewModel container in entitesToUpdate)
@@ -142,8 +156,7 @@ namespace DebugGui.ViewModels
                             EntityContainer updateBase = updatedEntites?.FirstOrDefault(uEntity => uEntity.EntityId == container.EntityId);
                             container?.UpdateComponents(updateBase?.EntityComponents);
                         }
-
-                        CurrentEntites.OrderBy(entites => entites.EntityId);
+                        this.RaisePropertyChanged(nameof(allCurrentEntities));
                     }
                 }
                 updateListner.Dispose();
@@ -153,7 +166,7 @@ namespace DebugGui.ViewModels
             DisconnectCommand = ReactiveCommand.Create(async () =>
             {
                 IsConnected = false;
-                CurrentEntites.Clear();
+                allCurrentEntities.Clear();
                 SelectedEntity = null;
             }, canDisconnect);
 
