@@ -55,6 +55,14 @@ namespace DebugGui.ViewModels
         }
         private GameDebugInstanceViewModel selectedGameDebugInstance;
 
+        private bool instancesPresent;
+
+        public bool InstancesPresent
+        {
+            get => instancesPresent;
+            set => this.RaiseAndSetIfChanged(ref instancesPresent, value);
+        }
+
         public bool IsConnected
         {
             get => isConnected;
@@ -72,6 +80,34 @@ namespace DebugGui.ViewModels
             allCurrentEntities = new();
             IsConnected = false;
 
+            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(async data =>
+            {
+                DateTime currentTime = DateTime.Now;
+                List<GameDebugInstanceViewModel> instancesToRemove = AvailableGameInstancs.Where(instance =>
+                {
+                    TimeSpan span = currentTime - instance.LastTimeFound;
+                    return span.Seconds > 5;
+                }).ToList();
+
+                for (int i = instancesToRemove.Count; i > 0; i--)
+                {
+                    int index = i - 1;
+                    if (instancesToRemove[index] == SelectedGameDebugInstance)
+                    {
+                        await Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            SelectedGameDebugInstance = null;
+                            if (IsConnected)
+                            {
+                                DisconnectCommand?.Execute(null);
+                            }
+                        });
+
+                    }
+                    AvailableGameInstancs.RemoveAt(index);
+                }
+            });
+
             Task.Run(async () =>
             {
                 while (true)
@@ -81,6 +117,13 @@ namespace DebugGui.ViewModels
                     {
                         if (AvailableGameInstancs.Any(instance => instance.IpAddress == data.IpAddress && instance.Port == data.UpdatePort))
                         {
+                            GameDebugInstanceViewModel foundInstance = AvailableGameInstancs.FirstOrDefault(instance => instance.IpAddress == data.IpAddress
+                                                                                                            && instance.Port == data.UpdatePort
+                                                                                                            && instance.MachineName == data.ServerName);
+                            if (foundInstance != null)
+                            {
+                                foundInstance.LastTimeFound = DateTime.Now;
+                            }
                             continue;
                         }
                         AvailableGameInstancs.Add(new GameDebugInstanceViewModel(data));
@@ -179,6 +222,9 @@ namespace DebugGui.ViewModels
 
             this.WhenAnyValue(x => x.SelectedEntity)
                 .Subscribe(entity => SelectedEntityView = entity?.ComponentView);
+
+            this.WhenAnyValue(x => x.AvailableGameInstancs.Count)
+                .Subscribe(count => InstancesPresent = count > 0);
         }
     }
 }

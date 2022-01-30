@@ -1,4 +1,5 @@
 ﻿using DebugFramework.DataTypes.Responses;
+using System;
 
 namespace DebugGui.ViewModels
 {
@@ -8,18 +9,14 @@ namespace DebugGui.ViewModels
         public string IpAddress { get; set; }
         public int Port { get; set; }
 
-        public GameDebugInstanceViewModel()
-        {
-            MachineName = string.Empty;
-            IpAddress = string.Empty;
-            Port = -1;
-        }
+        public DateTime LastTimeFound { get; set; }
 
         public GameDebugInstanceViewModel(BroadcastData broadcastData)
         {
             MachineName = broadcastData.ServerName;
             IpAddress = broadcastData.IpAddress;
             Port = broadcastData.UpdatePort;
+            LastTimeFound = DateTime.Now;
         }
     }
 }

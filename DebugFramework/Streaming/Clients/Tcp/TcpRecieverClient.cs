@@ -20,31 +20,41 @@ namespace DebugFramework.Streaming.Clients.Tcp
             this.defaultEndpoint = defaultEndpoint;
         }
 
-        private void ConnectClient(IPEndPoint endpointToConnect)
+        private bool ConnectClient(IPEndPoint endpointToConnect)
         {
             if (endpointToConnect == currentEndpoint && recieverClient.Connected)
             {
-                return;
+                return true;
             }
             if (recieverClient.Connected)
             {
                 recieverClient.Close();
             }
             currentEndpoint = endpointToConnect;
-            recieverClient.Connect(endpointToConnect);
+            try
+            {
+                recieverClient.Connect(endpointToConnect);
+                return true;
+            }
+            catch (Exception)
+            {
+            }
+            return false;
         }
 
         private TcpPackage RecieveDataPackage(IPEndPoint remoteAddress)
         {
             if (!recieverClient.Connected)
             {
-                ConnectClient(remoteAddress);
+                if (!ConnectClient(remoteAddress))
+                {
+                    return null;
+                }
             }
             TcpPackage package = new TcpPackage();
             byte[] header = new byte[package.GetHeaderSize()];
             try
             {
-
                 recieverClient.GetStream().Read(header, 0, header.Length);
             }
             catch (Exception)

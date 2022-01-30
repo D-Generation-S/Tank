@@ -124,7 +124,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
             visible.Value = renderingComponent.Visible.ToString();
             ComponentArgument color = streamingDataTypeManager.GetDataType<ComponentArgument>();
             color.Name = "Color";
-            color.Value = renderingComponent.Visible.ToString();
+            color.Value = renderingComponent.Color.ToString();
             ComponentArgument spriteEffect = streamingDataTypeManager.GetDataType<ComponentArgument>();
             spriteEffect.Name = "Sprite Effect";
             spriteEffect.Value = renderingComponent.SpriteEffect.ToString();
