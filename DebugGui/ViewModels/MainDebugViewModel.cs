@@ -2,8 +2,9 @@
 using DebugFramework.DataTypes;
 using DebugFramework.DataTypes.Responses;
 using DebugFramework.Streaming;
-using DebugFramework.Streaming.Clients.Communication;
+using DebugFramework.Streaming.Clients.Tcp;
 using DebugFramework.Streaming.Clients.Udp.Communication;
+using DebugFramework.Streaming.Package;
 using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI;
@@ -114,16 +115,16 @@ namespace DebugGui.ViewModels
                     return;
                 }
                 IsConnected = true;
-                INetworkRecieveClient updateListner = new UdpRecieveClient(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port);
+                TcpRecieverClient updateListner = new TcpRecieverClient(new IPEndPoint(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port));
+                //INetworkRecieveClient updateListner = new UdpRecieveClient(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port);
 
                 while (IsConnected)
                 {
                     await Task.Delay(16);
-                    CommunicationPackage returnData = await updateListner.RecieveCommunicationPackageAsync();
-                    BaseDataType packageData = returnData.dataPackage?.GetPayload();
-                    if (packageData?.GetRealType() == typeof(EntitesDump))
+                    TcpPackage dataPackage = await updateListner.RecieveDataPackageAsync();
+                    if (dataPackage?.GetPayload().GetRealType() == typeof(EntitesDump))
                     {
-                        EntitesDump dump = returnData.GetPackageContent<EntitesDump>();
+                        EntitesDump dump = dataPackage.GetPayload<EntitesDump>();
                         if (!IsConnected)
                         {
                             updateListner.Dispose();

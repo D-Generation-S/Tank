@@ -2,6 +2,7 @@
 using DebugFramework.DataTypes.Responses;
 using DebugFramework.DataTypes.SubTypes;
 using DebugFramework.Streaming;
+using DebugFramework.Streaming.Clients.Tcp;
 using DebugFramework.Streaming.Clients.Udp.Broadcast;
 using DebugFramework.Streaming.Package;
 using Microsoft.Xna.Framework;
@@ -15,18 +16,17 @@ using TankEngine.EntityComponentSystem.Validator;
 
 namespace TankEngine.EntityComponentSystem.Systems.Debugging
 {
-    public class UdpDebugSystem : AbstractSystem, IDisposable
+    public class DebugSystem : AbstractSystem, IDisposable
     {
         private readonly Dictionary<Type, Func<IComponent, List<ComponentArgument>>> argumentConversion;
 
         private readonly UdpBroadcastServer<BroadcastData> broadcastClient;
-        private readonly UdpBroadcastServer<BaseDataType> updateClient;
-        private uint updatePackageNumber;
+        private readonly TcpSendOnlyServer updateClient;
 
-        private readonly UdpPackage updatePackage;
+        private readonly TcpPackage updatePackage;
         private readonly EntitesDump entitesDump;
 
-        public UdpDebugSystem(Dictionary<Type, Func<IComponent, List<ComponentArgument>>> customComponentConversions)
+        public DebugSystem(Dictionary<Type, Func<IComponent, List<ComponentArgument>>> customComponentConversions)
         {
             argumentConversion = customComponentConversions ?? new Dictionary<Type, Func<IComponent, List<ComponentArgument>>>();
 
@@ -44,10 +44,10 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
             udpPackage.Init(0, DataIdentifier.Broadcast, data);
             broadcastClient.StartBroadcast(new UdpPackage(), data);
 
-            updatePackageNumber = 0;
-            updateClient = new UdpBroadcastServer<BaseDataType>(data.UpdatePort);
+            updateClient = new TcpSendOnlyServer(data.UpdatePort);
+            updateClient.AcceptConnectionsAsync();
 
-            updatePackage = new UdpPackage();
+            updatePackage = new TcpPackage();
             entitesDump = new EntitesDump();
 
             argumentConversion.Add(typeof(PositionComponent), (component) =>
@@ -64,7 +64,6 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
             argumentConversion.Add(typeof(TextComponent), (component) =>
             {
                 List<ComponentArgument> arguments = new List<ComponentArgument>();
-                return arguments;
                 if (component is TextComponent textComponent)
                 {
                     arguments.AddRange(GetRenderingComponentBase(textComponent));
@@ -78,7 +77,6 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
             argumentConversion.Add(typeof(TextureComponent), (component) =>
             {
                 List<ComponentArgument> arguments = new List<ComponentArgument>();
-                return arguments;
                 if (component is TextureComponent textureComponent)
                 {
                     arguments.AddRange(GetRenderingComponentBase(textureComponent));
@@ -87,7 +85,6 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
                 }
                 return arguments;
             });
-
         }
 
         private List<ComponentArgument> GetRenderingComponentBase(AbstractRenderingComponent renderingComponent)
@@ -132,8 +129,8 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
                     EntityComponents = components
                 });
             }
-            updatePackage.Init(updatePackageNumber, DataIdentifier.Update, entitesDump);
-            updateClient.SendBroadcast(updatePackage);
+            updatePackage.Init(DataIdentifier.Update, entitesDump);
+            updateClient.SendData(updatePackage);
         }
         public void Dispose()
         {

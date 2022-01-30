@@ -1,12 +1,13 @@
 ﻿using DebugFramework.DataTypes;
 using DebugFramework.Streaming.Package;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Tcp
 {
-    public class TcpRecieverClient : BaseNetworkClient
+    public class TcpRecieverClient : BaseNetworkClient, IDisposable
     {
         private readonly TcpClient recieverClient;
         private readonly IPEndPoint defaultEndpoint;
@@ -41,7 +42,15 @@ namespace DebugFramework.Streaming.Clients.Tcp
             }
             TcpPackage package = new TcpPackage();
             byte[] header = new byte[package.GetHeaderSize()];
-            recieverClient.GetStream().Read(header, 0, header.Length);
+            try
+            {
+
+                recieverClient.GetStream().Read(header, 0, header.Length);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
             if (package.ParseHeader(header))
             {
                 byte[] packageData = new byte[package.GetCompletePackageSize()];
@@ -54,6 +63,13 @@ namespace DebugFramework.Streaming.Clients.Tcp
             }
 
             return package;
+        }
+
+        public async Task<TcpPackage> RecieveDataPackageAsync() => await RecieveDataPackageAsync(defaultEndpoint);
+
+        public async Task<TcpPackage> RecieveDataPackageAsync(IPEndPoint remoteAddress)
+        {
+            return await Task.Run(() => RecieveDataPackage(remoteAddress));
         }
 
         public BaseDataType RecievePackage() => RecievePackage(defaultEndpoint);
@@ -70,8 +86,6 @@ namespace DebugFramework.Streaming.Clients.Tcp
             TcpPackage recievedPackage = RecieveDataPackage(remoteAddress);
             return PackageComplete(recievedPackage) ? recievedPackage.GetPayload() : null;
         }
-
-
 
         public T RecievePackage<T>(IPEndPoint remoteAddress) where T : BaseDataType
         {
@@ -99,6 +113,15 @@ namespace DebugFramework.Streaming.Clients.Tcp
                 TcpPackage recievedPackage = RecieveDataPackage(remoteAddress);
                 return PackageComplete(recievedPackage) ? recievedPackage.GetPayload<T>() : default(T);
             });
+        }
+
+        public void Dispose()
+        {
+            if (recieverClient.Connected)
+            {
+                recieverClient.Close();
+                recieverClient.Dispose();
+            }
         }
     }
 }

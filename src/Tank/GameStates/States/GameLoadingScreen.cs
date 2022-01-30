@@ -305,7 +305,7 @@ namespace Tank.GameStates.States
                 screenshotBasePath
                 ));
 #if DEBUG
-            engine.AddSystem(new UdpDebugSystem(null));
+            engine.AddSystem(new DebugSystem(null));
 #endif
 
             MusicManager musicManager = new MusicManager(contentWrapper, new DataManager<Playlist>(new JsonGameDataLoader<Playlist>("Playlists")));
