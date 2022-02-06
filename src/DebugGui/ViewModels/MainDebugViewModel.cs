@@ -75,7 +75,7 @@ namespace DebugGui.ViewModels
 
         public MainDebugViewModel()
         {
-            listener = new UdpRecieveClient(Configuration.BROADCAST_IP);
+            listener = new UdpRecieveClient(Configuration.BROADCAST_PORT);
             AvailableGameInstancs = new ObservableCollection<GameDebugInstanceViewModel>();
             allCurrentEntities = new();
             IsConnected = false;

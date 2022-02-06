@@ -33,7 +33,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
             streamingDataTypeManager = new StreamingDataTypeManager();
             argumentConversion = customComponentConversions ?? new Dictionary<Type, Func<IComponent, StreamingDataTypeManager, List<ComponentArgument>>>();
 
-            broadcastClient = new UdpBroadcastServer<BroadcastData>(Configuration.BROADCAST_IP);
+            broadcastClient = new UdpBroadcastServer<BroadcastData>(Configuration.BROADCAST_PORT);
             List<int> ports = broadcastClient.GetFreePort(1024, 49150, 3);
             BroadcastData data = new BroadcastData()
             {
