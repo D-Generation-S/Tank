@@ -29,7 +29,7 @@ namespace DebugFramework.Streaming.Clients.Udp.Communication
             usedEndpoint = endpoint;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             communicationClient.Dispose();
         }

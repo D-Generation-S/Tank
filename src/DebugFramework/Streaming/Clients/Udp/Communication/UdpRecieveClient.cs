@@ -7,47 +7,69 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Udp.Communication
 {
+    /// <summary>
+    /// Udp client to recieve data
+    /// </summary>
     public class UdpRecieveClient : BaseUdpCommunicationClient, INetworkRecieveClient
     {
-        public UdpRecieveClient()
-        {
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        public UdpRecieveClient() { }
 
-        }
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="listenPort">The port to listen on</param>
+        public UdpRecieveClient(int listenPort) : this(IPAddress.Any, listenPort) { }
 
-        public UdpRecieveClient(int listenPort) : this(IPAddress.Any, listenPort)
-        {
-        }
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="listenIp">The ip address to listen for</param>
+        /// <param name="listenPort">The port to listen on</param>
+        public UdpRecieveClient(IPAddress listenIp, int listenPort) : base(listenIp, listenPort) { }
 
-        public UdpRecieveClient(IPAddress listenIp, int listenPort) : base(listenIp, listenPort)
-        {
-        }
+        /// <summary>
+        /// Create a new instance of this class
+        /// </summary>
+        /// <param name="listenIp">The ip address to listen for</param>
+        /// <param name="listenPort">The port to listen on</param>
+        /// <param name="clientToUse">The client to use for listening</param>
+        public UdpRecieveClient(IPAddress listenIp, int listenPort, UdpClient clientToUse) : base(clientToUse, new IPEndPoint(listenIp, listenPort)) { }
 
-        public UdpRecieveClient(IPAddress listenIp, int listenPort, UdpClient clientToUse) : base(clientToUse, new IPEndPoint(listenIp, listenPort))
-        {
-        }
-
+        /// <inheritdoc/>
         public BaseDataType RecieveMessage()
         {
             return RecieveCommunicationPackage().dataPackage?.GetPayload();
         }
 
-        public T RecieveMessage<T>() where T : BaseDataType
-        {
-            return RecieveCommunicationPackage().dataPackage?.GetPayload<T>();
-        }
+        /// <summary>
+        /// Recieve a message of a given type T
+        /// </summary>
+        /// <typeparam name="T">The type to cast the message to</typeparam>
+        /// <returns>The message of type T</returns>
+        public T RecieveMessage<T>() where T : BaseDataType => RecieveCommunicationPackage().dataPackage?.GetPayload<T>();
 
+        /// <inheritdoc/>
         public async Task<BaseDataType> RecieveMessageAsync()
         {
             CommunicationPackage returnPackage = await RecieveCommunicationPackageAsync();
             return returnPackage.dataPackage.GetPayload();
         }
 
+        /// <summary>
+        /// Recieve a message of a given type T async
+        /// </summary>
+        /// <typeparam name="T">The type to cast the message to</typeparam>
+        /// <returns>The message of type T</returns>
         public async Task<T> RecieveMessageAsync<T>() where T : BaseDataType
         {
             CommunicationPackage returnPackage = await RecieveCommunicationPackageAsync();
             return returnPackage.dataPackage.GetPayload<T>();
         }
 
+        /// <inheritdoc/>
         public CommunicationPackage RecieveCommunicationPackage()
         {
             if (usedEndpoint == null)
@@ -61,6 +83,7 @@ namespace DebugFramework.Streaming.Clients.Udp.Communication
             return new CommunicationPackage(usedEndpoint, recievedPackage);
         }
 
+        /// <inheritdoc/>
         public async Task<CommunicationPackage> RecieveCommunicationPackageAsync()
         {
             return await Task.Run(() =>
@@ -80,11 +103,6 @@ namespace DebugFramework.Streaming.Clients.Udp.Communication
                 }
                 return communicationPackage;
             });
-        }
-
-        public void Dispose()
-        {
-            base.Dispose();
         }
     }
 }

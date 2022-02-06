@@ -45,7 +45,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
             };
             UdpPackage udpPackage = new UdpPackage();
             udpPackage.Init(0, DataIdentifier.Broadcast, data);
-            broadcastClient.StartBroadcast(new UdpPackage(), data);
+            broadcastClient.StartBroadcastAsync(new UdpPackage(), data);
 
             updateClient = new TcpSendOnlyServer(data.UpdatePort);
             updateClient.AcceptConnectionsAsync();
