@@ -38,7 +38,7 @@ namespace TankEngine.EntityComponentSystem.Systems.Debugging
             BroadcastData data = new BroadcastData()
             {
                 ServerName = Environment.MachineName,
-                IpAddress = broadcastClient.GetClientIp().ToString(),
+                IpAddress = broadcastClient.GetLocalIp().ToString(),
                 UpdatePort = ports[0],
                 CommunicationRecievePort = ports[1],
                 CommunicationSendPort = ports[2]

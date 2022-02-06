@@ -166,7 +166,6 @@ namespace DebugGui.ViewModels
                 }
                 IsConnected = true;
                 TcpRecieverClient updateListner = new TcpRecieverClient(new IPEndPoint(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port));
-                //INetworkRecieveClient updateListner = new UdpRecieveClient(IPAddress.Parse(selectedGameDebugInstance.IpAddress), SelectedGameDebugInstance.Port);
 
                 bool updateingRightNow = false;
                 while (IsConnected)

@@ -118,31 +118,69 @@ namespace DebugFramework.Streaming.Clients.Tcp
             return await Task.Run(() => RecieveDataPackage(remoteAddress));
         }
 
+        /// <summary>
+        /// Recieve a package from the default endpoint
+        /// </summary>
+        /// <returns>The base data type recieved by the client</returns>
         public BaseDataType RecievePackage() => RecievePackage(defaultEndpoint);
 
+        /// <summary>
+        /// Recieve a package of type T from a given endponts
+        /// </summary>
+        /// <typeparam name="T">The endpoint to get the package from</typeparam>
+        /// <returns>The package of type T</returns>
         public T RecievePackage<T>() where T : BaseDataType => RecievePackage<T>(defaultEndpoint);
 
+        /// <summary>
+        /// Is the current package compoete
+        /// </summary>
+        /// <param name="recievedPackage">Package to check for completion</param>
+        /// <returns>True if the package is complete</returns>
         private bool PackageComplete(TcpPackage recievedPackage)
         {
             return recievedPackage.IsPackageComplete() && recievedPackage.IsPayloadFine();
         }
 
+        /// <summary>
+        /// Recieve a base data type package from a given endpoint
+        /// </summary>
+        /// <param name="remoteAddress">The endpoint to recieve the package from</param>
+        /// <returns>The base data type of the package</returns>
         public BaseDataType RecievePackage(IPEndPoint remoteAddress)
         {
             TcpPackage recievedPackage = RecieveDataPackage(remoteAddress);
             return PackageComplete(recievedPackage) ? recievedPackage.GetPayload() : null;
         }
 
+        /// <summary>
+        /// Recieve a base data type package of type T from a given endpoint
+        /// </summary>
+        /// <param name="remoteAddress">The endpoint to recieve the package from</param>
+        /// <returns>The base data type of type T of the package</returns>
         public T RecievePackage<T>(IPEndPoint remoteAddress) where T : BaseDataType
         {
             TcpPackage recievedPackage = RecieveDataPackage(remoteAddress);
             return PackageComplete(recievedPackage) ? recievedPackage.GetPayload<T>() : default(T);
         }
 
+        /// <summary>
+        /// Recieve a package async from the default endpoint
+        /// </summary>
+        /// <returns>The base data type recieved by the client</returns>
         public async Task<BaseDataType> RecievePackageAsync() => await RecievePackageAsync(defaultEndpoint);
 
+        /// <summary>
+        /// Recieve a package of type T async from a given endponts
+        /// </summary>
+        /// <typeparam name="T">The endpoint to get the package from</typeparam>
+        /// <returns>The package of type T</returns>
         public async Task<T> RecievePackageAsync<T>() where T : BaseDataType => await RecievePackageAsync<T>(defaultEndpoint);
 
+        /// <summary>
+        /// Recieve a base data type package async from a given endpoint
+        /// </summary>
+        /// <param name="remoteAddress">The endpoint to recieve the package from</param>
+        /// <returns>The base data type of the package</returns>
         public async Task<BaseDataType> RecievePackageAsync(IPEndPoint remoteAddress)
         {
             return await Task.Run(() =>
@@ -152,6 +190,11 @@ namespace DebugFramework.Streaming.Clients.Tcp
             });
         }
 
+        /// <summary>
+        /// Recieve a base data type package async of type T from a given endpoint
+        /// </summary>
+        /// <param name="remoteAddress">The endpoint to recieve the package from</param>
+        /// <returns>The base data type of type T of the package</returns>
         public async Task<T> RecievePackageAsync<T>(IPEndPoint remoteAddress) where T : BaseDataType
         {
             return await Task.Run(() =>
@@ -161,6 +204,7 @@ namespace DebugFramework.Streaming.Clients.Tcp
             });
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             if (recieverClient.Connected)
