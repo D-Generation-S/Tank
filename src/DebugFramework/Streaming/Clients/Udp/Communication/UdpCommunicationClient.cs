@@ -1,4 +1,5 @@
 ﻿using DebugFramework.DataTypes;
+using DebugFramework.Streaming.Clients.Communication;
 using DebugFramework.Streaming.Package;
 using System.Net;
 using System.Net.Sockets;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DebugFramework.Streaming.Clients.Udp.Communication
 {
-    public class UdpCommunicationClient : BaseNetworkClient, INetworkCommunicationClient
+    public class UdpCommunicationClient : BaseNetworkClient, INetworkSendClient, INetworkRecieveClient
     {
         private readonly UdpRecieveClient recieveClient;
         private readonly UdpSendClient sendClient;
